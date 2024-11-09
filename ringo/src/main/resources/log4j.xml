@@ -11,13 +11,13 @@
 	</appender>
 	
 	<!-- Application Loggers -->
-	<logger name="com.Init.controller">
+	<logger name="com.ringo.controller">
 		<level value="debug" />
 	</logger>
-	<logger name="com.Init.persistence">
+	<logger name="com.ringo.persistence">
 		<level value="debug" />
 	</logger>
-	<logger name="com.Init.service">
+	<logger name="com.ringo.service">
 		<level value="debug" />
 	</logger>
 	
@@ -46,6 +46,6 @@
 	
 	<logger name="jdbc.sqlonly" level="INFO"/>
 	<logger name="jdbc.sqltiming" level="INFO"/>
-	<logger name="com.Init.mapper" level="TRACE"/>
+	<logger name="com.ringo.mapper" level="TRACE"/>
 	
 </log4j:configuration>
