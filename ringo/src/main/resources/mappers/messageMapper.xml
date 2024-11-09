@@ -1,0 +1,400 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.ringo.mapper.MessageMapper">
+	
+	<resultMap id="MessengerSettingMap" type="SettingVO">
+    	<id property="emp_id" column="user_emp_id"/>
+    
+	    <collection property="favorite_room_id" ofType="java.lang.Integer">
+	        <result column="favorite_room_id"/>
+	    </collection>
+	    
+	    <collection property="favorite_emp" ofType="EmployeeVO">
+	        <id property="emp_id" column="emp_id"/>
+	        <result property="emp_name" column="emp_name"/>
+	        <result property="emp_dnum" column="emp_dnum"/>
+	        <result property="emp_dname" column="emp_dname"/>
+	        <result property="emp_bnum" column="emp_bnum"/>
+	        <result property="emp_position" column="emp_position"/>
+	        <result property="emp_job" column="emp_job"/>
+	        <result property="emp_profile" column="emp_profile"/>
+	        <result property="log_on" column="log_on"/>
+	    </collection>
+	</resultMap>
+	
+	<resultMap id="getMessagesResultMap" type="MessageVO">
+	    <id property="msg_id" column="msg_id"/>
+	    <result property="msg_date" column="msg_date"/>
+	    <result property="msg_reader" column="msg_reader"/>
+	    <result property="msg_unreader" column="msg_unreader"/>
+	    <result property="msg_unread_count" column="msg_unread_count"/>
+	    <result property="msg_content" column="msg_content"/>
+	    
+	    <result property="room_id" column="room_id"/>
+	    <result property="room_name" column="room_name"/>
+	    <result property="room_admin" column="room_admin"/>
+	    <result property="room_created_date" column="room_created_date"/>
+	    <result property="room_last_message_date" column="room_last_message_date"/>
+	    <result property="room_join_date" column="room_join_date"/>
+	    
+	    <association property="msg_sender" javaType="EmployeeVO">
+	        <id property="emp_id" column="msg_sender_emp_id"/>
+	        <result property="emp_name" column="msg_sender_emp_name"/>
+	        <result property="emp_dnum" column="msg_sender_emp_dnum"/>
+	        <result property="emp_dname" column="msg_sender_emp_dname"/>
+	        <result property="emp_bnum" column="msg_sender_emp_bnum"/>
+	        <result property="emp_position" column="msg_sender_emp_position"/>
+	        <result property="emp_job" column="msg_sender_emp_job"/>
+	        <result property="emp_profile" column="msg_sender_emp_profile"/>
+	    </association>
+	</resultMap>
+	
+	<resultMap id="getRoomResultMap" type="MessageVO">
+	    <id property="room_id" column="room_id"/>
+	    <result property="room_name" column="room_name"/>
+	    <result property="room_admin" column="room_admin"/>
+	    <result property="room_create_date" column="room_create_date"/>
+	    <result property="room_last_message" column="room_last_message"/>
+	    <result property="room_last_message_date" column="room_last_message_date"/>
+	    <result property="room_last_sender_name" column="room_last_sender_name"/>
+	    <result property="room_last_sender_position" column="room_last_sender_position"/>
+	    
+	    <collection property="room_people" ofType="EmployeeVO">
+	        <result property="emp_id" column="emp_id"/>
+	        <result property="emp_name" column="emp_name"/>
+	        <result property="emp_dnum" column="emp_dnum"/>
+	        <result property="emp_dname" column="emp_dname"/>
+	        <result property="emp_bnum" column="emp_bnum"/>
+	        <result property="emp_position" column="emp_position"/>
+	        <result property="emp_job" column="emp_job"/>
+	    </collection>
+	</resultMap>
+	
+	<resultMap id="messageRealtimeAlarmResultMap" type="MessageVO">
+	    <id property="msg_id" column="msg_id"/>
+	    <result property="msg_date" column="msg_date"/>
+	    <result property="msg_reader" column="msg_reader"/>
+	    <result property="msg_unreader" column="msg_unreader"/>
+	    <result property="msg_unread_count" column="msg_unread_count"/>
+	    <result property="msg_content" column="msg_content"/>
+	    <result property="room_name" column="room_name"/>
+	    <association property="msg_sender" javaType="EmployeeVO">
+	        <result property="emp_name" column="emp_name" />
+	        <result property="emp_dnum" column="emp_dnum" />
+	        <result property="emp_dname" column="emp_dname"/>
+	        <result property="emp_bnum" column="emp_bnum" />
+	        <result property="emp_position" column="emp_position" />
+	        <result property="emp_id" column="emp_id" />
+	    </association>
+	</resultMap>
+
+	<select id="findRoom" resultType="int">
+        WITH RoomWithTwoPeople AS (
+            SELECT room_id
+            FROM msg_room_participant
+            GROUP BY room_id
+            HAVING COUNT(room_people) = 2
+        )
+        SELECT room_id
+        FROM msg_room_participant
+        WHERE room_id IN (SELECT room_id FROM RoomWithTwoPeople)
+          AND room_people IN (#{sender_emp_id}, #{receiver_emp_id})
+        GROUP BY room_id
+        HAVING COUNT(DISTINCT room_people) = 2;
+    </select>
+
+    <select id="selectLastRoomId" resultType="int">
+	SELECT LAST_INSERT_ID()
+	</select>
+	
+	<select id="getMessages" resultMap="getMessagesResultMap">
+	    SELECT 
+	        m.msg_id, 
+	        m.msg_date, 
+	        m.msg_unread_count, 
+	        m.msg_content,
+	        r.room_id, 
+	        r.room_name, 
+	        r.room_admin, 
+	        e.emp_id AS msg_sender_emp_id, 
+	        e.emp_name AS msg_sender_emp_name, 
+	        e.emp_profile AS msg_sender_emp_profile, 
+	        e.emp_dnum AS msg_sender_emp_dnum, 
+	        e.emp_bnum AS msg_sender_emp_bnum, 
+	        e.emp_position AS msg_sender_emp_position, 
+	        e.emp_job AS msg_sender_emp_job,
+	        d.dname as msg_sender_emp_dname
+	    FROM 
+	        messages m
+	    JOIN 
+	        msg_room r ON m.room_id = r.room_id
+	    JOIN 
+	        employee e ON m.msg_sender = e.emp_id and e.approval=0
+	    join 
+	    	dept d on e.emp_dnum = d.dnum
+	    WHERE 
+	        m.room_id = #{room_id}
+	</select>
+	
+	<insert id="insertMsgRoom" parameterType="MessageVO">
+	    INSERT INTO msg_room (room_name, room_admin)
+	     VALUES (
+	         CONCAT(#{personal_sender_emp_name}, ', ', #{personal_receiver_emp_name}),
+	         #{personal_sender_emp_id}
+	     )
+	</insert>
+	
+	<insert id="insertParticipant" parameterType="MessageVO">
+	    INSERT INTO msg_room_participant (room_id, room_people)
+	     VALUES (
+	         #{room_id},#{enter_emp_id}
+	     )
+	</insert>
+	
+	<insert id="sendMessage" parameterType="MessageVO">
+	    INSERT INTO messages (room_id, msg_sender, msg_content, msg_unreader, msg_unread_count, msg_alarm_token)
+	    VALUES (
+	        #{room_id},
+	        #{personal_sender_emp_id},
+	        #{msg_content},
+	        (
+	            SELECT GROUP_CONCAT(room_people SEPARATOR ', ')
+	            FROM msg_room_participant
+	            WHERE room_id = #{room_id}
+	              AND room_people != #{personal_sender_emp_id}
+	        ),
+	        (
+	            SELECT COUNT(*)
+	            FROM msg_room_participant
+	            WHERE room_id = #{room_id}
+	              AND room_people != #{personal_sender_emp_id}
+	        ),
+	        (
+	            SELECT GROUP_CONCAT(room_people SEPARATOR ', ')
+	            FROM msg_room_participant
+	            WHERE room_id = #{room_id}
+	              AND room_people != #{personal_sender_emp_id}
+	        )
+	    )
+	</insert>
+	
+	<select id="selectRoomList" resultType="MessageVO">
+	    SELECT r.room_id, 
+           r.room_name, 
+           r.room_last_message, 
+           r.room_last_message_date, 
+           r.room_last_sender_name, 
+           r.room_last_sender_position, 
+           (SELECT COUNT(m.msg_id)
+            FROM messages m
+            WHERE m.room_id = r.room_id
+              AND m.msg_unreader LIKE CONCAT('%', #{emp_id}, '%')
+           ) AS room_alarm_count
+	    FROM msg_room r
+	    WHERE r.room_id IN (
+	        SELECT p.room_id
+	        FROM msg_room_participant p
+	        WHERE p.room_people = #{emp_id}
+	    ) and r.room_id not in (select favorite_room_id from user_favorites where emp_id = #{emp_id} and favorite_room_id is not null)
+	    order by r.room_last_message_date desc;
+	</select>
+	
+	<select id="selectFavoriteRoomList" resultType="MessageVO">
+	    SELECT r.room_id, 
+           r.room_name, 
+           r.room_last_message, 
+           r.room_last_message_date, 
+           r.room_last_sender_name, 
+           r.room_last_sender_position, 
+           (SELECT COUNT(m.msg_id)
+            FROM messages m
+            WHERE m.room_id = r.room_id
+              AND m.msg_unreader LIKE CONCAT('%', #{emp_id}, '%')
+           ) AS room_alarm_count
+	    FROM msg_room r
+	    WHERE r.room_id IN (
+	        SELECT favorite_room_id
+	        FROM user_favorites
+	        WHERE emp_id = #{emp_id} and favorite_room_id is not null
+	    )
+	    order by r.room_last_message_date desc;
+	</select>
+	
+	<select id="checkReadOrNot" resultType="Integer" parameterType="MessageVO">
+	    SELECT msg_id 
+	    FROM messages 
+	    WHERE room_id = #{room_id} 
+	      AND msg_unreader LIKE CONCAT('%', #{msg_reader}, '%');
+	</select>
+	
+	<update id="updateMessageReader" parameterType="MessageVO">
+	    UPDATE messages
+	     SET 
+	   		 msg_unreader = TRIM(BOTH ', ' FROM REPLACE(CONCAT(', ', IFNULL(msg_unreader, ''), ', '), CONCAT(', ', #{msg_reader}, ', '), ', ')),
+	   		 msg_alarm_token = TRIM(BOTH ', ' FROM REPLACE(CONCAT(', ', IFNULL(msg_alarm_token, ''), ', '), CONCAT(', ', #{msg_reader}, ', '), ', ')),
+   			 msg_unread_count = msg_unread_count - 1
+	   		 WHERE room_id = #{room_id}
+	    	 AND msg_id IN 
+	      <foreach item="msg_id" collection="msg_id" open="(" separator="," close=")">
+	     	 #{msg_id}
+	      </foreach>;
+	</update>
+	
+	<update id="updateRoomInfo" parameterType="MessageVO">
+		update msg_room
+		set room_last_message = #{msg_content}, room_last_message_date = now(),
+		room_last_sender_name = #{personal_sender_emp_name}, room_last_sender_position = #{personal_sender_emp_position}
+		where room_id = #{room_id}
+	</update>
+	
+	<select id="getSearchedRoomList" resultType="Integer" parameterType="map">
+	    WITH user_rooms AS (
+	        SELECT p.room_id
+	        FROM msg_room_participant p
+	        WHERE p.room_people = #{emp_id}
+	    )
+	    SELECT DISTINCT r.room_id
+	    FROM msg_room r
+	    LEFT JOIN messages m ON r.room_id = m.room_id
+	    WHERE r.room_id IN (
+	        SELECT room_id FROM user_rooms
+	    )
+	    AND (
+	        REPLACE(r.room_name, ' ', '') LIKE CONCAT('%', #{keyword}, '%')
+	        OR
+	        REPLACE(m.msg_content, ' ', '') LIKE CONCAT('%', #{keyword}, '%')
+	    );
+	</select>
+	
+	<select id="getSearchedRoom" resultType="MessageVO">
+	    SELECT r.room_id, 
+           r.room_name, 
+           r.room_last_message, 
+           r.room_last_message_date, 
+           r.room_last_sender_name, 
+           r.room_last_sender_position, 
+           (SELECT COUNT(m.msg_id)
+            FROM messages m
+            WHERE m.room_id = r.room_id
+              AND m.msg_unreader LIKE CONCAT('%', #{emp_id}, '%')
+           ) AS room_alarm_count
+	    FROM msg_room r
+	    WHERE r.room_id IN 
+	      <foreach item="room_id" collection="room_id" open="(" separator="," close=")">
+	          #{room_id}
+	      </foreach>
+	</select>
+	
+	<update id="updateRoomName" parameterType="MessageVO">
+		update msg_room
+		set room_name = CONCAT (room_name, ', ' ,#{enter_emp_name})
+		where room_id = #{room_id}
+	</update>
+	
+	
+	<delete id="deleteParticipant" parameterType="MessageVO">
+	    DELETE FROM msg_room_participant
+	     WHERE room_id = #{room_id}
+	       AND room_people = #{leaver_emp_id}
+	</delete>
+	
+	<update id="deleteRoomName" parameterType="MessageVO">
+	    UPDATE msg_room
+	    SET room_name = TRIM(BOTH ', ' FROM REPLACE(CONCAT(', ', IFNULL(room_name, ''), ', '), CONCAT(', ', #{enter_emp_name}, ', '), ', '))
+	    WHERE room_id = #{room_id}
+	</update>
+	
+	<select id="getPersonalInfo" parameterType="int" resultType="EmployeeVO">
+	    SELECT e.emp_id, 
+	           e.emp_profile
+	    FROM msg_room_participant p
+	    JOIN employee e ON p.room_people = e.emp_id and e.approval=0
+	    WHERE p.room_id = #{room_id}
+	</select>
+	
+	<insert id="systemMessage" parameterType="MessageVO">
+	    INSERT INTO messages (room_id, msg_sender, msg_content)
+	    VALUES (
+	        #{room_id},
+	        'system',
+	        #{msg_content}
+	    )
+	</insert>
+	
+	<select id="messageUnreadAlarm" parameterType="String" resultType="MessageVO">
+	    SELECT *
+	    FROM messages
+	    WHERE msg_unreader LIKE CONCAT('%', #{emp_id}, '%')
+	    AND msg_unreader IS NOT NULL
+	</select>
+	
+	<select id="messageRealtimeAlarm" parameterType="String" resultMap="messageRealtimeAlarmResultMap">
+	    SELECT m.*, r.room_name,
+	           e.emp_name, e.emp_bnum, e.emp_dnum, e.emp_position, e.emp_id, d.dname as emp_dname
+	    FROM messages m
+	    JOIN employee e ON m.msg_sender = e.emp_id and e.approval=0
+	    join msg_room r on m.room_id = r.room_id
+	    join dept d on e.emp_dnum = d.dnum
+	    WHERE msg_alarm_token LIKE CONCAT('%', #{emp_id}, '%')
+	    AND msg_alarm_token IS NOT NULL
+	</select>
+	
+	<update id="updateMessageAlarmToken" parameterType="MessageVO">
+	    UPDATE messages
+	    SET msg_alarm_token = TRIM(BOTH ', ' FROM REPLACE(CONCAT(', ', IFNULL(msg_alarm_token, ''), ', '), CONCAT(', ', #{emp_id}, ', '), ', '))
+	    WHERE msg_id in 	      
+	   	 	<foreach item="msg_id" collection="msg_id" open="(" separator="," close=")">
+	        	#{msg_id}
+	    	</foreach>
+	</update>
+	
+	<select id="checkParticipantCount" resultType="int">
+	    SELECT count(*)
+	    FROM msg_room_participant
+	    WHERE room_id = #{room_id}
+	</select>
+	
+	<select id="getRoomInfo" resultMap="getRoomResultMap">
+	    SELECT r.*,e.emp_id,e.emp_name, e.emp_dnum, e.emp_bnum, e.emp_position, e.emp_job, d.dname as emp_dname
+		 FROM msg_room r
+		 JOIN msg_room_participant p ON r.room_id = p.room_id
+		 join employee e on p.room_people = e.emp_id and e.approval=0
+		 join dept d on e.emp_dnum = d.dnum
+		 WHERE r.room_id = #{room_id}
+	</select>
+	
+	<insert id="insertNewPartyRoom" parameterType="MessageVO">
+	    INSERT INTO msg_room (room_name, room_admin)
+	     VALUES (#{room_name},#{room_admin})
+	</insert>
+	
+	<select id="getGarbageMessage" parameterType="MessageVO">
+	    SELECT m.msg_id
+		 FROM messages m
+		 JOIN msg_room r on m.room_id = r.room_id 
+		 WHERE r.room_id = #{room_id} and msg_unreader LIKE CONCAT('%', #{leaver_emp_id}, '%') or msg_alarm_token LIKE CONCAT('%', #{leaver_emp_id}, '%')
+	</select>
+	
+	<select id="getMessengerSetting" resultMap="MessengerSettingMap">
+		select f.emp_id as user_emp_id, f.favorite_room_id,e.emp_id,e.emp_name,e.emp_profile,e.emp_bnum,e.emp_dnum,e.emp_position,e.emp_job,s.log_on
+		 from user_favorites f
+		 left join employee e on f.favorite_emp_id = e.emp_id and e.approval=0
+		 left join user_setting s on e.emp_id = s.emp_id and e.approval=0
+		 where f.emp_id=#{emp_id};
+	</select>
+	
+	<insert id ="followRoom">
+		insert into user_favorites
+		value (#{emp_id},null,#{room_id})
+	</insert>
+
+	<delete id ="unfollowRoom">
+		delete from user_favorites 
+		where emp_id=#{emp_id} and favorite_room_id=#{room_id};
+	</delete>
+	
+</mapper>  
+   -->
