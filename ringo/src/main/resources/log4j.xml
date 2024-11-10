@@ -20,6 +20,9 @@
 	<logger name="com.ringo.service">
 		<level value="debug" />
 	</logger>
+	<logger name="com.ringo.domain">
+		<level value="debug" />
+	</logger>
 	
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
