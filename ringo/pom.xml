@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.Init</groupId>
+	<groupId>com.ringo</groupId>
 	<artifactId>controller</artifactId>
-	<name>Init</name>
+	<name>ringo</name>
 	<packaging>war</packaging>
 	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<properties>
@@ -263,7 +263,11 @@
 		    <version>3.4.1</version> <!-- 최신 버전 확인 후 업데이트 -->
 		</dependency>
 				
-		
+		<dependency>
+		    <groupId>com.google.firebase</groupId>
+		    <artifactId>firebase-admin</artifactId>
+		    <version>9.1.0</version>
+		</dependency>
 		
 		
 		

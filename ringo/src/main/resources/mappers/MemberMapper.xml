@@ -1,18 +1,29 @@
-<!-- <?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
-<mapper namespace="com.ringo.mapper.EmployeeMapper">
+<mapper namespace="com.ringo.mapper.MemberMapper">
 
-	<select id="loginMember" resultType="EmployeeVO">
-	   select * from employee
-	   where emp_id=#{emp_id} and emp_pw=#{emp_pw} and approval=0
+	<select id="selectMember" parameterType="MemberVO" resultType="MemberVO">
+	   select * from members
+	   where user_id=#{user_id} and user_pw=#{user_pw}
 	</select>
 	
-	<select id="getMember" resultType="EmployeeVO">		
+	<insert id="insertMember" parameterType="MemberVO">
+	   insert into members(user_id,user_pw)
+	   value (user_id=#{user_id}, user_pw=#{user_pw})
+	</insert>
+	
+	<select id="selectMaxCode" parameterType="MemberVO" resultType="Integer">
+    select max(user_code)
+    from members
+    where user_nationality = #{user_nationality}
+</select>
+	<!-- 
+	<select id="getMember" resultType="MemberVO">		
 		 select e.*, d.dname as emp_dname
-		  from employee e
+		  from Member e
 		  join dept d on e.emp_dnum = d.dnum
 	      where e.emp_id=#{emp_id} and e.approval=0
 	</select>
@@ -31,9 +42,9 @@
 		 where s.emp_id=#{emp_id}
 	</select>
 	
-	<select id="getSearchedMemberList" resultType="EmployeeVO">
+	<select id="getSearchedMemberList" resultType="MemberVO">
 	    select e.*,s.log_on,d.dname as emp_dname
-	    from employee e
+	    from Member e
 	    left join user_setting s on e.emp_id = s.emp_id and e.approval=0
 	    left join dept d on e.emp_dnum = d.dnum
 	    where 
@@ -48,18 +59,18 @@
 	    and e.approval=0
 	</select>
 	
-	<select id="getTeamList" resultType="EmployeeVO">
+	<select id="getTeamList" resultType="MemberVO">
 		select e.*,s.log_on,d.dname as emp_dname
-	     from employee e
+	     from Member e
 	     left join user_setting s on e.emp_id = s.emp_id and e.approval=0
 	     left join dept d on e.emp_dnum = d.dnum
 	     where emp_dnum = (
 	         select emp_dnum
-	         from employee
+	         from Member
 	         where emp_id = #{emp_id} and approval=0
 	     ) and emp_bnum = (
 	         select emp_bnum
-	         from employee
+	         from Member
 	         where emp_id = #{emp_id} and approval=0
 	     ) and e.emp_id != #{emp_id} and e.emp_id not in (select favorite_emp_id from user_favorites where emp_id = #{emp_id} and favorite_emp_id is not null)
 	     order by s.log_on desc;
@@ -108,7 +119,7 @@
 	</insert>
 	
 	<select id = "emp_dummy" resultType="String">
-		select emp_id from employee
+		select emp_id from Member
 	</select>
 	
 	<insert id="dummySetting">
@@ -127,7 +138,6 @@
 	
 	<select id = "getPresence" resultType="java.util.Map" >
 		select date,presence,check_in from work_record where emp_id = #{emp_id} and date between #{startDate} and #{endDate}
-	</select>
+	</select> -->
 	
 </mapper>  
-   -->
