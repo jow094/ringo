@@ -19,7 +19,70 @@
     </script>
 </c:if>
 
-<nav class="navbar">
+<c:if test="${!currentURL.contains('join')&&!currentURL.contains('login')}">
+	<nav class="navbar left_navbar">
+		<!-- 드롭다운 메뉴들 -->
+		<ul>
+			<li>
+				<button type="button">
+					<a href='/main/home'>
+						<i class="fa-solid fa-house"></i>
+					</a>
+				</button>
+			</li>
+			<li>
+				<button type="button">
+					<i class="fa-solid fa-calendar"></i>
+				</button>
+			</li>
+			<li>
+				<button type="button">
+					<i class="fa-solid fa-comments"></i>
+				</button>
+				<span class="nav_badge"></span>
+			</li>
+			<li>
+				<button type="button">
+					<i class="fa-solid fa-bell"></i>
+				</button>
+				<span class="nav_badge"></span>
+			</li>
+		</ul>
+		<!-- 드롭다운 메뉴들 -->
+	</nav>
+	
+	<nav class="navbar right_navbar">
+		<!-- 드롭다운 메뉴들 -->
+		<ul>
+			<li>
+				<button type="button">
+					<a href='/main/home'>
+						<i class="fa-solid fa-house"></i>
+					</a>
+				</button>
+			</li>
+			<li>
+				<button type="button">
+					<i class="fa-solid fa-calendar"></i>
+				</button>
+			</li>
+			<li>
+				<button type="button">
+					<i class="fa-solid fa-comments"></i>
+				</button>
+				<span class="nav_badge"></span>
+			</li>
+			<li>
+				<button type="button">
+					<i class="fa-solid fa-bell"></i>
+				</button>
+				<span class="nav_badge"></span>
+			</li>
+		</ul>
+		<!-- 드롭다운 메뉴들 -->
+	</nav>
+</c:if>
+<nav class="navbar top_navbar">
 	<!-- 드롭다운 메뉴들 -->
 	<ul>
 		<li>
@@ -48,15 +111,12 @@
 		</li>
 		<c:if test="${!empty sessionScope.user_id}">
 			<li>
-				${user_thumbnail}
-			</li>
-			<li>
 				<img
-				src="/ringo_files/profiles/111333.png"
-				style="width: 30px; height: 30px; border-radius: 50%;"
+				src="/img/profiles/${user_thumbnail}"
+				style="width: 30px; height: 30px; border-radius: 50%; margin-right:20px;"
 				/>
-				<span class="profile-username" style="color:white;">
-					<span>안녕하세요, </span>
+				<span class="profile-username" style="color:white; font-size:15px;">
+					<span>안녕하세요 , </span>
 					<span>${user_name}</span>
 					<span> 님!</span>
 				</span>

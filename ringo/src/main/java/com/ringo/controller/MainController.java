@@ -37,7 +37,7 @@ public class MainController {
 	 * private String uploadPath = System.getProperty("catalina.base") +
 	 * "/webapps/ringo/uploads/";
 	 */
-	private String uploadPath = "C:/Program Files/Apache Software Foundation/Tomcat 9.0/webapps/ringo/uploads/";
+	private String uploadPath = "C:/ringo_files/profiles/";
 	
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
@@ -115,7 +115,7 @@ public class MainController {
 					e.printStackTrace();
 				}
 
-                fileNames.add(uploadPath + fileName);
+                fileNames.add(fileName);
                 i++;
 	        }
 	    }

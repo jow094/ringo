@@ -7,8 +7,10 @@
 <%@ include file="/resources/assets/inc/navbar.jsp" %>
 </head>
 <body>
-
-${user_id}
-
+<div class="main_container">
+	<div class="left_container"></div>
+	<div class="center_container">${user_id}</div>
+	<div class="right_container"></div>
+</div>
 </body>
 </html>

@@ -2,9 +2,14 @@ package com.ringo.config;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.validation.MessageCodesResolver;
 import org.springframework.validation.Validator;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -22,9 +27,18 @@ import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+@Component
 public class WebConfig implements WebMvcConfigurer {
+	
+	@PostConstruct
+    public void init() {
+        System.out.println("###################WebConfig is being loaded");
+    }
+	
 	@Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		
         registry.addResourceHandler("/ringo_files/profiles/**")
         .addResourceLocations("file:///C:/ringo_files/profiles/");
     }

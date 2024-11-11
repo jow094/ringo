@@ -54,7 +54,6 @@
 	    <servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
 	</servlet>
 	
-	<!-- 서블릿 매핑 정의 -->
 	<servlet-mapping>
 	    <servlet-name>imageServeServlet</servlet-name>
 	    <url-pattern>/ringo_files/*</url-pattern> 

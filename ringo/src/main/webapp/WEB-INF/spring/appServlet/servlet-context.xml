@@ -18,6 +18,7 @@
 
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
 	<resources mapping="/resources/**" location="/resources/" />
+	<resources mapping="/img/profiles/**" location="file:/C:/ringo_files/profiles/" />
 	
 	<!-- 이미지주소 맵핑(학원) -->
 	<!-- <resources mapping="/uploads/**" location="file:///C:/workspace_sts6_teamproject/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/project_Init/uploads/" /> -->

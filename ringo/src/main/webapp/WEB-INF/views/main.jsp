@@ -8,8 +8,8 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+<div class="main_container">
 ${user_id}
-
+</div>
 </body>
 </html>

@@ -52,13 +52,7 @@
         <property name="maxUploadSize" value="10485760" /> <!-- 최대 10MB -->
         <property name="defaultEncoding" value="UTF-8" />
     </bean>
-	
-	<context:component-scan base-package="com.ringo.persistence"/>
-	
-	<context:component-scan base-package="com.ringo.service"/>
-	
-	<context:component-scan base-package="com.ringo.config"/>
-	
-	
+    
+	<context:component-scan base-package="com.ringo"/>
 	
 </beans>

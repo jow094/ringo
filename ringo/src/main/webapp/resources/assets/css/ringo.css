@@ -26,6 +26,12 @@ div{
 	border:1px solid;
 }
 
+span{
+	display:flex;
+	justify-content: center;
+	align-items: center;
+}
+
 form{
 	display:flex;
 	flex-direction: column; 
@@ -51,19 +57,51 @@ input[type="submit"]{
 	margin-top:10px;
 }
 
-.navbar{
-	height:50px;
-	display:flex;
-	position: relative; 
-	background-color: rgba(0,0,0,0.9);
-	justify-content: flex-end;
-	align-content: center;
+.left_navbar{
+	height: 100vh; /* 네비게이션 바가 화면 전체 높이를 차지하도록 */
+	width: 50px; /* 네비게이션 바의 너비 */
+	display: flex;
+	flex-direction: column; /* 세로로 나열되게 */
+	position: fixed; /* 화면에 고정 */
+	top: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, 0.9);
+	align-items: center; /* 가로로 중앙 정렬 */
+	padding-top: 20px; /* 상단 여백 */
+	z-index: 1;
 }
 
-.navbar ul{
+.right_navbar{
+	height: 100vh;
+	width: 50px; /* 네비게이션 바의 너비 */
+	display: flex;
+	flex-direction: column; /* 세로로 나열되게 */
+	position: fixed; /* 화면에 고정 */
+	top: 0;
+	right: 0;
+	background-color: rgba(0, 0, 0, 0.9);
+	align-items: center; /* 가로로 중앙 정렬 */
+	padding-top: 20px; /* 상단 여백 */
+	z-index: 1;
+}
+
+.top_navbar{
+	height: 50px;
+	width: 100%; /* 네비게이션 바의 너비 */
+	display: flex;
+	position: fixed; /* 화면에 고정 */
+	top: 0;
+	background-color: rgba(0, 0, 0, 0.1);
+	justify-content: flex-end;
+	align-content: center; /* 가로로 중앙 정렬 */
+	z-index: 0;
+}
+
+.navbar ul:not(.top_navbar ul){
 	margin:0;
 	padding:0;
 	display: flex; 
+	flex-direction: column;
 	list-style: none; 
 	justify-content: center;
 	align-content: center;
@@ -73,7 +111,7 @@ input[type="submit"]{
 	display: flex; 
 	justify-content: center;
 	align-content: center;
-	padding : 0px 20px;
+	padding : 15px 20px;
 	flex-wrap: wrap;
 }
 
@@ -85,9 +123,18 @@ input[type="submit"]{
 	margin:0;
 }
 
+.top_navbar ul{
+	margin:0;
+	padding:0;
+	display: flex; 
+	list-style: none; 
+	justify-content: center;
+	align-content: center;
+}
+
 i{
 	color:white;
-	font-size:20px;
+	font-size:15px;
 }
 
 button:not(.custom_button){
@@ -109,6 +156,7 @@ button:not(.custom_button){
 	width: 100%; /* 부모 요소 크기 100% */
 	gap: 0;
 	height:1000px;
+	margin-top:50px;
 }
 
 .login_container .box-row {
@@ -183,6 +231,7 @@ button:not(.custom_button){
 	display:flex;
 	justify-content: center;
 	align-content: center;
+	margin-top:50px;
 }
 
 .join_container .box{
@@ -232,3 +281,42 @@ button:not(.custom_button){
 	margin:5px 10px;
 }
 /* 회원가입 페이지 종료*/
+
+.main_container{
+	margin-left:60px;
+	margin-right:60px;
+	margin-top:60px;
+	height:92vh;
+	box-sizing: border-box;
+	width:calc(100vw - 135px); 
+	border-radius : 15px;
+	box-shadow: 0px 5px 5px 5px rgba(0, 0, 0, 0.2);
+	background: linear-gradient(to bottom, rgba(255,217,229,0.9) 25px, transparent 25px);
+    padding-top: 25px;
+    display:flex;
+}
+.main_container .left_container{
+	height:100%;
+	width:300px;
+	padding:20px;
+	z-index:1;
+	box-sizing: border-box;
+}
+.main_container .center_container{
+	flex-grow: 1;
+	box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+	padding:20px;
+	z-index:0;
+	box-sizing: border-box;
+	background-color: rgba(220, 220, 220, 0.1);
+}
+.main_container .right_container{
+	height:100%;
+	width:300px;
+	padding:20px;
+	z-index:1;
+	box-sizing: border-box;
+}
+
+
+
