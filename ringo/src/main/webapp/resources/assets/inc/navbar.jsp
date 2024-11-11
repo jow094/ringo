@@ -52,7 +52,7 @@
 			</li>
 			<li>
 				<img
-				src="/ringo/uploads/kor_kor_1_path_1.jpg"
+				src="/ringo_files/profiles/111333.png"
 				style="width: 30px; height: 30px; border-radius: 50%;"
 				/>
 				<span class="profile-username" style="color:white;">

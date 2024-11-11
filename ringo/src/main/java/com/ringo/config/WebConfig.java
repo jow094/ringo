@@ -25,8 +25,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 	@Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/ringo/uploads/**")
-                .addResourceLocations("file:/C:/Program Files/Apache Software Foundation/Tomcat 9.0/webapps/ringo/uploads/");
+        registry.addResourceHandler("/ringo_files/profiles/**")
+        .addResourceLocations("file:///C:/ringo_files/profiles/");
     }
 
 	@Override

@@ -47,5 +47,18 @@
 	    <filter-name>encodingFilter</filter-name>
 	    <url-pattern>/*</url-pattern>
 	</filter-mapping>
+	
+	<!-- imageServeServlet -->
+	<servlet>
+	    <servlet-name>imageServeServlet</servlet-name>
+	    <servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
+	</servlet>
+	
+	<!-- 서블릿 매핑 정의 -->
+	<servlet-mapping>
+	    <servlet-name>imageServeServlet</servlet-name>
+	    <url-pattern>/ringo_files/*</url-pattern> 
+	</servlet-mapping>
+	<!-- imageServeServlet -->
 
 </web-app>
