@@ -40,15 +40,23 @@
 	<logger name="org.springframework.web">
 		<level value="info" />
 	</logger>
+	
+	<logger name="org.springframework.jdbc">
+		<level value="info" />
+	</logger>
+	
+	<logger name="com.zaxxer.hikari">
+	    <level value="info" />
+	</logger>
 
 	<!-- Root Logger -->
 	<root>
-		<priority value="warn" />
+		<priority value="info" />
 		<appender-ref ref="console" />
 	</root>
 	
 	<logger name="jdbc.sqlonly" level="INFO"/>
 	<logger name="jdbc.sqltiming" level="INFO"/>
-	<logger name="com.ringo.mapper" level="TRACE"/>
+	<logger name="com.ringo.mapper" level="warn"/>
 	
 </log4j:configuration>

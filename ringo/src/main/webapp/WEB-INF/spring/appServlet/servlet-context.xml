@@ -36,7 +36,7 @@
         <beans:property name="maxInMemorySize" value="1048576" /> <!-- 1MB -->
     </beans:bean>	
     
-    <resources mapping="/uploads/**" location="file:///C:/workspace_sts6_teamproject/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/ringo/uploads/" />
+    <resources mapping="/ringo/uploads/*" location="file:/C:/Program Files/Apache Software Foundation/Tomcat 9.0/webapps/ringo/uploads/" />
 	
 	
 </beans:beans>

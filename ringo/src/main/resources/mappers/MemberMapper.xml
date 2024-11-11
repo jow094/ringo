@@ -7,19 +7,33 @@
 
 	<select id="selectMember" parameterType="MemberVO" resultType="MemberVO">
 	   select * from members
-	   where user_id=#{user_id} and user_pw=#{user_pw}
+	    where user_id=#{user_id} and user_pw=#{user_pw}
 	</select>
 	
 	<insert id="insertMember" parameterType="MemberVO">
-	   insert into members(user_id,user_pw)
-	   value (user_id=#{user_id}, user_pw=#{user_pw})
+	   insert into members (
+        user_code, user_id, user_pw, user_name, user_nickname, user_birth,
+        user_nationality, user_gender, user_tel, user_email, user_addr,
+        user_fluent_language, user_learning_language, user_topic, user_ideal_partner,
+        user_objective, user_grade, user_thumbnail, user_profile_path_1, user_profile_path_2, user_profile_path_3,
+        user_profile_path_4, user_profile_path_5, user_profile_path_6, user_profile_path_7, user_profile_path_8,
+        user_logon, user_server
+	    )
+	    values (
+	        #{user_code}, #{user_id}, #{user_pw}, #{user_name}, #{user_nickname}, #{user_birth},
+	        #{user_nationality}, #{user_gender}, #{user_tel}, #{user_email}, #{user_addr},
+	        #{user_fluent_language}, #{user_learning_language}, #{user_topic}, #{user_ideal_partner},
+	        #{user_objective}, 'Bronze', #{user_profile_path[0]}, #{user_profile_path[0]}, #{user_profile_path[1]}, #{user_profile_path[2]}, #{user_profile_path[3]},
+	        #{user_profile_path[4]}, #{user_profile_path[5]}, #{user_profile_path[6]}, #{user_profile_path[7]},
+	        0, #{user_server}
+	    )
 	</insert>
 	
-	<select id="selectMaxCode" parameterType="MemberVO" resultType="Integer">
-    select max(user_code)
-    from members
-    where user_nationality = #{user_nationality}
-</select>
+	<select id="selectLastCode" parameterType="MemberVO" resultType="Integer">
+	   select max(user_code)
+	    from members
+	    where user_nationality = #{user_nationality} and user_server = #{user_server}
+	</select>
 	<!-- 
 	<select id="getMember" resultType="MemberVO">		
 		 select e.*, d.dname as emp_dname

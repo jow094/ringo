@@ -13,7 +13,7 @@ public interface MemberDAO {
 
 	public MemberVO selectMember(MemberVO vo);
 	public Integer insertMember(MemberVO vo);
-	
+	public Integer selectLastCode(MemberVO vo);
 	/*
 	 * public MemberVO getMember(String userid);
 	 * 
