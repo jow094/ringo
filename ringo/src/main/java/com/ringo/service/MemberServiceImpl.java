@@ -23,11 +23,20 @@ public class MemberServiceImpl implements MemberService{
 	
 	@Override
 	public MemberVO memberLogin(MemberVO vo) {
+		logger.debug("memberLogin(MemberVO) - vo : "+vo);
 		return mdao.selectMember(vo);
 	}
 	
 	@Override
+	public Integer getLastUserCode(MemberVO vo) {
+		logger.debug("getLastUserCode(MemberVO) - vo : "+vo);
+		return mdao.selectLastCode(vo);
+	}
+
+
+	@Override
 	public Integer memberJoin(MemberVO vo) {
+		logger.debug("memberJoin(MemberVO) - vo : "+vo);
 		return mdao.insertMember(vo);
 	}
 	/*

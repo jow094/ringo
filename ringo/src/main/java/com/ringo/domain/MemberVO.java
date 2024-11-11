@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,17 +35,13 @@ public class MemberVO {
 	private String user_objective;
 	private String user_grade;
 	
-	private String user_profile_1;
-	private String user_profile_2;
-	private String user_profile_3;
-	private String user_profile_4;
-	private String user_profile_5;
-	private String user_profile_6;
-	private String user_profile_7;
-	private String user_profile_8;
+	private String user_thumbnail;
+	private List<String> user_profile_path;
+	private List<MultipartFile> user_profile_file;
 	
 	private boolean user_logon;
 	
+	private String user_server;
 	private SettingVO user_setting;
 	private List<String> follower;
 	private List<String> following;

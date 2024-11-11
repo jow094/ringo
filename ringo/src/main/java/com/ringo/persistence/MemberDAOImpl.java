@@ -32,12 +32,19 @@ public class MemberDAOImpl implements MemberDAO {
 
 	@Override
 	public MemberVO selectMember(MemberVO vo) {
+		logger.debug("selectMember(MemberVO) - vo : "+vo);
 		return sqlSession.selectOne(NAMESPACE + ".selectMember",vo);		
 	}
 	
 	@Override
+	public Integer selectLastCode(MemberVO vo) {
+		logger.debug("selectLastCode(MemberVO) - vo : "+vo);
+		return sqlSession.selectOne(NAMESPACE + ".selectLastCode",vo);		
+	}
+	
+	@Override
 	public Integer insertMember(MemberVO vo) {
-		vo.setUser_code(sqlSession.selectOne(NAMESPACE + ".selectMaxCode",vo));
+		logger.debug("insertMember(MemberVO) - vo : "+vo);
 		return sqlSession.insert(NAMESPACE + ".insertMember",vo);	
 	}
 
@@ -97,9 +104,9 @@ public class MemberDAOImpl implements MemberDAO {
 	 * 
 	 * Integer presence = random.nextInt(365);
 	 * 
-	 * if(presence > 350) { param.put("presence", "異쒖옣"); }else if(351 > presence &&
-	 * presence > 310) { param.put("presence", "�쑕媛�"); }else if(311 > presence ) {
-	 * param.put("presence", "異쒓렐"); }
+	 * if(presence > 350) { param.put("presence", "�빊�뮇�삢"); }else if(351 > presence &&
+	 * presence > 310) { param.put("presence", "占쎌몧揶쏉옙"); }else if(311 > presence ) {
+	 * param.put("presence", "�빊�뮄�젏"); }
 	 * 
 	 * if (311>presence) {
 	 * 

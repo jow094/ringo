@@ -11,7 +11,7 @@ public interface MemberService {
 	
 	public MemberVO memberLogin(MemberVO vo);
 	public Integer memberJoin(MemberVO vo);
-	
+	public Integer getLastUserCode(MemberVO vo);
 	
 	
 	/*

@@ -4,12 +4,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+<%@ include file="/resources/assets/inc/navbar.jsp" %>
 </head>
 <body>
 <div class="main_container">
-${user_id}
+	<div class="left_container"></div>
+	<div class="center_container">${user_id}</div>
+	<div class="right_container"></div>
 </div>
 </body>
 </html>

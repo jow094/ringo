@@ -3,23 +3,50 @@
 <%@ page session="false" %>
 <html>
 <head>
-	<title>Home</title>
+<%@ include file="/resources/assets/inc/navbar.jsp" %>
 </head>
 <body>
-<h1>
-	Hello world!!  
-</h1>
 
-<P>  The time on the server is ${serverTime}. </P>
+<div class="login_container">
+	<div class="box box-row-7"></div>
+	<div class="box box-row-400 login_section">
+		<div class="login_banner">
+		
+		
+		</div>
+		<div class="login_inputs">
+			<form action="/main/login" method="POST">
+				<div class="input_cell">
+					<div class="input_name">
+						아이디
+					</div>
+					<div class="input_value">
+						<input type="text" name="user_id"/>
+					</div>
+				</div>
+				<div class="input_cell">
+					<div class="input_name">
+						비밀번호
+					</div>
+					<div class="input_value">
+						<input type="password" name="user_pw"/>
+					</div>
+				</div>
+				<input type="submit" name="submit" value="로그인"/>
+				<a href="/main/join" method="GET"><button class="custom_button" type="button">회원가입</button></a>
+				<a href="/main/find" method="GET"><button class="custom_button" type="button">정보찾기</button></a>
+			</form>
+			
+				<div class="sns_login">
+					<a href="/main/join" method="GET"><button class="custom_button" type="button">Google 계정으로 로그인</button></a>
+					<a href="/main/find" method="GET"><button class="custom_button" type="button">kakao 계정으로 로그인</button></a>
+				</div>
+		</div>
+	</div>
+</div>
 
-<form action="/login" method="POST">
-	<input type="text" name="user_id"/>
-	<input type="password" name="user_id"/>
-	<input type="submit" name="submit"/> 
-</form>
 
-<a href="/join" method="GET"><button type="button">회원가입</button></a>
-<a href="/find" method="GET"><button type="button">정보찾기</button></a>
+
 
 </body>
 </html>

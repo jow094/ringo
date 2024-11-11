@@ -29,5 +29,35 @@
 		<servlet-name>appServlet</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
+	
+	<filter>
+	    <filter-name>encodingFilter</filter-name>
+	    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+	    <init-param>
+	        <param-name>encoding</param-name>
+	        <param-value>UTF-8</param-value>
+	    </init-param>
+	    <init-param>
+	        <param-name>forceEncoding</param-name>
+	        <param-value>true</param-value>
+	    </init-param>
+	</filter>
+	
+	<filter-mapping>
+	    <filter-name>encodingFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- imageServeServlet -->
+	<servlet>
+	    <servlet-name>imageServeServlet</servlet-name>
+	    <servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+	    <servlet-name>imageServeServlet</servlet-name>
+	    <url-pattern>/ringo_files/*</url-pattern> 
+	</servlet-mapping>
+	<!-- imageServeServlet -->
 
 </web-app>
