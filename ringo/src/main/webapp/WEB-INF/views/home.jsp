@@ -65,20 +65,23 @@
 				</div>
 			</div>
 		</div>
+		<div class="container_side_button_section">
+			<i class="fas fa-chevron-circle-right"></i>
+		</div>
 	</div>
 	<div class="center_container">
-		<div class="container_menu">
-			<div>
+		<div class="container_menu">	
+			<div class="container_menu_timeline">
 				<i class="fa-solid fa-timeline"></i>
 				<span>타임라인</span>
 			</div>
-			<div>
+			<div class="container_menu_matching">
 				<i class="fa-solid fa-handshake-angle"></i>
 				<span>매칭</span>
 			</div>
-			<div>
+			<div class="container_menu_messenger">
 				<i class="fa-solid fa-message"></i>
-				<span>메세지</span>
+				<span>메신저</span>
 			</div>
 		</div>
 		<div class="container_contents">
@@ -93,18 +96,18 @@
 					</div>
 				</div>
 			</div>
-			<!-- <div class="main_matching">
-					<div class="scroll_box">
-						<div class="scroll_box_inner">
-							<div class="card">
-								<div class="card_header"></div>
-								<div class="card_body"></div>
-								<div class="card_foot"></div>
-							</div>
+		<!-- <div class="main_matching">
+				<div class="scroll_box">
+					<div class="scroll_box_inner">
+						<div class="card">
+							<div class="card_header"></div>
+							<div class="card_body"></div>
+							<div class="card_foot"></div>
 						</div>
 					</div>
-				</div> -->
-			<div class="main_messenger">
+				</div>
+			</div> -->
+			<div class="main_messenger shrinking">
 				<div class="main_messenger_menu scroll_box">
 					<div class="scroll_box_inner">
 						<div class="card_person">
@@ -195,7 +198,67 @@
 		</div>
 	</div>
 	<div class="right_container">
+		<div class="container_side_button_section" onclick="shrinking('.alarm_container'); alarm_container_changeButton(this)">
+			<i class="fas fa-chevron-circle-right"></i>
+		</div>
+		<div class="alarm_container">
+		</div>
 	</div>
 </div>
+
+<script>
+$(document).ready(function() {
+	
+	$('.container_menu').on('click', 'div:not(.container_menu_messenger)', function() {
+	    $(this).siblings(':not(:last-child)').removeClass('clicked');
+	    $(this).addClass('clicked');
+	});
+	
+	$('.container_menu').on('click', '.container_menu_messenger:not(.clicked)', function() {
+		expanding('.main_messenger');
+		$(this).addClass('clicked');
+	});
+	
+	$('.container_menu').on('click', '.container_menu_messenger.clicked', function() {
+		shrinking('.main_messenger');
+		$(this).removeClass('clicked');
+	});
+	
+});
+
+
+
+
+
+function shrinking(e) {
+	$(e).addClass('shrinking');
+	
+	setTimeout(function() {
+        $(e).css('display', 'none');
+    }, 230);
+}
+
+function expanding(e) {
+	$(e).css('display', 'flex');
+	setTimeout(function() {
+		$(e).removeClass('shrinking');
+    }, 1);
+	
+}
+
+function alarm_container_changeButton(button) {
+    var icon = $(button).find('i');
+
+    if (icon.hasClass('fa-chevron-circle-right')) {
+        icon.removeClass('fa-chevron-circle-right').addClass('fa-chevron-circle-left');
+        $(button).attr('onclick', "expanding('.alarm_container'); alarm_container_changeButton(this)");
+    }
+    else if (icon.hasClass('fa-chevron-circle-left')) {
+        icon.removeClass('fa-chevron-circle-left').addClass('fa-chevron-circle-right');
+        $(button).attr('onclick', "shrinking('.alarm_container'); alarm_container_changeButton(this)");
+    }
+}
+</script>
+
 </body>
 </html>

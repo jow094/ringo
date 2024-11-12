@@ -18,6 +18,12 @@
     font-display: swap;
 }
 
+.shrinking {
+	width: 0px !important;
+	overflow: hidden !important;
+	opacity: 0;
+}
+
 /* 전체 스크롤바 */
 ::-webkit-scrollbar {
     width: 5px; /* 세로 스크롤바의 너비 */
@@ -343,6 +349,8 @@ button:not(.custom_button){
 	background: linear-gradient(to bottom, rgba(0,0,0,0.8) 25px, transparent 25px);
     padding-top: 25px;
     display:flex;
+    flex-direction:row;
+    width:100%;
 }
 
 .main_container{
@@ -353,24 +361,48 @@ button:not(.custom_button){
 }
 .main_container .left_container,.right_container{
 	height:100%;
-	flex: 1 1 0%;
-	padding:20px;
 	z-index:1;
 	display:flex;
 	justify-content: flex-start;
 	align-items: center;
-	flex-direction: column;
+	flex-direction: row;
 	overflow-y:auto;
+	width:auto;
 }
 .profile_container{
 	display:flex;
 	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	flex-grow:1;
+	height:100%;
+	padding:20px 0px;
+	transition: width 0.3s ease, opacity 0.3s ease;
+	width:300px;
+}
+.alarm_container{
+	display:flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	flex-grow:1;
+	height:100%;
+	padding:20px 0px;
+	transition: width 0.3s ease, opacity 0.3s ease;
+	width:300px;
+}
+.container_side_button_section{
+	height:100%;
+	display:flex;
 	justify-content: center;
 	align-items: center;
-	width:100%;
+	width:20px;
+	color:rgba(0,0,0,0.2);
+	font-size:14px;
+	background-color: rgba(200,200,200,0.1);
 }
 .user_info_container{
-	width:100%;
+	width:80%;
 	display:flex;
 	flex-direction: column;
 	justify-content: center;
@@ -381,7 +413,7 @@ button:not(.custom_button){
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
-	width:80%;
+	width:100%;
 	padding-bottom:15px;
 	margin-bottom:15px;
 	border-bottom:1px solid rgba(0,0,0,0.1);
@@ -442,9 +474,6 @@ button:not(.custom_button){
 	justify-content: center;
 	align-items: center;
 }
-.right_container{
-	flex: 0.7 1 0%;
-}
 .main_container .center_container{
 	box-shadow: inset 2px 2px 3px rgba(0, 0, 0, 0.1);
 	z-index:0;
@@ -454,7 +483,7 @@ button:not(.custom_button){
 	align-items: center;
 	flex-direction: column;
 	height:100%;
-	width:1200px;
+	flex-grow: 1;
 }
 .container_menu{
 	height:40px !important;
@@ -463,6 +492,13 @@ button:not(.custom_button){
 	padding:5px 20px 0px 20px;
 }
 
+.container_menu div {
+	flex-grow: 1;
+	text-align: center;
+	height:100%;
+	border-radius: 5px;
+	background-color: white;
+}
 .container_contents{
 	display:flex;
 	height: calc(100% - 40px);
@@ -478,13 +514,6 @@ button:not(.custom_button){
 	font-size:12px;
 }
 
-.container_menu div {
-	flex-grow: 1;
-	text-align: center;
-	height:100%;
-	border-radius: 5px;
-	background-color: white;
-}
 
 .container_menu div:first-child {
     box-shadow: 3px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 4px 4px -2px rgba(0, 0, 0, 0.2);
@@ -496,6 +525,12 @@ button:not(.custom_button){
 
 .container_menu div:not(:first-child):not(:last-child) {
     box-shadow: -3px 3px 3px -2px rgba(0, 0, 0, 0.2), 3px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 3px -2px rgba(0, 0, 0, 0.2);
+}
+
+.container_menu div.clicked {
+    background-color: rgba(230,230,230,0.1);
+    box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.8) !important;
+    font-weight:bold;
 }
 
 .main_timeline,.main_matching{
@@ -537,14 +572,14 @@ button:not(.custom_button){
 .main_messenger{
 	height: 100%;
 	padding:20px 10px;
-	display:flex;
+	display:none;
 	width:700px;
 	flex-direction: row;
 	margin:10px;
 	border-radius:10px;
 	box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.2);
 	background-color: white;
-	
+	transition: width 0.3s ease, opacity 0.3s ease;
 }
 
 .main_messenger_menu{
