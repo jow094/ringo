@@ -725,7 +725,7 @@ button:not(.custom_button){
 /* messneger end */
 
 
-.card {
+.card { 
 	min-height:260px;
 	max-height:500px;
 	width:100%;
