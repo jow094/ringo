@@ -226,12 +226,9 @@ $(document).ready(function() {
 	
 });
 
-
-
-
-
 function shrinking(e) {
 	$(e).addClass('shrinking');
+	$(e).children().addClass('none');
 	
 	setTimeout(function() {
         $(e).css('display', 'none');
@@ -240,6 +237,8 @@ function shrinking(e) {
 
 function expanding(e) {
 	$(e).css('display', 'flex');
+	$(e).children().removeClass('none');
+	
 	setTimeout(function() {
 		$(e).removeClass('shrinking');
     }, 1);
