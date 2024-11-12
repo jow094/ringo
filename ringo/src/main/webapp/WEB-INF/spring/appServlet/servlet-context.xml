@@ -10,31 +10,28 @@
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 	<!-- 프로젝트 관련 서블릿(웹) 정보를 포함하는 파일 -->
 	
-	
-	
-	
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
 
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
 	<resources mapping="/resources/**" location="/resources/" />
 	<resources mapping="/img/profiles/**" location="file:/C:/ringo_files/profiles/" />
+	<resources mapping="/swagger-ui/**" location="classpath:META-INF/resources/webjars/springfox-swagger-ui/" />
 	
-	<!-- 이미지주소 맵핑(학원) -->
-	<!-- <resources mapping="/uploads/**" location="file:///C:/workspace_sts6_teamproject/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/project_Init/uploads/" /> -->
-
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<beans:property name="prefix" value="/WEB-INF/views/" />
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
-	<context:component-scan base-package="com.ringo.controller" />
-	
 	<!-- MultipartResolver 설정 -->
     <beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <beans:property name="maxUploadSize" value="10485760" /> <!-- 10MB -->
         <beans:property name="maxInMemorySize" value="1048576" /> <!-- 1MB -->
-    </beans:bean>	
+    </beans:bean>
+    
+    <beans:bean id="SwaggerConfig" class="com.ringo.config.SwaggerConfig"/>
+    
+	<context:component-scan base-package="com.ringo" />
     
 </beans:beans>

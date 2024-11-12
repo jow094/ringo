@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/brands.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/assets/css/ringo.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css/css/flag-icon.min.css">
 <meta charset="UTF-8">
 
 <%
@@ -51,36 +51,6 @@
 		<!-- 드롭다운 메뉴들 -->
 	</nav>
 	
-	<nav class="navbar right_navbar">
-		<!-- 드롭다운 메뉴들 -->
-		<ul>
-			<li>
-				<button type="button">
-					<a href='/main/home'>
-						<i class="fa-solid fa-house"></i>
-					</a>
-				</button>
-			</li>
-			<li>
-				<button type="button">
-					<i class="fa-solid fa-calendar"></i>
-				</button>
-			</li>
-			<li>
-				<button type="button">
-					<i class="fa-solid fa-comments"></i>
-				</button>
-				<span class="nav_badge"></span>
-			</li>
-			<li>
-				<button type="button">
-					<i class="fa-solid fa-bell"></i>
-				</button>
-				<span class="nav_badge"></span>
-			</li>
-		</ul>
-		<!-- 드롭다운 메뉴들 -->
-	</nav>
 </c:if>
 <nav class="navbar top_navbar">
 	<!-- 드롭다운 메뉴들 -->

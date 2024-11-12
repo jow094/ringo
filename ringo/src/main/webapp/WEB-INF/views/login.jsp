@@ -8,7 +8,7 @@
 <body>
 
 <div class="login_container">
-	<div class="box box-row-7"></div>
+	<div class="box box-row"></div>
 	<div class="box box-row-400 login_section">
 		<div class="login_banner">
 		

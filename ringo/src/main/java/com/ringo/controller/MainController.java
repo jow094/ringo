@@ -24,8 +24,17 @@ import com.ringo.domain.MemberVO;
 import com.ringo.service.MemberService;
 import com.ringo.service.MessageService;
 
+import io.swagger.annotations.Api;
+
+// http://localhost:8082/swagger-ui/index.html
+
 @Controller
 @RequestMapping(value = "/main/*")
+/*
+ * @RequestMapping("/api")
+ * 
+ * @Api(tags = "메인 컨트롤러")
+ */
 public class MainController {
 	
 	@Inject
@@ -106,7 +115,7 @@ public class MainController {
 	        	    extension = originalFileName.substring(originalFileName.lastIndexOf("."));
 	        	}
 	        	
-                String fileName = vo.getUser_server() + "_" + vo.getUser_nationality() + "_" + user_code + "_path_" + i + extension;
+                String fileName = vo.getUser_server() + "_" + vo.getUser_nationality() + "_" + user_code + "-" + i + extension;
 
                 File dest = new File(uploadPath + fileName);
                 try {
