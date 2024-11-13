@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/assets/css/ringo.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css/css/flag-icon.min.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="${pageContext.request.contextPath }/resources/assets/js/ringo.js"></script>
 <meta charset="UTF-8">
 
 <%
