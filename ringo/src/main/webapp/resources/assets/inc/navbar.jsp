@@ -83,10 +83,6 @@
 		</li>
 		<c:if test="${!empty sessionScope.user_id}">
 			<li>
-				<img
-				src="/img/profiles/${user_thumbnail}"
-				style="width: 30px; height: 30px; border-radius: 50%; margin-right:20px;"
-				/>
 				<span class="profile-username" style="color:white; font-size:15px;">
 					<span>안녕하세요 , </span>
 					<span>${user_name}</span>

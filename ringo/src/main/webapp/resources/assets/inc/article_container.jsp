@@ -32,11 +32,65 @@
 		</span>
 		<div class="scroll_box">
 			<div class="scroll_box_inner">
+				<!-- card start -->
 				<div class="card">
-					<div class="card_header"></div>
-					<div class="card_body">1번째 게시글</div>
-					<div class="card_foot"></div>
+					<div class="card_header">
+						<div class="card_header_img">
+							<img
+							src="/img/profiles/${user_thumbnail}"
+							style="width: 40px; height: 40px; border-radius: 50%; shrink:0; box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);"
+							/>
+						</div>
+						<div class="card_header_name">
+							작성자
+						</div>
+						<div class="card_header_tools">
+							<div class="card_header_tool">
+								<i class="fa-regular fa-heart" style="font-size: 20px;"></i>
+								<span>1,430</span>
+							</div>
+							<div class="card_header_tool">
+								<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
+							</div>
+						</div>
+					</div>
+					<div class="card_body">
+						<div class="card_body_content">
+							1번째 게시글
+						</div>
+						<div class="card_body_tags">
+							#태그
+						</div>
+					</div>
+					<div class="card_foot">
+						<div class="card_foot_comment">
+							<div class="card_comment">
+								<div class="card_comment_thumbnail">
+									<img
+									src="/img/profiles/${user_thumbnail}"
+									style="width: 40px; height: 40px; border-radius: 30%;"
+									/>
+								</div>
+								<div class="card_comment_body">
+									<div class="card_comment_name">작성자</div>
+									<div class="card_comment_content">내용</div>
+									<div class="card_comment_time">
+										<i class="fa-regular fa-thumbs-up"></i>36
+										<i class="fa-regular fa-thumbs-down"></i>12
+										<span>작성시간</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="card_foot_comment_input">
+							<textarea></textarea>
+							<button type="button">
+								<i class="fa-solid fa-paper-plane"></i>
+							</button>
+						</div>
+					</div>
 				</div>
+				<!-- card end -->
 			</div>
 		</div>
 	</div>
@@ -62,7 +116,13 @@
 							작성자
 						</div>
 						<div class="card_header_tools">
-							좋아요
+							<div class="card_header_tool">
+								<i class="fa-regular fa-heart" style="font-size: 20px;"></i>
+								<span>1,430</span>
+							</div>
+							<div class="card_header_tool">
+								<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
+							</div>
 						</div>
 					</div>
 					<div class="card_body">
@@ -83,9 +143,13 @@
 									/>
 								</div>
 								<div class="card_comment_body">
-									<div class="card_comment_info_name"></div>
-									<div class="card_comment_info_content"></div>
-									<div class="card_comment_info_time"></div>
+									<div class="card_comment_name">작성자</div>
+									<div class="card_comment_content">내용</div>
+									<div class="card_comment_time">
+										<i class="fa-regular fa-thumbs-up"></i>36
+										<i class="fa-regular fa-thumbs-down"></i>12
+										<span>작성시간</span>
+									</div>
 								</div>
 							</div>
 						</div>
