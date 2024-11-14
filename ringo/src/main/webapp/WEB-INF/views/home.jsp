@@ -7,7 +7,7 @@
 <%@ include file="/resources/assets/inc/navbar.jsp" %>
 </head>
 <body>
-<div class="outter_container main_container">
+<div class="main_container">
 	<div class="left_container">
 		<%@ include file="/resources/assets/inc/profile_container.jsp" %>
 	</div>

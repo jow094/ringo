@@ -8,11 +8,15 @@
 <body>
 
 <div class="login_container">
-	<div class="box box-row"></div>
-	<div class="box box-row-400 login_section">
+
+	<div class="login_img_container">
+		<div class="login_img_section">
+			<img src="/resources/assets/img/background1.jpg">
+		</div>
+	</div>
+	<div class="login_section">
 		<div class="login_banner">
-		
-		
+			<img src="/resources/assets/img/login_banner.png">
 		</div>
 		<div class="login_inputs">
 			<form action="/main/login" method="POST">
@@ -37,20 +41,16 @@
 				<button class="custom_button" type="button">정보찾기</button>
 			</form>
 			
-				<div class="sns_login">
-					<a href="/main/join">
-						<button class="custom_button" type="button">
-							<i class="fa-brands fa-google" style="margin-right:16px;"></i>
-							Google 계정으로 로그인
-						</button>
-					</a>
-					<a href="/main/find">
-						<button class="custom_button" type="button">
-							<i class="fa-brands fa-kaggle" style="margin-right:20px;"></i>
-							kakao 계정으로 로그인
-						</button>
-					</a>
-				</div>
+			<div class="sns_login">
+				<button class="custom_button" type="button">
+					<i class="fa-brands fa-google" style="margin-right:16px;"></i>
+					Google 계정으로 로그인
+				</button>
+				<button class="custom_button" type="button">
+					<i class="fa-brands fa-kaggle" style="margin-right:20px;"></i>
+					kakao 계정으로 로그인
+				</button>
+			</div>
 		</div>
 	</div>
 </div>

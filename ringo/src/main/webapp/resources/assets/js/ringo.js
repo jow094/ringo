@@ -22,23 +22,27 @@ function login_check(){
 	var currentURL = window.location.href;
 	
 	if (currentURL.includes('join') || currentURL.includes('login')) {
+		$('.left_navbar').addClass('none');
         return;
+    }else{
+    	
+    	$('.left_navbar').removeClass('none');
+    	
+    	$.ajax({
+            type: "GET",
+            url: "/main/loginCheck",
+            success: function(data) {
+            	if(data == null || data == ""){
+            		if (!currentURL.includes('join') && !currentURL.includes('login')) {
+            			alert("로그인 정보가 없습니다. 로그인 페이지로 이동합니다.");
+            		}
+                    window.location.href = "/main/login";
+            	}
+            },
+            error: function(xhr, status, error) {
+            }
+        });
     }
-        
-    $.ajax({
-        type: "GET",
-        url: "/main/loginCheck",
-        success: function(data) {
-        	if(data == null || data == ""){
-        		if (!currentURL.includes('join') && !currentURL.includes('login')) {
-        			alert("로그인 정보가 없습니다. 로그인 페이지로 이동합니다.");
-        		}
-                window.location.href = "/main/login";
-        	}
-        },
-        error: function(xhr, status, error) {
-        }
-    });
 }
 
 function logout(){
@@ -247,43 +251,44 @@ function alarm_container(e) {
 function toggle_cards(e,target) {
 	console.log(e,"is e");
 	console.log(target,"is target");
-	$(target).siblings().removeClass('active');
-	$(target).addClass('active');
+	$(target).removeClass('floor_1').removeClass('floor_2').removeClass('floor_3').removeClass('floor_4').removeClass('floor_5');
+	$(target).siblings().removeClass('floor_1').removeClass('floor_2').removeClass('floor_3').removeClass('floor_4').removeClass('floor_5');
+	$(target).addClass('floor_1');
 	
-	if(target==('.cards.1')){
+	if(target==('.cards.card_1')){
 		console.log('1 open');
-		$('.cards.2').css('z-index',4);
-		$('.cards.3').css('z-index',3);
-		$('.cards.4').css('z-index',2);
-		$('.cards.5').css('z-index',1);
+		$('.cards.card_2').addClass('floor_2');
+		$('.cards.card_3').addClass('floor_3');
+		$('.cards.card_4').addClass('floor_4');
+		$('.cards.card_5').addClass('floor_5');
 	}
-	if(target==('.cards.2')){
+	if(target==('.cards.card_2')){
 		console.log('2 open');
-		$('.cards.1').css('z-index',1);
-		$('.cards.3').css('z-index',3);
-		$('.cards.4').css('z-index',2);
-		$('.cards.5').css('z-index',1);
+		$('.cards.card_1').addClass('floor_2');
+		$('.cards.card_3').addClass('floor_2');
+		$('.cards.card_4').addClass('floor_3');
+		$('.cards.card_5').addClass('floor_4');
 	}
-	if(target==('.cards.3')){
+	if(target==('.cards.card_3')){
 		console.log('3 open');
-		$('.cards.1').css('z-index',1);
-		$('.cards.2').css('z-index',2);
-		$('.cards.4').css('z-index',2);
-		$('.cards.5').css('z-index',1);
+		$('.cards.card_1').addClass('floor_3');
+		$('.cards.card_2').addClass('floor_2');
+		$('.cards.card_4').addClass('floor_2');
+		$('.cards.card_5').addClass('floor_3');
 	}
-	if(target==('.cards.4')){
+	if(target==('.cards.card_4')){
 		console.log('4 open');
-		$('.cards.1').css('z-index',1);
-		$('.cards.2').css('z-index',2);
-		$('.cards.3').css('z-index',3);
-		$('.cards.5').css('z-index',1);
+		$('.cards.card_1').addClass('floor_4');
+		$('.cards.card_2').addClass('floor_3');
+		$('.cards.card_3').addClass('floor_2');
+		$('.cards.card_5').addClass('floor_2');
 	}
-	if(target==('.cards.5')){
+	if(target==('.cards.card_5')){
 		console.log('5 open');
-		$('.cards.1').css('z-index',1);
-		$('.cards.2').css('z-index',2);
-		$('.cards.3').css('z-index',3);
-		$('.cards.4').css('z-index',4);
+		$('.cards.card_1').addClass('floor_5');
+		$('.cards.card_2').addClass('floor_4');
+		$('.cards.card_3').addClass('floor_3');
+		$('.cards.card_4').addClass('floor_2');
 	}
 	
 	$(e).siblings().not(e).removeClass('clicked');

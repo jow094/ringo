@@ -17,8 +17,6 @@
 	background: linear-gradient(to bottom, rgba(0,0,0,0.8) 25px, transparent 25px);
     padding-top: 25px;
     background-color: white;
-    width: 80%;
-    height:80%;
     box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.3);
     display:flex;
     flex-direction: column;
@@ -50,14 +48,17 @@
 .cards_header{
 	gap:5px;
 	width:100%;
-	height:40px;
+	height:60px;
+	padding:10px;
 }
-.cards_header div {
+.cards_header_menu {
 	flex-grow: 1;
 	text-align: center;
 	height:100%;
 	border-radius: 5px;
 	background-color: white;
+	box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.3);
+
 }
 .ards_header span {
 	display:flex;
@@ -67,20 +68,19 @@
 	font-size:12px;
 }
 .cards_container {
-	margin:10px;
 	width:100%;
 	height:calc(100% - 20px);
 	display: flex;
 	overflow: hidden;
 	position: relative;
 	justify-content: flex-start;
-    align-items: center;
+    align-content: center;
     padding:10px;
 }
 
 .cards {
 	position: relative;
-	height:90%;
+	height:calc(100% - 10px);
 	background-color: white; /* 기본 어두운 배경 */
 	position: relative;
 	box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.3);
@@ -93,32 +93,44 @@
 	justify-content: center;
     align-items: center;
 }
-.cards.1{
-	transform: scale(0.9);
+.floor_1{
+	z-index:100;
+	transform: scale(1);
+	background-color: rgb(255,255,255);
 }
-.cards.2{
-	z-index:4;
-	transform: scale(0.9);
+.floor_2{
+	z-index:99;
+	transform: scale(0.99);
+	background-color: rgb(250,250,250);
 }
-.cards.3{
-	z-index:3;
-	transform: scale(0.9);
+.floor_3{
+	z-index:98;
+	transform: scale(0.98);
+	background-color: rgb(245,245,245);
 }
-.cards.4{
-	z-index:2;
-	transform: scale(0.9);
+.floor_4{
+	z-index:97;
+	transform: scale(0.97);
+	background-color: rgb(240,240,240);
 }
-.cards.5{
-	z-index:1;
-	transform: scale(0.9);
+.floor_5{
+	z-index:96;
+	transform: scale(0.96);
+	background-color: rgb(235,235,235);
 }
-.cards.active {
-	z-index:100 !important;
+.cards.floor_1 {
 	flex-grow:6;
 	margin-right: -120px; 
-	transform: scale(1) !important;
 }
 
+.cards:first-child {
+    margin-left: 20px;
+}
 .cards:last-child {
-    margin-right: 0;
+    margin-right: 20px;
+}
+
+.join_modal .modal_content{
+    width:60%;
+    height:90%;
 }
