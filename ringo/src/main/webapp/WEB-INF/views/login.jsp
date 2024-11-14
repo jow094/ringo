@@ -32,14 +32,24 @@
 						<input type="password" name="user_pw"/>
 					</div>
 				</div>
-				<input type="submit" name="submit" value="로그인"/>
-				<a href="/main/join" method="GET"><button class="custom_button" type="button">회원가입</button></a>
-				<a href="/main/find" method="GET"><button class="custom_button" type="button">정보찾기</button></a>
+				<input class="custom_button" type="submit" name="submit" value="로그인"/>
+				<button class="custom_button modal_button" type="button" onclick="showing('.join_modal')">회원가입</button>
+				<button class="custom_button" type="button">정보찾기</button>
 			</form>
 			
 				<div class="sns_login">
-					<a href="/main/join" method="GET"><button class="custom_button" type="button">Google 계정으로 로그인</button></a>
-					<a href="/main/find" method="GET"><button class="custom_button" type="button">kakao 계정으로 로그인</button></a>
+					<a href="/main/join">
+						<button class="custom_button" type="button">
+							<i class="fa-brands fa-google" style="margin-right:16px;"></i>
+							Google 계정으로 로그인
+						</button>
+					</a>
+					<a href="/main/find">
+						<button class="custom_button" type="button">
+							<i class="fa-brands fa-kaggle" style="margin-right:20px;"></i>
+							kakao 계정으로 로그인
+						</button>
+					</a>
 				</div>
 		</div>
 	</div>

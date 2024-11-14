@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ringo.domain.MemberVO;
@@ -51,7 +52,8 @@ public class MainController {
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String loginGET(Locale locale, Model model) {
+	public String loginGET(HttpSession session, Model model) {
+		
 		logger.debug("loginGET()");
 		
 		return "login";
@@ -68,6 +70,20 @@ public class MainController {
 		
 		logger.debug("loginPOST(MemberVO) - result : "+result);
 		return "redirect:/main/home";
+	}
+	
+	@RequestMapping(value = "/logout", method = RequestMethod.POST)
+	public String logoutPOST(HttpSession session, MemberVO vo) {
+		logger.debug("logoutPOST(MemberVO) - vo : "+vo);
+		session.invalidate();
+		
+		return "redirect:/main/login";
+	}
+	
+	@RequestMapping(value = "/loginCheck", method = RequestMethod.GET)
+	@ResponseBody
+	public String loginCheck(HttpSession session) {
+		return (String)session.getAttribute("user_id");
 	}
 	
 	@RequestMapping(value = "/home", method = RequestMethod.GET)

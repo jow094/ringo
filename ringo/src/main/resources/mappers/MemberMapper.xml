@@ -6,12 +6,12 @@
 <mapper namespace="com.ringo.mapper.MemberMapper">
 
 	<select id="selectMember" parameterType="MemberVO" resultType="MemberVO">
-	   select * from members
+	   select * from _ringo_member
 	    where user_id=#{user_id} and user_pw=#{user_pw}
 	</select>
 	
 	<insert id="insertMember" parameterType="MemberVO">
-	   insert into members (
+	   insert into _ringo_member (
         user_code, user_id, user_pw, user_name, user_nickname, user_birth,
         user_nationality, user_gender, user_tel, user_email, user_addr,
         user_fluent_language, user_learning_language, user_topic, user_ideal_partner,
@@ -31,7 +31,7 @@
 	
 	<select id="selectLastCode" parameterType="MemberVO" resultType="Integer">
 	   select max(user_code)
-	    from members
+	    from _ringo_member
 	    where user_nationality = #{user_nationality} and user_server = #{user_server}
 	</select>
 	<!-- 

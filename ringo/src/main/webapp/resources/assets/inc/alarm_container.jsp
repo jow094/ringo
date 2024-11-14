@@ -5,7 +5,7 @@
 </div>
 
 <div class="alarm_container">
-	<div class="scroll_box" style="width:90%;">
+	<div class="scroll_box">
 		<div class="scroll_box_inner">
 			<div class="card_alarm">
 				<div class="card_alarm_thumbnail">
