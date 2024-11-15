@@ -57,7 +57,16 @@
 	font-size:14px;
 }
 *{
-	transition: width 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+	transition: width 0.3s ease-in-out, 
+				opacity 0.3s ease-in-out, 
+				transform 0.3s ease-in-out, 
+				background 0.3s ease-in-out, 
+				color 0.3s ease-in-out,
+				margin 0.3s ease-in-out,
+				padding 0.3s ease-in-out,
+				transform 0.3s ease-in-out,
+				flex-grow 0.3s ease-in-out,
+				z-index 0.3s ease-in-out;
 }
 *:focus {
 	outline: none;

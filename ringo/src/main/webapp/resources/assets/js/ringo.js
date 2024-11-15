@@ -12,6 +12,7 @@ $(document).ready(function() {
 	$(document).on('keydown', function(e) {
 	    if(e.keyCode === 27){
 	    	hiding('.modal');
+	    	toggle_card('.cards_container',1,0);
 	    }
 	});
 	
@@ -248,50 +249,69 @@ function alarm_container(e) {
     }
 }
 
-function toggle_cards(e,target) {
-	console.log(e,"is e");
-	console.log(target,"is target");
-	$(target).removeClass('floor_1').removeClass('floor_2').removeClass('floor_3').removeClass('floor_4').removeClass('floor_5');
-	$(target).siblings().removeClass('floor_1').removeClass('floor_2').removeClass('floor_3').removeClass('floor_4').removeClass('floor_5');
-	$(target).addClass('floor_1');
+function toggle_card(container,targetIndex,direction){
 	
-	if(target==('.cards.card_1')){
-		console.log('1 open');
-		$('.cards.card_2').addClass('floor_2');
-		$('.cards.card_3').addClass('floor_3');
-		$('.cards.card_4').addClass('floor_4');
-		$('.cards.card_5').addClass('floor_5');
-	}
-	if(target==('.cards.card_2')){
-		console.log('2 open');
-		$('.cards.card_1').addClass('floor_2');
-		$('.cards.card_3').addClass('floor_2');
-		$('.cards.card_4').addClass('floor_3');
-		$('.cards.card_5').addClass('floor_4');
-	}
-	if(target==('.cards.card_3')){
-		console.log('3 open');
-		$('.cards.card_1').addClass('floor_3');
-		$('.cards.card_2').addClass('floor_2');
-		$('.cards.card_4').addClass('floor_2');
-		$('.cards.card_5').addClass('floor_3');
-	}
-	if(target==('.cards.card_4')){
-		console.log('4 open');
-		$('.cards.card_1').addClass('floor_4');
-		$('.cards.card_2').addClass('floor_3');
-		$('.cards.card_3').addClass('floor_2');
-		$('.cards.card_5').addClass('floor_2');
-	}
-	if(target==('.cards.card_5')){
-		console.log('5 open');
-		$('.cards.card_1').addClass('floor_5');
-		$('.cards.card_2').addClass('floor_4');
-		$('.cards.card_3').addClass('floor_3');
-		$('.cards.card_4').addClass('floor_2');
+	if(targetIndex!=0 && direction===0){
+		const target = $(container).find(`.cards.card_${targetIndex}`);
+		
+		$(target).siblings().addBack().removeClass(function (index, className) {
+		        return (className.match(/floor_\d+/g) || []).join(' ');
+	    });
+		
+		$(target).addClass('floor_1');
+
+	    $(target).siblings().each(function () {
+	        const siblingIndex = $(this).index()+1;
+	        const distance = Math.abs(targetIndex-siblingIndex);
+
+	        $(this).addClass(`floor_${distance + 1}`);
+	    });
+	    
+	    if(targetIndex===1){
+	    	shrinking($(container).find('.prev'));
+	    	expanding($(container).find('.next'));
+	    }
+	    if(targetIndex===$(container).find('.cards').length){
+	    	expanding($(container).find('.prev'));
+	    	shrinking($(container).find('.next'));
+	    }
+	    if(targetIndex!=1 && targetIndex!=$(container).find('.cards').length){
+	    	expanding($(container).find('.prev'));
+	    	expanding($(container).find('.next'));
+	    }
 	}
 	
-	$(e).siblings().not(e).removeClass('clicked');
-    $(e).addClass('clicked');
-    
+	if(targetIndex===0 && direction!=0){
+		const currentIndex = parseInt($(container).find('.floor_1').attr('class').split("_")[1]);
+	    const totalCards = $(container).find('.cards').length;
+	    
+	    if(direction===-1){
+	    	expanding($(container).find('.next'));
+	    	if (currentIndex === 2) {
+	        	shrinking($(container).find('.prev'));
+	        }
+	    }
+	    
+	    if(direction===1){
+	    	expanding($(container).find('.prev'));
+	    	if (currentIndex === totalCards-1) {
+	        	shrinking($(container).find('.next'));
+	        }
+	    }
+	    
+	    const target = $(container).find(`.cards.card_${currentIndex+direction}`);
+		
+		$(target).siblings().addBack().removeClass(function (index, className) {
+		        return (className.match(/floor_\d+/g) || []).join(' ');
+	    });
+		
+		$(target).addClass('floor_1');
+
+	    $(target).siblings().each(function () {
+	        const siblingIndex = $(this).index()+1;
+	        const distance = Math.abs(currentIndex+direction-siblingIndex);
+
+	        $(this).addClass(`floor_${distance + 1}`);
+	    });
+	}
 }

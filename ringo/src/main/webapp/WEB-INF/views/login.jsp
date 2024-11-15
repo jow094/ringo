@@ -37,7 +37,7 @@
 					</div>
 				</div>
 				<input class="custom_button" type="submit" name="submit" value="로그인"/>
-				<button class="custom_button modal_button" type="button" onclick="showing('.join_modal')">회원가입</button>
+				<button class="custom_button modal_button" type="button" onclick="showing('.join_modal'); toggle_card('.cards_container',1,0);">회원가입</button>
 				<button class="custom_button" type="button">정보찾기</button>
 			</form>
 			
