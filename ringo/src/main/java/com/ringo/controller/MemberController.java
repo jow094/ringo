@@ -32,7 +32,7 @@ import com.ringo.service.GeoLocationService;
 
 import io.swagger.annotations.Api;
 
-// http://localhost:8082/swagger-ui/index.html
+// http://localhost:8082/swagger-ui/index.html 
 
 @Controller
 @RequestMapping(value = "/member/*")
