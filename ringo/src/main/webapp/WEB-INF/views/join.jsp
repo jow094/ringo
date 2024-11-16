@@ -11,41 +11,7 @@
 	<div class="box">
 		<form action="/main/join" method="POST" enctype="multipart/form-data">
 		
-			<div class="input_cell">
-				<div class="input_name">
-					아이디
-				</div>
-				<div class="input_value">
-					<input type="text" name="user_id"/>
-				</div>
-			</div>
 			
-			<div class="input_cell">
-				<div class="input_name">
-					비밀번호
-				</div>
-				<div class="input_value">
-					<input type="password" name="user_pw"/>
-				</div>
-			</div>
-			
-			<div class="input_cell">
-				<div class="input_name">
-					이름
-				</div>
-				<div class="input_value">
-					<input type="text" name="user_name"/>
-				</div>
-			</div>
-			
-			<div class="input_cell">
-				<div class="input_name">
-					계정명
-				</div>
-				<div class="input_value">
-					<input type="text" name="user_nickname"/>
-				</div>
-			</div>
 			
 			<div class="input_cell">
 				<div class="input_name">

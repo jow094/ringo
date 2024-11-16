@@ -1,6 +1,7 @@
 $(document).ready(function() {
 	login_check();
 	main_circle('.article_container_menu_circle');
+	getUserLocation();
 	
 	window.onclick = function(e) {
 	    if (!$(e.target).closest('.modal_content').length && !$(e.target).closest('.modal_button').length) {
@@ -13,6 +14,16 @@ $(document).ready(function() {
 	    if(e.keyCode === 27){
 	    	hiding('.modal');
 	    	toggle_card('.cards_container',1,0);
+	    }
+	});
+	
+	$('input[type="checkbox"]').change(function() {
+	    if ($(this).is(':checked')) {
+	    	$(this).closest('.with_checkbox').removeClass('unfinished');
+	    	$(this).closest('.with_checkbox').addClass('finished');
+	    } else {
+	    	$(this).closest('.with_checkbox').addClass('unfinished');
+	    	$(this).closest('.with_checkbox').removeClass('finished');
 	    }
 	});
 	
@@ -31,13 +42,13 @@ function login_check(){
     	
     	$.ajax({
             type: "GET",
-            url: "/main/loginCheck",
+            url: "/member/loginCheck",
             success: function(data) {
             	if(data == null || data == ""){
             		if (!currentURL.includes('join') && !currentURL.includes('login')) {
             			alert("로그인 정보가 없습니다. 로그인 페이지로 이동합니다.");
             		}
-                    window.location.href = "/main/login";
+                    window.location.href = "/member/login";
             	}
             },
             error: function(xhr, status, error) {
@@ -65,6 +76,11 @@ function hiding(e) {
 	setTimeout(function() {
 		$(e).addClass('none');
     }, 300);
+}
+
+function hide(e) {
+	$(e).css('opacity','0');
+	$(e).addClass('none');
 }
 
 function shrinking(e) {
@@ -102,29 +118,29 @@ function adjustCard(px){
 function main_circle(e) {
 	$('.container_contents_body:not(.circle)').addClass('none');
 	showing('.container_contents_body.main_circle');
-	$(e).siblings().not('.article_container_menu_messenger').removeClass('clicked');
-    $(e).addClass('clicked');
+	$(e).siblings().not('.article_container_menu_messenger').removeClass('active');
+    $(e).addClass('active');
 }
 function main_timeline(e) {
 	$('.container_contents_body:not(.timeline)').addClass('none');
 	showing('.container_contents_body.main_timeline');
-	$(e).siblings().not('.article_container_menu_messenger').removeClass('clicked');
-    $(e).addClass('clicked');
+	$(e).siblings().not('.article_container_menu_messenger').removeClass('active');
+    $(e).addClass('active');
 }
 function main_pool(e) {
 	$('.container_contents_body:not(.pool)').addClass('none');
 	showing('.container_contents_body.main_pool');
-	$(e).siblings().not('.article_container_menu_messenger').removeClass('clicked');
-    $(e).addClass('clicked');
+	$(e).siblings().not('.article_container_menu_messenger').removeClass('active');
+    $(e).addClass('active');
 }
 function main_link(e) {
 	$('.container_contents_body:not(.link)').addClass('none');
 	showing('.container_contents_body.main_link');
-	$(e).siblings().not('.article_container_menu_messenger').removeClass('clicked');
-    $(e).addClass('clicked');
+	$(e).siblings().not('.article_container_menu_messenger').removeClass('active');
+    $(e).addClass('active');
 }
 function main_messenger() {
-    if ($('.article_container_menu_messenger').hasClass('clicked')) {
+    if ($('.article_container_menu_messenger').hasClass('active')) {
     	
     	if ($('.main_messenger_menu').hasClass('expanding')) {
     		shrinking('.main_messenger_menu');
@@ -139,14 +155,14 @@ function main_messenger() {
     	$('.main_messenger').removeClass('expanding');
     	adjustCard(420);
     	
-    	$('.article_container_menu_messenger').removeClass('clicked');
+    	$('.article_container_menu_messenger').removeClass('active');
     }else {
     	$('.main_messenger').addClass('expanding');
     	$('.main_messenger').removeClass('shrinking');
     	$('.main_messenger').find('*').not('.main_messenger_menu').removeClass('none');
     	adjustCard(-420);
     	
-    	$('.article_container_menu_messenger').addClass('clicked');
+    	$('.article_container_menu_messenger').addClass('active');
     }
 }
 function main_messenger_menu(e){
@@ -172,32 +188,32 @@ function main_messenger_menu(e){
     }
 }
 function profile_favorite(e) {
-	$(e).siblings().removeClass('clicked');
-    $(e).addClass('clicked');
+	$(e).siblings().removeClass('active');
+    $(e).addClass('active');
     $('.detail_profile_content:not(.profile_favorite)').addClass('none');
     showing('.detail_profile_content.favorite');
 }
 function profile_follower(e) {
-	$(e).siblings().removeClass('clicked');
-    $(e).addClass('clicked');
+	$(e).siblings().removeClass('active');
+    $(e).addClass('active');
     $('.detail_profile_content:not(.profile_follower)').addClass('none');
     showing('.detail_profile_content.follower');
 }
 function profile_following(e) {
-	$(e).siblings().removeClass('clicked');
-    $(e).addClass('clicked');
+	$(e).siblings().removeClass('active');
+    $(e).addClass('active');
     $('.detail_profile_content:not(.profile_following)').addClass('none');
     showing('.detail_profile_content.following')
 }
 function profile_history(e) {
-	$(e).siblings().removeClass('clicked');
-    $(e).addClass('clicked');
+	$(e).siblings().removeClass('active');
+    $(e).addClass('active');
     $('.detail_profile_content:not(.profile_history)').addClass('none');
     showing('.detail_profile_content.history')
 }
 function profile_prohibit(e) {
-	$(e).siblings().removeClass('clicked');
-    $(e).addClass('clicked');
+	$(e).siblings().removeClass('active');
+    $(e).addClass('active');
     $('.detail_profile_content:not(.profile_prohibit)').addClass('none');
     showing('.detail_profile_content.prohibit')
 }
@@ -249,46 +265,64 @@ function alarm_container(e) {
     }
 }
 
-function toggle_card(container,targetIndex,direction){
+function toggle_card(container,targetindex,direction){
 	
-	if(targetIndex!=0 && direction===0){
-		const target = $(container).find(`.cards.card_${targetIndex}`);
+	if(targetindex!=0 && direction===0){
+		$(container).find('.active').removeClass('active');
+		
+		const target = $(container).find(`.cards.card_${targetindex}`);
 		
 		$(target).siblings().addBack().removeClass(function (index, className) {
 		        return (className.match(/floor_\d+/g) || []).join(' ');
 	    });
 		
+		showing($(target).find('.cards_inner_header').children());
+		showing($(target).find('.cards_inner_body').children());
+		showing($(target).find('.cards_inner_footer').children());
 		$(target).addClass('floor_1');
-
+		
+		$(container).find(`[data-targetindex="${targetindex}"]`).addClass('active');
+		
 	    $(target).siblings().each(function () {
 	        const siblingIndex = $(this).index()+1;
-	        const distance = Math.abs(targetIndex-siblingIndex);
+	        const distance = Math.abs(targetindex-siblingIndex);
 
+	        hide($(this).find('.cards_inner_header').children());
+	        hide($(this).find('.cards_inner_body').children());
+	        hide($(this).find('.cards_inner_footer').children());
+	        
 	        $(this).addClass(`floor_${distance + 1}`);
 	    });
 	    
-	    if(targetIndex===1){
+	    if(targetindex===1){
 	    	shrinking($(container).find('.prev'));
 	    	expanding($(container).find('.next'));
 	    }
-	    if(targetIndex===$(container).find('.cards').length){
+	    if(targetindex===$(container).find('.cards').length){
 	    	expanding($(container).find('.prev'));
 	    	shrinking($(container).find('.next'));
 	    }
-	    if(targetIndex!=1 && targetIndex!=$(container).find('.cards').length){
+	    if(targetindex!=1 && targetindex!=$(container).find('.cards').length){
 	    	expanding($(container).find('.prev'));
 	    	expanding($(container).find('.next'));
 	    }
 	}
 	
-	if(targetIndex===0 && direction!=0){
+	if(targetindex===0 && direction!=0){
+		$(container).find('.active').removeClass('active');
+		
 		const currentIndex = parseInt($(container).find('.floor_1').attr('class').split("_")[1]);
 	    const totalCards = $(container).find('.cards').length;
+	    console.log(container,'container');
+	    console.log(totalCards,'totalcards');
 	    
 	    if(direction===-1){
 	    	expanding($(container).find('.next'));
 	    	if (currentIndex === 2) {
 	        	shrinking($(container).find('.prev'));
+	        }
+	    	if (currentIndex === 1) {
+	    		$(container).find(`[data-targetindex="${1}"]`).addClass('active');
 	        }
 	    }
 	    
@@ -297,21 +331,117 @@ function toggle_card(container,targetIndex,direction){
 	    	if (currentIndex === totalCards-1) {
 	        	shrinking($(container).find('.next'));
 	        }
+	    	if (currentIndex === totalCards) {
+	    		$(container).find(`[data-targetindex="${totalCards}"]`).addClass('active');
+	        }
 	    }
 	    
 	    const target = $(container).find(`.cards.card_${currentIndex+direction}`);
+	    
+	    $(container).find(`[data-targetindex="${currentIndex+direction}"]`).addClass('active');
 		
 		$(target).siblings().addBack().removeClass(function (index, className) {
 		        return (className.match(/floor_\d+/g) || []).join(' ');
 	    });
 		
+		showing($(target).find('.cards_inner_header').children());
+		showing($(target).find('.cards_inner_body').children());
+		showing($(target).find('.cards_inner_footer').children());
 		$(target).addClass('floor_1');
 
 	    $(target).siblings().each(function () {
 	        const siblingIndex = $(this).index()+1;
 	        const distance = Math.abs(currentIndex+direction-siblingIndex);
-
+	        
+	        hide($(this).find('.cards_inner_header').children());
+	        hide($(this).find('.cards_inner_body').children());
+	        hide($(this).find('.cards_inner_footer').children());
+	        
 	        $(this).addClass(`floor_${distance + 1}`);
 	    });
 	}
+}
+
+function send_sms(container,input_container){
+	$(input_container).find('input').val('');
+	$(input_container).find('input').attr('placeholder','');
+	$(input_container).find('input').removeClass('failed_message');
+	showing('#user_sms_authentication');
+	
+	$.ajax({
+        type: "GET",
+        url: "/member/authentication/sms",
+        data: {user_tel : $(container).find('#user_tel').val()},
+        success: function(data) {
+        	$(input_container).find('input').attr('placeholder','* 인증번호를 입력하세요.');
+        	
+        	console.log(data);
+        	user_sms_code = data;
+        },
+        error: function(xhr, status, error) {
+        	$(input_container).find('input').addClass('failed_message');
+        	$(input_container).find('input').attr('placeholder','* 인증번호 발송에 실패하였습니다.');
+        }
+    });
+}
+
+function send_email(container,input_container){
+	$(input_container).find('input').val('');
+	$(input_container).find('input').attr('placeholder','');
+	$(input_container).find('input').removeClass('failed_message');
+	showing('#user_email_authentication');
+	
+	$.ajax({
+        type: "GET",
+        url: "/member/authentication/email",
+        data: {user_email : $(container).find('#user_email').val()},
+        success: function(data) {
+        	$(input_container).find('input').attr('placeholder','* 인증번호를 입력하세요.');
+        	
+        	console.log(data);
+        	user_email_code = data;
+        },
+        error: function(xhr, status, error) {
+        	$(input_container).find('input').addClass('failed_message');
+        	$(input_container).find('input').attr('placeholder','* 인증번호 발송에 실패하였습니다.');
+        }
+    });
+}
+
+function getAddressFromCoordinates(latitude, longitude) {
+    var apiKey = "fc78d7228a6d471a9c00539da3ab07d6";
+    var apiUrl = `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${apiKey}`;
+
+    $.ajax({
+        url: apiUrl,
+        type: "GET",
+        success: function (data) {
+            if (data && data.results && data.results.length > 0) {
+                var address = data.results[0].formatted;
+                console.log("주소: " + address);
+            } else {
+                console.log("주소를 찾을 수 없습니다.");
+            }
+        },
+        error: function (error) {
+            console.error("주소 검색 실패", error);
+        }
+    });
+}
+
+// 사용자의 현재 위치 정보를 가져오는 함수
+function getUserLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var latitude = position.coords.latitude;  // 위도
+            var longitude = position.coords.longitude;  // 경도
+            console.log("Latitude: " + latitude + ", Longitude: " + longitude);
+
+            getAddressFromCoordinates(latitude, longitude);
+        }, function(error) {
+            console.error("위치 정보를 가져오지 못했습니다.", error);
+        });
+    } else {
+        console.log("이 브라우저는 Geolocation을 지원하지 않습니다.");
+    }
 }

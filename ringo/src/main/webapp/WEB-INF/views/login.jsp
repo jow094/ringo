@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page session="false" %>
+<%@ include file="/resources/assets/inc/join_modal.jsp" %>
 <html>
 <head>
 <%@ include file="/resources/assets/inc/navbar.jsp" %>
@@ -19,7 +20,7 @@
 			<img src="/resources/assets/img/login_banner.png">
 		</div>
 		<div class="login_inputs">
-			<form action="/main/login" method="POST">
+			<form action="/member/login" method="POST">
 				<div class="input_cell">
 					<div class="input_name">
 						아이디
@@ -37,7 +38,7 @@
 					</div>
 				</div>
 				<input class="custom_button" type="submit" name="submit" value="로그인"/>
-				<button class="custom_button modal_button" type="button" onclick="showing('.join_modal'); toggle_card('.cards_container',1,0);">회원가입</button>
+				<button class="custom_button modal_button" type="button" onclick="showing('.join_modal'); toggle_card('.join_modal',1,0);">회원가입</button>
 				<button class="custom_button" type="button">정보찾기</button>
 			</form>
 			

@@ -252,7 +252,7 @@
 		</dependency>
 		
 				
-			<dependency>
+		<dependency>
 		    <groupId>com.google.zxing</groupId>
 		    <artifactId>core</artifactId>
 		    <version>3.4.1</version> <!-- 최신 버전 확인 후 업데이트 -->
@@ -297,8 +297,18 @@
 		    <version>2.15.0</version>
 		</dependency>
 		
+	    <!-- https://mvnrepository.com/artifact/com.twilio.sdk/twilio -->
+		<dependency>
+		    <groupId>com.twilio.sdk</groupId>
+		    <artifactId>twilio</artifactId>
+		    <version>10.4.1</version>
+		</dependency>
 		
-		
+		<dependency>
+		    <groupId>com.sun.mail</groupId>
+		    <artifactId>javax.mail</artifactId>
+		    <version>1.6.2</version>
+		</dependency>
 		
 		<!-- 외부 라이브러리 추가 -->
 		

@@ -30,7 +30,7 @@
         <beans:property name="maxInMemorySize" value="1048576" /> <!-- 1MB -->
     </beans:bean>
     
-    <beans:bean id="SwaggerConfig" class="com.ringo.config.SwaggerConfig"/>
+    <beans:bean id="SwaggerConfig" class="com.ringo.config.SwaggerConfig" />
     
 	<context:component-scan base-package="com.ringo" />
     

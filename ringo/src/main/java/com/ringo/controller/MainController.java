@@ -18,12 +18,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ringo.domain.MemberVO;
 import com.ringo.service.MemberService;
 import com.ringo.service.MessageService;
+import com.ringo.service.TwilloService;
+import com.ringo.service.EmailService;
 
 import io.swagger.annotations.Api;
 
@@ -42,6 +45,10 @@ public class MainController {
 	private MemberService mService;
 	@Inject
 	private MessageService msgService;
+	@Inject
+    private TwilloService tService;
+	@Inject
+	private EmailService emailService;
 	
 	/*
 	 * private String uploadPath = System.getProperty("catalina.base") +
@@ -51,110 +58,10 @@ public class MainController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String loginGET(HttpSession session, Model model) {
-		
-		logger.debug("loginGET()");
-		
-		return "login";
-	}
-	
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String loginPOST(HttpSession session, MemberVO vo) {
-		logger.debug("loginPOST(MemberVO) - vo : "+vo);
-		
-		MemberVO result = mService.memberLogin(vo);
-		session.setAttribute("user_id", result.getUser_id());
-		session.setAttribute("user_name", result.getUser_name());
-		session.setAttribute("user_thumbnail", result.getUser_thumbnail());
-		
-		logger.debug("loginPOST(MemberVO) - result : "+result);
-		return "redirect:/main/home";
-	}
-	
-	@RequestMapping(value = "/logout", method = RequestMethod.POST)
-	public String logoutPOST(HttpSession session, MemberVO vo) {
-		logger.debug("logoutPOST(MemberVO) - vo : "+vo);
-		session.invalidate();
-		
-		return "redirect:/main/login";
-	}
-	
-	@RequestMapping(value = "/loginCheck", method = RequestMethod.GET)
-	@ResponseBody
-	public String loginCheck(HttpSession session) {
-		return (String)session.getAttribute("user_id");
-	}
-	
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String homeGET(HttpSession session, MemberVO vo) {
 		logger.debug("mainGET(MemberVO) - vo : "+vo);
 		
 		return "home";
 	}
-	
-	@RequestMapping(value = "/join", method = RequestMethod.GET)
-	public String joinGET(HttpSession session, MemberVO vo) {
-		logger.debug("joinGET(MemberVO) - vo : "+vo);
-		
-		return "join";
-	}
-	
-	@RequestMapping(value = "/join", method = RequestMethod.POST)
-	public String joinPOST(HttpSession session, MemberVO vo, BindingResult result) {
-		if (result.hasErrors()) {
-	        logger.error("joinPOST(MemberVO) - Binding error : " + result.getAllErrors());
-	        
-	        return "/main/join"; //
-	    }
-		logger.debug("joinPOST(MemberVO) - vo : "+vo);
-		
-		Integer user_code = mService.getLastUserCode(vo);
-		
-		if(user_code==null) {
-			user_code = 0;
-		}
-		
-		user_code++;
-		
-		List<MultipartFile> fileList = vo.getUser_profile_file();
-		List<String> fileNames = new ArrayList<String>();
-
-		Integer i = 1;
-		
-		for (MultipartFile file : fileList) {
-	        if (!file.isEmpty()) {
-	        	String originalFileName = file.getOriginalFilename();
-
-	        	String extension = "";
-	        	if (originalFileName != null && originalFileName.contains(".")) {
-	        	    extension = originalFileName.substring(originalFileName.lastIndexOf("."));
-	        	}
-	        	
-                String fileName = vo.getUser_server() + "_" + vo.getUser_nationality() + "_" + user_code + "-" + i + extension;
-
-                File dest = new File(uploadPath + fileName);
-                try {
-					file.transferTo(dest);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-                fileNames.add(fileName);
-                i++;
-	        }
-	    }
-		
-		while (fileNames.size() < 8) {
-			fileNames.add("");
-	    }
-		
-		vo.setUser_profile_path(fileNames);
-		vo.setUser_code(user_code);
-
-		mService.memberJoin(vo);
-		
-		return "redirect:/main/login";
-	}
-	
 }

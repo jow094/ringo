@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<div class="modal join_modal none">
+<div class="modal none">
     <div class="modal_content">
     	<div class="modal_head">
     		<div class="modal_title">
@@ -8,7 +8,7 @@
 	    			<i class="fa-solid fa-user"></i>
     			</div>
     			<div class="modal_name">
-	    			회원 가입
+	    			제목
     			</div>
     		</div>
     		<button class="modal_close_button" type="button" onclick="hiding('.modal'); toggle_card('.cards_container',1,0);">
