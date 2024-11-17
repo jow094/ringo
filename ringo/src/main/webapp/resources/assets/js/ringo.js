@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	login_check();
 	main_circle('.article_container_menu_circle');
-	getUserLocation();
+	get_coordinates();
 	
 	window.onclick = function(e) {
 	    if (!$(e.target).closest('.modal_content').length && !$(e.target).closest('.modal_button').length) {
@@ -26,6 +26,17 @@ $(document).ready(function() {
 	    	$(this).closest('.with_checkbox').removeClass('finished');
 	    }
 	});
+	
+	$('input[type="radio"]').change(function() {
+	    if ($(this).is(':checked')) {
+	    	$(this).closest('.with_radio').removeClass('unfinished');
+	    	$(this).closest('.with_radio').addClass('finished');
+	    } else {
+	    	$(this).closest('.with_radio').addClass('unfinished');
+	    	$(this).closest('.with_radio').removeClass('finished');
+	    }
+	});
+	
 	
 });
 
@@ -366,7 +377,7 @@ function send_sms(container,input_container){
 	$(input_container).find('input').val('');
 	$(input_container).find('input').attr('placeholder','');
 	$(input_container).find('input').removeClass('failed_message');
-	showing('#user_sms_authentication');
+	showing(input_container);
 	
 	$.ajax({
         type: "GET",
@@ -389,7 +400,7 @@ function send_email(container,input_container){
 	$(input_container).find('input').val('');
 	$(input_container).find('input').attr('placeholder','');
 	$(input_container).find('input').removeClass('failed_message');
-	showing('#user_email_authentication');
+	showing(input_container);
 	
 	$.ajax({
         type: "GET",
@@ -408,7 +419,7 @@ function send_email(container,input_container){
     });
 }
 
-function getAddressFromCoordinates(latitude, longitude) {
+function get_realtime_address(latitude, longitude) {
     var apiKey = "fc78d7228a6d471a9c00539da3ab07d6";
     var apiUrl = `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${apiKey}`;
 
@@ -429,19 +440,66 @@ function getAddressFromCoordinates(latitude, longitude) {
     });
 }
 
-// 사용자의 현재 위치 정보를 가져오는 함수
-function getUserLocation() {
+function get_coordinates() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
-            var latitude = position.coords.latitude;  // 위도
-            var longitude = position.coords.longitude;  // 경도
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
             console.log("Latitude: " + latitude + ", Longitude: " + longitude);
 
-            getAddressFromCoordinates(latitude, longitude);
+            get_realtime_address(latitude, longitude);
         }, function(error) {
             console.error("위치 정보를 가져오지 못했습니다.", error);
         });
     } else {
         console.log("이 브라우저는 Geolocation을 지원하지 않습니다.");
     }
+}
+
+function search_address(container,search_result_container) {
+		const keyword = $('#search_address_input').val();
+		
+		const encodedKeyword = keyword.trim().replaceAll("[^a-zA-Z0-9가-힣 ]", "");
+	    const apiUrl = `https://www.juso.go.kr/addrlink/addrLinkApi.do?confmKey=devU01TX0FVVEgyMDI0MTExNzEzNDIwMzExNTI0NDQ%3D&currentPage=1&countPerPage=10000&keyword=${encodedKeyword}&firstSort=road`;
+	    $('#user_address_search_container').find('.scroll_box_inner').text('');
+	    $.ajax({
+	        url: apiUrl,
+	        type: 'GET',
+	        dataType: 'text',
+	        headers: {
+	            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+	        },
+	        success: function(response) {
+	            const parser = new DOMParser();
+	            const xmlDoc = parser.parseFromString(response, "text/xml");
+
+	            const jusoNodes = xmlDoc.getElementsByTagName('juso');
+	            const totalCount = xmlDoc.getElementsByTagName('totalCount')[0].textContent
+	            
+	            if(totalCount==0){
+	            	$('#user_address_search_container').find('.scroll_box_inner').append(`
+ 	            			<input class="user_address_search_result" type="button" name="user_address" value="검색된 결과가 없습니다."/>
+	 	            `);
+	            	showing(search_result_container);
+	            	$('.for_address').text(`* 올바른 검색어를 입력해주세요.`)
+	            	$('.for_address').addClass('failed_message');
+ 	            }else{
+ 	            	for (let node of jusoNodes) {
+ 	            		$('#user_address_search_container').find('.scroll_box_inner').append(`
+ 	            			<input class="user_address_search_result_first" type="button" name="user_address" value="${node.getElementsByTagName('roadAddr')[0].textContent}"/>
+ 	            			<input class="user_address_search_result_second" type="button" name="user_address" value="${node.getElementsByTagName('jibunAddr')[0].textContent}"/>
+ 			            `);
+ 		            }
+ 	            	showing(search_result_container);
+ 	            }
+	            
+	            if(totalCount>1000){
+	            	$('.for_address').text(`* 1000개 이상의 검색결과가 있습니다. 더 상세하게 검색해주세요.`)
+	            	$('.for_address').addClass('failed_message');
+	            }
+	        },
+	        error: function(xhr, status, error) {
+	            console.error('Error occurred:', error);
+	        }
+	    });
 }

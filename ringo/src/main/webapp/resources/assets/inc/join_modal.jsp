@@ -96,12 +96,12 @@
 											<div class="input_value">
 												<input type="radio" id="user_gender_male" name="user_gender" />
 											    <label class="radio_button" for="user_gender_male">
-											        <i class="fa-regular fa-square-check"></i> 남성
+											        <i class="fa-regular fa-square-check"></i> <span class="radio_value">남성</span>
 											    </label>
 											
 											    <input type="radio" id="user_gender_female" name="user_gender" />
 											    <label class="radio_button" for="user_gender_female">
-											        <i class="fa-regular fa-square-check"></i> 여성
+											        <i class="fa-regular fa-square-check"></i> <span class="radio_value">여성</span>
 											    </label>
 											</div>
 										</div>
@@ -129,7 +129,7 @@
 											</div>
 											<div class="input_value_container">
 												<div class="input_value">
-													<input id="user_tel" type="text" name="user_tel"/>
+													<input id="user_tel" type="text" name="user_tel" onkeydown="if(event.key === 'Enter'){ send_sms('.join_modal','#user_sms_authentication'); }"/>
 													<div class="input_cell_button" onclick="send_sms('.join_modal','#user_sms_authentication');">
 														인증요청
 													</div>
@@ -153,7 +153,7 @@
 											</div>
 											<div class="input_value_container">
 												<div class="input_value">
-													<input id="user_email" type="text" name="user_email"/>
+													<input id="user_email" type="text" name="user_email" onkeydown="if(event.key === 'Enter'){ send_email('.join_modal','#user_email_authentication'); }"/>
 													<div class="input_cell_button" onclick="send_email('.join_modal','#user_email_authentication');">
 														인증요청
 													</div>
@@ -168,6 +168,43 @@
 										</div>
 										<div class="input_hint annotation annotation">
 											* id@domain.com 형식의 이메일을 입력 해주세요.						
+										</div>
+									</div>
+									<div class="input_box">
+										<div class="input_multi_cell">
+											<div class="input_cells">
+												<div class="input_name">
+													주소
+												</div>
+												<div class="input_value">
+													<input id="search_address_input" type="text" name="user_tel" onkeydown="if(event.key === 'Enter'){ search_address('.join_modal','#user_address_search_container'); }"/>
+													<div class="input_cell_button" onclick="search_address('.join_modal','#user_address_search_container');">
+														검색
+													</div>
+												</div>
+											</div>
+											<div id="user_address_search_container" class="added_input_cells">
+												<div class=scroll_box>
+													<div class=scroll_box_inner style="padding:0px 5px; overflow-x:hidden;">
+													</div>
+												</div>
+											
+											</div>
+											<div id="user_address_detail" class="added_input_cells">
+												<input type="text" name="user_address_detail"/>
+												<div class="input_cell_button">
+													확인
+												</div>
+											</div>
+											<div id="user_address_detail" class="added_input_cells">
+												<input type="checkbox" id="user_gender_male" name="user_gender" />
+											    <label class="checkbox_button" for="user_gender_male">
+											        <i class="fa-regular fa-square-check"></i> <span class="checkbox_value">남성</span>
+											    </label>
+											</div>
+										</div>
+										<div class="for_address input_hint annotation">
+											* 동 이하의 주소를 입력 해주세요.						
 										</div>
 									</div>
 		        				</div>

@@ -2,6 +2,7 @@ package com.ringo.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -195,7 +196,12 @@ public class MemberController {
 	@RequestMapping(value = "/searchAddress", method = RequestMethod.GET)
 	@ResponseBody
     public String searchRoadAddress(@RequestParam String keyword) {
-		logger.debug("msg: "+addService.searchRoadAddress(keyword));
-        return addService.searchRoadAddress(keyword);
+        try {
+			return addService.searchRoadAddress(keyword);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "failed";
+		}
     }
 }

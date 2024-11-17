@@ -53,7 +53,7 @@
 	padding-top: 7px;
 }
 .failed_message{
-	color: var(--negative-color);
+	color: var(--negative-color) !important;
 	transition: color 0s;
 }
 .failed_message::placeholder{
@@ -108,10 +108,10 @@ select option {
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(0, 0, 0, 0.7); /* 핸들의 hover 색상 */
 }
-input[type="radio"]{
+input[type="radio"],input[type="checkbox"]{
 	display:none;
 }
-.radio_button{
+.radio_button,.checkbox_button{
 	width:100%;
 	height:100%;
 	display:flex;
@@ -120,13 +120,17 @@ input[type="radio"]{
 	margin-left:10px;
 	height:30px;
 }
-.radio_button i{
-	margin-right:10px;
+.radio_button .radio_value,.checkbox_button .checkbox_value{
+	font-size:12px !important;
 }
-input[type="radio"]:checked + label{
+.radio_button i,.checkbox_button i{
+	margin-right:10px;
+	font-size:14px;
+}
+input[type="radio"]:checked + label,input[type="checkbox"]:checked + label{
 	color: var(--positive-color);
 }
-input[type="radio"]:checked + label i{
+input[type="radio"]:checked + label i,input[type="checkbox"]:checked + label i{
 	color: var(--positive-color);
 }
 *:not(i){
