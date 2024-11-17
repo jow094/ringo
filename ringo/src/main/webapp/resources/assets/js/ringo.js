@@ -19,7 +19,7 @@ $(document).ready(function() {
 	
 	$('input[type="checkbox"]').change(function() {
 		var target = $(this).closest('.with_checkbox');
-		var currentClass = target.attr('class');
+		var currentClass = target.attr('class'); 
 		
 	    if ($(this).is(':checked')) {
 	    	if (currentClass.includes('finished_row') || currentClass.includes('unfinished_row')){
