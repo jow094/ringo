@@ -36,21 +36,33 @@
     margin-right: 0 !important;
     flex-shrink : 1 !important;
 }
-.annotation{
+.annotation_message{
 	color:rgba(0,0,0,0.5) !important;
 	font-size:10px;
 }
-.unfinished{
-	background: linear-gradient(to bottom, var(--waiting-color) 7px, transparent 7px) !important;
+.unfinished_column{
+	background: linear-gradient(to bottom, var(--waiting-color) 7px, white 7px) !important;
 	padding-top: 7px;
 }
-.finished{
-	background: linear-gradient(to bottom, var(--positive-color) 7px, transparent 7px) !important;
+.finished_column{
+	background: linear-gradient(to bottom, var(--positive-color) 7px, white 7px) !important;
 	padding-top: 7px;
 }
-.failed{
-	background: linear-gradient(to bottom, var(--negative-color) 7px, transparent 7px) !important;
+.failed_column{
+	background: linear-gradient(to bottom, var(--negative-color) 7px, white 7px) !important;
 	padding-top: 7px;
+}
+.unfinished_row{
+	background: linear-gradient(to right, var(--waiting-color) 7px, white 7px) !important;
+	padding-left: 7px;
+}
+.finished_row{
+	background: linear-gradient(to right, var(--positive-color) 7px, white 7px) !important;
+	padding-left: 7px;
+}
+.failed_row{
+	background: linear-gradient(to right, var(--negative-color) 7px, white 7px) !important;
+	padding-left: 7px;
 }
 .failed_message{
 	color: var(--negative-color) !important;
@@ -58,6 +70,10 @@
 }
 .failed_message::placeholder{
 	color: var(--negative-color);
+	transition: color 0s;
+}
+.success_message{
+	color: var(--positive-color) !important;
 	transition: color 0s;
 }
 
@@ -128,6 +144,12 @@ input[type="radio"],input[type="checkbox"]{
 	font-size:14px;
 }
 input[type="radio"]:checked + label,input[type="checkbox"]:checked + label{
+	color: var(--positive-color);
+}
+input[type="radio"]:checked + label,input[type="checkbox"]:checked + label{
+	color: var(--positive-color);
+}
+input[type="radio"]:checked + label span,input[type="checkbox"]:checked + label span{
 	color: var(--positive-color);
 }
 input[type="radio"]:checked + label i,input[type="checkbox"]:checked + label i{

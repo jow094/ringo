@@ -170,6 +170,8 @@ public class MemberController {
 		
         String smsCode = String.valueOf((int) (Math.floor(Math.random() * 900000) + 100000));
         
+        logger.debug("sendSms: "+user_tel);
+        
         smsService.sendSms(user_tel, "Ringo 인증번호는 [" + smsCode + "] 입니다. 5분 내에 입력해주세요.");
         session.setAttribute("smsCode", smsCode);
         return 1;

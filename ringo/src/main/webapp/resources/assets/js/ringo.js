@@ -18,23 +18,67 @@ $(document).ready(function() {
 	});
 	
 	$('input[type="checkbox"]').change(function() {
+		var target = $(this).closest('.with_checkbox');
+		var currentClass = target.attr('class');
+		
 	    if ($(this).is(':checked')) {
-	    	$(this).closest('.with_checkbox').removeClass('unfinished');
-	    	$(this).closest('.with_checkbox').addClass('finished');
+	    	if (currentClass.includes('finished_row') || currentClass.includes('unfinished_row')){
+	    		target.removeClass('unfinished_row');
+	    		target.addClass('finished_row');
+	    	}
+	    	if (currentClass.includes('finished_column') || currentClass.includes('unfinished_column')){
+	    		target.removeClass('unfinished_column');
+	    		target.addClass('finished_column');
+	    	}
 	    } else {
-	    	$(this).closest('.with_checkbox').addClass('unfinished');
-	    	$(this).closest('.with_checkbox').removeClass('finished');
+	    	if (currentClass.includes('finished_row') || currentClass.includes('unfinished_row')){
+	    		target.removeClass('finished_row');
+	    		target.addClass('unfinished_row');
+	    	}
+	    	if (currentClass.includes('finished_column') || currentClass.includes('unfinished_column')){
+	    		target.removeClass('finished_column');
+	    		target.addClass('unfinished_column');
+	    	}
 	    }
 	});
 	
 	$('input[type="radio"]').change(function() {
+		var target = $(this).closest('.with_radio');
+		var currentClass = target.attr('class');
+		
 	    if ($(this).is(':checked')) {
-	    	$(this).closest('.with_radio').removeClass('unfinished');
-	    	$(this).closest('.with_radio').addClass('finished');
+	    	if (currentClass.includes('finished_row') || currentClass.includes('unfinished_row')){
+	    		target.removeClass('unfinished_row');
+	    		target.addClass('finished_row');
+	    	}
+	    	if (currentClass.includes('finished_column') || currentClass.includes('unfinished_column')){
+	    		target.removeClass('unfinished_column');
+	    		target.addClass('finished_column');
+	    	}
 	    } else {
-	    	$(this).closest('.with_radio').addClass('unfinished');
-	    	$(this).closest('.with_radio').removeClass('finished');
+	    	if (currentClass.includes('finished_row') || currentClass.includes('unfinished_row')){
+	    		target.removeClass('finished_row');
+	    		target.addClass('unfinished_row');
+	    	}
+	    	if (currentClass.includes('finished_column') || currentClass.includes('unfinished_column')){
+	    		target.removeClass('finished_column');
+	    		target.addClass('unfinished_column');
+	    	}
 	    }
+	});
+	
+	$('select').change(function() {
+		var target = $(this).closest('.with_select');
+		var currentClass = target.attr('class');
+		
+	    	if (currentClass.includes('finished_row') || currentClass.includes('unfinished_row')){
+	    		target.removeClass('unfinished_row');
+	    		target.addClass('finished_row');
+	    	}
+	    	if (currentClass.includes('finished_column') || currentClass.includes('unfinished_column')){
+	    		target.removeClass('unfinished_column');
+	    		target.addClass('finished_column');
+	    	}
 	});
 	
 	
@@ -502,4 +546,148 @@ function search_address(container,search_result_container) {
 	            console.error('Error occurred:', error);
 	        }
 	    });
+}
+
+function validate_name(input) {
+	
+    const name = $(input).val();
+    
+    if (name.trim() === '') {
+        set_unfinished(input, 'row');
+        set_hint(input, '* 본명을 입력 해주세요.', 'annotation_message');
+    } 
+    else if (!/^.{2,}$/.test(name)) {
+        set_failed(input,'row');
+        set_hint(input, '* 이름은 최소 2글자 이상이어야 합니다.', 'failed_message');
+    } 
+    else if (!/^[a-zA-Z가-힣]+$/.test(name)) {
+        set_failed(input,'row');
+        set_hint(input, '* 이름에는 공백이나 특수문자, 숫자가 포함될 수 없습니다.', 'failed_message');
+    } 
+    else if (/[\u3131-\uD79D]/.test(name) && /[A-Za-z]/.test(name)) {
+        set_failed(input,'row');
+        set_hint(input, '* 이름에는 한글과 영어가 함께 포함될 수 없습니다.', 'failed_message');
+    } 
+    else {
+        set_finished(input, 'row');
+        set_hint(input, '* 이름 형식이 올바릅니다.', 'success_message');
+    }
+}
+
+function validate_birth(input) {
+	const realValue= $(input).val();
+    const value = $(input).val().replace(/\./g, '');
+    
+    if (value.trim() === '') {
+        set_unfinished(input, 'row');
+        set_hint(input, '* 생년월일을 입력해주세요.', 'annotation_message');
+        return;
+    }
+    
+    console.log('value :',value);
+    console.log('realValue :',realValue);
+    console.log('value length :',value.length);
+    
+    $(input).on('keydown', function(event) {
+        if ($(input).val().replace(/\./g, '').length === 4 && !$(input).val().includes('.')) {
+        	if (event.keyCode === 8) {
+        		console.log('bsp');
+        		return;
+        	}else{
+        		console.log('1111.');
+                $(input).val($(input).val() + '.');  // yyyy 뒤에 . 추가
+        	}
+    	}
+        if ($(input).val().replace(/\./g, '').length === 6 && ($(input).val().split('.').length - 1) === 1) {
+        	if (event.keyCode === 8) {
+        		console.log('bsp');
+        		return;
+        	}else{
+        		console.log('1111.11');
+                $(input).val($(input).val() + '.');  // yyyy 뒤에 . 추가
+        	}
+    	}
+    });
+    
+    const regexDate = /^[0-9]{4}[0-9]{2}[0-9]{2}$/;
+    if (!regexDate.test(value)) {
+        set_failed(input, 'row');
+        set_hint(input, '* 생년월일은 8자리 숫자로 입력해야 합니다.', 'failed_message');
+        return;
+    }
+
+    const year = parseInt(value.slice(0, 4));
+    const month = parseInt(value.slice(4, 6));
+    const day = parseInt(value.slice(6, 8));
+
+    if (year < 1960) {
+        set_failed(input, 'row');
+        set_hint(input, '* 1960년 이전 출생자는 가입할 수 없습니다.', 'failed_message');
+        return;
+    }
+
+    if (month < 1 || month > 12) {
+        set_failed(input, 'row');
+        set_hint(input, '* 월은 01부터 12 사이의 숫자여야 합니다.', 'failed_message');
+        return;
+    }
+
+    const daysInMonth = new Date(year, month, 0).getDate();
+    if (day < 1 || day > daysInMonth) {
+        set_failed(input, 'row');
+        set_hint(input, `* 해당 월에는 ${daysInMonth}일까지 있습니다.`, 'failed_message');
+        return;
+    }
+
+    set_finished(input, 'row');
+    set_hint(input, '* 생년월일 형식이 올바릅니다.', 'success_message');
+    
+}
+
+function set_unfinished(e, direction) {
+    const target = $(e).closest(`.finished_${direction}, .unfinished_${direction}`);
+    target.removeClass(`failed_${direction}`);
+    if (!target.hasClass(`unfinished_${direction}`)) {
+        target.removeClass(`finished_${direction}`).addClass(`unfinished_${direction}`);
+    }
+}
+
+function set_finished(e, direction) {
+    const target = $(e).closest(`.finished_${direction}, .unfinished_${direction}`);
+    target.removeClass(`failed_${direction}`);
+    if (!target.hasClass(`finished_${direction}`)) {
+        target.removeClass(`unfinished_${direction}`).addClass(`finished_${direction}`);
+    }
+}
+
+function set_failed(e, direction) {
+    const target = $(e).closest(`.finished_${direction}, .unfinished_${direction}`);
+    if (!target.hasClass(`failed_${direction}`)) {
+        target.addClass(`failed_${direction}`);
+    }
+}
+
+function set_hint(e,msg,className){
+	const target = $(e).closest('.input_box').find('.input_hint');
+	
+	if(className==='failed_message'){
+		target.removeClass('success_message');
+		target.removeClass('annotation_message');
+	}
+	
+	if(className==='success_message'){
+		target.removeClass('failed_message');
+		target.removeClass('annotation_message');
+	}
+	
+	if(className==='annotation_message'){
+		target.removeClass('success_message');
+		target.removeClass('failed_message');
+	}
+	
+	if(!target.hasClass(className)){
+		target.addClass(className);
+	}
+	
+	target.text(msg);
 }

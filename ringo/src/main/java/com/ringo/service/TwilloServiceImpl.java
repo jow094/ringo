@@ -23,13 +23,13 @@ public class TwilloServiceImpl implements TwilloService{
     @Value("${twilio.phoneNumber}")
     private String phoneNumber;
     
-    private boolean isTwilioInitialized = false;
+    private boolean isInitialized = false;
     
     private static final Logger logger = LoggerFactory.getLogger(TwilloServiceImpl.class);
     
     public void initTwilio() {
-    	if (!isTwilioInitialized) {
     		
+    	if (!isInitialized) {
     		if (accountSid == null || authToken == null) {
     	        throw new IllegalStateException("Twilio SID or Auth Token is missing");
     	    }
@@ -39,18 +39,26 @@ public class TwilloServiceImpl implements TwilloService{
 
     	    Twilio.init(accountSid, authToken);
     	    logger.debug("Twilio initialized successfully.");
-    	    isTwilioInitialized = true;
+    	    isInitialized = true;
+    	    
     	}
     }
 
     public void sendSms(String user_tel, String content) {
     	initTwilio();
     	
+    	String formattedNumber = "+82" + user_tel.substring(1);  // 010을 제거하고 +82 추가
+        
+        PhoneNumber number = new PhoneNumber(formattedNumber);  // E.164 형식으로 변환된 번호
+        String e164FormattedNumber = number.toString();  // E.164 형식으로 변환된 번호
+
+        System.out.println("E.164 형식: " + e164FormattedNumber);  // E.164 형식 출력
+    	
     	Message message = Message.creator(
-                new PhoneNumber(user_tel), // 수신자의 전화번호
-                new PhoneNumber(phoneNumber), // 발신자의 Twilio 전화번호
-                content // 전송할 메시지 내용
-        ).create();
+    		    new PhoneNumber(e164FormattedNumber), // 수신자 번호를 E.164 형식으로 수정
+    		    new PhoneNumber(phoneNumber), // Twilio 발신 번호
+    		    "안녕하세요! 테스트 메시지입니다."
+    		).create();
     	
         logger.debug("Sending SMS from " + phoneNumber + " to " + user_tel);
     }
