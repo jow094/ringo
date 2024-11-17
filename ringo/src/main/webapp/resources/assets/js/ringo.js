@@ -23,21 +23,17 @@ $(document).ready(function() {
 		
 	    if ($(this).is(':checked')) {
 	    	if (currentClass.includes('finished_row') || currentClass.includes('unfinished_row')){
-	    		target.removeClass('unfinished_row');
-	    		target.addClass('finished_row');
+	    		set_finished(target,'row');
 	    	}
 	    	if (currentClass.includes('finished_column') || currentClass.includes('unfinished_column')){
-	    		target.removeClass('unfinished_column');
-	    		target.addClass('finished_column');
+	    		set_finished(target,'column');
 	    	}
 	    } else {
 	    	if (currentClass.includes('finished_row') || currentClass.includes('unfinished_row')){
-	    		target.removeClass('finished_row');
-	    		target.addClass('unfinished_row');
+	    		set_unfinished(target,'row');
 	    	}
 	    	if (currentClass.includes('finished_column') || currentClass.includes('unfinished_column')){
-	    		target.removeClass('finished_column');
-	    		target.addClass('unfinished_column');
+	    		set_unfinished(target,'column');
 	    	}
 	    }
 	});
@@ -48,21 +44,17 @@ $(document).ready(function() {
 		
 	    if ($(this).is(':checked')) {
 	    	if (currentClass.includes('finished_row') || currentClass.includes('unfinished_row')){
-	    		target.removeClass('unfinished_row');
-	    		target.addClass('finished_row');
+	    		set_finished(target,'row');
 	    	}
 	    	if (currentClass.includes('finished_column') || currentClass.includes('unfinished_column')){
-	    		target.removeClass('unfinished_column');
-	    		target.addClass('finished_column');
+	    		set_finished(target,'column');
 	    	}
 	    } else {
 	    	if (currentClass.includes('finished_row') || currentClass.includes('unfinished_row')){
-	    		target.removeClass('finished_row');
-	    		target.addClass('unfinished_row');
+	    		set_unfinished(target,'row');
 	    	}
 	    	if (currentClass.includes('finished_column') || currentClass.includes('unfinished_column')){
-	    		target.removeClass('finished_column');
-	    		target.addClass('unfinished_column');
+	    		set_unfinished(target,'column');
 	    	}
 	    }
 	});
@@ -72,12 +64,10 @@ $(document).ready(function() {
 		var currentClass = target.attr('class');
 		
 	    	if (currentClass.includes('finished_row') || currentClass.includes('unfinished_row')){
-	    		target.removeClass('unfinished_row');
-	    		target.addClass('finished_row');
+	    		set_finished(target,'row');
 	    	}
 	    	if (currentClass.includes('finished_column') || currentClass.includes('unfinished_column')){
-	    		target.removeClass('unfinished_column');
-	    		target.addClass('finished_column');
+	    		set_finished(target,'column');
 	    	}
 	});
 	
@@ -429,9 +419,7 @@ function send_sms(container,input_container){
         data: {user_tel : $(container).find('#user_tel').val()},
         success: function(data) {
         	$(input_container).find('input').attr('placeholder','* 인증번호를 입력하세요.');
-        	
-        	console.log(data);
-        	user_sms_code = data;
+        	$('.cards_inner_body_right').scrollTop($('.cards_inner_body_right')[0].scrollHeight);
         },
         error: function(xhr, status, error) {
         	$(input_container).find('input').addClass('failed_message');
@@ -452,13 +440,36 @@ function send_email(container,input_container){
         data: {user_email : $(container).find('#user_email').val()},
         success: function(data) {
         	$(input_container).find('input').attr('placeholder','* 인증번호를 입력하세요.');
-        	
-        	console.log(data);
-        	user_email_code = data;
+        	$('.cards_inner_body_right').scrollTop($('.cards_inner_body_right')[0].scrollHeight);
         },
         error: function(xhr, status, error) {
         	$(input_container).find('input').addClass('failed_message');
         	$(input_container).find('input').attr('placeholder','* 인증번호 발송에 실패하였습니다.');
+        }
+    });
+}
+
+function check_code(e,target){
+	
+	$.ajax({
+        type: "POST",
+        url: "/member/authentication/check",
+        dataType: 'json',
+        data: {user_code : $(e).siblings('input').val(), target : target},
+        success: function(data) {
+        	console.log(data);
+        	if(data==1){
+        		console.log('success');
+        		set_hint(e,'* 인증에 성공하였습니다.','success_message');
+        		set_finished(e,'row');
+        	}
+        	if(data==0){
+        		console.log('failed');
+        		set_hint(e,'* 인증에 실패하였습니다.','failed_message');
+        		set_failed(e,'row');
+        	}
+        },
+        error: function(xhr, status, error) {
         }
     });
 }
@@ -501,51 +512,71 @@ function get_coordinates() {
 }
 
 function search_address(container,search_result_container) {
-		const keyword = $('#search_address_input').val();
-		
-		const encodedKeyword = keyword.trim().replaceAll("[^a-zA-Z0-9가-힣 ]", "");
-	    const apiUrl = `https://www.juso.go.kr/addrlink/addrLinkApi.do?confmKey=devU01TX0FVVEgyMDI0MTExNzEzNDIwMzExNTI0NDQ%3D&currentPage=1&countPerPage=10000&keyword=${encodedKeyword}&firstSort=road`;
-	    $('#user_address_search_container').find('.scroll_box_inner').text('');
-	    $.ajax({
-	        url: apiUrl,
-	        type: 'GET',
-	        dataType: 'text',
-	        headers: {
-	            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-	        },
-	        success: function(response) {
-	            const parser = new DOMParser();
-	            const xmlDoc = parser.parseFromString(response, "text/xml");
+	const keyword = $('#search_address_input').val();
+	
+	const encodedKeyword = keyword.trim().replaceAll("[^a-zA-Z0-9가-힣 ]", "");
+    const apiUrl = `https://www.juso.go.kr/addrlink/addrLinkApi.do?confmKey=devU01TX0FVVEgyMDI0MTExNzEzNDIwMzExNTI0NDQ%3D&currentPage=1&countPerPage=10000&keyword=${encodedKeyword}&firstSort=road`;
+    $('#user_address_search_container').find('.scroll_box_inner').text('');
+    $.ajax({
+        url: apiUrl,
+        type: 'GET',
+        dataType: 'text',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        success: function(response) {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(response, "text/xml");
 
-	            const jusoNodes = xmlDoc.getElementsByTagName('juso');
-	            const totalCount = xmlDoc.getElementsByTagName('totalCount')[0].textContent
-	            
-	            if(totalCount==0){
-	            	$('#user_address_search_container').find('.scroll_box_inner').append(`
- 	            			<input class="user_address_search_result" type="button" name="user_address" value="검색된 결과가 없습니다."/>
-	 	            `);
-	            	showing(search_result_container);
-	            	$('.for_address').text(`* 올바른 검색어를 입력해주세요.`)
-	            	$('.for_address').addClass('failed_message');
- 	            }else{
- 	            	for (let node of jusoNodes) {
- 	            		$('#user_address_search_container').find('.scroll_box_inner').append(`
+            const jusoNodes = xmlDoc.getElementsByTagName('juso');
+            const totalCount = xmlDoc.getElementsByTagName('totalCount')[0].textContent
+            
+            if(totalCount==0){
+            	$('#user_address_search_container').find('.scroll_box_inner').append(`
+            			<input class="user_address_search_result" type="button" name="user_address" value="검색된 결과가 없습니다."/>
+ 	            `);
+            	showing(search_result_container);
+            	$('.for_address').text(`* 올바른 검색어를 입력해주세요.`)
+            	$('.for_address').addClass('failed_message');
+            }else{
+            	for (let node of jusoNodes) {
+            		$('#user_address_search_container').find('.scroll_box_inner').append(`
+            			<div class="user_address_search_result" onclick="select_address(this)">
  	            			<input class="user_address_search_result_first" type="button" name="user_address" value="${node.getElementsByTagName('roadAddr')[0].textContent}"/>
  	            			<input class="user_address_search_result_second" type="button" name="user_address" value="${node.getElementsByTagName('jibunAddr')[0].textContent}"/>
- 			            `);
- 		            }
- 	            	showing(search_result_container);
- 	            }
-	            
-	            if(totalCount>1000){
-	            	$('.for_address').text(`* 1000개 이상의 검색결과가 있습니다. 더 상세하게 검색해주세요.`)
-	            	$('.for_address').addClass('failed_message');
+            			</div>
+		            `);
 	            }
-	        },
-	        error: function(xhr, status, error) {
-	            console.error('Error occurred:', error);
-	        }
-	    });
+            	showing(search_result_container);
+            	$('.cards_inner_body_right').scrollTop($('.cards_inner_body_right')[0].scrollHeight);
+            }
+            
+            if(totalCount>1000){
+            	$('.for_address').text(`* 1000개 이상의 검색결과가 있습니다. 더 상세하게 검색해주세요.`)
+            	$('.for_address').addClass('failed_message');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error occurred:', error);
+        }
+    });
+}
+
+function select_address(e){
+	console.log('e:',e)
+	$('#user_address_search_container').find('.scroll_box_inner').find('.selected').removeClass('selected');
+	$(e).addClass('selected');
+	set_hint(e,'* 상세 주소를 입력해주세요.','annotation_message');
+	$('.selected_address').text($(e).find('.user_address_search_result_first').val());
+	showing('#user_address_detail');
+	$('.cards_inner_body_right').scrollTop($('.cards_inner_body_right')[0].scrollHeight);
+}
+
+function submit_address(e){
+	console.log($('.selected_address').text() + ', ' + $(e).val());
+	$('#user_address').val($('.selected_address').text() + ', ' + $(e).val());
+	set_hint(e,'* 주소 입력이 완료되었습니다.','success_message');
+	set_finished(e, 'row');
 }
 
 function validate_name(input) {
@@ -640,7 +671,7 @@ function validate_birth(input) {
     }
 
     set_finished(input, 'row');
-    set_hint(input, '* 생년월일 형식이 올바릅니다.', 'success_message');
+    set_hint(input, '* 올바른 생년월일 입니다.', 'success_message');
     
 }
 
@@ -657,6 +688,10 @@ function set_finished(e, direction) {
     target.removeClass(`failed_${direction}`);
     if (!target.hasClass(`finished_${direction}`)) {
         target.removeClass(`unfinished_${direction}`).addClass(`finished_${direction}`);
+    }
+    if ($(e).closest('.card_1').length > 0) {
+    	console.log('this is included by card_1');
+    	check_finished('1','.join_modal');
     }
 }
 
@@ -690,4 +725,29 @@ function set_hint(e,msg,className){
 	}
 	
 	target.text(msg);
+}
+
+function check_finished(index,container) {
+	
+	console.log($(`.card_${index}`).attr('class'));
+	
+	var count = $(`.card_${index}`).find('.unfinished_row').length + $(`.card_${index}`).find('.unfinished_column').length;
+	
+	console.log($(`.card_${index}`).attr('class')+'still have unfinished '+count);
+    
+    if($(`.card_${index}`).find('.unfinished_row').length === 0 && $(`.card_${index}`).find('.unfinished_column').length === 0){
+    	
+    	if($(`.card_${index}`).attr('class').includes('row')){
+    		$(`.card_${index}`).removeClass('unfinished_row');
+    		$(`.card_${index}`).addClass('finished_row');
+    	}
+    	
+    	if($(`.card_${index}`).attr('class').includes('column')){
+    		$(`.card_${index}`).removeClass('unfinished_column');
+    		$(`.card_${index}`).addClass('finished_column');
+    	}
+    	
+    	$(container).find(`[data-targetindex="${index}"]`).removeClass('unfinished_column');
+    	$(container).find(`[data-targetindex="${index}"]`).addClass('finished_column');
+    }
 }

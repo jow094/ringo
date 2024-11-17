@@ -28,8 +28,7 @@ import com.ringo.service.MemberService;
 import com.ringo.service.MessageService;
 import com.ringo.service.TwilloService;
 import com.ringo.service.AddressService;
-import com.ringo.service.EmailService;
-import com.ringo.service.GeoLocationService;
+import com.ringo.service.AuthenticationService;
 
 import io.swagger.annotations.Api;
 
@@ -51,11 +50,9 @@ public class MemberController {
 	@Inject
     private TwilloService smsService;
 	@Inject
-	private EmailService emailService;
+	private AuthenticationService authService;
 	@Inject
-	private GeoLocationService geoService;
-	@Inject
-	private AddressService addService;
+	private AddressService addrService;
 	
 	/*
 	 * private String uploadPath = System.getProperty("catalina.base") +
@@ -169,11 +166,13 @@ public class MemberController {
     public Integer sendSms(String user_tel,HttpSession session) {
 		
         String smsCode = String.valueOf((int) (Math.floor(Math.random() * 900000) + 100000));
+        session.setAttribute("smsCode", smsCode);
+        logger.debug("smsCode:"+smsCode);
         
         logger.debug("sendSms: "+user_tel);
         
         smsService.sendSms(user_tel, "Ringo 인증번호는 [" + smsCode + "] 입니다. 5분 내에 입력해주세요.");
-        session.setAttribute("smsCode", smsCode);
+        
         return 1;
     }
 
@@ -182,24 +181,60 @@ public class MemberController {
     public Integer sendEmail(String user_email,HttpSession session) {
 		
         String emailCode = String.valueOf((int) (Math.floor(Math.random() * 900000) + 100000));
-        
-        emailService.sendEmail(user_email, "Ringo 인증번호는 [" + emailCode + "] 입니다. 5분 내에 입력해주세요.");
         session.setAttribute("emailCode", emailCode);
+        logger.debug("emailCode:"+emailCode);
+        
+        authService.sendEmail(user_email, "Ringo 인증번호는 [" + emailCode + "] 입니다. 5분 내에 입력해주세요.");
         
         return 1;
     }
 	
+	@RequestMapping(value = "/authentication/check", method = RequestMethod.POST)
+	@ResponseBody
+    public Integer checkCode(String user_code,String target,HttpSession session) {
+		
+		
+		logger.debug("smsCode:"+session.getAttribute("smsCode"));
+		logger.debug("emailCode:"+session.getAttribute("emailCode"));
+		logger.debug("userCode:"+user_code);
+		logger.debug("target:"+target);
+		
+		
+		
+		if(target.equals("sms")) {
+			if(user_code.equals(session.getAttribute("smsCode"))) {
+				session.removeAttribute("smsCode");
+				logger.debug("sms 인증 성공");
+				return 1;
+			}else {
+				return 0;
+			}
+		}
+		
+		if(target.equals("email")) {
+			if(user_code.equals(session.getAttribute("emailCode"))) {
+				session.removeAttribute("emailCode");
+				logger.debug("email 인증 성공");
+				return 1;
+			}else {
+				return 0;
+			}
+		}
+        
+        return 0;
+    }
+	
 	@RequestMapping(value = "/getAddress", method = RequestMethod.GET)
 	public String getAddress(@RequestParam double latitude, @RequestParam double longitude) {
-	    logger.debug("msg: " + geoService.getAddressFromCoordinates(latitude, longitude));
-	    return geoService.getAddressFromCoordinates(latitude, longitude);
+	    logger.debug("msg: " + addrService.getAddressFromCoordinates(latitude, longitude));
+	    return addrService.getAddressFromCoordinates(latitude, longitude);
 	}
 	
 	@RequestMapping(value = "/searchAddress", method = RequestMethod.GET)
 	@ResponseBody
     public String searchRoadAddress(@RequestParam String keyword) {
         try {
-			return addService.searchRoadAddress(keyword);
+			return addrService.searchRoadAddress(keyword);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

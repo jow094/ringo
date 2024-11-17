@@ -139,7 +139,7 @@
 												</div>
 												<div id="user_sms_authentication" class="input_value none">
 													<input type="text" name="user_authentication"/>
-													<div class="input_cell_button">
+													<div class="input_cell_button" onclick="check_code(this,'sms')">
 														인증확인
 													</div>
 												</div>
@@ -163,7 +163,7 @@
 												</div>
 												<div id="user_email_authentication" class="input_value none">
 													<input type="text" name="user_authentication"/>
-													<div class="input_cell_button">
+													<div class="input_cell_button" onclick="check_code(this,'email')">
 														인증확인
 													</div>
 												</div>
@@ -180,30 +180,28 @@
 													주소
 												</div>
 												<div class="input_value">
-													<input id="search_address_input" type="text" name="user_tel" onkeydown="if(event.key === 'Enter'){ search_address('.join_modal','#user_address_search_container'); }"/>
+													<input type="text" id="search_address_input" onkeydown="if(event.key === 'Enter'){ search_address('.join_modal','#user_address_search_container'); }"/>
 													<div class="input_cell_button" onclick="search_address('.join_modal','#user_address_search_container');">
 														검색
 													</div>
 												</div>
 											</div>
-											<div id="user_address_search_container" class="added_input_cells">
+											<div id="user_address_search_container" class="added_input_cells none">
 												<div class=scroll_box>
 													<div class=scroll_box_inner style="padding:0px 5px; overflow-x:hidden;">
 													</div>
 												</div>
-											
 											</div>
-											<div id="user_address_detail" class="added_input_cells">
-												<input type="text" name="user_address_detail"/>
-												<div class="input_cell_button">
-													확인
+											<div id="user_address_detail" class="added_input_cells column none">
+												<div class="selected_address">
 												</div>
-											</div>
-											<div id="user_address_detail" class="added_input_cells">
-												<input type="checkbox" id="user_gender_male" name="user_gender" />
-											    <label class="checkbox_button" for="user_gender_male">
-											        <i class="fa-regular fa-square-check"></i> <span class="checkbox_value">남성</span>
-											    </label>
+												<div class="max_div row">
+													<input type="text" onkeydown="if(event.key === 'Enter'){ submit_address(this); }"/>
+													<div class="input_cell_button" onclick="submit_address(this);">
+														확인
+													</div>
+												</div>
+												<input type="hidden" id="user_address" name="user_address"/>
 											</div>
 										</div>
 										<div class="for_address input_hint annotoation_message">

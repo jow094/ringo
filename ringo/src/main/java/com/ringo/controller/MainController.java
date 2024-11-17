@@ -26,7 +26,7 @@ import com.ringo.domain.MemberVO;
 import com.ringo.service.MemberService;
 import com.ringo.service.MessageService;
 import com.ringo.service.TwilloService;
-import com.ringo.service.EmailService;
+import com.ringo.service.AuthenticationService;
 
 import io.swagger.annotations.Api;
 
@@ -48,7 +48,7 @@ public class MainController {
 	@Inject
     private TwilloService tService;
 	@Inject
-	private EmailService emailService;
+	private AuthenticationService emailService;
 	
 	/*
 	 * private String uploadPath = System.getProperty("catalina.base") +

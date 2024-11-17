@@ -183,7 +183,7 @@
 	align-content: center;
 	padding:10px;
 	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
-	background-color: rgba(200,200,200,0.1);
+	background-color: rgba(230,230,230,0.1);
 	overflow-y:auto;
 }
 .half_row{
@@ -404,17 +404,27 @@
 	padding-top:0px !important;
 }
 
-.join_modal input:not([type="submit"]){
+.join_modal input:not([type="submit"]):not(#user_address_search_container *){
 	justify-content: flex-start;
 	align-content: center;
 	border : none;
-	background-color: rgba(200,200,200,0.1);
+	background-color: rgba(230,230,230,0.1);
 	height:30px;
 	border-radius:5px;
 	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
 	padding-left:10px;
 	width:100%;
 	font-size:12px;
+}
+
+.join_modal #user_address_search_container input{
+	justify-content: flex-start;
+	align-content: center;
+	border : none;
+	height:30px;
+	width:100%;
+	font-size:12px;
+	background-color: rgba(230,230,230,0.1);
 }
 
 .input_hint{
@@ -455,7 +465,7 @@
 	height:200px;
 	padding:10px;
 	overflow-y:auto;
-	background-color: rgba(200,200,200,0.1);
+	background-color: rgba(230,230,230,0.1);
 	display:flex;
 	justify-content: flex-start;
 	align-items: flex-start;
@@ -502,24 +512,32 @@
 	flex-direction: column;
 	justify-content: flex-start;
 	align-content: center;
+	overflow-y:hidden;
 	overflow-x:hidden;
 	min-height: 50px;
+}
+.selected_address{
+	width:100%;
+	min-height:30px;
+	justify-content: flex-start;
+	align-content: center;
+	border : none;
+	background-color: rgba(230,230,230,0.1);
+	border-radius:5px;
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
+	padding-left:10px;
+	font-size:12px;
 }
 .user_address_search_result{
 	width:100%;
 	display:flex;
-    justify-content: flex-start;
+	flex-direction:column;
+    justify-content: center;
 	align-items: center;
-	text-align: left;
-	min-height:25px;
-	height:25px;
-	border-bottom:1px solid rgba(0,0,0,0.1) !important;
-	box-shadow:none !important;
-	border-radius:0px !important;
-	background-color: rgba(230,230,230,0.1) !important;
+	height:40px;
+	margin-bottom:5px;
 }
 .user_address_search_result_first{
-	margin-top:5px;
 	width:100%;
 	display:flex;
     justify-content: flex-start;
@@ -531,7 +549,6 @@
 	background-color: rgba(230,230,230,0.1) !important;
 }
 .user_address_search_result_second{
-	margin-bottom:5px;
 	width:100%;
 	display:flex;
     justify-content: flex-start;
