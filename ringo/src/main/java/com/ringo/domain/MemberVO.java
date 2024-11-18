@@ -23,16 +23,26 @@ public class MemberVO {
 	private String user_name;
 	private String user_nickname;
 	private Date user_birth;
-	private String user_nationality;
+	private String user_nation;
 	private String user_gender;
 	private String user_tel;
 	private String user_email;
 	private String user_addr;
-	private String user_fluent_language;
-	private String user_learning_language;
-	private String user_topic;
+	
+	private String user_native_lang;
+	private String user_fluent_lang;
+	private String user_learning_lang;
+	
+	private String user_intro;
 	private String user_ideal_partner;
 	private String user_objective;
+	private String user_topic;
+	
+	private String user_interest;
+	private String user_correction_degree;
+	private String user_usually_time;
+	private String user_method;
+	
 	private String user_grade;
 	
 	private String user_thumbnail;

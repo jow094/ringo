@@ -12,12 +12,12 @@
 
 	<div class="login_img_container">
 		<div class="login_img_section">
-			<img src="/resources/assets/img/background1.jpg">
+			<img src="/resources/assets/img/">
 		</div>
 	</div>
 	<div class="login_section">
 		<div class="login_banner">
-			<img src="/resources/assets/img/login_banner.png">
+			<img src="/resources/assets/img/">
 		</div>
 		<div class="login_inputs">
 			<form action="/member/login" method="POST">

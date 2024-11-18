@@ -59,7 +59,7 @@ $(document).ready(function() {
 	    }
 	});
 	
-	$('select').change(function() {
+	$('.with_select select').change(function() {
 		var target = $(this).closest('.with_select');
 		var currentClass = target.attr('class');
 		
@@ -71,7 +71,53 @@ $(document).ready(function() {
 	    	}
 	});
 	
-	
+	let draggedElement = null;
+
+	// 드래그 시작
+	$(document).on("dragstart", ".draggable", function (e) {
+	    draggedElement = this; // 드래그된 요소를 저장
+	    e.originalEvent.dataTransfer.effectAllowed = "move";
+	    
+	    // 드래그 중에 이미지만 보이도록 하고, 나머지 요소들은 숨깁니다.
+	    $(this).find(":not(img)").css("visibility", "hidden");
+	    console.log("드래그 시작:", draggedElement);
+	});
+
+	// 드래그 종료
+	$(document).on("dragend", ".draggable", function () {
+	    // 드래그가 끝나면 숨겨진 요소들을 다시 보이게 합니다.
+	    $(this).find(":not(img)").css("visibility", "visible");
+	});
+
+	// 드롭 가능 영역으로 드래그 오버 시 강조
+	$(document).on("dragover", ".draggable", function (e) {
+	    e.preventDefault(); // 드롭 가능하게 설정
+	    $(this).addClass("drag-over"); // 강조 클래스 추가
+	});
+
+	// 드래그가 벗어났을 때 강조 제거
+	$(document).on("dragleave", ".draggable", function () {
+	    $(this).removeClass("drag-over"); // 강조 클래스 제거
+	});
+
+	// 드롭
+	$(document).on("drop", ".draggable", function (e) {
+	    e.preventDefault();
+	    $(this).removeClass("drag-over"); // 강조 클래스 제거
+
+	    if (draggedElement !== this) {
+	        // 드래그된 요소와 현재 요소를 교체
+	        const draggedClone = $(draggedElement).clone(true); // 드래그된 요소를 복제
+	        const targetClone = $(this).clone(true); // 드롭된 요소를 복제
+
+	        // 복제된 요소들로 교체
+	        $(draggedElement).replaceWith(targetClone); // 드래그된 요소 위치에 드롭된 요소를 넣음
+	        $(this).replaceWith(draggedClone); // 드롭된 요소 위치에 드래그된 요소를 넣음
+	    }
+
+	    console.log("드래그 완료:", draggedElement, "와", this, "맞교환 완료");
+	});
+
 });
 
 function login_check(){
@@ -119,23 +165,31 @@ function hiding(e) {
 	$(e).css('opacity','0');
 	
 	setTimeout(function() {
-		$(e).addClass('none');
+		if(!$(e).hasClass('none')){
+			$(e).addClass('none');
+		}
     }, 300);
 }
 
 function hide(e) {
 	$(e).css('opacity','0');
-	$(e).addClass('none');
+	if(!$(e).hasClass('none')){
+		$(e).addClass('none');
+	}
 }
 
 function shrinking(e) {
-	$(e).addClass('shrinking');
-	$(e).find('*').addClass('none');
+	if(!$(e).hasClass('shrinking')){
+		$(e).addClass('shrinking');
+	}
+	$(e).find('*:not(.none)').addClass('none');
 	$(e).removeClass('expanding');
 }
 
 function expanding(e) {
-	$(e).addClass('expanding');
+	if(!$(e).hasClass('expanding')){
+		$(e).addClass('expanding');
+	}
 	$(e).find('*').removeClass('none');
 	$(e).removeClass('none');
     
@@ -358,8 +412,6 @@ function toggle_card(container,targetindex,direction){
 		
 		const currentIndex = parseInt($(container).find('.floor_1').attr('class').split("_")[1]);
 	    const totalCards = $(container).find('.cards').length;
-	    console.log(container,'container');
-	    console.log(totalCards,'totalcards');
 	    
 	    if(direction===-1){
 	    	expanding($(container).find('.next'));
@@ -555,6 +607,8 @@ function search_address(container,search_result_container) {
             	$('.for_address').text(`* 1000개 이상의 검색결과가 있습니다. 더 상세하게 검색해주세요.`)
             	$('.for_address').addClass('failed_message');
             }
+            
+            $('.cards_inner_body_right').scrollTop($('.cards_inner_body_right')[0].scrollHeight);
         },
         error: function(xhr, status, error) {
             console.error('Error occurred:', error);
@@ -583,17 +637,17 @@ function validate_name(input) {
 	
     const name = $(input).val();
     
-    if (name.trim() === '') {
+    if (name === '') {
         set_unfinished(input, 'row');
         set_hint(input, '* 본명을 입력 해주세요.', 'annotation_message');
-    } 
-    else if (!/^.{2,}$/.test(name)) {
-        set_failed(input,'row');
-        set_hint(input, '* 이름은 최소 2글자 이상이어야 합니다.', 'failed_message');
     } 
     else if (!/^[a-zA-Z가-힣]+$/.test(name)) {
         set_failed(input,'row');
         set_hint(input, '* 이름에는 공백이나 특수문자, 숫자가 포함될 수 없습니다.', 'failed_message');
+    } 
+    else if (!/^.{2,}$/.test(name)) {
+        set_failed(input,'row');
+        set_hint(input, '* 이름은 최소 2글자 이상이어야 합니다.', 'failed_message');
     } 
     else if (/[\u3131-\uD79D]/.test(name) && /[A-Za-z]/.test(name)) {
         set_failed(input,'row');
@@ -609,12 +663,11 @@ function validate_birth(input) {
 	const realValue= $(input).val();
     const value = $(input).val().replace(/\./g, '');
     
-    if (value.trim() === '') {
+    if (value === '') {
         set_unfinished(input, 'row');
         set_hint(input, '* 생년월일을 입력해주세요.', 'annotation_message');
         return;
     }
-    
     console.log('value :',value);
     console.log('realValue :',realValue);
     console.log('value length :',value.length);
@@ -622,7 +675,6 @@ function validate_birth(input) {
     $(input).on('keydown', function(event) {
         if ($(input).val().replace(/\./g, '').length === 4 && !$(input).val().includes('.')) {
         	if (event.keyCode === 8) {
-        		console.log('bsp');
         		return;
         	}else{
         		console.log('1111.');
@@ -631,7 +683,6 @@ function validate_birth(input) {
     	}
         if ($(input).val().replace(/\./g, '').length === 6 && ($(input).val().split('.').length - 1) === 1) {
         	if (event.keyCode === 8) {
-        		console.log('bsp');
         		return;
         	}else{
         		console.log('1111.11');
@@ -641,38 +692,180 @@ function validate_birth(input) {
     });
     
     const regexDate = /^[0-9]{4}[0-9]{2}[0-9]{2}$/;
-    if (!regexDate.test(value)) {
-        set_failed(input, 'row');
-        set_hint(input, '* 생년월일은 8자리 숫자로 입력해야 합니다.', 'failed_message');
-        return;
-    }
-
     const year = parseInt(value.slice(0, 4));
     const month = parseInt(value.slice(4, 6));
     const day = parseInt(value.slice(6, 8));
-
-    if (year < 1960) {
+    const daysInMonth = new Date(year, month, 0).getDate();
+    
+    if (/[^0-9]/.test(value)) {
+        set_failed(input, 'row');
+        set_hint(input, '* 생년월일은 숫자로만 입력 해야 합니다.', 'failed_message');
+    }
+    else if (!regexDate.test(value)) {
+        set_failed(input, 'row');
+        set_hint(input, '* 생년월일은 8자리 숫자로 입력해야 합니다.', 'failed_message');
+    }
+    else if (year < 1960) {
         set_failed(input, 'row');
         set_hint(input, '* 1960년 이전 출생자는 가입할 수 없습니다.', 'failed_message');
-        return;
     }
-
-    if (month < 1 || month > 12) {
+    else if (month < 1 || month > 12) {
         set_failed(input, 'row');
         set_hint(input, '* 월은 01부터 12 사이의 숫자여야 합니다.', 'failed_message');
-        return;
     }
-
-    const daysInMonth = new Date(year, month, 0).getDate();
-    if (day < 1 || day > daysInMonth) {
+    else if (day < 1 || day > daysInMonth) {
         set_failed(input, 'row');
         set_hint(input, `* 해당 월에는 ${daysInMonth}일까지 있습니다.`, 'failed_message');
-        return;
     }
+    else{
+	    set_finished(input, 'row');
+	    set_hint(input, '* 올바른 생년월일 입니다.', 'success_message');
+    }
+}
 
-    set_finished(input, 'row');
-    set_hint(input, '* 올바른 생년월일 입니다.', 'success_message');
+function validate_id(input) {
+	
+    const id = $(input).val();
     
+    if (id === '') {
+        set_unfinished(input, 'row');
+        set_hint(input, `* 4~20자리의 영문, 숫자, '_' 로 이루어진 아이디를 입력해 주세요.`, 'annotation_message');
+    } 
+    else if (!/^[a-zA-Z0-9]/.test(id)) {
+        set_failed(input, 'row');
+        set_hint(input, '* 아이디는 영문 또는 숫자로 시작해야 합니다.', 'failed_message');
+    }
+    else if (!/^[a-zA-Z0-9_]+$/.test(id)) {
+        set_failed(input, 'row');
+        set_hint(input, `* 아이디는 영문, 숫자, '_' 만 포함할 수 있습니다.`, 'failed_message');
+    }
+    else if (id.length < 4 || id.length > 20) {
+        set_failed(input, 'row');
+        set_hint(input, '* 아이디는 4~20자리여야 합니다.', 'failed_message');
+    }
+    else {
+        set_finished(input, 'row');
+        set_hint(input, '* 사용할 수 있는 아이디입니다.', 'success_message');
+    }
+}
+
+function validate_pw(input) {
+    const pw = $(input).val();
+
+    if (pw === '') {
+        set_unfinished(input, 'row');
+        set_hint(input, '* * 8~20자리의 영문,숫자가 포함 된 비밀번호를 입력 해주세요.', 'annotation_message');
+        hide('#check_pw');
+    } 
+    else if (pw.length < 8 || pw.length > 20) {
+        set_failed(input, 'row');
+        set_hint(input, '* 비밀번호는 8~20자리여야 합니다.', 'failed_message');
+        hide('#check_pw');
+    }
+    else if (!/[a-zA-Z]/.test(pw) || !/\d/.test(pw)) {
+        set_failed(input, 'row');
+        set_hint(input, '* 비밀번호는 영문과 숫자를 모두 포함해야 합니다.', 'failed_message');
+        hide('#check_pw');
+    }
+    else {
+    	showing('#check_pw');
+    	set_unfinished(input, 'row');
+        set_hint(input, '* 사용할 수 있는 비밀번호입니다. 한번 더 입력 해주세요.', 'annotation_message');
+    }
+}
+
+function check_pw(input) {
+	const pw = $(input).closest('.input_box').find('input[name="user_pw"]').val();
+    const second_pw = $(input).val();
+    
+    if (second_pw === '') {
+    	set_unfinished(input, 'row');
+    	set_hint(input, '* 사용할 수 있는 비밀번호입니다. 한번 더 입력 해주세요.', 'annotation_message');
+    }
+    else if (pw != second_pw) {
+        set_failed(input, 'row');
+        set_hint(input, '* 입력하신 비밀번호가 일치하지 않습니다.', 'failed_message');
+    } 
+    else {
+        set_finished(input, 'row');
+        set_hint(input, '* 비밀번호 입력이 완료 되었습니다.', 'success_message');
+    }
+}
+
+function validate_nickname(input) {
+	
+	const nickname = $(input).val();
+    const engPart = nickname.match(/[a-zA-Z]+/g)||[];
+    const korPart = nickname.match(/[가-힣]+/g)||[];
+    
+    var korLength = 0;
+    if(korPart[0]){
+    	korPart.forEach(part => {
+    		korLength += part.length;
+    	});
+    }
+    var engLength = 0;
+    if(engPart[0]){
+    	engPart.forEach(part => {
+    	    engLength += part.length;
+    	});
+    }
+    
+    if (nickname === '') {
+        set_unfinished(input, 'row');
+        set_hint(input, '* 4~10자리의 닉네임을 입력 해주세요.', 'annotation_message');
+    }
+    else if (nickname.startsWith('_')) {
+        set_failed(input, 'row');
+        set_hint(input, `* 닉네임은 '_' 로 시작할 수 없습니다.`, 'failed_message');
+    }
+    else if (!/^[가-힣a-zA-Z0-9_]+$/.test(nickname)) {
+        set_failed(input, 'row');
+        set_hint(input, `* 닉네임은 한글, 영문, 숫자, '_' 만 포함할 수 있습니다.`, 'failed_message');
+    }
+    else if (korLength<2 && engLength<4) {
+        set_failed(input, 'row');
+        set_hint(input, '* 닉네임은 2자 이상의 한글이나 4자 이상의 영문을 포함해야 합니다.', 'failed_message');
+    }
+    else if (nickname.length < 2 || nickname.length > 10) {
+        set_failed(input, 'row');
+        set_hint(input, '* 닉네임은 2~10자리여야 합니다.', 'failed_message');
+    }
+    else {
+        set_finished(input, 'row');
+        set_hint(input, '* 사용할 수 있는 닉네임입니다.', 'success_message');
+    }
+}
+
+function validate_text(input,annotation_message) {
+    const text = $(input).val();
+
+    if (text === '') {
+        set_unfinished(input, 'row');
+        set_hint(input, annotation_message, 'annotation_message');
+    } 
+    else if (text.length < 10) {
+        set_unfinished(input, 'row');
+        set_hint(input, '* 10자 이상 작성해주세요.', 'failed_message');
+    }
+    else{
+    	set_finished(input, 'row');
+        set_hint(input, '* 입력이 완료되었습니다.', 'success_message');
+    }
+}
+
+function set_finished(e, direction) {
+	const target = $(e).closest(`.finished_${direction}, .unfinished_${direction}`);
+	console.log('closest before:',target.attr('class'));
+	target.removeClass(`failed_${direction}`);
+	if (!target.hasClass(`finished_${direction}`)) {
+		target.removeClass(`unfinished_${direction}`).addClass(`finished_${direction}`);
+	}
+	const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
+	const index = match ? match[1] : undefined;
+	console.log('e:',e);
+	console.log('closest after:',target.attr('class'));
+	check_finished(index,'.join_modal');
 }
 
 function set_unfinished(e, direction) {
@@ -681,25 +874,19 @@ function set_unfinished(e, direction) {
     if (!target.hasClass(`unfinished_${direction}`)) {
         target.removeClass(`finished_${direction}`).addClass(`unfinished_${direction}`);
     }
-}
-
-function set_finished(e, direction) {
-    const target = $(e).closest(`.finished_${direction}, .unfinished_${direction}`);
-    target.removeClass(`failed_${direction}`);
-    if (!target.hasClass(`finished_${direction}`)) {
-        target.removeClass(`unfinished_${direction}`).addClass(`finished_${direction}`);
-    }
-    if ($(e).closest('.card_1').length > 0) {
-    	console.log('this is included by card_1');
-    	check_finished('1','.join_modal');
-    }
+    const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
+    const index = match ? match[1] : undefined;
+    check_finished(index,'.join_modal');
 }
 
 function set_failed(e, direction) {
     const target = $(e).closest(`.finished_${direction}, .unfinished_${direction}`);
     if (!target.hasClass(`failed_${direction}`)) {
-        target.addClass(`failed_${direction}`);
+    	target.removeClass(`finished_${direction}`).target.removeClass(`unfinished_${direction}`).target.addClass(`failed_${direction}`);
     }
+    const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
+    const index = match ? match[1] : undefined;
+    check_finished(index,'.join_modal');
 }
 
 function set_hint(e,msg,className){
@@ -729,11 +916,7 @@ function set_hint(e,msg,className){
 
 function check_finished(index,container) {
 	
-	console.log($(`.card_${index}`).attr('class'));
-	
 	var count = $(`.card_${index}`).find('.unfinished_row').length + $(`.card_${index}`).find('.unfinished_column').length;
-	
-	console.log($(`.card_${index}`).attr('class')+'still have unfinished '+count);
     
     if($(`.card_${index}`).find('.unfinished_row').length === 0 && $(`.card_${index}`).find('.unfinished_column').length === 0){
     	
@@ -749,5 +932,182 @@ function check_finished(index,container) {
     	
     	$(container).find(`[data-targetindex="${index}"]`).removeClass('unfinished_column');
     	$(container).find(`[data-targetindex="${index}"]`).addClass('finished_column');
+    }else{
+    	
+    	if($(`.card_${index}`).attr('class').includes('row')){
+    		$(`.card_${index}`).removeClass('finished_row');
+    		$(`.card_${index}`).addClass('unfinished_row');
+    	}
+    	
+    	if($(`.card_${index}`).attr('class').includes('column')){
+    		$(`.card_${index}`).removeClass('finished_column');
+    		$(`.card_${index}`).addClass('unfinished_column');
+    	}
+    	
+    	$(container).find(`[data-targetindex="${index}"]`).removeClass('finished_column');
+    	$(container).find(`[data-targetindex="${index}"]`).addClass('unfinished_column');
     }
 }
+
+function select_card(e) {
+	
+	var value = $(e).find('option:selected').val();
+	var text = $(e).find('option:selected').text();
+	var hiddenInput = $(e).closest('.input_box').find('input[type="hidden"]');
+	var currentValue = hiddenInput.val();
+	
+	if (!currentValue.includes(value)){
+		
+		if (currentValue) {
+	        hiddenInput.val(currentValue + ',' + value);
+	    } else {
+	    	showing($(e).closest('.input_box').next('.selected_card_container'));
+	    	set_finished(e,'row');
+	        hiddenInput.val(value);
+	    }
+		
+		$(e).closest('.input_box').next('.selected_card_container').append(`
+				<div class="selected_card deletable none" data-value="${value}" onclick="delete_card(this)">
+					<i class="fa-solid fa-circle-xmark"></i>
+					${text}
+				</div>
+		`);
+		
+		setTimeout(() => {
+			showing($('.selected_card.deletable.none').last());
+		}, 1);
+	}
+	
+	$(e).prop('selectedIndex', 0);
+}
+
+function delete_card(e) {
+	
+	var deleteValue = $(e).attr('data-value');
+    var hiddenInput = $(e).closest('.selected_card_container').prev('.input_box').find('input[type="hidden"]');
+    
+    if (hiddenInput.val()) {
+        let currentValue = hiddenInput.val();
+
+        if (!currentValue.includes(',')) {
+            // 쉼표가 없으면 deleteValue만 제거
+            hiddenInput.val(currentValue.replace(deleteValue, ''));
+        } else if (currentValue.includes(deleteValue + ',')) {
+            // deleteValue 뒤에 쉼표가 있으면 'deleteValue,' 제거
+            hiddenInput.val(currentValue.replace(deleteValue + ',', ''));
+        } else {
+            // deleteValue 뒤에 쉼표가 없으면 ',deleteValue' 제거
+            hiddenInput.val(currentValue.replace(',' + deleteValue, ''));
+        }
+    }
+	
+    if (!$(e).siblings().length) {
+        hide($(e).closest('.selected_card_container'));
+        set_unfinished($(e).closest('.selected_card_container').prev('.input_box').find('select'),'row');
+    }
+    setTimeout(function() {
+    	if($(e).hasClass('deletable')){
+        	$(e).remove();
+        }
+    }, 1);
+}
+
+function preview_image(input) {
+    var file = input.files[0];  // 사용자가 선택한 첫 번째 파일
+    
+    if (file) {
+        var reader = new FileReader();  // 파일을 읽을 FileReader 객체
+
+        reader.onload = function(e) {
+        	$(input).siblings('i').remove();
+        	$(input).closest('.picture_content').addClass('have_img');
+        	$(input).closest('.picture_content').addClass('on-top');
+        	$(input).closest('.picture_content').addClass('draggable');
+        	$(input).closest('.picture_content').attr("onmouseover", "mouse_over(this)");
+        	$(input).closest('.picture_content').attr("onmouseleave", "mouse_leave(this)");
+        	$(input).closest('.picture_content').attr("onclick", "delete_image(this)");
+        	$(input).closest('.picture_content').attr("draggable", "true");
+            $(input).after(`
+                <img class="none" src="${e.target.result}"/>
+            `);
+            showing($(input).next('img'));
+        };
+
+        reader.readAsDataURL(file);
+    }
+    
+    if($(input).closest('.small_picture_container').length>0){
+    	$(input).closest('.picture_content').after(`
+    			<div class="picture_content">
+				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="preview_image(this)" multiple>
+					<i class="fa-solid fa-plus"></i>
+				</div>
+    	`);
+    }
+}
+
+function check_thumbnail(e){
+    
+	setTimeout(() => {
+		if($(e).closest('.thumbnail').find('input').val()==''){
+			$(e).closest('.cards').removeClass('finished_column');
+			if(!$(e).closest('.cards').hasClass('unfinished_column')){
+				$(e).closest('.cards').addClass('unfinished_column');
+			}
+		}
+		
+		if($(e).closest('.thumbnail').find('input').val()!=''){
+			$(e).closest('.cards').removeClass('unfinished_column');
+			if(!$(e).closest('.cards').hasClass('finished_column')){
+				$(e).closest('.cards').addClass('finished_column');
+			}
+		}
+	}, 10);
+}
+
+function mouse_over(e) {
+	$(e).find('img').addClass('ready_to_delete');
+	$(e).removeClass('have_img');
+	$(e).addClass('to_gray');
+	if ($(e).find('i').length === 0) {
+		$(e).append(`<i class="fa-solid fa-xmark"></i>`);
+		$(e).find('i').css('color', 'rgb(50,50,50)');
+	}
+	if ($(e).find('span').length === 0) {
+		$(e).append(`<span>드래그 하여 이동</span>`);
+	}
+}
+
+function mouse_leave(e) {
+	$(e).find('img').removeClass('ready_to_delete');
+	$(e).removeClass('to_gray');
+	$(e).addClass('have_img');
+	if ($(e).find('i').length != 0) {
+		$(e).find('i').remove();
+	}
+	if ($(e).find('span').length != 0) {
+		$(e).find('span').remove();
+	}
+}
+
+function delete_image(e) {
+	
+	setTimeout(function() {
+		$(e).find('input').val('');
+		mouse_leave(e);
+		$(e).find('i').remove();
+		$(e).find('img').remove();
+		$(e).removeClass('have_img');
+		$(e).removeClass('on-top');
+		$(e).removeClass('draggable');
+		$(e).removeAttr("onmouseover", "mouse_over(this)");
+		$(e).removeAttr("onmouseleave", "mouse_leave(this)");
+		$(e).removeAttr("onclick", "delete_image(this)");
+		$(e).append(`<i class="fa-solid fa-plus"></i>`);
+		
+		if($(e).closest('.small_picture_container').length>0){
+			$(e).remove();
+		}
+    }, 1);
+}
+

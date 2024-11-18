@@ -5,7 +5,7 @@
     	<div class="modal_head">
     		<div class="modal_title">
     			<div class="modal_icon">
-	    			<i class="fa-solid fa-user"></i>
+	    			<i class="fa-solid fa-user-check"></i>
     			</div>
     			<div class="modal_name">
 	    			회원 가입
@@ -18,19 +18,19 @@
         <div class="modal_body">
         	<div class="cards_menu_container">	
 				<div class="menu unfinished_column" data-targetindex="1" onclick="toggle_card('.join_modal',this.dataset.targetindex,0)">
-					<span>1</span>
+					<span>본인 확인</span>
 				</div>
 				<div class="menu unfinished_column" data-targetindex="2" onclick="toggle_card('.join_modal',this.dataset.targetindex,0)">
-					<span>2</span>
+					<span>기본 정보</span>
 				</div>
 				<div class="menu unfinished_column" data-targetindex="3" onclick="toggle_card('.join_modal',this.dataset.targetindex,0)">
-					<span>3</span>
+					<span>추가 정보</span>
 				</div>
 				<div class="menu unfinished_column" data-targetindex="4" onclick="toggle_card('.join_modal',this.dataset.targetindex,0)">
-					<span>4</span>
+					<span>프로필 사진</span>
 				</div>
 				<div class="menu unfinished_column" data-targetindex="5" onclick="toggle_card('.join_modal',this.dataset.targetindex,0)">
-					<span>5</span>
+					<span>기본 설정</span>
 				</div>
 			</div>
         	<div class="scroll_box" style="height:calc(100% - 20px); flex-direction: column;">
@@ -41,8 +41,8 @@
 	        		<div class="cards_container_content">
 		        		<div class="cards card_1 unfinished_column">
 		        			<div class="cards_inner_header">
-		        				<i class="fa-solid fa-user-check"></i>
-		        				<span>기본 정보</span>
+		        				<i class="fa-solid fa-address-card"></i>
+		        				<span>본인 확인</span>
 		        			</div>
 		        			<div class="cards_inner_body half_row">
 		        				<div class="cards_inner_body_left">
@@ -61,20 +61,17 @@
 			        					</div>
 		        					</div>
 		        				</div>
-		        				
-		        				
 		        				<div class="cards_inner_body_right">
-		        				
 		        					<div class="input_box">
 		        						<div class="input_cell unfinished_row">
 											<div class="input_name">
 												이름
 											</div>
 											<div class="input_value">
-												<input type="text" name="user_id" oninput="validate_name(this)"/>
+												<input type="text" name="user_name" oninput="validate_name(this)"/>
 											</div>
 										</div>
-										<div class="input_hint annotoation_message">
+										<div class="input_hint annotation_message">
 											* 본명을 입력 해주세요.						
 										</div>
 		        					</div>
@@ -84,10 +81,10 @@
 												생년월일
 											</div>
 											<div class="input_value">
-												<input type="text" name="user_id" oninput="validate_birth(this)"/>
+												<input type="text" name="user_birth" oninput="validate_birth(this)"/>
 											</div>
 										</div>
-										<div class="input_hint annotoation_message annotoation_message">
+										<div class="input_hint annotation_message annotation_message">
 											* 8자리로 입력 해주세요. 예시) 2000.01.01						
 										</div>
 									</div>
@@ -97,12 +94,12 @@
 												성별
 											</div>
 											<div class="input_value">
-												<input type="radio" id="user_gender_male" name="user_gender" />
+												<input type="radio" id="user_gender_male" name="user_gender" value="남성"/>
 											    <label class="radio_button" for="user_gender_male">
 											        <i class="fa-regular fa-square-check"></i> <span class="radio_value">남성</span>
 											    </label>
 											
-											    <input type="radio" id="user_gender_female" name="user_gender" />
+											    <input type="radio" id="user_gender_female" name="user_gender" value="여성"/>
 											    <label class="radio_button" for="user_gender_female">
 											        <i class="fa-regular fa-square-check"></i> <span class="radio_value">여성</span>
 											    </label>
@@ -115,8 +112,8 @@
 												국적
 											</div>
 											<div class="input_value">
-												<select id="user_nation" name="user_nation" class="annotoation_message">
-													<option class="annotoation_message" value="" selected disabled>* 국적을 선택하세요.</option>
+												<select id="user_nation" name="user_nation" class="annotation_message">
+													<option class="annotation_message" value="" selected disabled>* 국적을 선택하세요.</option>
 													<option value="kor">한국</option>
 													<option value="us">미국</option>
 													<option value="japan">일본</option>
@@ -145,7 +142,7 @@
 												</div>
 											</div>
 										</div>
-										<div class="input_hint annotoation_message annotoation_message">
+										<div class="input_hint annotation_message annotation_message">
 											* ' - ' 를 제외한 전화번호를 입력 해주세요. 예시) 01012345678							
 										</div>
 									</div>
@@ -169,7 +166,7 @@
 												</div>
 											</div>
 										</div>
-										<div class="input_hint annotoation_message annotoation_message">
+										<div class="input_hint annotation_message annotation_message">
 											* id@domain.com 형식의 이메일을 입력 해주세요.						
 										</div>
 									</div>
@@ -204,7 +201,7 @@
 												<input type="hidden" id="user_address" name="user_address"/>
 											</div>
 										</div>
-										<div class="for_address input_hint annotoation_message">
+										<div class="for_address input_hint annotation_message">
 											* 동 이하의 주소를 입력 해주세요.						
 										</div>
 									</div>
@@ -216,41 +213,115 @@
 		        		</div>
 						<div class="cards card_2 unfinished_column" >
 							<div class="cards_inner_header">
-		        				<i class="fa fa-user"></i>
-		        				<span>기본정보</span>
+		        				<i class="fa-solid fa-file-invoice"></i>
+		        				<span>기본 정보</span>
 		        			</div>
-		        			<div class="cards_inner_body">
-	        					<div class="input_box">
-	        						<div class="input_cell">
-										<div class="input_name">
-											아이디
-										</div>
-										<div class="input_value">
-											<input type="text" name="user_id"/>
-										</div>
-									</div>
-									<div class="input_hint annotoation_message annotoation_message">
-										* 4~20자리의 영문, 숫자 조합								
-									</div>
-	        					</div>
-								<div class="input_box">
-									<div class="input_cell double">
-										<div class="input_name">
-											비밀번호
-										</div>
-										<div class="input_values">
-											<div class="input_value">
-												<input type="password" name="user_pw"/>
+		        			<div class="cards_inner_body half_row">
+		        				<div class="cards_inner_body_left">
+		        					<div class="input_box">
+		        						<div class="input_cell unfinished_row">
+											<div class="input_name">
+												아이디
 											</div>
 											<div class="input_value">
-												<input type="password" name="user_pw"/>
+												<input type="text" name="user_id" oninput="validate_id(this)"/>
+											</div>
+										</div>
+										<div class="input_hint annotation_message">
+											* 4~20자리의 영문, 숫자, '_' 로 이루어진 아이디를 입력해 주세요.					
+										</div>
+		        					</div>
+		        					<div class="input_box">
+		        						<div class="input_cell unfinished_row">
+											<div class="input_name">
+												비밀번호
+											</div>
+											<div class="max_div column">
+												<div class="input_value">
+													<input type="password" name="user_pw" oninput="validate_pw(this)"/>
+												</div>
+												<div id="check_pw" class="input_value none">
+													<input type="password" oninput="check_pw(this)"/>
+												</div>
+											</div>
+										</div>
+										<div class="input_hint annotation_message">
+											* 8~20자리의 영문,숫자가 포함 된 비밀번호를 입력 해주세요.						
+										</div>
+		        					</div>
+		        					<div class="input_box">
+		        						<div class="input_cell unfinished_row">
+											<div class="input_name">
+												닉네임
+											</div>
+											<div class="input_value">
+												<input type="text" name="user_nickname" oninput="validate_nickname(this)"/>
+											</div>
+										</div>
+										<div class="input_hint annotation_message">
+											* 4~10자리의 닉네임을 입력 해주세요.						
+										</div>
+		        					</div>
+		        				</div>
+		        				<div class="cards_inner_body_right">
+									<div class="input_box">
+										<div class="input_cell unfinished_row">
+											<div class="input_name">
+												모국어
+											</div>
+											<div class="input_value">
+												<select class="annotation_message" onchange="select_card(this)">
+													<option class="annotation_message" value="" selected disabled>모국어를 선택하세요.</option>
+													<option value="kor">한국어</option>
+													<option value="us">미국어</option>
+													<option value="jp">일본어</option>
+													<option value="ch">중국어</option>
+												</select>
+												<input type="hidden" name="user_native_lang"/>
 											</div>
 										</div>
 									</div>
-									<div class="input_hint annotoation_message annotoation_message">
-										* 4~20자리의 영문, 숫자 조합								
+									<div class="selected_card_container none">
 									</div>
-								</div>
+									<div class="input_box">
+										<div class="input_cell unfinished_row">
+											<div class="input_name" style="font-size:10px;">
+												유창한 언어
+											</div>
+											<div class="input_value">
+												<select class="annotation_message" onchange="select_card(this)">
+													<option class="annotation_message" value="" selected disabled>유창한 언어를 선택하세요.</option>
+													<option value="kor">한국어</option>
+													<option value="us">미국어</option>
+													<option value="jp">일본어</option>
+													<option value="ch">중국어</option>
+												</select>
+												<input type="hidden" name="user_fluent_lang"/>
+											</div>
+										</div>
+									</div>
+									<div class="selected_card_container none">
+									</div>
+									<div class="input_box">
+										<div class="input_cell unfinished_row">
+											<div class="input_name">
+												학습 언어
+											</div>
+											<div class="input_value">
+												<select class="annotation_message" onchange="select_card(this)">
+													<option class="annotation_message" value="" selected disabled>학습중인 언어를 선택하세요.</option>
+													<option value="kor">한국어</option>
+													<option value="us">미국어</option>
+													<option value="jp">일본어</option>
+													<option value="ch">중국어</option>
+												</select>
+												<input type="hidden" name="user_learning_lang"/>
+											</div>
+										</div>
+									</div>
+									<div class="selected_card_container none">
+									</div>
+		        				</div>
 		        			</div>
 		        			<div class="cards_inner_footer">
 		        				<button type="button" class="custom_button" onclick="toggle_card('.join_modal',0,-1)">이전</button>
@@ -259,41 +330,142 @@
 						</div>
 						<div class="cards card_3 unfinished_column" >
 							<div class="cards_inner_header">
-		        				<i class="fa fa-user"></i>
-		        				<span>기본정보</span>
+		        				<i class="fa-solid fa-circle-info"></i>
+		        				<span>추가 정보</span>
 		        			</div>
-		        			<div class="cards_inner_body">
-	        					<div class="input_box">
-	        						<div class="input_cell">
-										<div class="input_name">
-											아이디
-										</div>
-										<div class="input_value">
-											<input type="text" name="user_id"/>
-										</div>
-									</div>
-									<div class="input_hint annotoation_message annotoation_message">
-										* 4~20자리의 영문, 숫자 조합								
-									</div>
-	        					</div>
-								<div class="input_box">
-									<div class="input_cell double">
-										<div class="input_name">
-											비밀번호
-										</div>
-										<div class="input_values">
-											<div class="input_value">
-												<input type="password" name="user_pw"/>
+		        			<div class="cards_inner_body half_row">
+		        				<div class="cards_inner_body_left">
+		        					<div class="input_box">
+		        						<div class="input_cell unfinished_row">
+											<div class="input_name">
+												한줄 소개
 											</div>
 											<div class="input_value">
-												<input type="password" name="user_pw"/>
+												<textarea name="user_intro" oninput="validate_text(this,'* 자신을 소개할 문구를 작성 해주세요.')"></textarea>
+											</div>
+										</div>
+										<div class="input_hint annotation_message">
+											* 자신을 소개할 문구를 작성 해주세요.			
+										</div>
+		        					</div>
+		        					<div class="input_box">
+		        						<div class="input_cell unfinished_row">
+											<div class="input_name">
+												학습 목표
+											</div>
+											<div class="input_value">
+												<textarea name="user_objective" oninput="validate_text(this,'* 언어 학습 목적, 목표 수준에 대해 작성해주세요.')"></textarea>
+											</div>
+										</div>
+										<div class="input_hint annotation_message">
+											* 언어 학습 목적, 목표 수준에 대해 작성해주세요.				
+										</div>
+		        					</div>
+		        					<div class="input_box">
+		        						<div class="input_cell unfinished_row">
+											<div class="input_name">
+												이상형
+											</div>
+											<div class="input_value">
+												<textarea name="user_ideal_partner" oninput="validate_text(this,'* 만나고 싶은 대화 상대를 알려주세요.')"></textarea>
+											</div>
+										</div>
+										<div class="input_hint annotation_message">
+											* 만나고 싶은 대화 상대를 알려주세요.
+										</div>
+		        					</div>
+		        					<div class="input_box">
+		        						<div class="input_cell unfinished_row">
+											<div class="input_name">
+												대화 주제
+											</div>
+											<div class="input_value">
+												<textarea name="user_topic" oninput="validate_text(this,'* 원하는 대화 주제에 대해 알려주세요.')"></textarea>
+											</div>
+										</div>
+										<div class="input_hint annotation_message">
+											* 원하는 대화 주제에 대해 알려주세요.
+										</div>
+		        					</div>
+		        				</div>
+		        				<div class="cards_inner_body_right">
+		        					<div class="input_box">
+										<div class="input_cell unfinished_row">
+											<div class="input_name">
+												관심 분야
+											</div>
+											<div class="input_value">
+												<select class="annotation_message" onchange="select_card(this)">
+													<option class="annotation_message" value="" selected disabled>관심 있는 분야를 하나 이상 선택하세요.</option>
+													<option value="music">음악</option>
+													<option value="movie">영화</option>
+													<option value="drama">드라마</option>
+													<option value="soccer">축구</option>
+													<option value="baseball">야구</option>
+													<option value="basketball">농구</option>
+												</select>
+												<input type="hidden" name="user_interest"/>
 											</div>
 										</div>
 									</div>
-									<div class="input_hint annotoation_message annotoation_message">
-										* 4~20자리의 영문, 숫자 조합								
+									<div class="selected_card_container none">
 									</div>
-								</div>
+									
+									<div class="input_box">
+										<div class="input_cell unfinished_row">
+											<div class="input_name" style="font-size:10px;">
+												주 이용시간
+											</div>
+											<div class="input_value">
+												<select class="annotation_message" onchange="select_card(this)">
+													<option class="annotation_message" value="" selected disabled>주로 접속하는 시간을 하나 이상 선택하세요.</option>
+													<option value="d_0">평일 낮</option>
+													<option value="d_1">평일 저녁</option>
+													<option value="e_0">주말 낮</option>
+													<option value="e_1">주말 저녁</option>
+												</select>
+												<input type="hidden" name="user_usually_time"/>
+											</div>
+										</div>
+									</div>
+									<div class="selected_card_container none">
+									</div>
+									
+									<div class="input_box">
+										<div class="input_cell unfinished_row">
+											<div class="input_name">
+												소통 방식
+											</div>
+											<div class="input_value">
+												<select class="annotation_message" onchange="select_card(this)">
+													<option class="annotation_message" value="" selected disabled>원하는 소통 방식을 하나 이상 선택하세요.</option>
+													<option value="meet">직접 만남</option>
+													<option value="message">메세지 선호</option>
+													<option value="call">전화 선호</option>
+												</select>
+												<input type="hidden" name="user_method"/>
+											</div>
+										</div>
+									</div>
+									<div class="selected_card_container none">
+									</div>
+									
+									<div class="input_box">
+										<div class="input_cell unfinished_row with_select">
+											<div class="input_name">
+												교정 강도
+											</div>
+											<div class="input_value">
+												<select id="user_correction_degree" name="user_correction" class="annotation_message">
+													<option class="annotation_message" value="" selected disabled>원하는 교정 강도를 선택하세요.</option>
+													<option value="nomatter">상관 없음</option>
+													<option value="forcritical">심한 오류가 있을때만 고쳐주세요.</option>
+													<option value="forlittle">사소한 것도 고쳐주세요.</option>
+												</select>
+											</div>
+										</div>
+									</div>
+		        				</div>
 		        			</div>
 		        			<div class="cards_inner_footer">
 		        				<button type="button" class="custom_button" onclick="toggle_card('.join_modal',0,-1)">이전</button>
@@ -302,41 +474,34 @@
 						</div>
 						<div class="cards card_4 unfinished_column" >
 							<div class="cards_inner_header">
-		        				<i class="fa fa-user"></i>
-		        				<span>기본정보</span>
+		        				<i class="fa-solid fa-image"></i>
+		        				<span>프로필 사진</span>
 		        			</div>
-		        			<div class="cards_inner_body">
-	        					<div class="input_box">
-	        						<div class="input_cell">
-										<div class="input_name">
-											아이디
+		        			<div class="cards_inner_body half_row">
+		        				<div class="cards_inner_body_left">
+			        				<div class="max_div column">
+			        					<div class="picture_container max_div column thumbnail">
+			        						<div class="picture_content">
+		        							    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="preview_image(this); check_thumbnail(this);" multiple>
+			        							<i class="fa-solid fa-plus"></i>
+			        						</div>
+			        						<div class="picture_name">
+			        							대표 프로필 사진
+			        						</div>
+			        					</div>
+			        					<div class="input_hint annotation_message">
+											* 대표 프로필 사진은 필수입니다.				
 										</div>
-										<div class="input_value">
-											<input type="text" name="user_id"/>
-										</div>
-									</div>
-									<div class="input_hint annotoation_message">
-										* 4~20자리의 영문, 숫자 조합								
-									</div>
-	        					</div>
-								<div class="input_box">
-									<div class="input_cell double">
-										<div class="input_name">
-											비밀번호
-										</div>
-										<div class="input_values">
-											<div class="input_value">
-												<input type="password" name="user_pw"/>
-											</div>
-											<div class="input_value">
-												<input type="password" name="user_pw"/>
-											</div>
-										</div>
-									</div>
-									<div class="input_hint annotoation_message">
-										* 4~20자리의 영문, 숫자 조합								
-									</div>
-								</div>
+									</div>				
+								</div>		
+								<div class="cards_inner_body_right">		
+									<div class="small_picture_container">
+										<div class="picture_content">
+	        							    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="preview_image(this)" multiple>
+		        							<i class="fa-solid fa-plus"></i>
+		        						</div>
+		        					</div>
+		        				</div>
 		        			</div>
 		        			<div class="cards_inner_footer">
 		        				<button type="button" class="custom_button" onclick="toggle_card('.join_modal',0,-1)">이전</button>
@@ -345,8 +510,8 @@
 						</div>
 						<div class="cards card_5 unfinished_column" >
 							<div class="cards_inner_header">
-		        				<i class="fa fa-user"></i>
-		        				<span>기본정보</span>
+		        				<i class="fa-solid fa-gear"></i>
+		        				<span>기본 설정</span>
 		        			</div>
 		        			<div class="cards_inner_body">
 	        					<div class="input_box">
@@ -358,7 +523,7 @@
 											<input type="text" name="user_id"/>
 										</div>
 									</div>
-									<div class="input_hint annotoation_message">
+									<div class="input_hint annotation_message">
 										* 4~20자리의 영문, 숫자 조합								
 									</div>
 	        					</div>
@@ -376,7 +541,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="input_hint annotoation_message">
+									<div class="input_hint annotation_message">
 										* 4~20자리의 영문, 숫자 조합								
 									</div>
 								</div>

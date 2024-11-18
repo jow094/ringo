@@ -135,7 +135,7 @@ public class MemberController {
 	        	    extension = originalFileName.substring(originalFileName.lastIndexOf("."));
 	        	}
 	        	
-                String fileName = vo.getUser_server() + "_" + vo.getUser_nationality() + "_" + user_code + "-" + i + extension;
+                String fileName = vo.getUser_server() + "_" + vo.getUser_nation() + "_" + user_code + "-" + i + extension;
 
                 File dest = new File(uploadPath + fileName);
                 try {
