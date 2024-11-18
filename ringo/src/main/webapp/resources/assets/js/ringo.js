@@ -1174,3 +1174,52 @@ function clear_card(container){
 	}
 	console.log('count:',count);
 }
+
+function last_submit(e){
+	var inputData = {};
+	var filePaths = [];
+
+    // 모든 input, textarea, select 태그를 순회
+    $(e).find('input, textarea, select').each(function() {
+        var name = $(this).attr('name');  // name 속성
+        var value = $(this).val();        // value 속성
+
+        if (value) {
+            if ($(this).is('select[name="user_private"]')) {
+                // select 태그는 곱셈으로 처리
+                if (!inputData[name]) {
+                    inputData[name] = 1;  // 처음 발견된 값에 대해서 1로 초기화
+                }
+                inputData[name] *= parseInt(value);  // select 값은 곱함
+            } else if ($(this).is('input[type="file"]')) {
+            	console.log('this is file');
+                // file 태그 처리: 여러 파일일 경우 배열로 담기
+                var files = $(this)[0].files;  // 선택된 파일들
+                if (files.length > 0) {
+                    for (var i = 0; i < files.length; i++) {
+                        filePaths.push(files[i].name);  // 파일 이름만 배열에 저장 (필요한 값만 담기)
+                    }
+                    inputData['user_profile_file'] = filePaths;  // user_profile_path라는 이름으로 배열을 담음
+                }
+            } else {
+                inputData[name] = value;  // 일반 input, textarea는 그대로 저장
+            }
+        }
+    });
+    
+    console.log(inputData);
+
+    // 데이터를 서버로 전송 (AJAX)
+   /* $.ajax({
+        type: 'POST',
+        url: '/submitMemberData',  // 서버의 컨트롤러 URL
+        data: JSON.stringify({ memberVO: inputData }),  // memberVO로 감싸서 전송
+        contentType: 'application/json',
+        success: function(response) {
+            console.log("데이터 전송 성공:", response);
+        },
+        error: function(error) {
+            console.log("데이터 전송 실패:", error);
+        }
+    });*/
+}

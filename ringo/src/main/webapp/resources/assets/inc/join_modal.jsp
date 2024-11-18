@@ -395,7 +395,7 @@
 												관심 분야
 											</div>
 											<div class="input_value">
-												<select class="annotation_message" onchange="select_card(this)">
+												<select "class="annotation_message" onchange="select_card(this)">
 													<option class="annotation_message" value="" selected disabled>관심 있는 분야를 하나 이상 선택하세요.</option>
 													<option value="music">음악</option>
 													<option value="movie">영화</option>
@@ -520,10 +520,10 @@
 											로그인 공개
 										</div>
 										<div class="input_value">
-											<select name="user_private_1" class="annotation_message">
+											<select name="user_private" class="annotation_message">
 												<option class="annotation_message" value="" selected disabled>로그인 상태 공개 여부</option>
 												<option value="1">공개</option>
-												<option value="2">비공개</option>
+												<option value="3">비공개</option>
 											</select>
 										</div>
 									</div>
@@ -537,11 +537,11 @@
 											팔로워 공개
 										</div>
 										<div class="input_value">
-											<select name="user_private_2" class="annotation_message">
+											<select name="user_private" class="annotation_message">
 												<option class="annotation_message" value="" selected disabled>팔로워 공개 여부</option>
 												<option value="1">공개</option>
-												<option value="3">비공개</option>
-												<option value="5">상호 팔로워에게만 공개</option>
+												<option value="5">비공개</option>
+												<option value="7">상호 팔로워에게만 공개</option>
 											</select>
 										</div>
 									</div>
@@ -555,11 +555,11 @@
 											게시글 공개
 										</div>
 										<div class="input_value">
-											<select name="user_private_3" class="annotation_message">
+											<select name="user_private" class="annotation_message">
 												<option class="annotation_message" value="" selected disabled>게시글 공개 여부</option>
 												<option value="1">공개</option>
-												<option value="7">팔로워에게만 공개</option>
-												<option value="11">전체 비공개</option>
+												<option value="11">팔로워에게만 공개</option>
+												<option value="13">전체 비공개</option>
 											</select>
 										</div>
 									</div>
@@ -573,11 +573,11 @@
 											방문기록 공개
 										</div>
 										<div class="input_value">
-											<select name="user_private_4" class="annotation_message">
+											<select name="user_private" class="annotation_message">
 												<option class="annotation_message" value="" selected disabled>방문기록 공개 여부</option>
 												<option value="1">공개</option>
-												<option value="13">팔로워에게만 공개</option>
-												<option value="17">전체 비공개</option>
+												<option value="17">팔로워에게만 공개</option>
+												<option value="19">전체 비공개</option>
 											</select>
 										</div>
 									</div>
@@ -591,12 +591,12 @@
 											매칭 허용
 										</div>
 										<div class="input_value">
-											<select name="user_private_5" class="annotation_message">
+											<select name="user_private" class="annotation_message">
 												<option class="annotation_message" value="" selected disabled>매칭 허용 여부</option>
 												<option value="1">공개</option>
-												<option value="19">소개받기 허용</option>
-												<option value="23">소개되기 허용</option>
-												<option value="29">모두 허용</option>
+												<option value="23">소개받기 허용</option>
+												<option value="29">소개되기 허용</option>
+												<option value="31">모두 허용</option>
 											</select>
 										</div>
 									</div>
@@ -610,10 +610,10 @@
 											풀 공개 허용
 										</div>
 										<div class="input_value">
-											<select name="user_private_6" class="annotation_message">
+											<select name="user_private" class="annotation_message">
 												<option class="annotation_message" value="" selected disabled>풀 공개 허용 여부</option>
 												<option value="1">공개</option>
-												<option value="31">비공개</option>
+												<option value="37">비공개</option>
 											</select>
 										</div>
 									</div>
@@ -636,7 +636,7 @@
         		<div class="submit_hint annotation_message">
 					* 미 입력 된 항목이 있습니다.			
 				</div>
-				<div class="cards_footer_button last_submit unfinished_row" onclick="">
+				<div class="cards_footer_button last_submit unfinished_row" onclick="last_submit('.join_modal')">
 					<span>가입하기</span>
 				</div>
 				<div class="cards_footer_button" onclick="hiding('.modal'); toggle_card('.join_modal',1,0);">
