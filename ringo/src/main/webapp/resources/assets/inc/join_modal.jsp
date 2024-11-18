@@ -482,7 +482,7 @@
 			        				<div class="max_div column">
 			        					<div class="picture_container max_div column thumbnail">
 			        						<div class="picture_content">
-		        							    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="preview_image(this); check_thumbnail(this);" multiple>
+		        							    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);" multiple>
 			        							<i class="fa-solid fa-plus"></i>
 			        						</div>
 			        						<div class="picture_name">
@@ -497,7 +497,7 @@
 								<div class="cards_inner_body_right">		
 									<div class="small_picture_container">
 										<div class="picture_content">
-	        							    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="preview_image(this)" multiple>
+	        							    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this)" multiple>
 		        							<i class="fa-solid fa-plus"></i>
 		        						</div>
 		        					</div>
@@ -515,34 +515,110 @@
 		        			</div>
 		        			<div class="cards_inner_body">
 	        					<div class="input_box">
-	        						<div class="input_cell">
+									<div class="input_cell unfinished_row with_select">
 										<div class="input_name">
-											아이디
+											로그인 공개
 										</div>
 										<div class="input_value">
-											<input type="text" name="user_id"/>
+											<select name="user_private_1" class="annotation_message">
+												<option class="annotation_message" value="" selected disabled>로그인 상태 공개 여부</option>
+												<option value="1">공개</option>
+												<option value="2">비공개</option>
+											</select>
 										</div>
 									</div>
 									<div class="input_hint annotation_message">
-										* 4~20자리의 영문, 숫자 조합								
+										* 로그인 상태 공개 여부를 선택하세요. 접속장소, 마지막 접속시간이 제공됩니다.						
 									</div>
-	        					</div>
+								</div>
 								<div class="input_box">
-									<div class="input_cell double">
+									<div class="input_cell unfinished_row with_select">
 										<div class="input_name">
-											비밀번호
+											팔로워 공개
 										</div>
-										<div class="input_values">
-											<div class="input_value">
-												<input type="password" name="user_pw"/>
-											</div>
-											<div class="input_value">
-												<input type="password" name="user_pw"/>
-											</div>
+										<div class="input_value">
+											<select name="user_private_2" class="annotation_message">
+												<option class="annotation_message" value="" selected disabled>팔로워 공개 여부</option>
+												<option value="1">공개</option>
+												<option value="3">비공개</option>
+												<option value="5">상호 팔로워에게만 공개</option>
+											</select>
 										</div>
 									</div>
 									<div class="input_hint annotation_message">
-										* 4~20자리의 영문, 숫자 조합								
+										* 팔로워 공개 여부를 선택하세요.					
+									</div>
+								</div>
+								<div class="input_box">
+									<div class="input_cell unfinished_row with_select">
+										<div class="input_name">
+											게시글 공개
+										</div>
+										<div class="input_value">
+											<select name="user_private_3" class="annotation_message">
+												<option class="annotation_message" value="" selected disabled>게시글 공개 여부</option>
+												<option value="1">공개</option>
+												<option value="7">팔로워에게만 공개</option>
+												<option value="11">전체 비공개</option>
+											</select>
+										</div>
+									</div>
+									<div class="input_hint annotation_message">
+										* 게시글 공개 여부를 선택하세요.					
+									</div>
+								</div>
+								<div class="input_box">
+									<div class="input_cell unfinished_row with_select">
+										<div class="input_name">
+											방문기록 공개
+										</div>
+										<div class="input_value">
+											<select name="user_private_4" class="annotation_message">
+												<option class="annotation_message" value="" selected disabled>방문기록 공개 여부</option>
+												<option value="1">공개</option>
+												<option value="13">팔로워에게만 공개</option>
+												<option value="17">전체 비공개</option>
+											</select>
+										</div>
+									</div>
+									<div class="input_hint annotation_message">
+										* 방문기록 공개 여부를 선택하세요.			
+									</div>
+								</div>
+								<div class="input_box">
+									<div class="input_cell unfinished_row with_select">
+										<div class="input_name">
+											매칭 허용
+										</div>
+										<div class="input_value">
+											<select name="user_private_5" class="annotation_message">
+												<option class="annotation_message" value="" selected disabled>매칭 허용 여부</option>
+												<option value="1">공개</option>
+												<option value="19">소개받기 허용</option>
+												<option value="23">소개되기 허용</option>
+												<option value="29">모두 허용</option>
+											</select>
+										</div>
+									</div>
+									<div class="input_hint annotation_message">
+										* 매칭 허용 여부를 선택하세요.			
+									</div>
+								</div>
+								<div class="input_box">
+									<div class="input_cell unfinished_row with_select">
+										<div class="input_name">
+											풀 공개 허용
+										</div>
+										<div class="input_value">
+											<select name="user_private_6" class="annotation_message">
+												<option class="annotation_message" value="" selected disabled>풀 공개 허용 여부</option>
+												<option value="1">공개</option>
+												<option value="31">비공개</option>
+											</select>
+										</div>
+									</div>
+									<div class="input_hint annotation_message">
+										* 풀 공개 허용 여부를 선택하세요.			
 									</div>
 								</div>
 		        			</div>
@@ -557,7 +633,10 @@
 	        	</div>
         	</div>
         	<div class="cards_footer">	
-				<div class="cards_footer_button" onclick="">
+        		<div class="submit_hint annotation_message">
+					* 미 입력 된 항목이 있습니다.			
+				</div>
+				<div class="cards_footer_button last_submit unfinished_row" onclick="">
 					<span>가입하기</span>
 				</div>
 				<div class="cards_footer_button" onclick="hiding('.modal'); toggle_card('.join_modal',1,0);">

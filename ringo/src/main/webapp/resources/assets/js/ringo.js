@@ -4,16 +4,18 @@ $(document).ready(function() {
 	get_coordinates();
 	
 	window.onclick = function(e) {
-	    if (!$(e.target).closest('.modal_content').length && !$(e.target).closest('.modal_button').length) {
-	    	console.log('every modal close');
-	    	hiding('.modal');
+		if ($('.join_modal:not(.none)').length > 0) {
+	        if (!$(e.target).closest('.modal_content').length && !$(e.target).closest('.modal_button').length) {
+	            hiding('.join_modal');
+	        }
 	    }
 	}
 	
 	$(document).on('keydown', function(e) {
 	    if(e.keyCode === 27){
-	    	hiding('.modal');
-	    	toggle_card('.cards_container',1,0);
+	    	if ($('.join_modal:not(.none)').length > 0) {
+		    	hiding('.join_modal');
+	    	}
 	    }
 	});
 	
@@ -73,51 +75,44 @@ $(document).ready(function() {
 	
 	let draggedElement = null;
 
-	// 드래그 시작
 	$(document).on("dragstart", ".draggable", function (e) {
-	    draggedElement = this; // 드래그된 요소를 저장
+	    draggedElement = this;
 	    e.originalEvent.dataTransfer.effectAllowed = "move";
 	    
-	    // 드래그 중에 이미지만 보이도록 하고, 나머지 요소들은 숨깁니다.
 	    $(this).find(":not(img)").css("visibility", "hidden");
-	    console.log("드래그 시작:", draggedElement);
 	});
 
-	// 드래그 종료
 	$(document).on("dragend", ".draggable", function () {
-	    // 드래그가 끝나면 숨겨진 요소들을 다시 보이게 합니다.
 	    $(this).find(":not(img)").css("visibility", "visible");
 	});
 
-	// 드롭 가능 영역으로 드래그 오버 시 강조
 	$(document).on("dragover", ".draggable", function (e) {
-	    e.preventDefault(); // 드롭 가능하게 설정
-	    $(this).addClass("drag-over"); // 강조 클래스 추가
+	    e.preventDefault();
+	    $(this).addClass("drag-over");
 	});
 
-	// 드래그가 벗어났을 때 강조 제거
 	$(document).on("dragleave", ".draggable", function () {
-	    $(this).removeClass("drag-over"); // 강조 클래스 제거
+	    $(this).removeClass("drag-over");
 	});
 
-	// 드롭
 	$(document).on("drop", ".draggable", function (e) {
 	    e.preventDefault();
-	    $(this).removeClass("drag-over"); // 강조 클래스 제거
+	    $(this).removeClass("drag-over");
 
 	    if (draggedElement !== this) {
-	        // 드래그된 요소와 현재 요소를 교체
-	        const draggedClone = $(draggedElement).clone(true); // 드래그된 요소를 복제
-	        const targetClone = $(this).clone(true); // 드롭된 요소를 복제
+	        const draggedClone = $(draggedElement).clone(true);
+	        const targetClone = $(this).clone(true);
 
-	        // 복제된 요소들로 교체
-	        $(draggedElement).replaceWith(targetClone); // 드래그된 요소 위치에 드롭된 요소를 넣음
-	        $(this).replaceWith(draggedClone); // 드롭된 요소 위치에 드래그된 요소를 넣음
+	        $(draggedElement).replaceWith(targetClone);
+	        $(this).replaceWith(draggedClone);
 	    }
 
-	    console.log("드래그 완료:", draggedElement, "와", this, "맞교환 완료");
 	});
-
+	
+	$(document).on('change', '.thumbnail input[type="file"]', function () {
+	    check_thumbnail(this);
+	});
+	
 });
 
 function login_check(){
@@ -855,21 +850,18 @@ function validate_text(input,annotation_message) {
 }
 
 function set_finished(e, direction) {
-	const target = $(e).closest(`.finished_${direction}, .unfinished_${direction}`);
-	console.log('closest before:',target.attr('class'));
+	const target = $(e).closest(`.finished_${direction}, .unfinished_${direction}, .failed_${direction}`);
 	target.removeClass(`failed_${direction}`);
 	if (!target.hasClass(`finished_${direction}`)) {
 		target.removeClass(`unfinished_${direction}`).addClass(`finished_${direction}`);
 	}
 	const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
 	const index = match ? match[1] : undefined;
-	console.log('e:',e);
-	console.log('closest after:',target.attr('class'));
 	check_finished(index,'.join_modal');
 }
 
 function set_unfinished(e, direction) {
-    const target = $(e).closest(`.finished_${direction}, .unfinished_${direction}`);
+	const target = $(e).closest(`.finished_${direction}, .unfinished_${direction}, .failed_${direction}`);
     target.removeClass(`failed_${direction}`);
     if (!target.hasClass(`unfinished_${direction}`)) {
         target.removeClass(`finished_${direction}`).addClass(`unfinished_${direction}`);
@@ -880,9 +872,9 @@ function set_unfinished(e, direction) {
 }
 
 function set_failed(e, direction) {
-    const target = $(e).closest(`.finished_${direction}, .unfinished_${direction}`);
+	const target = $(e).closest(`.finished_${direction}, .unfinished_${direction}, .failed_${direction}`);
     if (!target.hasClass(`failed_${direction}`)) {
-    	target.removeClass(`finished_${direction}`).target.removeClass(`unfinished_${direction}`).target.addClass(`failed_${direction}`);
+    	target.removeClass(`finished_${direction}`).removeClass(`unfinished_${direction}`).addClass(`failed_${direction}`);
     }
     const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
     const index = match ? match[1] : undefined;
@@ -916,37 +908,61 @@ function set_hint(e,msg,className){
 
 function check_finished(index,container) {
 	
-	var count = $(`.card_${index}`).find('.unfinished_row').length + $(`.card_${index}`).find('.unfinished_column').length;
+	var count = $(`.card_${index}`).find('.unfinished_row').length + $(`.card_${index}`).find('.unfinished_column').length
+				+$(`.card_${index}`).find('.failed_row').length + $(`.card_${index}`).find('.failed_column').length;
     
-    if($(`.card_${index}`).find('.unfinished_row').length === 0 && $(`.card_${index}`).find('.unfinished_column').length === 0){
+    if(count === 0){
     	
     	if($(`.card_${index}`).attr('class').includes('row')){
     		$(`.card_${index}`).removeClass('unfinished_row');
-    		$(`.card_${index}`).addClass('finished_row');
+    		$(`.card_${index}`).removeClass('failed_row');
+    		if(!$(`.card_${index}`).hasClass('finished_row')){
+    			$(`.card_${index}`).addClass('finished_row');
+    		}
     	}
     	
     	if($(`.card_${index}`).attr('class').includes('column')){
     		$(`.card_${index}`).removeClass('unfinished_column');
-    		$(`.card_${index}`).addClass('finished_column');
+    		$(`.card_${index}`).removeClass('failed_column');
+    		if(!$(`.card_${index}`).hasClass('finished_column')){
+    			$(`.card_${index}`).addClass('finished_column');
+    		}
     	}
     	
     	$(container).find(`[data-targetindex="${index}"]`).removeClass('unfinished_column');
-    	$(container).find(`[data-targetindex="${index}"]`).addClass('finished_column');
+    	$(container).find(`[data-targetindex="${index}"]`).removeClass('failed_column');
+    	
+    	if(!$(container).find(`[data-targetindex="${index}"]`).hasClass('finished_column')){
+    		$(container).find(`[data-targetindex="${index}"]`).addClass('finished_column');
+		}
     }else{
     	
     	if($(`.card_${index}`).attr('class').includes('row')){
     		$(`.card_${index}`).removeClass('finished_row');
-    		$(`.card_${index}`).addClass('unfinished_row');
+    		$(`.card_${index}`).removeClass('failed_row');
+    		if(!$(`.card_${index}`).hasClass('unfinished_row')){
+    			$(`.card_${index}`).addClass('unfinished_row');
+    		}
     	}
     	
     	if($(`.card_${index}`).attr('class').includes('column')){
     		$(`.card_${index}`).removeClass('finished_column');
-    		$(`.card_${index}`).addClass('unfinished_column');
+    		$(`.card_${index}`).removeClass('failed_column');
+    		
+    		if(!$(`.card_${index}`).hasClass('unfinished_column')){
+    			$(`.card_${index}`).addClass('unfinished_column');
+    		}
     	}
     	
     	$(container).find(`[data-targetindex="${index}"]`).removeClass('finished_column');
-    	$(container).find(`[data-targetindex="${index}"]`).addClass('unfinished_column');
+    	$(container).find(`[data-targetindex="${index}"]`).removeClass('failed_column');
+    	
+    	if(!$(container).find(`[data-targetindex="${index}"]`).hasClass('unfinished_column')){
+    		$(container).find(`[data-targetindex="${index}"]`).addClass('unfinished_column');
+		}
     }
+    
+    clear_card(container);
 }
 
 function select_card(e) {
@@ -1012,7 +1028,7 @@ function delete_card(e) {
     }, 1);
 }
 
-function preview_image(input) {
+function add_image(input) {
     var file = input.files[0];  // 사용자가 선택한 첫 번째 파일
     
     if (file) {
@@ -1021,7 +1037,7 @@ function preview_image(input) {
         reader.onload = function(e) {
         	$(input).siblings('i').remove();
         	$(input).closest('.picture_content').addClass('have_img');
-        	$(input).closest('.picture_content').addClass('on-top');
+        	$(input).closest('.picture_content').addClass('on_top');
         	$(input).closest('.picture_content').addClass('draggable');
         	$(input).closest('.picture_content').attr("onmouseover", "mouse_over(this)");
         	$(input).closest('.picture_content').attr("onmouseleave", "mouse_leave(this)");
@@ -1039,30 +1055,84 @@ function preview_image(input) {
     if($(input).closest('.small_picture_container').length>0){
     	$(input).closest('.picture_content').after(`
     			<div class="picture_content">
-				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="preview_image(this)" multiple>
+				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this)" multiple>
 					<i class="fa-solid fa-plus"></i>
 				</div>
     	`);
     }
 }
 
-function check_thumbnail(e){
-    
-	setTimeout(() => {
-		if($(e).closest('.thumbnail').find('input').val()==''){
-			$(e).closest('.cards').removeClass('finished_column');
-			if(!$(e).closest('.cards').hasClass('unfinished_column')){
-				$(e).closest('.cards').addClass('unfinished_column');
+function delete_image(e) {
+	setTimeout(function() {
+		if($(e).closest('.small_picture_container').length>0){
+			$(e).remove();
+		}
+		if($(e).closest('.thumbnail').length>0){
+			
+			const thumbnail = $(e).closest('.thumbnail');
+			
+			$(e).closest('.thumbnail').html(`
+					<div class="picture_content">
+						<input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);" multiple>
+						<i class="fa-solid fa-plus"></i>
+					</div>
+					<div class="picture_name">
+						대표 프로필 사진
+					</div>
+			`);
+			
+			const match = $(thumbnail).closest('.cards').attr('class').match(/card_(\d+)/);
+		    const index = match ? match[1] : undefined;
+		    
+			$(thumbnail).closest('.cards').removeClass('finished_column');
+			if(!$(thumbnail).closest('.cards').hasClass('unfinished_column')){
+				$(thumbnail).closest('.cards').addClass('unfinished_column');
 			}
+			
+			$(thumbnail).closest('.modal').find(`[data-targetindex="${index}"]`).removeClass('finished_column');
+			$(thumbnail).closest('.modal').find(`[data-targetindex="${index}"]`).removeClass('failed_column');
+	    	
+	    	if(!$(thumbnail).closest('.modal').find(`[data-targetindex="${index}"]`).hasClass('unfinished_column')){
+	    		$(thumbnail).closest('.modal').find(`[data-targetindex="${index}"]`).addClass('unfinished_column');
+			}
+		}
+    }, 1);
+}
+
+function check_thumbnail(e){
+    const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
+    const index = match ? match[1] : undefined;
+    
+	if($(e).closest('.thumbnail').find('input').val()==''){
+		$(e).closest('.cards').removeClass('finished_column');
+		if(!$(e).closest('.cards').hasClass('unfinished_column')){
+			$(e).closest('.cards').addClass('unfinished_column');
 		}
 		
-		if($(e).closest('.thumbnail').find('input').val()!=''){
-			$(e).closest('.cards').removeClass('unfinished_column');
-			if(!$(e).closest('.cards').hasClass('finished_column')){
-				$(e).closest('.cards').addClass('finished_column');
-			}
+		$(e).closest('.modal').find(`[data-targetindex="${index}"]`).removeClass('finished_column');
+		$(e).closest('.modal').find(`[data-targetindex="${index}"]`).removeClass('failed_column');
+    	
+    	if(!$(e).closest('.modal').find(`[data-targetindex="${index}"]`).hasClass('unfinished_column')){
+    		$(e).closest('.modal').find(`[data-targetindex="${index}"]`).addClass('unfinished_column');
 		}
-	}, 10);
+		
+	}
+	
+	if($(e).closest('.thumbnail').find('input').val()!=''){
+		$(e).closest('.cards').removeClass('unfinished_column');
+		if(!$(e).closest('.cards').hasClass('finished_column')){
+			$(e).closest('.cards').addClass('finished_column');
+		}
+		
+		$(e).closest('.modal').find(`[data-targetindex="${index}"]`).removeClass('unfinished_column');
+		$(e).closest('.modal').find(`[data-targetindex="${index}"]`).removeClass('failed_column');
+    	
+    	if(!$(e).closest('.modal').find(`[data-targetindex="${index}"]`).hasClass('finished_column')){
+    		$(e).closest('.modal').find(`[data-targetindex="${index}"]`).addClass('finished_column');
+		}
+	}
+	
+	clear_card($(e).closest('.modal'));
 }
 
 function mouse_over(e) {
@@ -1090,24 +1160,17 @@ function mouse_leave(e) {
 	}
 }
 
-function delete_image(e) {
-	
-	setTimeout(function() {
-		$(e).find('input').val('');
-		mouse_leave(e);
-		$(e).find('i').remove();
-		$(e).find('img').remove();
-		$(e).removeClass('have_img');
-		$(e).removeClass('on-top');
-		$(e).removeClass('draggable');
-		$(e).removeAttr("onmouseover", "mouse_over(this)");
-		$(e).removeAttr("onmouseleave", "mouse_leave(this)");
-		$(e).removeAttr("onclick", "delete_image(this)");
-		$(e).append(`<i class="fa-solid fa-plus"></i>`);
-		
-		if($(e).closest('.small_picture_container').length>0){
-			$(e).remove();
+function clear_card(container){
+	var count = $(container).find('.cards').filter('.unfinished_column').length;
+	var target = $(container).find('.last_submit');
+	if(count==0){
+		if (!target.hasClass(`finished_row`)) {
+			target.removeClass(`unfinished_row`).addClass(`finished_row`);
 		}
-    }, 1);
+	}else{
+		if (!target.hasClass(`unfinished_row`)) {
+			target.removeClass(`finished_row`).addClass(`unfinished_row`);
+		}
+	}
+	console.log('count:',count);
 }
-
