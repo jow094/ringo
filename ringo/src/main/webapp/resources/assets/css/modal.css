@@ -605,6 +605,7 @@
 }
 .input_box textarea{
 	height:100px !important;	
+	font-size:12px;
 }
 
 .picture_container{

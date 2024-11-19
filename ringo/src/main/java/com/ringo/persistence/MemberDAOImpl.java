@@ -37,15 +37,25 @@ public class MemberDAOImpl implements MemberDAO {
 	}
 	
 	@Override
-	public Integer selectLastCode(MemberVO vo) {
-		logger.debug("selectLastCode(MemberVO) - vo : "+vo);
-		return sqlSession.selectOne(NAMESPACE + ".selectLastCode",vo);		
+	public Integer selectLastCode() {
+		logger.debug("selectLastCode");
+		return sqlSession.selectOne(NAMESPACE + ".selectLastCode");		
 	}
 	
 	@Override
 	public Integer insertMember(MemberVO vo) {
 		logger.debug("insertMember(MemberVO) - vo : "+vo);
 		return sqlSession.insert(NAMESPACE + ".insertMember",vo);	
+	}
+
+	@Override
+	public Integer selectDuplication(String target, String data) {
+		
+		Map<String, Object> params = new HashMap<>();
+		params.put("target", target);
+		params.put("value", data);
+		
+		return sqlSession.selectOne(NAMESPACE + ".selectDuplication",params);	
 	}
 
 	/*
@@ -104,9 +114,9 @@ public class MemberDAOImpl implements MemberDAO {
 	 * 
 	 * Integer presence = random.nextInt(365);
 	 * 
-	 * if(presence > 350) { param.put("presence", "�빊�뮇�삢"); }else if(351 > presence &&
-	 * presence > 310) { param.put("presence", "占쎌몧揶쏉옙"); }else if(311 > presence ) {
-	 * param.put("presence", "�빊�뮄�젏"); }
+	 * if(presence > 350) { param.put("presence", "占쎈퉲占쎈츋占쎌궋"); }else if(351 > presence &&
+	 * presence > 310) { param.put("presence", "�뜝�럩紐㎪뤆�룊�삕"); }else if(311 > presence ) {
+	 * param.put("presence", "占쎈퉲占쎈츇占쎌젎"); }
 	 * 
 	 * if (311>presence) {
 	 * 

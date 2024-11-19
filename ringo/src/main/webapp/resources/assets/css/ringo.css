@@ -22,6 +22,44 @@
     font-style: normal;
     font-display: swap;
 }
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  10% {
+    transform: translateX(-3px);  /* 왼쪽으로 약간 이동 */
+  }
+  20% {
+    transform: translateX(3px);   /* 오른쪽으로 약간 이동 */
+  }
+  30% {
+    transform: translateX(-3px);  /* 왼쪽으로 약간 이동 */
+  }
+  40% {
+    transform: translateX(3px);   /* 오른쪽으로 약간 이동 */
+  }
+  50% {
+    transform: translateX(-3px);  /* 왼쪽으로 약간 이동 */
+  }
+  60% {
+    transform: translateX(3px);   /* 오른쪽으로 약간 이동 */
+  }
+  70% {
+    transform: translateX(-3px);  /* 왼쪽으로 약간 이동 */
+  }
+  80% {
+    transform: translateX(3px);   /* 오른쪽으로 약간 이동 */
+  }
+  90% {
+    transform: translateX(-3px);  /* 왼쪽으로 약간 이동 */
+  }
+  100% {
+    transform: translateX(0);     /* 원래 위치로 돌아옴 */
+  }
+}
+.shake {
+  animation: shake 1s ease-in-out;  /* 1초 동안 애니메이션 실행 */
+}
 .active {
 	box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.8) !important;
 	background-color: rgb(250,250,250) !important;
@@ -161,7 +199,7 @@ input[type="radio"]:checked + label i,input[type="checkbox"]:checked + label i{
 *:not(i){
 	font-family: 'a_Gothic' !important;
 	color: rgb(50,50,50);
-	font-size:14px;
+	font-size:12px;
 }
 *{
 	transition: width 0.3s ease-in-out, 

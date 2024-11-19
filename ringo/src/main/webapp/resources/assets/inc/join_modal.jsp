@@ -54,7 +54,7 @@
 			        					내용
 			        					</div>
 			        					<div class="terms_footer">
-				        					<input type="checkbox" id="terms_1_agree" name="checkbox" />
+				        					<input type="checkbox" class="outform" id="terms_1_agree" name="checkbox" />
 										    <label for="terms_1_agree">
 										        <i class="fa-regular fa-square-check"></i> 동의
 										    </label>
@@ -68,7 +68,7 @@
 												이름
 											</div>
 											<div class="input_value">
-												<input type="text" name="user_name" oninput="validate_name(this)"/>
+												<input type="text" name="user_name" onblur="validate_name(this)" oninput="validate_name(this)"/>
 											</div>
 										</div>
 										<div class="input_hint annotation_message">
@@ -81,7 +81,7 @@
 												생년월일
 											</div>
 											<div class="input_value">
-												<input type="text" name="user_birth" oninput="validate_birth(this)"/>
+												<input type="text" name="user_birth" onblur="validate_birth(this)" oninput="validate_birth(this)"/>
 											</div>
 										</div>
 										<div class="input_hint annotation_message annotation_message">
@@ -129,13 +129,13 @@
 											</div>
 											<div class="input_value_container">
 												<div class="input_value">
-													<input id="user_tel" type="text" name="user_tel" onkeydown="if(event.key === 'Enter'){ send_sms('.join_modal','#user_sms_authentication'); }"/>
-													<div class="input_cell_button" onclick="send_sms('.join_modal','#user_sms_authentication');">
+													<input id="user_tel" type="text" name="user_tel" onblur="validate_tel(this)" oninput="validate_tel(this)" onkeydown="if(event.key === 'Enter'){ send_sms(this); }"/>
+													<div class="input_cell_button" onclick="send_sms(this)">
 														인증요청
 													</div>
 												</div>
 												<div id="user_sms_authentication" class="input_value none">
-													<input type="text" name="user_authentication"/>
+													<input type="text" name="user_authentication" class="outform" placeholder="인증번호를 입력하세요."/>
 													<div class="input_cell_button" onclick="check_code(this,'sms')">
 														인증확인
 													</div>
@@ -153,13 +153,13 @@
 											</div>
 											<div class="input_value_container">
 												<div class="input_value">
-													<input id="user_email" type="text" name="user_email" onkeydown="if(event.key === 'Enter'){ send_email('.join_modal','#user_email_authentication'); }"/>
-													<div class="input_cell_button" onclick="send_email('.join_modal','#user_email_authentication');">
+													<input id="user_email" type="text" name="user_email" onblur="validate_email(this)" oninput="validate_email(this)" onkeydown="if(event.key === 'Enter'){ send_email(this); }"/>
+													<div class="input_cell_button" onclick="send_email(this);">
 														인증요청
 													</div>
 												</div>
 												<div id="user_email_authentication" class="input_value none">
-													<input type="text" name="user_authentication"/>
+													<input type="text" name="user_authentication" class="outform" placeholder="인증번호를 입력하세요."/>
 													<div class="input_cell_button" onclick="check_code(this,'email')">
 														인증확인
 													</div>
@@ -177,7 +177,7 @@
 													주소
 												</div>
 												<div class="input_value">
-													<input type="text" id="search_address_input" onkeydown="if(event.key === 'Enter'){ search_address('.join_modal','#user_address_search_container'); }"/>
+													<input type="text" class="outform" id="search_address_input" onkeydown="if(event.key === 'Enter'){ search_address('.join_modal','#user_address_search_container'); }"/>
 													<div class="input_cell_button" onclick="search_address('.join_modal','#user_address_search_container');">
 														검색
 													</div>
@@ -193,8 +193,8 @@
 												<div class="selected_address">
 												</div>
 												<div class="max_div row">
-													<input type="text" onkeydown="if(event.key === 'Enter'){ submit_address(this); }"/>
-													<div class="input_cell_button" onclick="submit_address(this);">
+													<input type="text" class="outform" id="detail_address" onkeydown="if(event.key === 'Enter'){ submit_address(this); }"/>
+													<div class="input_cell_button" onclick="submit_address('#detail_address');">
 														확인
 													</div>
 												</div>
@@ -224,7 +224,7 @@
 												아이디
 											</div>
 											<div class="input_value">
-												<input type="text" name="user_id" oninput="validate_id(this)"/>
+												<input type="text" name="user_id" onblur="validate_id(this)" oninput="validate_id(this)"/>
 											</div>
 										</div>
 										<div class="input_hint annotation_message">
@@ -238,10 +238,10 @@
 											</div>
 											<div class="max_div column">
 												<div class="input_value">
-													<input type="password" name="user_pw" oninput="validate_pw(this)"/>
+													<input type="password" name="user_pw" onblur="validate_pw(this)" oninput="validate_pw(this)"/>
 												</div>
 												<div id="check_pw" class="input_value none">
-													<input type="password" oninput="check_pw(this)"/>
+													<input type="password" class="outform" oninput="check_pw(this)"/>
 												</div>
 											</div>
 										</div>
@@ -255,7 +255,7 @@
 												닉네임
 											</div>
 											<div class="input_value">
-												<input type="text" name="user_nickname" oninput="validate_nickname(this)"/>
+												<input type="text" name="user_nickname" onblur="validate_nickname(this)" oninput="validate_nickname(this)"/>
 											</div>
 										</div>
 										<div class="input_hint annotation_message">
@@ -341,7 +341,7 @@
 												한줄 소개
 											</div>
 											<div class="input_value">
-												<textarea name="user_intro" oninput="validate_text(this,'* 자신을 소개할 문구를 작성 해주세요.')"></textarea>
+												<textarea name="user_intro" onblur="validate_text(this,'* 자신을 소개할 문구를 작성 해주세요.')" oninput="validate_text(this,'* 자신을 소개할 문구를 작성 해주세요.')"></textarea>
 											</div>
 										</div>
 										<div class="input_hint annotation_message">
@@ -354,7 +354,7 @@
 												학습 목표
 											</div>
 											<div class="input_value">
-												<textarea name="user_objective" oninput="validate_text(this,'* 언어 학습 목적, 목표 수준에 대해 작성해주세요.')"></textarea>
+												<textarea name="user_objective" onblur="validate_text(this,'* 언어 학습 목적, 목표 수준에 대해 작성해주세요.')" oninput="validate_text(this,'* 언어 학습 목적, 목표 수준에 대해 작성해주세요.')"></textarea>
 											</div>
 										</div>
 										<div class="input_hint annotation_message">
@@ -367,7 +367,7 @@
 												이상형
 											</div>
 											<div class="input_value">
-												<textarea name="user_ideal_partner" oninput="validate_text(this,'* 만나고 싶은 대화 상대를 알려주세요.')"></textarea>
+												<textarea name="user_ideal_partner" onblur="validate_text(this,'* 만나고 싶은 대화 상대를 알려주세요.')" oninput="validate_text(this,'* 만나고 싶은 대화 상대를 알려주세요.')"></textarea>
 											</div>
 										</div>
 										<div class="input_hint annotation_message">
@@ -380,7 +380,7 @@
 												대화 주제
 											</div>
 											<div class="input_value">
-												<textarea name="user_topic" oninput="validate_text(this,'* 원하는 대화 주제에 대해 알려주세요.')"></textarea>
+												<textarea name="user_topic" onblur="validate_text(this,'* 원하는 대화 주제에 대해 알려주세요.')" oninput="validate_text(this,'* 원하는 대화 주제에 대해 알려주세요.')"></textarea>
 											</div>
 										</div>
 										<div class="input_hint annotation_message">
@@ -395,7 +395,7 @@
 												관심 분야
 											</div>
 											<div class="input_value">
-												<select "class="annotation_message" onchange="select_card(this)">
+												<select class="annotation_message" onchange="select_card(this)">
 													<option class="annotation_message" value="" selected disabled>관심 있는 분야를 하나 이상 선택하세요.</option>
 													<option value="music">음악</option>
 													<option value="movie">영화</option>
@@ -456,7 +456,7 @@
 												교정 강도
 											</div>
 											<div class="input_value">
-												<select id="user_correction_degree" name="user_correction" class="annotation_message">
+												<select id="user_correction_degree" name="user_correction_degree" class="annotation_message">
 													<option class="annotation_message" value="" selected disabled>원하는 교정 강도를 선택하세요.</option>
 													<option value="nomatter">상관 없음</option>
 													<option value="forcritical">심한 오류가 있을때만 고쳐주세요.</option>
@@ -634,9 +634,9 @@
         	</div>
         	<div class="cards_footer">	
         		<div class="submit_hint annotation_message">
-					* 미 입력 된 항목이 있습니다.			
+					* 미 입력 된 항목이 있습니다.
 				</div>
-				<div class="cards_footer_button last_submit unfinished_row" onclick="last_submit('.join_modal')">
+				<div class="cards_footer_button last_submit unfinished_row" onclick="check_submit('.join_modal')">
 					<span>가입하기</span>
 				</div>
 				<div class="cards_footer_button" onclick="hiding('.modal'); toggle_card('.join_modal',1,0);">

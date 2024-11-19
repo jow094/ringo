@@ -30,7 +30,7 @@ public class AddressServiceImpl implements AddressService{
 	private static final Logger logger = LoggerFactory.getLogger(AddressServiceImpl.class);
 
     @Value("${juso.api.key}")
-    private String apiKey; // πﬂ±ﬁπﬁ¿∫ API ≈∞
+    private String apiKey;
     
     private final RestTemplate restTemplate;
 
@@ -46,7 +46,7 @@ public class AddressServiceImpl implements AddressService{
 
     public String searchRoadAddress(String keyword) throws UnsupportedEncodingException{
     	logger.debug("Original keyword: " + keyword);
-    	String encodedKeyword = keyword.trim().replaceAll("[^a-zA-Z0-9∞°-∆R ]", "");
+    	String encodedKeyword = keyword.trim().replaceAll("[^a-zA-Z0-9Í∞Ä-Ìû£ ]", "");
 
         try {
             logger.debug("Encoded keyword: " + encodedKeyword);
@@ -67,10 +67,10 @@ public class AddressServiceImpl implements AddressService{
             logger.debug("Final API URL: " + uriBuilder.toUriString());
             
             ResponseEntity<String> response = restTemplate.exchange(
-            	    uriBuilder.toUriString(), // √÷¡æ URL
-            	    HttpMethod.GET,           // GET ø‰√ª
-            	    null,                     // «Ï¥ı æ¯¿Ã ø‰√ª
-            	    String.class              // ¿¿¥‰ ≈∏¿‘
+            	    uriBuilder.toUriString(),
+            	    HttpMethod.GET,           
+            	    null,                     
+            	    String.class             
             	);
             
             logger.debug("Response Status Code: " + response.getStatusCode());
@@ -101,6 +101,6 @@ public class AddressServiceImpl implements AddressService{
         ResponseEntity<String> response = restTemplate.exchange(
                 uriBuilder.toUriString(), HttpMethod.GET, entity, String.class);
 
-        return response.getBody(); // JSON¿∏∑Œ π›»Øµ» ¡÷º“ ¡§∫∏
+        return response.getBody();
     }
 }

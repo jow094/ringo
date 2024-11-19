@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +33,7 @@ import com.ringo.service.AddressService;
 import com.ringo.service.AuthenticationService;
 
 import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 // http://localhost:8082/swagger-ui/index.html 
 
@@ -39,7 +42,7 @@ import io.swagger.annotations.Api;
 /*
  * @RequestMapping("/api")
  * 
- * @Api(tags = "∏ﬁ¿Œ ƒ¡∆Æ∑—∑Ø")
+ * @Api(tags = "Î©îÏù∏ Ïª®Ìä∏Î°§Îü¨")
  */
 public class MemberController {
 	
@@ -77,7 +80,7 @@ public class MemberController {
 		MemberVO result = mService.memberLogin(vo);
 		session.setAttribute("user_id", result.getUser_id());
 		session.setAttribute("user_name", result.getUser_name());
-		session.setAttribute("user_thumbnail", result.getUser_thumbnail());
+		session.setAttribute("user_thumbnail", result.getUser_thumbnail_path());
 		
 		logger.debug("loginPOST(MemberVO) - result : "+result);
 		return "redirect:/main/home";
@@ -105,60 +108,88 @@ public class MemberController {
 	}
 	
 	@RequestMapping(value = "/join", method = RequestMethod.POST)
-	public String joinPOST(HttpSession session, MemberVO vo, BindingResult result) {
-		if (result.hasErrors()) {
-	        logger.error("joinPOST(MemberVO) - Binding error : " + result.getAllErrors());
-	        
-	        return "/member/join"; //
-	    }
-		logger.debug("joinPOST(MemberVO) - vo : "+vo);
+	@ResponseBody
+	public Integer joinPOST(HttpSession session,MemberVO vo) {
 		
-		Integer user_code = mService.getLastUserCode(vo);
+		logger.debug("joinPOST - vo : " + vo);
+		logger.debug("joinPOST - thumbnailFile : " + vo.getUser_thumbnail_file());
+		logger.debug("joinPOST - fileList : " + vo.getUser_profile_file());
+		try {
+			
+			Integer user_code = mService.getLastUserCode();
+			
+			if(user_code==null) {
+				user_code = 0;
+			}
+			
+			user_code++;
+			
+			List<MultipartFile> profile_files = vo.getUser_profile_file(); 
+			StringBuilder user_profile_path = new StringBuilder();
+			MultipartFile thumbnail_file = vo.getUser_thumbnail_file();
+			String user_thumbnail_path = "";
+			
+			Integer i = 1;
+			if (thumbnail_file != null && !thumbnail_file.isEmpty()) {
+		        String originalFileName = thumbnail_file.getOriginalFilename();
+	
+		        String extension = "";
+		        if (originalFileName != null && originalFileName.contains(".")) {
+		            extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+		        }
+	
+		        user_thumbnail_path = user_code + "_thumbnail" + extension;
+	
+		        File dest = new File(uploadPath + user_thumbnail_path);
+		        try {
+		        	thumbnail_file.transferTo(dest);
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+		    }
+			
+			if(profile_files != null && !profile_files.isEmpty()) {
+				for (MultipartFile file : profile_files) {
+				    if (!file.isEmpty()) {
+				        String originalFileName = file.getOriginalFilename();
 		
-		if(user_code==null) {
-			user_code = 0;
-		}
+				        String extension = "";
+				        if (originalFileName != null && originalFileName.contains(".")) {
+				            extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+				        }
 		
-		user_code++;
+				        String fileName = user_code + "_" + i + extension;
 		
-		List<MultipartFile> fileList = vo.getUser_profile_file();
-		List<String> fileNames = new ArrayList<String>();
-
-		Integer i = 1;
+				        if (user_profile_path.length() > 0) {
+				        	user_profile_path.append(",");
+				        }
+				        user_profile_path.append(fileName);
 		
-		for (MultipartFile file : fileList) {
-	        if (!file.isEmpty()) {
-	        	String originalFileName = file.getOriginalFilename();
-
-	        	String extension = "";
-	        	if (originalFileName != null && originalFileName.contains(".")) {
-	        	    extension = originalFileName.substring(originalFileName.lastIndexOf("."));
-	        	}
-	        	
-                String fileName = vo.getUser_server() + "_" + vo.getUser_nation() + "_" + user_code + "-" + i + extension;
-
-                File dest = new File(uploadPath + fileName);
-                try {
-					file.transferTo(dest);
-				} catch (IOException e) {
-					e.printStackTrace();
+				        File dest = new File(uploadPath + fileName);
+				        try {
+				            file.transferTo(dest);
+				        } catch (IOException e) {
+				            e.printStackTrace();
+				        }
+		
+				        i++;
+				    }
 				}
-
-                fileNames.add(fileName);
-                i++;
-	        }
+			}
+			
+			String fcode = user_code+"_"+vo.getUser_private().toString();
+			vo.setUser_fcode(fcode);
+			vo.setUser_code(user_code);
+			vo.setUser_thumbnail_path(user_thumbnail_path);
+			vo.setUser_profile_path((user_profile_path.toString()));
+			
+			return mService.memberJoin(vo);
+			
+		} catch (NullPointerException e) {
+	        return 3;
+	    } catch (Exception e) {
+	    	return 0;
 	    }
-		
-		while (fileNames.size() < 8) {
-			fileNames.add("");
-	    }
-		
-		vo.setUser_profile_path(fileNames);
-		vo.setUser_code(user_code);
-
-		mService.memberJoin(vo);
-		
-		return "redirect:/member/login";
 	}
 	
 	@RequestMapping(value = "/authentication/sms", method = RequestMethod.GET)
@@ -171,7 +202,7 @@ public class MemberController {
         
         logger.debug("sendSms: "+user_tel);
         
-        smsService.sendSms(user_tel, "Ringo ¿Œ¡ıπ¯»£¥¬ [" + smsCode + "] ¿‘¥œ¥Ÿ. 5∫– ≥ªø° ¿‘∑¬«ÿ¡÷ººø‰.");
+        smsService.sendSms(user_tel, "Ringo Ïù∏Ï¶ùÎ≤àÌò∏Îäî [" + smsCode + "] ÏûÖÎãàÎã§. 5Î∂Ñ ÎÇ¥Ïóê ÏûÖÎ†•Ìï¥Ï£ºÏÑ∏Ïöî.");
         
         return 1;
     }
@@ -184,7 +215,7 @@ public class MemberController {
         session.setAttribute("emailCode", emailCode);
         logger.debug("emailCode:"+emailCode);
         
-        authService.sendEmail(user_email, "Ringo ¿Œ¡ıπ¯»£¥¬ [" + emailCode + "] ¿‘¥œ¥Ÿ. 5∫– ≥ªø° ¿‘∑¬«ÿ¡÷ººø‰.");
+        authService.sendEmail(user_email, "Ringo Ïù∏Ï¶ùÎ≤àÌò∏Îäî [" + emailCode + "] ÏûÖÎãàÎã§. 5Î∂Ñ ÎÇ¥Ïóê ÏûÖÎ†•Ìï¥Ï£ºÏÑ∏Ïöî.");
         
         return 1;
     }
@@ -204,7 +235,7 @@ public class MemberController {
 		if(target.equals("sms")) {
 			if(user_code.equals(session.getAttribute("smsCode"))) {
 				session.removeAttribute("smsCode");
-				logger.debug("sms ¿Œ¡ı º∫∞¯");
+				logger.debug("sms Ïù∏Ï¶ù ÏÑ±Í≥µ");
 				return 1;
 			}else {
 				return 0;
@@ -214,7 +245,7 @@ public class MemberController {
 		if(target.equals("email")) {
 			if(user_code.equals(session.getAttribute("emailCode"))) {
 				session.removeAttribute("emailCode");
-				logger.debug("email ¿Œ¡ı º∫∞¯");
+				logger.debug("email Ïù∏Ï¶ù ÏÑ±Í≥µ");
 				return 1;
 			}else {
 				return 0;
@@ -241,4 +272,11 @@ public class MemberController {
 			return "failed";
 		}
     }
+	
+	@RequestMapping(value = "/checkDuple", method = RequestMethod.GET)
+	@ResponseBody
+    public Integer checkDuple(String target, String data) {
+		
+		return mService.checkDuplication(target,data);
+	}
 }

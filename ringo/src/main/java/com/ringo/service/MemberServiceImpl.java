@@ -28,9 +28,9 @@ public class MemberServiceImpl implements MemberService{
 	}
 	
 	@Override
-	public Integer getLastUserCode(MemberVO vo) {
-		logger.debug("getLastUserCode(MemberVO) - vo : "+vo);
-		return mdao.selectLastCode(vo);
+	public Integer getLastUserCode() {
+		logger.debug("getLastUserCode()");
+		return mdao.selectLastCode();
 	}
 
 
@@ -38,6 +38,11 @@ public class MemberServiceImpl implements MemberService{
 	public Integer memberJoin(MemberVO vo) {
 		logger.debug("memberJoin(MemberVO) - vo : "+vo);
 		return mdao.insertMember(vo);
+	}
+	
+	@Override
+	public Integer checkDuplication(String target, String data) {
+		return mdao.selectDuplication(target,data);
 	}
 	/*
 	 * @Override public MemberVO memberInfo(String userid) { return

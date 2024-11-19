@@ -454,46 +454,146 @@ function toggle_card(container,targetindex,direction){
 	}
 }
 
-function send_sms(container,input_container){
-	$(input_container).find('input').val('');
-	$(input_container).find('input').attr('placeholder','');
-	$(input_container).find('input').removeClass('failed_message');
-	showing(input_container);
+function send_sms(e){
 	
-	$.ajax({
-        type: "GET",
-        url: "/member/authentication/sms",
-        data: {user_tel : $(container).find('#user_tel').val()},
-        success: function(data) {
-        	$(input_container).find('input').attr('placeholder','* 인증번호를 입력하세요.');
-        	$('.cards_inner_body_right').scrollTop($('.cards_inner_body_right')[0].scrollHeight);
-        },
-        error: function(xhr, status, error) {
-        	$(input_container).find('input').addClass('failed_message');
-        	$(input_container).find('input').attr('placeholder','* 인증번호 발송에 실패하였습니다.');
-        }
-    });
+	var input;
+	
+	if($(e).is('div')){
+		input = $(e).siblings('input[name="user_tel"]');
+	}
+	
+	if($(e).is('input[name="user_tel"]')){
+		input = e;
+	}
+	
+	const add_input = $(input).closest('.input_value_container').find('#user_sms_authentication');
+	
+	if(validate_tel(input)!='1'){
+		set_failed(input, 'row');
+        set_hint(input, '* 입력하신 전화번호를 다시 확인해주세요.', 'failed_message');
+		return;
+	};
+	
+	check_duple(input, function(response) {
+	
+		if (response==1) {
+	        set_failed(input, 'row');
+	        set_hint(input, '* 이미 사용중인 전화번호 입니다.', 'failed_message');
+	        return;
+	    }else{
+	    	$(add_input).find('input[name="user_authentication"]').val('');
+	    	set_hint(input,'* 전송받은 인증번호를 입력 해주세요.','annotation_message');
+	    	showing(add_input);
+	    	
+	    	$.ajax({
+	    		type: "GET",
+	    		url: "/member/authentication/sms",
+	    		data: {user_tel : input.val()},
+	    		success: function(data) {
+	    			$('.cards_inner_body_right').scrollTop($('.cards_inner_body_right')[0].scrollHeight);
+	    		},
+	    		error: function(xhr, status, error) {
+	    			set_hint(input,'* 인증번호 발송에 실패 하였습니다.','failed_message');
+	    		}
+	    	});
+	    }
+	});
 }
 
-function send_email(container,input_container){
-	$(input_container).find('input').val('');
-	$(input_container).find('input').attr('placeholder','');
-	$(input_container).find('input').removeClass('failed_message');
-	showing(input_container);
+function validate_tel(input) {
 	
-	$.ajax({
-        type: "GET",
-        url: "/member/authentication/email",
-        data: {user_email : $(container).find('#user_email').val()},
-        success: function(data) {
-        	$(input_container).find('input').attr('placeholder','* 인증번호를 입력하세요.');
-        	$('.cards_inner_body_right').scrollTop($('.cards_inner_body_right')[0].scrollHeight);
-        },
-        error: function(xhr, status, error) {
-        	$(input_container).find('input').addClass('failed_message');
-        	$(input_container).find('input').attr('placeholder','* 인증번호 발송에 실패하였습니다.');
-        }
-    });
+    const tel = $(input).val();
+    const add_input = $(input).closest('.input_value_container').find('#user_sms_authentication');
+    
+    if (tel === '') {
+        set_unfinished(input, 'row');
+        set_hint(input, `* ' - ' 를 제외한 전화번호를 입력 해주세요. 예시) 01012345678`, 'annotation_message');
+        hide(add_input);
+    }
+    else if (!/^\d+$/.test(tel)) {
+        set_failed(input,'row');
+        set_hint(input, '* 전화번호는 숫자로만 구성되어야 합니다.', 'failed_message');
+        hide(add_input);
+    } 
+    else if (tel.length !== 11) {
+        set_failed(input,'row');
+        set_hint(input, '* 전화번호는 11자리 입니다.', 'failed_message');
+        hide(add_input);
+    } 
+    else {
+        set_unfinished(input, 'row');
+        set_hint(input, '* 전화번호 형식이 올바릅니다.', 'annotation_message');
+        hide(add_input);
+        return '1';
+    }
+}
+
+function send_email(e){
+	var input;
+	
+	if($(e).is('div')){
+		input = $(e).siblings('input[name="user_email"]');
+	}
+	
+	if($(e).is('input[name="user_email"]')){
+		input = e;
+	}
+	
+	const add_input = $(input).closest('.input_value_container').find('#user_email_authentication');
+	
+	if(validate_email(input)!='1'){
+		set_failed(input, 'row');
+        set_hint(input, '* 입력하신 이메일을 다시 확인해주세요.', 'failed_message');
+		return;
+	};
+	
+	check_duple(input, function(response) {
+	
+		if (response==1) {
+	        set_failed(input, 'row');
+	        set_hint(input, '* 이미 사용중인 이메일입니다.', 'failed_message');
+	        return;
+	    }else{
+	    	$(add_input).find('input[name="user_authentication"]').val('');
+	    	set_hint(input,'* 전송받은 인증번호를 입력 해주세요.','annotation_message');
+	    	showing(add_input);
+	    	
+	    	$.ajax({
+	            type: "GET",
+	            url: "/member/authentication/email",
+	            data: {user_email : input.val()},
+	            success: function(data) {
+	            	$('.cards_inner_body_right').scrollTop($('.cards_inner_body_right')[0].scrollHeight);
+	            },
+	            error: function(xhr, status, error) {
+	            	set_hint(input,'* 인증번호 발송에 실패 하였습니다.','failed_message');
+	            }
+	        });
+	    }
+	});
+}
+
+function validate_email(input) {
+	
+    const email = $(input).val();
+    const add_input = $(input).closest('.input_value_container').find('#user_email_authentication');
+    
+    if (email === '') {
+        set_unfinished(input, 'row');
+        set_hint(input, '* id@domain.com 형식의 이메일을 입력 해주세요.', 'annotation_message');
+        hide(add_input);
+    }
+    else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+        set_failed(input,'row');
+        set_hint(input, '* id@domain.com 형식의 이메일을 입력 해주세요.', 'failed_message');
+        hide(add_input);
+    } 
+    else {
+        set_unfinished(input, 'row');
+        set_hint(input, '* 이메일 형식이 올바릅니다.', 'annotation_message');
+        hide(add_input);
+        return '1';
+    }
 }
 
 function check_code(e,target){
@@ -580,7 +680,7 @@ function search_address(container,search_result_container) {
             
             if(totalCount==0){
             	$('#user_address_search_container').find('.scroll_box_inner').append(`
-            			<input class="user_address_search_result" type="button" name="user_address" value="검색된 결과가 없습니다."/>
+            			<input class="user_address_search_result outform" type="button" name="user_address" value="검색된 결과가 없습니다."/>
  	            `);
             	showing(search_result_container);
             	$('.for_address').text(`* 올바른 검색어를 입력해주세요.`)
@@ -589,8 +689,8 @@ function search_address(container,search_result_container) {
             	for (let node of jusoNodes) {
             		$('#user_address_search_container').find('.scroll_box_inner').append(`
             			<div class="user_address_search_result" onclick="select_address(this)">
- 	            			<input class="user_address_search_result_first" type="button" name="user_address" value="${node.getElementsByTagName('roadAddr')[0].textContent}"/>
- 	            			<input class="user_address_search_result_second" type="button" name="user_address" value="${node.getElementsByTagName('jibunAddr')[0].textContent}"/>
+ 	            			<input class="user_address_search_result_first outform" type="button" name="user_address" value="${node.getElementsByTagName('roadAddr')[0].textContent}"/>
+ 	            			<input class="user_address_search_result_second outform" type="button" name="user_address" value="${node.getElementsByTagName('jibunAddr')[0].textContent}"/>
             			</div>
 		            `);
 	            }
@@ -739,8 +839,17 @@ function validate_id(input) {
         set_hint(input, '* 아이디는 4~20자리여야 합니다.', 'failed_message');
     }
     else {
-        set_finished(input, 'row');
-        set_hint(input, '* 사용할 수 있는 아이디입니다.', 'success_message');
+    	check_duple(input, function(response) {
+    		if (response==1) {
+    	        set_failed(input, 'row');
+    	        set_hint(input, '* 이미 사용중인 아이디입니다.', 'failed_message');
+    	        return;
+    	    }
+	    	else {
+	            set_finished(input, 'row');
+	            set_hint(input, '* 사용할 수 있는 아이디입니다.', 'success_message');
+	        }
+    	});
     }
 }
 
@@ -827,8 +936,17 @@ function validate_nickname(input) {
         set_hint(input, '* 닉네임은 2~10자리여야 합니다.', 'failed_message');
     }
     else {
-        set_finished(input, 'row');
-        set_hint(input, '* 사용할 수 있는 닉네임입니다.', 'success_message');
+    	check_duple(input, function(response) {
+    		if (response==1) {
+    	        set_failed(input, 'row');
+    	        set_hint(input, '* 이미 사용중인 닉네임입니다.', 'failed_message');
+    	        return;
+    	    }
+	    	else {
+	            set_finished(input, 'row');
+	            set_hint(input, '* 사용할 수 있는 닉네임입니다.', 'success_message');
+	        }
+    	});
     }
 }
 
@@ -966,7 +1084,7 @@ function check_finished(index,container) {
 }
 
 function select_card(e) {
-	
+	hide($(e).find('option:selected'));
 	var value = $(e).find('option:selected').val();
 	var text = $(e).find('option:selected').text();
 	var hiddenInput = $(e).closest('.input_box').find('input[type="hidden"]');
@@ -995,12 +1113,15 @@ function select_card(e) {
 	}
 	
 	$(e).prop('selectedIndex', 0);
+	
 }
 
 function delete_card(e) {
 	
 	var deleteValue = $(e).attr('data-value');
     var hiddenInput = $(e).closest('.selected_card_container').prev('.input_box').find('input[type="hidden"]');
+    
+    showing($(e).closest('.selected_card_container').prev('.input_box').find(`[value="${deleteValue}"]`));
     
     if (hiddenInput.val()) {
         let currentValue = hiddenInput.val();
@@ -1026,6 +1147,7 @@ function delete_card(e) {
         	$(e).remove();
         }
     }, 1);
+    
 }
 
 function add_image(input) {
@@ -1163,63 +1285,157 @@ function mouse_leave(e) {
 function clear_card(container){
 	var count = $(container).find('.cards').filter('.unfinished_column').length;
 	var target = $(container).find('.last_submit');
+	var hint = $(container).find('.submit_hint');
+	
 	if(count==0){
+		target.removeClass(`unfinished_row`)
 		if (!target.hasClass(`finished_row`)) {
-			target.removeClass(`unfinished_row`).addClass(`finished_row`);
+			target.addClass(`finished_row`);
 		}
+		hint.removeClass('annotation_message');
+		hint.removeClass('failed_message');
+		if(!hint.hasClass('success_message')){
+			hint.addClass('success_message');
+		}
+		hint.text('* 모든 정보를 입력하셨습니다.');
 	}else{
+		target.removeClass(`finished_row`)
 		if (!target.hasClass(`unfinished_row`)) {
-			target.removeClass(`finished_row`).addClass(`unfinished_row`);
+			target.addClass(`unfinished_row`);
 		}
+		hint.removeClass('success_message');
+		hint.removeClass('failed_message');
+		if(!hint.hasClass('annotation_message')){
+			hint.addClass('annotation_message');
+		}
+		hint.text('* 미 입력 된 항목이 있습니다.');
 	}
-	console.log('count:',count);
+}
+
+function check_submit(e){
+	var button = $(e).find('.last_submit');
+	var hint = $(e).find('.submit_hint');
+	
+	if(button.hasClass('finished_row')&&!button.hasClass('unfinished_row')){
+		last_submit(e);
+	}else{
+		button.removeClass('finished_row').removeClass('unfinished_row');
+		
+		if (!button.hasClass('failed_row')&&!button.hasClass('shake')) {
+			button.addClass('shake');
+			button.addClass('failed_row');
+		}
+		
+		hint.removeClass('success_message').removeClass('annotation_message');
+			
+		if (!hint.hasClass('failed_message')&&!hint.hasClass('shake')) {
+			hint.addClass('shake');
+			hint.addClass('failed_message');
+		}
+		
+		setTimeout(function() {
+			button.removeClass('finished_row').removeClass('failed_row').removeClass('shake');
+			if (!button.hasClass('unfinished_row')) {
+				button.addClass('unfinished_row');
+			}
+			hint.removeClass('success_message').removeClass('failed_message').removeClass('shake');
+			if (!hint.hasClass('annotation_message')) {
+				hint.addClass('annotation_message');
+			}
+	    }, 1000);
+	}
 }
 
 function last_submit(e){
-	var inputData = {};
-	var filePaths = [];
+	var formData = new FormData();
+	var isThumbnail = true;
+	var user_private = 1;
 
-    // 모든 input, textarea, select 태그를 순회
-    $(e).find('input, textarea, select').each(function() {
-        var name = $(this).attr('name');  // name 속성
-        var value = $(this).val();        // value 속성
+    $(e).find(`input:not('.outform'), textarea:not('.outform'), select:not('.outform')`).each(function() {
+        var name = $(this).attr('name');
+        var value = $(this).val();       
 
         if (value) {
             if ($(this).is('select[name="user_private"]')) {
-                // select 태그는 곱셈으로 처리
-                if (!inputData[name]) {
-                    inputData[name] = 1;  // 처음 발견된 값에 대해서 1로 초기화
-                }
-                inputData[name] *= parseInt(value);  // select 값은 곱함
-            } else if ($(this).is('input[type="file"]')) {
-            	console.log('this is file');
-                // file 태그 처리: 여러 파일일 경우 배열로 담기
-                var files = $(this)[0].files;  // 선택된 파일들
+                user_private *= parseInt(value);
+            } else if ($(this).is('input[name="user_profile"]')) {
+                var files = $(this)[0].files;
                 if (files.length > 0) {
                     for (var i = 0; i < files.length; i++) {
-                        filePaths.push(files[i].name);  // 파일 이름만 배열에 저장 (필요한 값만 담기)
+                    	if(isThumbnail){
+                    		formData.append('user_thumbnail_file', files[i]);
+                    		isThumbnail = false;
+                    	}else{
+                    		formData.append('user_profile_file', files[i]);
+                    	}
                     }
-                    inputData['user_profile_file'] = filePaths;  // user_profile_path라는 이름으로 배열을 담음
                 }
+            } else if ($(this).is('input[type="radio"]:not(:checked)')) {
+            	return;
+            } else if ($(this).is('input[type="checkbox"]:not(:checked)')) {
+            	return;
+            } else if ($(this).is('input[name="user_birth"]')) {
+                let dateParts = value.split('.');
+                let isoDate = `${dateParts[0]}-${dateParts[1].padStart(2, '0')}-${dateParts[2].padStart(2, '0')}`;
+                formData.append('user_birth', isoDate);
             } else {
-                inputData[name] = value;  // 일반 input, textarea는 그대로 저장
+            	formData.append(name, value);
             }
         }
     });
     
-    console.log(inputData);
+    formData.append("user_private", user_private);
+    
+    console.log([...formData.entries()]);
 
-    // 데이터를 서버로 전송 (AJAX)
-   /* $.ajax({
-        type: 'POST',
-        url: '/submitMemberData',  // 서버의 컨트롤러 URL
-        data: JSON.stringify({ memberVO: inputData }),  // memberVO로 감싸서 전송
-        contentType: 'application/json',
-        success: function(response) {
-            console.log("데이터 전송 성공:", response);
-        },
-        error: function(error) {
-            console.log("데이터 전송 실패:", error);
-        }
-    });*/
+    $.ajax({
+    	type: 'POST',
+        url: '/member/join',
+        data: formData,
+        processData: false, // FormData 사용 시 false로 설정
+        contentType: false, // FormData 사용 시 false로 설정
+        dataType: "json",
+        success: function (response) {
+	    	if(response==1){
+	    		alert('회원가입에 성공하였습니다.');
+	    		window.location.href = '/member/login';
+	    	}
+	    	if(response==3){
+	    		alert('입력하지 않은 항목이 있습니다.');
+	    	}
+	        console.log("데이터 전송 성공:", response);
+	    },
+	    error: function(error) {
+	        console.log("데이터 전송 실패:", error);
+	        alert('회원가입에 실패하였습니다.');
+	    }
+    });
+}
+
+function check_duple(input, callback){
+	
+	const inputValue = $(input).val();
+	const target = $(input).attr('name');
+	
+	console.log('inputValue : ',inputValue);
+	console.log('target : ',target);
+	
+	$.ajax({
+    	type: 'GET',
+        url: '/member/checkDuple',
+        data: {target : target, data : inputValue},
+        dataType: "json",
+        success: function (response) {
+	    	if(response>0){
+	    		console.log(target,'duple!!!!');
+	    		callback(response);
+	    	}else{
+	    		console.log(target,' is unique.');
+	    		callback(response);
+	    	}
+	    },
+	    error: function(error) {
+	    	callback(null);
+	    }
+    });
 }

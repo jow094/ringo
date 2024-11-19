@@ -17,6 +17,7 @@ import lombok.ToString;
 @Data
 public class MemberVO {
 	
+	private String user_fcode;
 	private Integer user_code;
 	private String user_id;
 	private String user_pw;
@@ -27,7 +28,7 @@ public class MemberVO {
 	private String user_gender;
 	private String user_tel;
 	private String user_email;
-	private String user_addr;
+	private String user_address;
 	
 	private String user_native_lang;
 	private String user_fluent_lang;
@@ -45,13 +46,14 @@ public class MemberVO {
 	
 	private String user_grade;
 	
-	private String user_thumbnail;
-	private List<String> user_profile_path;
+	private MultipartFile user_thumbnail_file;
+	private String user_thumbnail_path;
 	private List<MultipartFile> user_profile_file;
+	private String user_profile_path;
 	
 	private boolean user_logon;
 	
-	private String user_server;
+	private Integer user_private;
 	private SettingVO user_setting;
 	private List<String> follower;
 	private List<String> following;

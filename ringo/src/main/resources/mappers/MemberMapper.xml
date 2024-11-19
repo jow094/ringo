@@ -12,28 +12,32 @@
 	
 	<insert id="insertMember" parameterType="MemberVO">
 	   insert into _ringo_member (
-        user_code, user_id, user_pw, user_name, user_nickname, user_birth,
-        user_nationality, user_gender, user_tel, user_email, user_addr,
-        user_fluent_language, user_learning_language, user_topic, user_ideal_partner,
-        user_objective, user_grade, user_thumbnail, user_profile_path_1, user_profile_path_2, user_profile_path_3,
-        user_profile_path_4, user_profile_path_5, user_profile_path_6, user_profile_path_7, user_profile_path_8,
-        user_logon, user_server
+        user_fcode, user_code, user_id, user_pw, user_name, user_nickname, user_birth,
+        user_nation, user_gender, user_tel, user_email, user_address,
+        user_native_lang, user_fluent_lang, user_learning_lang, 
+        user_intro, user_ideal_partner, user_objective, user_topic, user_interest,
+        user_correction_degree, user_usually_time, user_method, user_grade, user_thumbnail_path, user_profile_path,
+        user_logon
 	    )
 	    values (
-	        #{user_code}, #{user_id}, #{user_pw}, #{user_name}, #{user_nickname}, #{user_birth},
-	        #{user_nationality}, #{user_gender}, #{user_tel}, #{user_email}, #{user_addr},
-	        #{user_fluent_language}, #{user_learning_language}, #{user_topic}, #{user_ideal_partner},
-	        #{user_objective}, 'Bronze', #{user_profile_path[0]}, #{user_profile_path[0]}, #{user_profile_path[1]}, #{user_profile_path[2]}, #{user_profile_path[3]},
-	        #{user_profile_path[4]}, #{user_profile_path[5]}, #{user_profile_path[6]}, #{user_profile_path[7]},
-	        0, #{user_server}
+	        #{user_fcode}, #{user_code}, #{user_id}, #{user_pw}, #{user_name}, #{user_nickname}, #{user_birth},
+	        #{user_nation}, #{user_gender}, #{user_tel}, #{user_email}, #{user_address},
+	        #{user_native_lang}, #{user_fluent_lang}, #{user_learning_lang}, 
+	        #{user_intro}, #{user_ideal_partner}, #{user_objective}, #{user_topic}, #{user_interest},
+	        #{user_correction_degree}, #{user_usually_time}, #{user_method}, 'Bronze', #{user_thumbnail_path}, #{user_profile_path},
+	        0
 	    )
 	</insert>
 	
 	<select id="selectLastCode" parameterType="MemberVO" resultType="Integer">
-	   select max(user_code)
-	    from _ringo_member
-	    where user_nationality = #{user_nationality} and user_server = #{user_server}
+		select max(user_code) from _ringo_member
 	</select>
+	
+	<select id="selectDuplication" parameterType="Map" resultType="Integer">
+	    select count(*) from _ringo_member
+	    where ${target} = #{value}
+	</select>
+	
 	<!-- 
 	<select id="getMember" resultType="MemberVO">		
 		 select e.*, d.dname as emp_dname

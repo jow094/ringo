@@ -5,8 +5,12 @@
 
 <configuration>
 
+	<settings>
+	    <setting name="logImpl" value="LOG4J2" />
+	</settings>
+	
 	<typeAliases>
 		<package name="com.ringo.domain"/>
 	</typeAliases>
-
+	
 </configuration>

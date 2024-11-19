@@ -13,7 +13,8 @@ public interface MemberDAO {
 
 	public MemberVO selectMember(MemberVO vo);
 	public Integer insertMember(MemberVO vo);
-	public Integer selectLastCode(MemberVO vo);
+	public Integer selectLastCode();
+	public Integer selectDuplication(String target, String data);
 	/*
 	 * public MemberVO getMember(String userid);
 	 * 

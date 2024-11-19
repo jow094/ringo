@@ -51,7 +51,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
         });
 
-        String subject = "ringo ÀÌ¸ŞÀÏ ÀÎÁõ¹øÈ£ÀÔ´Ï´Ù.";
+        String subject = "ringo ì¸ì¦ë²ˆí˜¸ ì…ë‹ˆë‹¤.";
         String body = content;
 
         MimeMessage message = new MimeMessage(session);
@@ -70,38 +70,34 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		} catch (MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}  // ÀÌ¸ŞÀÏ ¹ß¼Û
+		}
         
-        logger.debug("ÀÌ¸ŞÀÏ Àü¼Û ¿Ï·á");
     }
     
     public void sendSms(String user_tel, String content) {
-    	// API Å° ÀÔ·Â
+    	// API Å° ï¿½Ô·ï¿½
         String apiKey = "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";
         String recipientPhone = "+82" + user_tel.substring(1);
-        String message = "Your verification code is 123456";  // º¸³¾ ¸Ş½ÃÁö
+        String message = "[ringo] Your verification code is 123456";
 
         try {
             String url = "https://api.sendinblue.com/v3/smtp/send";
             
             JSONObject json = new JSONObject();
-            json.put("sender", "YOUR_SENDER_PHONE_NUMBER");  // ¹ß½ÅÀÚ ¹øÈ£ (Sendinblue¿¡¼­ ¼³Á¤µÈ ¹øÈ£)
-            json.put("recipient", recipientPhone);  // ¼ö½ÅÀÚ ¹øÈ£
-            json.put("message", message);  // º¸³¾ ¸Ş½ÃÁö ³»¿ë
-
-            // HTTP Å¬¶óÀÌ¾ğÆ® ¼³Á¤
+            json.put("sender", "YOUR_SENDER_PHONE_NUMBER");
+            json.put("recipient", recipientPhone);
+            json.put("message", message);
+            
             CloseableHttpClient client = HttpClients.createDefault();
             HttpPost post = new HttpPost(url);
             post.setHeader("api-key", apiKey);
             post.setHeader("Content-Type", "application/json");
             post.setEntity(new StringEntity(json.toString()));
 
-            // ¿äÃ» ½ÇÇà
             org.apache.http.HttpResponse response = client.execute(post);
             HttpEntity entity = response.getEntity();
             String responseBody = EntityUtils.toString(entity);
 
-            // ÀÀ´ä Ãâ·Â
             System.out.println("Response: " + responseBody);
         } catch (Exception e) {
             e.printStackTrace();
