@@ -173,26 +173,42 @@ function hide(e) {
 	}
 }
 
-function shrinking(e) {
-	$(e).removeClass('expanding');
-	if(!$(e).hasClass('shrinking')){
-		$(e).addClass('shrinking');
+function row_toggle(target,button,className) {
+	if($(target).hasClass('expanded')){
+		$(target).removeClass('expanded');
+		if(!$(target).hasClass('shrinked')){
+			$(target).addClass('shrinked');
+		}
+	}else if($(target).hasClass('shrinked')){
+		$(target).removeClass('shrinked');
+		if(!$(target).hasClass('expanded')){
+			$(target).addClass('expanded');
+		}
+	}
+	if(button&&className){
+		$(button).attr('class',className);
 	}
 }
 
-function col_toggle(e,target) {
-	if(target.hasClass('col_shrinking'))
-	$(target).removeClass('expanding');
-	if(!$(target).hasClass('col_shrinking')){
-		$(target).addClass('col_shrinking');
+function col_toggle(target,button) {
+	
+	if($(target).hasClass('expanded')){
+		$(target).removeClass('expanded');
+		if(!$(target).hasClass('col_shrinked')){
+			$(target).addClass('col_shrinked');
+		}
+	}else if($(target).hasClass('col_shrinked')){
+		$(target).removeClass('col_shrinked');
+		if(!$(target).hasClass('expanded')){
+			$(target).addClass('expanded');
+		}
 	}
-	$(e).find('i').last().attr('class','fas fa-chevron-circle-down');
-}
-
-function expanding(e) {
-	$(e).removeClass('shrinking');
-	if(!$(e).hasClass('expanding')){
-		$(e).addClass('expanding');
+	if(button){
+		if($(button).attr('class') == 'fas fa-chevron-circle-down'){
+			$(button).attr('class','fas fa-chevron-circle-up');
+		}else if($(button).attr('class') == 'fas fa-chevron-circle-up'){
+			$(button).attr('class','fas fa-chevron-circle-down');
+		}
 	}
 }
 
@@ -205,17 +221,18 @@ function main_show(e,target) {
 }
 function main_messenger() {
     if ($('.article_container_menu_messenger').hasClass('active')) {
-    	
-    	if ($('.main_messenger_menu').hasClass('expanding')) {
+    	console.log('cls msg');
+    	if ($('.main_messenger_menu').hasClass('expanded')) {
     		$('.main_messenger').css('width','400px');
-    		shrinking('.main_messenger_menu');
+    		row_toggle('.main_messenger_menu');
             $('.messenger_button').find('i').removeClass('fa-chevron-circle-right').addClass('fa-chevron-circle-left');
         }
-		shrinking('.main_messenger');
+    	row_toggle('.main_messenger');
     	
     	$('.article_container_menu_messenger').removeClass('active');
     }else {
-    	expanding('.main_messenger');
+    	console.log('open msg');
+    	row_toggle('.main_messenger');
     	
     	$('.article_container_menu_messenger').addClass('active');
     }
@@ -225,7 +242,7 @@ function main_messenger_menu(e){
 
     if (icon.hasClass('fa-chevron-circle-left')) {
     	$('.main_messenger').css('width','650px');
-    	expanding('.main_messenger_menu');
+    	row_toggle('.main_messenger_menu');
     	
     	setTimeout(function() {
     		icon.removeClass('fa-chevron-circle-left').addClass('fa-chevron-circle-right');
@@ -233,7 +250,7 @@ function main_messenger_menu(e){
     }
     else if (icon.hasClass('fa-chevron-circle-right')) {
     	$('.main_messenger').css('width','400px');
-    	shrinking('.main_messenger_menu');
+    	row_toggle('.main_messenger_menu');
         
         setTimeout(function() {
         	icon.removeClass('fa-chevron-circle-right').addClass('fa-chevron-circle-left');
@@ -273,9 +290,9 @@ function profile_prohibit(e) {
 
 function detail_profile_container(e) {
 	var icon = $(e).find('i');
+	row_toggle('.detail_profile_container');
 
     if (icon.hasClass('fa-chevron-circle-right')) {
-    	expanding('.detail_profile_container');
     	profile_favorite('.detail_profile_container_menu.favorite');
     	
     	setTimeout(function() {
@@ -283,8 +300,6 @@ function detail_profile_container(e) {
     	}, 300);
     }
     else if (icon.hasClass('fa-chevron-circle-left')) {
-    	shrinking('.detail_profile_container');
-        
         setTimeout(function() {
         	icon.removeClass('fa-chevron-circle-left').addClass('fa-chevron-circle-right');
         }, 300);
@@ -293,17 +308,14 @@ function detail_profile_container(e) {
 
 function alarm_container(e) {
     var icon = $(e).find('i');
+    row_toggle('.alarm_container');
 
     if (icon.hasClass('fa-chevron-circle-right')) {
-    	shrinking('.alarm_container');
-    	
     	setTimeout(function() {
     		icon.removeClass('fa-chevron-circle-right').addClass('fa-chevron-circle-left');
     	}, 300);
     }
     else if (icon.hasClass('fa-chevron-circle-left')) {
-    	expanding('.alarm_container');
-    	
     	setTimeout(function() {
     		icon.removeClass('fa-chevron-circle-left').addClass('fa-chevron-circle-right');
     	}, 300);
@@ -311,6 +323,8 @@ function alarm_container(e) {
 }
 
 function toggle_card(container,targetindex,direction){
+	const prev = $(container).find('.prev');
+	const next = $(container).find('.next');
 	
 	if(targetindex!=0 && direction===0){
 		$(container).find('.active').removeClass('active');
@@ -340,16 +354,28 @@ function toggle_card(container,targetindex,direction){
 	    });
 	    
 	    if(targetindex==1){
-	    	shrinking($(container).find('.prev'));
-	    	expanding($(container).find('.next'));
+	    	if(prev.hasClass('expanded')){
+	    		row_toggle(prev);
+	    	}
+	    	if(next.hasClass('shrinked')){
+	    		row_toggle(next);
+	    	}
 	    }
 	    if(targetindex==$(container).find('.cards').length){
-	    	expanding($(container).find('.prev'));
-	    	shrinking($(container).find('.next'));
+	    	if(prev.hasClass('shrinked')){
+	    		row_toggle(prev);
+	    	}
+	    	if(next.hasClass('expanded')){
+	    		row_toggle(next);
+	    	}
 	    }
 	    if(targetindex!=1 && targetindex!=$(container).find('.cards').length){
-	    	expanding($(container).find('.prev'));
-	    	expanding($(container).find('.next'));
+	    	if(prev.hasClass('shrinked')){
+	    		row_toggle(prev);
+	    	}
+	    	if(next.hasClass('shrinked')){
+	    		row_toggle(next);
+	    	}
 	    }
 	}
 	
@@ -360,9 +386,13 @@ function toggle_card(container,targetindex,direction){
 	    const totalCards = $(container).find('.cards').length;
 	    
 	    if(direction===-1){
-	    	expanding($(container).find('.next'));
+	    	if(next.hasClass('shrinked')){
+	    		row_toggle(next);
+	    	}
 	    	if (currentIndex === 2) {
-	        	shrinking($(container).find('.prev'));
+	    		if(prev.hasClass('expanded')){
+		    		row_toggle(prev);
+		    	}
 	        }
 	    	if (currentIndex === 1) {
 	    		$(container).find(`[data-targetindex="${1}"]`).addClass('active');
@@ -370,9 +400,13 @@ function toggle_card(container,targetindex,direction){
 	    }
 	    
 	    if(direction===1){
-	    	expanding($(container).find('.prev'));
+	    	if(prev.hasClass('shrinked')){
+	    		row_toggle(prev);
+	    	}
 	    	if (currentIndex === totalCards-1) {
-	        	shrinking($(container).find('.next'));
+	    		if(next.hasClass('expanded')){
+		    		row_toggle(next);
+		    	}
 	        }
 	    	if (currentIndex === totalCards) {
 	    		$(container).find(`[data-targetindex="${totalCards}"]`).addClass('active');
@@ -1119,6 +1153,7 @@ function add_image(input) {
             $(input).after(`
                 <img class="none" src="${e.target.result}"/>
             `);
+            hide(input);
             showing($(input).next('img'));
         };
 
@@ -1136,6 +1171,7 @@ function add_image(input) {
 }
 
 function delete_image(e) {
+	
 	setTimeout(function() {
 		if($(e).closest('.small_picture_container').length>0){
 			$(e).remove();
@@ -1144,7 +1180,7 @@ function delete_image(e) {
 			
 			const thumbnail = $(e).closest('.thumbnail');
 			
-			$(e).closest('.thumbnail').html(`
+			thumbnail.html(`
 					<div class="picture_content">
 						<input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);" multiple>
 						<i class="fa-solid fa-plus"></i>

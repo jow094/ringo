@@ -35,7 +35,7 @@
 			</div>
         	<div class="scroll_box" style="height:calc(100% - 20px); flex-direction: column;">
 	        	<div class="cards_container">
-	        		<div class="cards_container_button prev shrinking" onclick="toggle_card('.join_modal',0,-1)">
+	        		<div class="cards_container_button prev shrinked" onclick="toggle_card('.join_modal',0,-1)">
 	        			<i class="fa-solid fa-chevron-left"></i>
 	        		 </div>
 	        		<div class="cards_container_content">
@@ -627,7 +627,7 @@
 		        			</div>
 						</div>
 					</div>
-	        		<div class="cards_container_button next expanding" onclick="toggle_card('.join_modal',0,1)">
+	        		<div class="cards_container_button next expanded" onclick="toggle_card('.join_modal',0,1)">
 	        			<i class="fa-solid fa-chevron-right"></i>
 	        		</div>
 	        	</div>

@@ -501,10 +501,10 @@
 }
 
 .join_modal .terms_container .terms_footer input[type="checkbox"]:checked + label{
-    color: var(--positive-color);
+    color: var(--positive);
 }
 .join_modal .terms_container .terms_footer input[type="checkbox"]:checked + label i{
-    color: var(--positive-color);
+    color: var(--positive);
 }
 
 .join_modal .terms_container .terms_footer *{
@@ -619,6 +619,9 @@
     padding:5px;
     position: relative;
     cursor: pointer;
+    display:flex;
+    justify-content: center;
+    align-items: center;
 }
 .picture_content:hover{
 	border:2px solid rgba(0,0,0,0.8);
@@ -643,9 +646,11 @@
 }
 
 .picture_content img{
-	max-width: 100%; 
+	position: absolute;
+	width: 100%; 
 	height: auto;
 	border-radius:2px;
+	z-index:1060;
 }
 
 .picture_name{
@@ -671,6 +676,7 @@
 	aspect-ratio: 1 / 1;
 }
 .picture_input {
+	position: absolute;
     width: 100% !important;
     height: 100% !important;
     opacity: 0;

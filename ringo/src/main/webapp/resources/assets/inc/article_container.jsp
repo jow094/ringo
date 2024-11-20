@@ -275,12 +275,12 @@
 		<div class="main_card_body pool_main_container">
 			<div class="scroll_box">
 				<div class="pool_menu">
-					<div class="menu_tag">
+					<div class="menu_tag" onclick="col_toggle($(this).next('.favorite_pools'),$(this).find('i').last())">
 						<i class="fa-solid fa-bookmark"></i>
 						<span>즐겨찾기</span>
 						<i class="fas fa-chevron-circle-up"></i>
 					</div>
-					<div class="favorite_pools">
+					<div class="favorite_pools expanded">
 						<div class="favorite_pool deletable" data-value="" onclick="delete_card(this)">
 							<img src=""></img>
 							<div>즐겨찾</div>
@@ -326,12 +326,12 @@
 				<div class="scroll_box_inner">
 					<div class="pool_content">
 					
-						<div class="menu_tag">
+						<div class="menu_tag" onclick="col_toggle($(this).next('.pools_container'),$(this).find('i').last())">
 							<i class="fa-solid fa-water"></i>
 							<span>추천 풀</span>
 							<i class="fas fa-chevron-circle-up"></i>
 						</div>
-						<div class="pools_container">
+						<div class="pools_container expanded">
 							<div class="pool_card">
 								<div class="pool_card_thumbnail">
 									<img src=""></img>
@@ -374,12 +374,12 @@
 							</div>
 						</div>	
 						
-						<div class="menu_tag">
+						<div class="menu_tag" onclick="col_toggle($(this).next('.pools_container'),$(this).find('i').last())">
 							<i class="fa-solid fa-water"></i>
 							<span>근처 풀</span>
 							<i class="fas fa-chevron-circle-up"></i>
 						</div>
-						<div class="pools_container">
+						<div class="pools_container expanded">
 							<div class="pool_card">
 								<div class="pool_card_thumbnail">
 									<img src=""></img>
@@ -402,12 +402,12 @@
 							</div>
 						</div>	
 						
-						<div class="menu_tag" onclick="col_shrinking(this,$(this).next('.pools_container'))">
+						<div class="menu_tag" onclick="col_toggle($(this).next('.pools_container'),$(this).find('i').last())">
 							<i class="fa-solid fa-water"></i>
 							<span>가입한 풀</span>
 							<i class="fas fa-chevron-circle-up"></i>
 						</div>
-						<div class="pools_container">
+						<div class="pools_container expanded">
 							<div class="pool_card">
 								<div class="pool_card_thumbnail">
 									<img src=""></img>
@@ -477,11 +477,11 @@
 	<!-- link end -->
 	
 	<!-- messenger start -->
-	<div class="main_messenger shrinking">
+	<div class="main_messenger shrinked">
 		<div class="container_side_button_section messenger_button" onclick="main_messenger_menu(this)">
 			<i class="fas fa-chevron-circle-left"></i>
 		</div>
-		<div class="main_messenger_menu scroll_box shrinking">
+		<div class="main_messenger_menu scroll_box shrinked">
 			<div class="scroll_box_inner">
 				<div class="card_person">
 					<div class="card_person_thumbnail">

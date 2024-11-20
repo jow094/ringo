@@ -119,27 +119,27 @@
 	font-size:10px;
 }
 .unfinished_column{
-	background: linear-gradient(to bottom, var(--waiting-color) 7px, white 7px) !important;
+	background: linear-gradient(to bottom, var(--waiting) 7px, white 7px) !important;
 	padding-top: 7px;
 }
 .finished_column{
-	background: linear-gradient(to bottom, var(--positive-color) 7px, white 7px) !important;
+	background: linear-gradient(to bottom, var(--positive) 7px, white 7px) !important;
 	padding-top: 7px;
 }
 .failed_column{
-	background: linear-gradient(to bottom, var(--negative-color) 7px, white 7px) !important;
+	background: linear-gradient(to bottom, var(--negative) 7px, white 7px) !important;
 	padding-top: 7px;
 }
 .unfinished_row{
-	background: linear-gradient(to right, var(--waiting-color) 7px, white 7px) !important;
+	background: linear-gradient(to right, var(--waiting) 7px, white 7px) !important;
 	padding-left: 7px;
 }
 .finished_row{
-	background: linear-gradient(to right, var(--positive-color) 7px, white 7px) !important;
+	background: linear-gradient(to right, var(--positive) 7px, white 7px) !important;
 	padding-left: 7px;
 }
 .failed_row{
-	background: linear-gradient(to right, var(--negative-color) 7px, white 7px) !important;
+	background: linear-gradient(to right, var(--negative) 7px, white 7px) !important;
 	padding-left: 7px;
 }
 .failed_message{
@@ -262,7 +262,6 @@ img{
 	min-width:20px;
 	min-height:20px;
 }
-}
 .to_gray{
 	background-color : rgba(150,150,150,0.1) !important;
 	box-shadow : none !important;
@@ -321,7 +320,7 @@ div{
     border: 2px dashed rgba(0,0,0,0.8);
 }
 .on_top {
-	z-index:1000;
+	z-index:1060;
 }
 .on_bottom {
 	z-index:0;

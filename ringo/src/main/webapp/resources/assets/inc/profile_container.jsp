@@ -105,7 +105,7 @@
 		</div>
 	</div>
 </div>
-<div class="detail_profile_container shrinking">
+<div class="detail_profile_container shrinked">
 	<div class="detail_profile_container_menus">	
 		<div class="detail_profile_container_menu favorite" onclick="profile_favorite(this)">
 			<span>즐겨찾기</span>

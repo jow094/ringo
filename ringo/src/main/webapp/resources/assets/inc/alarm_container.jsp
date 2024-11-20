@@ -4,7 +4,7 @@
 	<i class="fas fa-chevron-circle-right"></i>
 </div>
 
-<div class="alarm_container">
+<div class="alarm_container expanded">
 	<div class="scroll_box">
 		<div class="scroll_box_inner">
 			<div class="card_alarm">
