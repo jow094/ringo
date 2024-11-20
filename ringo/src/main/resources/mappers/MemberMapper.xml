@@ -17,7 +17,7 @@
         user_native_lang, user_fluent_lang, user_learning_lang, 
         user_intro, user_ideal_partner, user_objective, user_topic, user_interest,
         user_correction_degree, user_usually_time, user_method, user_grade, user_thumbnail_path, user_profile_path,
-        user_logon
+        user_private, user_logon
 	    )
 	    values (
 	        #{user_fcode}, #{user_code}, #{user_id}, #{user_pw}, #{user_name}, #{user_nickname}, #{user_birth},
@@ -25,7 +25,7 @@
 	        #{user_native_lang}, #{user_fluent_lang}, #{user_learning_lang}, 
 	        #{user_intro}, #{user_ideal_partner}, #{user_objective}, #{user_topic}, #{user_interest},
 	        #{user_correction_degree}, #{user_usually_time}, #{user_method}, 'Bronze', #{user_thumbnail_path}, #{user_profile_path},
-	        0
+	        #{user_private}, 0
 	    )
 	</insert>
 	

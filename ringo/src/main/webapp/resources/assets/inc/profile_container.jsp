@@ -5,7 +5,7 @@
 		<div class="profile_container_head_basic">
 			<img
 			src="/img/profiles/${user_thumbnail}"
-			style="width: 150px; height: 150px; border-radius: 30%; margin-bottom: 10px; box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);"
+			style="width: 150px; height: 150px; margin-bottom:10px;"
 			/>
 			<div class="profile_container_head_basic_user_name">
 			조우영

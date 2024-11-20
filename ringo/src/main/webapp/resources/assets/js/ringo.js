@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	login_check();
-	main_circle('.article_container_menu_circle');
+	main_show('.article_container_menu_around','around');
 	get_coordinates();
 	
 	window.onclick = function(e) {
@@ -174,62 +174,32 @@ function hide(e) {
 }
 
 function shrinking(e) {
+	$(e).removeClass('expanding');
 	if(!$(e).hasClass('shrinking')){
 		$(e).addClass('shrinking');
 	}
-	$(e).find('*:not(.none)').addClass('none');
-	$(e).removeClass('expanding');
+}
+
+function col_toggle(e,target) {
+	if(target.hasClass('col_shrinking'))
+	$(target).removeClass('expanding');
+	if(!$(target).hasClass('col_shrinking')){
+		$(target).addClass('col_shrinking');
+	}
+	$(e).find('i').last().attr('class','fas fa-chevron-circle-down');
 }
 
 function expanding(e) {
+	$(e).removeClass('shrinking');
 	if(!$(e).hasClass('expanding')){
 		$(e).addClass('expanding');
 	}
-	$(e).find('*').removeClass('none');
-	$(e).removeClass('none');
-    
-    setTimeout(function() {
-    	$(e).removeClass('shrinking');
-    }, 1);
 }
 
-function adjustCenter(px){
-	console.log('center_container max-width :'+$('.center_container').css('max-width'))
-	$('.center_container').css('max-width', function(_, currentWidth) {
-	    return (parseInt(currentWidth, 10) + px) + 'px';
-	});
-	console.log('center_container max-width : ++'+px+' -> '+$('.center_container').css('max-width'))
-}
-
-function adjustCard(px){
-	console.log('card max-width :'+$('.card').css('max-width'))
-	$('.card').css('max-width', function(_, currentWidth) {
-	    return (parseInt(currentWidth, 10) + px) + 'px';
-	});
-	console.log('card max-width : ++'+px+' -> '+$('.card').css('max-width'))
-}
-
-function main_circle(e) {
-	$('.container_contents_body:not(.circle)').addClass('none');
-	showing('.container_contents_body.main_circle');
-	$(e).siblings().not('.article_container_menu_messenger').removeClass('active');
-    $(e).addClass('active');
-}
-function main_timeline(e) {
-	$('.container_contents_body:not(.timeline)').addClass('none');
-	showing('.container_contents_body.main_timeline');
-	$(e).siblings().not('.article_container_menu_messenger').removeClass('active');
-    $(e).addClass('active');
-}
-function main_pool(e) {
-	$('.container_contents_body:not(.pool)').addClass('none');
-	showing('.container_contents_body.main_pool');
-	$(e).siblings().not('.article_container_menu_messenger').removeClass('active');
-    $(e).addClass('active');
-}
-function main_link(e) {
-	$('.container_contents_body:not(.link)').addClass('none');
-	showing('.container_contents_body.main_link');
+function main_show(e,target) {
+	console.log(target);
+	$(`.main_card:not(.main_${target})`).addClass('none');
+	showing(`.main_card.main_${target}`);
 	$(e).siblings().not('.article_container_menu_messenger').removeClass('active');
     $(e).addClass('active');
 }
@@ -237,24 +207,15 @@ function main_messenger() {
     if ($('.article_container_menu_messenger').hasClass('active')) {
     	
     	if ($('.main_messenger_menu').hasClass('expanding')) {
+    		$('.main_messenger').css('width','400px');
     		shrinking('.main_messenger_menu');
-        	$('.main_messenger').css('width','400');
-        	adjustCard(220);
             $('.messenger_button').find('i').removeClass('fa-chevron-circle-right').addClass('fa-chevron-circle-left');
         }
-    	
-    	$('.main_messenger').css('width','400');
-    	$('.main_messenger').addClass('shrinking');
-    	$('.main_messenger').find('*').addClass('none');
-    	$('.main_messenger').removeClass('expanding');
-    	adjustCard(420);
+		shrinking('.main_messenger');
     	
     	$('.article_container_menu_messenger').removeClass('active');
     }else {
-    	$('.main_messenger').addClass('expanding');
-    	$('.main_messenger').removeClass('shrinking');
-    	$('.main_messenger').find('*').not('.main_messenger_menu').removeClass('none');
-    	adjustCard(-420);
+    	expanding('.main_messenger');
     	
     	$('.article_container_menu_messenger').addClass('active');
     }
@@ -263,18 +224,16 @@ function main_messenger_menu(e){
 	var icon = $(e).find('i');
 
     if (icon.hasClass('fa-chevron-circle-left')) {
+    	$('.main_messenger').css('width','650px');
     	expanding('.main_messenger_menu');
-    	$('.main_messenger').css('width','630');
-    	adjustCard(-220);
     	
     	setTimeout(function() {
     		icon.removeClass('fa-chevron-circle-left').addClass('fa-chevron-circle-right');
     	}, 300);
     }
     else if (icon.hasClass('fa-chevron-circle-right')) {
+    	$('.main_messenger').css('width','400px');
     	shrinking('.main_messenger_menu');
-    	$('.main_messenger').css('width','400');
-    	adjustCard(220);
         
         setTimeout(function() {
         	icon.removeClass('fa-chevron-circle-right').addClass('fa-chevron-circle-left');
@@ -318,8 +277,6 @@ function detail_profile_container(e) {
     if (icon.hasClass('fa-chevron-circle-right')) {
     	expanding('.detail_profile_container');
     	profile_favorite('.detail_profile_container_menu.favorite');
-    	adjustCard(-300);
-    	adjustCenter(-300);
     	
     	setTimeout(function() {
 	        icon.removeClass('fa-chevron-circle-right').addClass('fa-chevron-circle-left');
@@ -327,8 +284,6 @@ function detail_profile_container(e) {
     }
     else if (icon.hasClass('fa-chevron-circle-left')) {
     	shrinking('.detail_profile_container');
-    	adjustCard(300);
-    	adjustCenter(300);
         
         setTimeout(function() {
         	icon.removeClass('fa-chevron-circle-left').addClass('fa-chevron-circle-right');
@@ -341,8 +296,6 @@ function alarm_container(e) {
 
     if (icon.hasClass('fa-chevron-circle-right')) {
     	shrinking('.alarm_container');
-    	adjustCard(300);
-    	adjustCenter(300);
     	
     	setTimeout(function() {
     		icon.removeClass('fa-chevron-circle-right').addClass('fa-chevron-circle-left');
@@ -350,8 +303,6 @@ function alarm_container(e) {
     }
     else if (icon.hasClass('fa-chevron-circle-left')) {
     	expanding('.alarm_container');
-    	adjustCard(-300);
-    	adjustCenter(-300);
     	
     	setTimeout(function() {
     		icon.removeClass('fa-chevron-circle-left').addClass('fa-chevron-circle-right');
@@ -388,11 +339,11 @@ function toggle_card(container,targetindex,direction){
 	        $(this).addClass(`floor_${distance + 1}`);
 	    });
 	    
-	    if(targetindex===1){
+	    if(targetindex==1){
 	    	shrinking($(container).find('.prev'));
 	    	expanding($(container).find('.next'));
 	    }
-	    if(targetindex===$(container).find('.cards').length){
+	    if(targetindex==$(container).find('.cards').length){
 	    	expanding($(container).find('.prev'));
 	    	shrinking($(container).find('.next'));
 	    }
