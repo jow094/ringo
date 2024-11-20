@@ -5,10 +5,9 @@
   --negative: rgb(235,130,130);
   --waiting: rgb(220,220,220);
   --inner: rgb(250,250,250);
-  --icon: rgb(180,180,180);
+  --gray: rgb(200,200,200);
   --basic: rgb(50,50,50);
   --back: rgb(230,230,230);
-  
 }
 
 /* normal */
@@ -83,6 +82,34 @@
   100% {
     opacity: 0;
   }
+}
+@keyframes background_flashBlack {
+  0% {
+    background-color: inherit;
+  }
+  50% {
+    background-color: rgba(100,100,100,0.1);
+  }
+  100% {
+    background-color: inherit;
+  }
+}
+i.ringo {
+	display: inline-block; /* 인라인 요소로 유지 */
+	width: 15px;         /* 원하는 너비 */
+	height: 15px;        /* 원하는 높이 */
+	background-size: cover; /* 이미지 크기를 컨테이너에 맞춤 */
+	background-position: center; /* 이미지를 가운데에 맞춤 */
+	background-repeat: no-repeat; /* 이미지 반복 안 함 */
+	border:none;
+}
+
+i.unity {
+  background-image: url(../icon/unity.png); 
+}
+
+i.link {
+  background-image: url(../icon/link.png); 
 }
 .shake {
   animation: shake 1s ease-in-out;  /* 1초 동안 애니메이션 실행 */
@@ -248,7 +275,10 @@ input[type="radio"]:checked + label i,input[type="checkbox"]:checked + label i{
 	outline: none;
 }
 i {
-	color: var(--icon);
+	color: var(--gray);
+}
+i:hover {
+	color: var(--basic);
 }
 a {
     color: inherit;
@@ -868,18 +898,45 @@ button:not(.custom_button){
 	overflow-x: hidden;
 	padding:20px;
 }
-
-/* 알람 컨테이너 바디에 이런식으로 max-height: calc(100vh - 390px); */
-
 .container_side_button_section{
 	height:100%;
 	display:flex;
 	justify-content: center;
 	align-items: center;
 	width:20px;
-	color: var(--icon);
-	font-size:14px;
+	font-size:12px;
 	background-color: rgba(200,200,200,0.1);
+}
+.container_side_button_section.alarm_button{
+	box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.2);
+}
+.container_side_button_section:hover{
+	animation: background_flashBlack 1s infinite !important;
+}
+.container_side_button_section:hover i{
+	color: var(--basic);
+}
+.side_button_container{
+	display:flex;
+	flex-direction:column;
+	height:100%;
+	justify-content: center;
+	align-items: center;
+	width:20px;
+	gap:5px;
+}
+.container_side_button_section.first{
+	display:flex;
+	box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.2);
+	align-items: flex-start;
+	padding-top:5px;
+
+}
+.container_side_button_section.second{
+	display:flex;
+	box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.2);
+	align-items: flex-end;
+	padding-bottom:5px;
 }
 .messenger_button{
 	background-color: white !important;
@@ -890,7 +947,7 @@ button:not(.custom_button){
 	z-index:0;
 	background-color: var(--back);
 	display:flex;
-	justify-content: center;
+	justify-content: flex-start;
 	align-items: flex-start;
 	flex-direction: column;
 	height:100%;
@@ -904,22 +961,23 @@ button:not(.custom_button){
 	width:100%;
 	gap:5px;
 	padding:5px 20px 0px 20px;
+	display:flex;
+	justify-content: flex-start;
 }
 
 .article_container_menu div {
 	flex-grow: 1;
-	text-align: center;
 	height:100%;
 	border-radius: 5px;
 	background-color: white;
+	min-width:90px;
+}
+.article_container_menu div i{
+	color: var(--basic);
 }
 
-.article_container_menu span {
-	display:flex;
-	justify-content: center;
-	align-items: center;
-	margin-left:30px;
-	font-size:12px;
+.article_container_menu div * {
+	margin:5px;
 }
 
 .article_container_menu div:first-child {
@@ -938,7 +996,11 @@ button:not(.custom_button){
 	display:flex;
 	height: calc(100% - 40px);
 	width:100%;
-	padding:10px;
+	padding:10px 20px;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	justify-content: flex-start;
+	align-items: flex-start;
 }
 .main_card{
 	height: 100%;
@@ -947,10 +1009,10 @@ button:not(.custom_button){
 	justify-content: flex-start;
 	flex-grow:1;
 	padding:0px 10px 20px 10px;
-	margin:10px;
 	border-radius:5px;
 	box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.2);
 	background-color: white;
+	min-width:480px;
 }
 .main_card_title{
 	width:100%;
@@ -962,6 +1024,7 @@ button:not(.custom_button){
 }
 .main_card_title i{
 	margin-right:10px;
+	color: var(--basic);
 }
 .main_card_body{
 	width:100%;
@@ -979,7 +1042,7 @@ button:not(.custom_button){
 	display:flex;
 	flex-direction: row;
 	justify-content: flex-end !important;
-	margin:10px;
+	margin-left:5px;
 	border-radius:5px;
 	box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.2);
 	background-color: white;
@@ -1441,11 +1504,11 @@ textarea{
 	font-size:12px;
 }
 
-.pool_main_container{
+.unity_main_container{
 	width:100%;
 }
 
-.pool_menu{
+.unity_menu{
 	width:100%;
 	padding:10px 20px 0px 20px;
 	display:flex;
@@ -1455,7 +1518,7 @@ textarea{
 	display:flex;
 	justify-content: flex-start;
 	align-content: center;
-	padding:5px 0px;
+	padding:5px 0px 5px 5px;
 	witdh:40px;
 	height:20px;
 	border-radius:5px;
@@ -1478,7 +1541,7 @@ textarea{
 	justify-content: center;
 	align-content: center;
 }
-.favorite_pools{
+.favorite_unities{
 	width:100%;
 	max-height:75px;
 	padding:5px;
@@ -1493,7 +1556,7 @@ textarea{
 	display: flex;
 	flex-wrap: wrap;
 }
-.favorite_pool{
+.favorite_unity{
 	max-width:150px;
 	padding:5px;
 	height:30px;
@@ -1505,27 +1568,24 @@ textarea{
 	display: flex;        
 	align-items: center;
 }
-.favorite_pool img{
+.favorite_unity img{
 	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.2) !important;
 }	
-.favorite_pool i{
-	color: var(--icon);
-}
-.favorite_pool div {
+.favorite_unity div {
 	max-width: 85px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	display: block;
 }
-.pool_content{
+.unity_content{
 	width:100%;
 	display:flex;
 	flex-direction: column;
 	justify-content: flex-start;
 	align-content: flex-start;
 }
-.pools_container {
+.unities_container {
 	padding: 10px 10px 10px 15px;
 	width: 100%;
 	background-color: var(--back);
@@ -1542,7 +1602,7 @@ textarea{
 	margin-bottom:10px;
 }
 
-.pool_card {
+.unity_card {
 	min-width: 300px;
 	max-width: 677px;
 	background-color: white;
@@ -1554,7 +1614,7 @@ textarea{
 	align-self: flex-start;
 }
 
-.pool_card_thumbnail{
+.unity_card_thumbnail{
 	display:flex;
 	flex-direction:column;
 	justify-content: center;
@@ -1562,11 +1622,11 @@ textarea{
 	padding:5px;
 	width:60px;
 }
-.pool_card_thumbnail img{
+.unity_card_thumbnail img{
 	width:50px;
 	height:50px;
 }
-.pool_card_button{
+.unity_card_button{
 	margin-top:5px;
 	width:100%;
 	display:flex;
@@ -1578,17 +1638,17 @@ textarea{
 	box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.1);
 	background-color: var(--inner);
 }
-.pool_card_button i{
+.unity_card_button i{
 	margin-right:3px;
 }
-.pool_card_body{
+.unity_card_body{
 	flex:1;
 	width:100px;
 	height:100%;
 	flex-direction: column;
 	padding:5px;
 }
-.pool_card_name{
+.unity_card_name{
 	width:100%;
 	flex:1;
 	display: block;
@@ -1599,7 +1659,7 @@ textarea{
 	font-weight:bold;
 	margin-bottom:5px;
 }
-.pool_card_message{
+.unity_card_message{
 	width:100%;
 	flex:1;
 	display: block;
@@ -1608,12 +1668,12 @@ textarea{
 	white-space: nowrap;
 	margin-bottom:3px;
 }
-.pool_card_message:hover{
+.unity_card_message:hover{
 	text-decoration: underline;
 	cursor: pointer;
 }
 
-.pool_card_tags{
+.unity_card_tags{
 	width:100%;
 	flex:1;
 	display: block;

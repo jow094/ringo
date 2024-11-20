@@ -161,6 +161,11 @@
 		</div>
 	</div>
 </div>
-<div class="container_side_button_section profile_button" onclick="detail_profile_container(this)">
-	<i class="fas fa-chevron-circle-right"></i>
+<div class="side_button_container">
+	<div class="container_side_button_section first" onclick="detail_profile_container(this)">
+		<i class="fas fa-chevron-circle-right"></i>
+	</div>
+	<div class="container_side_button_section second" onclick="detail_profile_container(this)">
+		<i class="fas fa-chevron-circle-right"></i>
+	</div>
 </div>
