@@ -15,7 +15,7 @@
 <nav class="navbar left_navbar">
 		<!-- 드롭다운 메뉴들 -->
 		<ul>
-			<li>
+			<!-- <li>
 				<button type="button">
 					<a href='/main/home'>
 						<i class="fa-solid fa-house"></i>
@@ -38,7 +38,7 @@
 					<i class="fa-solid fa-bell"></i>
 				</button>
 				<span class="nav_badge"></span>
-			</li>
+			</li> -->
 		</ul>
 		<!-- 드롭다운 메뉴들 -->
 </nav>
@@ -46,7 +46,7 @@
 <nav class="navbar top_navbar">
 	<!-- 드롭다운 메뉴들 -->
 	<ul>
-		<li>
+		<%-- <li>
 			<button type="button">
 				<a href="/main/home">
 					<i class="fa-solid fa-house"></i>
@@ -69,7 +69,7 @@
 				<i class="fa-solid fa-bell"></i>
 			</button>
 			<span class="nav_badge"></span>
-		</li>
+		</li> --%>
 		<c:if test="${!empty sessionScope.user_id}">
 			<li>
 				<span class="profile-username" style="color:white; font-size:15px;">

@@ -80,7 +80,8 @@ public class MemberController {
 		MemberVO result = mService.memberLogin(vo);
 		session.setAttribute("user_id", result.getUser_id());
 		session.setAttribute("user_name", result.getUser_name());
-		session.setAttribute("user_thumbnail", result.getUser_thumbnail_path());
+		session.setAttribute("user_thumbnail_path", result.getUser_thumbnail_path());
+		session.setAttribute("unity_thumbnail_path", "1.jpg");
 		
 		logger.debug("loginPOST(MemberVO) - result : "+result);
 		return "redirect:/main/home";

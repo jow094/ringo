@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
     
-<div class="container_side_button_section alarm_button" onclick="alarm_container(this)">
+<div class="container_side_button_section alarm_button" onclick="row_toggle('.alarm_container',this)">
 	<i class="fas fa-chevron-circle-right"></i>
 </div>
 
