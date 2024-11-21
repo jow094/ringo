@@ -142,54 +142,6 @@
 					</div>
 				</div>
 				<!-- card end -->
-				<!-- card start -->
-				<div class="card">
-					<div class="card_header">
-						<div class="card_header_img">
-							<img
-							src="/img/profiles/${user_thumbnail_path}"
-							style="width: 40px; height: 40px; border-radius: 50%; shrink:0; box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);"
-							/>
-						</div>
-						<div class="card_header_name">
-							작성자
-						</div>
-						<div class="card_header_tools">
-							<div class="card_header_tool">
-								<i class="fa-regular fa-heart" style="font-size: 20px;"></i>
-								<span>1,430</span>
-							</div>
-							<div class="card_header_tool">
-								<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
-							</div>
-						</div>
-					</div>
-					<div class="card_body">
-						<div class="card_body_content">
-							<div class="scroll_box">
-								<div class="scroll_box_inner" style="justify-content: flex-start; align-items: flex-start; padding:0px 10px;">내용</div>
-							</div>
-						</div>
-						<div class="card_body_tags">
-							#태그
-						</div>
-					</div>
-					<div class="card_foot">
-						<div class="card_foot_comment_input">
-							<textarea></textarea>
-							<button type="button">
-								<i class="fa-solid fa-paper-plane"></i>
-							</button>
-						</div>
-						<div class="card_foot_comment">
-							<div class="scroll_box">
-								<div class="scroll_box_inner">
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- card end -->
 			</div>
 		</div>
 	</div>

@@ -8,11 +8,20 @@
 				src="/img/profiles/${user_thumbnail_path}"
 				style="width: 150px; height: 150px; margin-bottom:10px;"
 				/>
-				<div class="profile_container_head_basic_user_name">
+				<div class="profile_container_head_basic_name">
 				조우영
 				</div>
-				<div class="profile_container_head_basic_user_nation">
+				<div class="profile_container_head_basic_info">
 				국적 : 대한민국
+				</div>
+				<div class="profile_container_head_basic_info">
+				나이 : 31세
+				</div>
+				<div class="profile_container_head_basic_info">
+				성별 : 남성
+				</div>
+				<div class="profile_container_head_basic_info">
+				접속 정보 : 비공개
 				</div>
 			</div>
 			<div class="profile_container_head_tools">
