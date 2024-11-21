@@ -359,13 +359,13 @@ div{
     border: 2px dashed rgb(0, 123, 255);
     background-color: rgba(0, 123, 255, 0.1);
 }
-
+.title_button{
+	margin-left:auto;
+}
 .input_wrapper {
 	display: flex;
 	height:100%;
-  	margin-left:auto;
 	margin-right:10px;
-	height:100%;
 	border:none;
 	border-bottom:1px solid rgba(0,0,0,0.1);
 	justify-content: flex-start;
@@ -1565,6 +1565,12 @@ textarea{
 .unity_main_container{
 	width:100%;
 }
+.unity_home_button{
+	height:100%;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+}
 
 .unity_menu{
 	width:100%;
@@ -1685,18 +1691,6 @@ textarea{
 .unity_card_thumbnail img{
 	width:50px;
 	height:50px;
-}
-.unity_card_button{
-	margin-top:5px;
-	width:100%;
-	display:flex;
-	justify-content: center;
-	align-items: center;
-	height:20px;
-	font-size:10px;
-	border-radius: 2px;
-	box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.1);
-	background-color: var(--inner);
 }
 .unity_card_button i{
 	margin-right:3px;

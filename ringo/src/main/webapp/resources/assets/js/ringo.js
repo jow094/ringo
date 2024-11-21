@@ -1,3 +1,8 @@
+var unity;
+var person;
+var profile_type='person';
+var profile_length=1;
+
 $(document).ready(function() {
 	login_check();
 	main_show('.article_container_menu_around','around');
@@ -196,37 +201,6 @@ function row_toggle(target,e) {
 	}
 }
 
-function profile_toggle(f,target,e) {
-	
-	if(e){
-		const icon = $(e).find('i');
-	}
-	
-	if(f=='expand'){
-		row_toggle('.detail_profile_container');
-		showing('.profile_button_container .container_side_button_section.last');
-		hide('.profile_button_container .container_side_button_section.top');
-		hide('.profile_button_container .container_side_button_section.bottom');
-	}else if(f=='shrink'){
-		row_toggle('.profile_container');
-		showing('.profile_button_container .container_side_button_section.first');
-		hide('.profile_button_container .container_side_button_section.top');
-		hide('.profile_button_container .container_side_button_section.bottom');
-	}
-	
-	if(target=='.profile_container'){
-		row_toggle('.profile_container');
-		hide('.profile_button_container .container_side_button_section.first');
-		showing('.profile_button_container .container_side_button_section.top');
-		showing('.profile_button_container .container_side_button_section.bottom');
-	}else if (target=='.detail_profile_container'){
-		row_toggle('.detail_profile_container');
-		hide('.profile_button_container .container_side_button_section.last');
-		showing('.profile_button_container .container_side_button_section.top');
-		showing('.profile_button_container .container_side_button_section.bottom');
-	}
-}
-
 function col_toggle(target,e) {
 	
 	if($(target).hasClass('expanded')){
@@ -251,7 +225,6 @@ function col_toggle(target,e) {
 }
 
 function main_show(e,target) {
-	console.log(target);
 	$(`.main_card:not(.main_${target})`).addClass('none');
 	showing(`.main_card.main_${target}`);
 	$(e).siblings().not('.article_container_menu_messenger').removeClass('active');
@@ -1464,15 +1437,155 @@ function check_duple(input, callback){
 	    }
     });
 }
-
-function show_unity(){
-	hide('.user_profile_container');
-	showing('.unity_profile_container');
-	row_toggle('.profile_button_container');
-}
-
-function show_user_profile(){
+function unity_home(){
 	hide('.unity_profile_container');
 	showing('.user_profile_container');
-	row_toggle('.profile_button_container');
+	showing('.unity_home');
+	hide('.unity_unity');
+	unity=null;
+	person="${user_code}";
+	profile_type='person';
+	check_profile_button();
+}
+
+function enter_unity(e){
+	hide('.user_profile_container');
+	showing('.unity_profile_container');
+	hide('.unity_home');
+	showing('.unity_unity');
+	unity=e;
+	profile_type='unity';
+	check_profile_button();
+}
+function enter_person(e){
+	hide('.unity_profile_container');
+	showing('.user_profile_container');
+	person = $(e).attr('data-user_code');
+	profile_type='person';
+	check_profile_button();
+}
+
+function check_unity(){
+	if($('.unity_home').hasClass('none')){
+		enter_unity(unity);
+	}
+}
+
+function check_profile_button(){
+	const top=$('.profile_button_container .container_side_button_section.top');
+	const bottom=$('.profile_button_container .container_side_button_section.bottom');
+	const left=$('.profile_button_container .container_side_button_section.left');
+	const right=$('.profile_button_container .container_side_button_section.right');
+	
+	console.log('pt :',profile_type);
+	
+	if(profile_type=='person'){
+		if(profile_length==0){
+			if(!left.hasClass('none')){
+				left.addClass('none');
+			}
+			if(right.hasClass('none')){
+				right.removeClass('none');
+			}
+			if(!top.hasClass('none')){
+				top.addClass('none');
+			}
+			if(!bottom.hasClass('none')){
+				bottom.addClass('none');
+			}
+		}else if(profile_length==1){
+			if(!left.hasClass('none')){
+				left.addClass('none');
+			}
+			if(!right.hasClass('none')){
+				right.addClass('none');
+			}
+			if(top.hasClass('none')){
+				top.removeClass('none');
+			}
+			if(bottom.hasClass('none')){
+				bottom.removeClass('none');
+			}
+		}else if(profile_length==2){
+			if(left.hasClass('none')){
+				left.removeClass('none');
+			}
+			if(!right.hasClass('none')){
+				right.addClass('none');
+			}
+			if(!top.hasClass('none')){
+				top.addClass('none');
+			}
+			if(!bottom.hasClass('none')){
+				bottom.addClass('none');
+			}
+		}
+	}else if(profile_type=='unity'){
+		if(profile_length==0){
+			if(!left.hasClass('none')){
+				left.addClass('none');
+			}
+			if(right.hasClass('none')){
+				right.removeClass('none');
+			}
+			if(!top.hasClass('none')){
+				top.addClass('none');
+			}
+			if(!bottom.hasClass('none')){
+				bottom.addClass('none');
+			}
+		}else if(profile_length==1){
+			if(left.hasClass('none')){
+				left.removeClass('none');
+			}
+			if(!right.hasClass('none')){
+				right.addClass('none');
+			}
+			if(!top.hasClass('none')){
+				top.addClass('none');
+			}
+			if(!bottom.hasClass('none')){
+				bottom.addClass('none');
+			}
+		}else if(profile_length==2){
+			if(left.hasClass('none')){
+				left.removeClass('none');
+			}
+			if(!right.hasClass('none')){
+				right.addClass('none');
+			}
+			if(!top.hasClass('none')){
+				top.addClass('none');
+			}
+			if(!bottom.hasClass('none')){
+				bottom.addClass('none');
+			}
+			if($('.detail_profile_container').hasClass('expanded')){
+				shrink_profile();
+			}
+		}
+		
+	}
+}
+
+function expand_profile(){
+	if(profile_length==0){
+		row_toggle('.profile_container');
+		profile_length=1;
+	}else if(profile_length==1){
+		row_toggle('.detail_profile_container');
+		profile_length=2;
+	}
+	check_profile_button();
+}
+
+function shrink_profile(){
+	if(profile_length==2){
+		row_toggle('.detail_profile_container');
+		profile_length=1;
+	}else if(profile_length==1){
+		row_toggle('.profile_container');
+		profile_length=0;
+	}
+	check_profile_button();
 }
