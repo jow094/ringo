@@ -24,9 +24,68 @@
 			</div>
 		</div>
 	</div>
-	<div class="main_messenger_body scroll_box">
+	
+	
+	<div class="main_messenger_body out_of_room">
+		<div class="messenger_navbar small">
+			<div class="active">전체</div>
+			<div>즐겨찾기</div>
+			<div>팔로워</div>
+			<div>유니티</div>
+			<div>일반</div>
+		</div>
+		<div class="messenger_rooms_container">
+			<div class="menu_tag" onclick="col_toggle($(this).next('.messenger_rooms'),this)">
+				<span>즐겨찾기</span>
+				<i class="fas fa-chevron-circle-up"></i>
+			</div>
+			<div class="messenger_rooms favorite expanded">
+				<div class="messenger_room" onclick="enter_room()">
+					<div class="room_thumbnail">
+						<img src="/img/profiles/${user_thumbnail_path}"/>
+					</div>
+					<div class="room_body">
+						<div class="room_name">조우영</div>
+						<div class="room_message">
+							<div class="room_message_content">asdasdasdsadasdsadsasdasdasdsadasdsadsasdasdasdsadasdsadsasdasㅁㄴㅇㅁㄴㅇㄴdasdsadasdsadsa</div>
+							<div class="room_message_time">11:20</div>
+						</div>
+					</div>
+					<div class="room_unreadcount">
+						<div class="badge">1123</div>
+					</div>
+				
+				</div>
+				<div class="messenger_room">
+				
+				</div>
+				<div class="messenger_room">
+				
+				</div>
+			</div>
+			<div class="menu_tag" onclick="col_toggle($(this).next('.messenger_rooms'),this)">
+				<span>팔로워</span>
+				<i class="fas fa-chevron-circle-up"></i>
+			</div>
+			<div class="messenger_rooms follower expanded">
+				<div class="messenger_room">
+				
+				</div>
+				<div class="messenger_room">
+				
+				</div>
+				<div class="messenger_room">
+				
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	
+	<div class="main_messenger_body in_room none">
 		<div class="messenger_navbar">
-			<div class="messenger_navbar_back">
+			<div class="messenger_navbar_back" onclick="exit_room()">
 				<i class="fa-solid fa-arrow-left"></i>
 			</div>
 			<div class="messenger_navbar_name">name</div>
@@ -64,7 +123,6 @@
 					</div>
 				</div>
 			</div>
-			
 		</div>
 		<div class="messenger_input">
 			<textarea></textarea>
@@ -85,4 +143,7 @@
 			</div>
 		</div>
 	</div>
+	
+	
+	
 </div>

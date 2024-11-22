@@ -24,6 +24,12 @@ $(document).ready(function() {
 	    }
 	});
 	
+	$('.link_profiles_belt').on('wheel', function (event) {
+        event.preventDefault();
+        const delta = event.originalEvent.deltaY;
+        $(this).scrollLeft($(this).scrollLeft() + delta);
+    });
+	
 	$('input[type="checkbox"]').change(function() {
 		var target = $(this).closest('.with_checkbox');
 		var currentClass = target.attr('class'); 
@@ -1464,6 +1470,15 @@ function enter_person(e){
 	profile_type='person';
 	check_profile_button();
 }
+function enter_room(e){
+	hide('.out_of_room');
+	showing('.in_room');
+}
+
+function exit_room(e){
+	hide('.in_room');
+	showing('.out_of_room');
+}
 
 function check_unity(){
 	if($('.unity_home').hasClass('none')){
@@ -1588,4 +1603,153 @@ function shrink_profile(){
 		profile_length=0;
 	}
 	check_profile_button();
+}
+
+function write_circle(){
+	col_toggle('.write_container');
+	
+}
+
+function prev_link_card(e){
+	const current_card = $('.link_card_container_footer').find('.small_link_card.active');
+	toggle_link_card(current_card.prev());
+}
+
+function next_link_card(e){
+	const current_card = $('.link_card_container_footer').find('.small_link_card.active');
+	toggle_link_card(current_card.next());
+}
+
+function toggle_link_card(e){
+	const user_code =$(e).attr('data-user_code');
+	const prev = $('.link_card_container').find('.prev');
+	const next = $('.link_card_container').find('.next');
+	
+	$(e).siblings().removeClass('active');
+	$(e).addClass('active');
+	
+	setTimeout(function() {
+		const target_index = $('.link_card_container_footer').find('.small_link_card.active').index();
+		const last_index = $('.link_card_container_footer').find('.small_link_card').length;
+		
+		if(!target_index==0 && target_index!=(last_index-1)){
+			console.log('center');
+			if(next.hasClass('shrinked')){
+				row_toggle(next);
+			}
+			if(prev.hasClass('shrinked')){
+				row_toggle(prev);
+			}
+		}else if(target_index==0){
+			if(next.hasClass('shrinked')){
+				row_toggle(next);
+			}
+			if(prev.hasClass('expanded')){
+				row_toggle(prev);
+			}
+		} else if(target_index==(last_index-1)){
+			if(next.hasClass('expanded')){
+				row_toggle(next);
+			}
+			if(prev.hasClass('shrinked')){
+				row_toggle(prev);
+			}
+		} 
+	}, 1);
+	
+	hide('.link_card');
+	
+	$(`.link_card`).html(`
+		<div class="card_body">
+			<div class="card_body_content">
+				<div class="link_img_container">
+					<div class="link_thumbnail">
+						<img src="/img/profiles/"/>
+					</div>
+					<div class="link_profiles">
+						<div class="link_profiles_belt">
+							<div class="link_profile">
+								<img src="/img/profiles/"/>
+							</div>
+							<div class="link_profile">
+								<img src="/img/profiles/"/>
+							</div>
+							<div class="link_profile">
+								<img src="/img/profiles/"/>
+							</div>
+							<div class="link_profile">
+								<img src="/img/profiles/"/>
+							</div>
+							<div class="link_profile">
+								<img src="/img/profiles/"/>
+							</div>
+							<div class="link_profile">
+								<img src="/img/profiles/"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="link_info">
+					<div class="scroll_x">
+						${user_code}
+					</div>
+				</div>
+			</div>
+			<div class="card_body_tags">
+				#자주 사용하는 태그
+				<div class="tag_card">#asd</div>
+			</div>
+			<div class="card_body_buttons">
+				<div class="button">
+					<i class="fa-solid fa-pen-to-square" onclick="write_circle()"></i>
+				</div>
+				<div class="button">
+					<i class="fa-solid fa-pen-to-square" onclick="write_circle()"></i>
+				</div>
+				<div class="button">
+					<i class="fa-solid fa-pen-to-square" onclick="write_circle()"></i>
+				</div>
+				<div class="button">
+					<i class="fa-solid fa-pen-to-square" onclick="write_circle()"></i>
+				</div>
+			</div>
+		</div>
+	`);
+	setTimeout(function() {
+        showing('.link_card');
+    }, 100);
+}
+
+function open_itf(e){
+	const fileInput = $(e).find('input[type="file"]');
+    if (fileInput.length > 0) {
+        fileInput[0].click(); // JavaScript 기본 메서드로 이벤트 트리거
+    }
+}
+
+function say_upload(e){
+	console.log($(e).find('input[type="file"]').val());
+}
+
+function preview_img(e){
+	
+	var file = e.files[0];
+	var container = $(e).closest('.card').find('.upload_files');
+	
+	if (file) {
+		var reader = new FileReader();
+		
+		reader.onload = function(e) {
+			container.append(`
+				<div class="preview_img">
+					<img src="${e.target.result}"/>
+					<div class="preview_file_name">
+						${file.name}
+					</div>
+				</div>
+			`);
+		};
+		
+		reader.readAsDataURL(file);
+	}
 }

@@ -4,12 +4,66 @@
 		<i class="fa-solid fa-circle-notch"></i>
 		<span>서클</span>
 		<div class="title_button">
+			<i class="fa-solid fa-pen-to-square" onclick="write_circle()" style="cursor:pointer;"></i>
 			<div class="input_wrapper">
-			  <i class="input_icon fa-solid fa-magnifying-glass"></i>
-			  <input type="text"></input>
+				<i class="input_icon fa-solid fa-magnifying-glass"></i>
+				<input type="text"></input>
 			</div>
 		</div>
 	</div>
+	
+	<div class="write_container col_shrinked">
+		<div class="card">
+			<div class="card_body">
+				<div class="card_body_content">
+					<div class="scroll_box">
+						<textarea class="scroll">asdasd</textarea>
+					</div>
+				</div>
+				<div class="card_body_tags">
+					#태그<input class="tag_input" type="text" placeholder="태그를 입력하세요.">
+					<div class="tag_card">#asd</div>
+				</div>
+				<div class="card_body_buttons">
+					<div class="button">
+						<i class="fa-solid fa-link" onclick="open_itf(this); say_upload(this)">
+							<input type="file" name="" class="none" accept="image/*" onchange="preview_img(this)" multiple>
+						</i>
+					</div>
+					<div class="button">
+						<i class="fa-solid fa-check" onclick="submit_circle()"></i>
+					</div>
+				</div>
+				<div class="upload_files expanded">
+					<div class="preview_img">
+						<img src="/img/profiles/${user_thumbnail_path}"/>
+						<div class="preview_file_name">
+						asasdasdsadasdd.jpg
+						</div>
+					</div>
+					<div class="preview_img">
+						<img src="/img/profiles/${user_thumbnail_path}"/>
+						<div class="preview_file_name">
+						asd.jpg
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	<div class="main_card_body">
 		<div class="scroll_box">
 			<div class="scroll_box_inner" >
@@ -32,13 +86,13 @@
 							</div>
 							<div class="card_header_tool">
 								<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
-								</div>
 							</div>
 						</div>
-						<div class="card_body">
-							<div class="card_body_content">
-								<div class="scroll_box">
-									<div class="scroll_box_inner">
+					</div>
+					<div class="card_body">
+						<div class="card_body_content">
+							<div class="scroll_box">
+								<div class="scroll_box_inner">
 프로필 우측 더보기 누르면 확장, 메세지는 꺼지고 우측으로 밀림
 매칭 활성화 시 메신저,프로필 꺼짐
 본인 프로필에서 우측 더보기 누르면 확장해서 남이 보는 내 프로필 확인가능, 수정기능제공
@@ -68,29 +122,29 @@
 
 미디어쿼리 작동 논리 : 아티클 컨테이너 요소가 특정 사이즈 미만이 되면 불필요한 요소 닫기
 닫아도 되는 요소는 알림창, 프로필창 등 에 클래스를 부여하여 특정, 고정 버튼 누르면 클래스 삭제, 직접 닫으면 다시 클래스 부여
-									</div>
 								</div>
 							</div>
-							<div class="card_body_tags">
-								#태그
-							</div>
 						</div>
-						<div class="card_foot">
-							<div class="card_foot_comment_input">
-								<textarea></textarea>
-								<button type="button">
-									<i class="fa-solid fa-paper-plane"></i>
-								</button>
-							</div>
-							<div class="card_foot_comment">
-								<div class="scroll_box">
-									<div class="scroll_box_inner">
-										<div class="card_comment">
-											<div class="card_comment_thumbnail">
-												<img
-												src="/img/profiles/${user_thumbnail_path}"
-											style="width: 40px; height: 40px; border-radius: 30%;"
-											/>
+						<div class="card_body_tags">
+							#태그
+						</div>
+					</div>
+					<div class="card_foot">
+						<div class="card_foot_comment_input">
+							<textarea></textarea>
+							<button type="button">
+								<i class="fa-solid fa-paper-plane"></i>
+							</button>
+						</div>
+						<div class="card_foot_comment">
+							<div class="scroll_box">
+								<div class="scroll_box_inner">
+									<div class="card_comment">
+										<div class="card_comment_thumbnail">
+											<img
+											src="/img/profiles/${user_thumbnail_path}"
+										style="width: 40px; height: 40px; border-radius: 30%;"
+										/>
 										</div>
 										<div class="card_comment_body">
 											<div class="card_comment_name">작성자</div>
