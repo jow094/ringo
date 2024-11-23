@@ -9,9 +9,9 @@ import lombok.Data;
 
 @Data
 public class RepleVO {
-	private Integer writer_code;
 	private String writer_thumbnail_path;
 	private String writer_nickname;
+	private Integer reple_writer;
 	private Integer reple_code;
 	private Integer reple_type;
 	private Integer reple_target;

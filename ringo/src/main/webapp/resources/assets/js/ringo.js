@@ -155,6 +155,51 @@ function login_check(){
     }
 }
 
+function format_date(stringDate,degree){
+    if (!stringDate) return '';
+    
+    const date = new Date(stringDate);
+    const year = String(date.getFullYear()).slice(-2);
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+    if(degree=='year'){
+    	return `${year}.${month}.${day}  ${hours}:${minutes}`;
+    }else if(degree=='day'){
+    	return `${month}.${day}  ${hours}:${minutes}`;
+    }else if(degree=='time'){
+    	return `${hours}:${minutes}`;
+    }
+}
+
+function auto_format_date(stringDate) {
+    if (!stringDate) return '';
+    
+    const date = new Date(stringDate);
+    const today = new Date();
+    
+    const year = String(date.getFullYear()).slice(-2);
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+    const todayYear = today.getFullYear();
+    const todayMonth = today.getMonth();
+    const todayDate = today.getDate();
+    
+    if (date.getFullYear() === todayYear && date.getMonth() === todayMonth && date.getDate() === todayDate) {
+        return `${hours}:${minutes}`;
+    } else if (date.getFullYear() === todayYear) {
+        return `${month}.${day} ${hours}:${minutes}`;
+    } else {
+        return `${year}.${month}.${day} ${hours}:${minutes}`;
+    }
+}
+
+
 function logout(){
 	alert("로그아웃 되었습니다.");
 }
@@ -1844,7 +1889,7 @@ function submit_circle(e){
 
     $.ajax({
     	type: 'POST',
-        url: '/main/circle',
+        url: '/main/circle/',
         data: formData,
         processData: false, // FormData 사용 시 false로 설정
         contentType: false, // FormData 사용 시 false로 설정
@@ -1863,23 +1908,24 @@ function submit_circle(e){
 }
 
 function submit_reple(e){
-	if($(e).closest('.card_foot_comment_input').find('textarea').val().trim()==''){
-		alert('게시글은 1자 이상이어야 합니다.');
+	if($(e).val().trim()==''){
+		alert('댓글은 1자 이상이어야 합니다.');
 		return;
 	}
 	const card = $(e).closest('.card');
 	
 	$.ajax({
         type: "POST",
-        url: "/post/reple",
-        data: {reple_content:$(e).closest('.card_foot_comment_input').find('textarea').val(),
+        url: "/main/reple/",
+        data: {reple_content:$(e).val(),
         		reple_type:card.attr('data-post_type'),
         		reple_target:card.attr('data-post_code')},
         dataType: "json",
         success: function (response) {
+        	$(e).val('');
+        	get_reple(e);
 	    },
 	    error: function(error) {
-	        console.log("데이터 전송 실패:", error);
 	        alert('댓글 작성에 실패하였습니다.');
 	    }
     });
@@ -1888,7 +1934,7 @@ function submit_reple(e){
 function invalidate_write_container(target){
 	if(target='circle'){
 		circle_posting_files = [];
-		$('.main_circle').find('.write_container').remove('.tag_card');
+		$('.main_circle').find('.write_container').find('.tag_card').remove();
 		$('.main_circle').find('.write_container').find('.upload_files').empty();
 		$('.main_circle').find('.write_container').find('textarea').val('');
 		$('.main_circle').find('.write_container').find('input').val('');
@@ -1901,6 +1947,83 @@ function invalidate_write_container(target){
 	}
 }
 
+function get_reple(e){
+	
+	$.ajax({
+        type: "GET",
+        url: "/main/reple/",
+        data: {reple_type: $(e).closest('.card').attr('data-post_type'),
+        		reple_target: $(e).closest('.card').attr('data-post_code')},
+        dataType: "json",
+        success: function(data) {
+        	console.log(data);
+        	
+        	if (data != null && data.length>0) {
+        		
+        		if($(e).closest('.card').find('.card_foot_comment').length==0){
+        			var reple_container= `
+        				<div class="card_foot_comment">
+	        				<div class="scroll_box">
+		        				<div class="scroll_box_inner">
+		        				</div>
+	        				</div>
+        				</div>
+        			`;
+        			var $comment = $(reple_container);
+        			
+        			for (const reple of data) {
+                    	if(reple.reple_content!=null && reple.reple_content!=''){
+                    		
+                    		$comment.find('.scroll_box_inner').prepend(`
+                				<div class="card_comment" data-reple_code="${reple.reple_code}">
+                    				<div class="card_comment_thumbnail" onclick="get_circle_post(${reple.reple_writer})">
+    	                				<img src="/img/profiles/${reple.writer_thumbnail_path}"/>
+                    				</div>
+                    				<div class="card_comment_body">
+    	                				<div class="card_comment_name" onclick="get_circle_post(${reple.reple_writer})">${reple.writer_nickname}</div>
+    	                				<div class="card_comment_content">${reple.reple_content}</div>
+    	                				<div class="card_comment_time">
+    	                				<i class="fa-regular fa-thumbs-up" onclick="like()"></i>${reple.reple_recomm_count}
+    	                				<span>${auto_format_date(reple.reple_time)}</span>
+    	                				</div>
+                    				</div>
+                				</div>
+                    		`);
+                    	}
+                    }
+        			$(e).closest('.card').find('.card_foot').append($comment);
+        		}else{
+        			$(e).closest('.card').find('.card_foot_comment').find('.scroll_box_inner').empty();
+        			
+        			for (const reple of data) {
+                    	if(reple.reple_content!=null && reple.reple_content!=''){
+                    		
+		        			$(e).closest('.card').find('.card_foot_comment').find('.scroll_box_inner').append(`
+		            				<div class="card_comment" data-reple_code="${reple.reple_code}">
+		            				<div class="card_comment_thumbnail" onclick="get_circle_post(${reple.reple_writer})">
+		                				<img src="/img/profiles/${reple.writer_thumbnail_path}"/>
+		            				</div>
+		            				<div class="card_comment_body">
+		                				<div class="card_comment_name" onclick="get_circle_post(${reple.reple_writer})">${reple.writer_nickname}</div>
+		                				<div class="card_comment_content">${reple.reple_content}</div>
+		                				<div class="card_comment_time">
+		                				<i class="fa-regular fa-thumbs-up" onclick="like()"></i>${reple.reple_recomm_count}
+		                				<span>${auto_format_date(reple.reple_time)}</span>
+		                				</div>
+		            				</div>
+		        				</div>
+		            		`);
+                    	}
+        			}
+        		}
+            }
+        },
+        error: function(xhr, status, error) {
+        }
+    });
+	
+}
+
 function get_circle_post(e){
 	var user_code = 0;
 	
@@ -1910,7 +2033,7 @@ function get_circle_post(e){
 	
 	$.ajax({
         type: "GET",
-        url: "/main/circle",
+        url: "/main/circle/",
         data: {user_code:user_code},
         dataType: "json",
         success: function(data) {
@@ -1948,8 +2071,8 @@ function get_circle_post(e){
 						</div>
 						<div class="card_foot">
 							<div class="card_foot_comment_input">
-								<textarea></textarea>
-								<button type="button">
+								<textarea onkeydown="if(event.key === 'Enter'){event.preventDefault(); submit_reple(this)}"></textarea>
+								<button type="button" onclick="submit_reple($(this).prev())">
 									<i class="fa-solid fa-paper-plane"></i>
 								</button>
 							</div>
@@ -1970,8 +2093,6 @@ function get_circle_post(e){
                 }
                 
                 if (postVO.post_file_path != null && postVO.post_file_path != '') {
-                	
-                	console.log(postVO.post_file_path);
                 	
                     const files = postVO.post_file_path.split(',');
                     var img_container = `
@@ -2005,11 +2126,45 @@ function get_circle_post(e){
                     }
                     $card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
                 }
+                
+                if (postVO.reples != null && postVO.reples.length>0) {
+                	var reple_container= `
+                		<div class="card_foot_comment">
+	                		<div class="scroll_box">
+		                		<div class="scroll_box_inner">
+		                		</div>
+	                		</div>
+                		</div>
+                		`;
+                	var $comment = $(reple_container);
+                	for (const reple of postVO.reples) {
+                    	if(reple.reple_content!=null && reple.reple_content!=''){
+                    		
+                    		$comment.find('.scroll_box_inner').append(`
+                				<div class="card_comment" data-reple_code="${reple.reple_code}">
+	                				<div class="card_comment_thumbnail" onclick="get_circle_post(${reple.reple_writer})">
+		                				<img src="/img/profiles/${reple.writer_thumbnail_path}"/>
+	                				</div>
+	                				<div class="card_comment_body">
+		                				<div class="card_comment_name" onclick="get_circle_post(${reple.reple_writer})">${reple.writer_nickname}</div>
+		                				<div class="card_comment_content">${reple.reple_content}</div>
+		                				<div class="card_comment_time">
+		                				<i class="fa-regular fa-thumbs-up" onclick="like()"></i>${reple.reple_recomm_count}
+		                				<span>${auto_format_date(reple.reple_time)}</span>
+		                				</div>
+	                				</div>
+                				</div>
+                    		`);
+                    	}
+                    }
+                	$card.find('.card_foot').append($comment);
+                }
         	}
-        	
+        	$('.circle_cards').scrollTop(0);
         },
         error: function(xhr, status, error) {
         }
     });
+	
 }
 

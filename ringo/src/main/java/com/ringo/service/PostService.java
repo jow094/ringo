@@ -10,5 +10,6 @@ public interface PostService {
 	public Integer getLastCirclePostCode();
 	public List<PostVO> getCirclePost(Integer user_code);
 	public Integer uploadReple(RepleVO vo);
+	public List<RepleVO> getReple(RepleVO vo);
 	
 }

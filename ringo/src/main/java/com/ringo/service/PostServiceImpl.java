@@ -43,6 +43,12 @@ public class PostServiceImpl implements PostService {
 		logger.debug("uploadReple(RepleVO) - vo : "+vo);
 		return pdao.insertReple(vo);
 	}
+
+	@Override
+	public List<RepleVO> getReple(RepleVO vo) {
+		logger.debug("getReple(RepleVO) - vo : "+vo);
+		return pdao.selectReple(vo);
+	}
 	
 	
 	

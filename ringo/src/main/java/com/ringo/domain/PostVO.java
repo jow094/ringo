@@ -9,7 +9,6 @@ import lombok.Data;
 
 @Data
 public class PostVO {
-	private Integer writer_code;
 	private String writer_thumbnail_path;
 	private String writer_nickname;
 	private Integer post_code;
@@ -23,4 +22,5 @@ public class PostVO {
 	private Integer post_recomm_count;
 	private String post_recomm_user;
 	private boolean post_ismodify;
+	private List<RepleVO> reples;
 }

@@ -51,6 +51,9 @@ public class MainController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
+	private String uploadPath_circle = "C:/ringo_files/circle/upload/";
+	private String uploadPath_unity = "C:/ringo_files/unity/upload/";
+	
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String homeGET(HttpSession session, MemberVO vo) {
 		logger.debug("mainGET(MemberVO) - vo : "+vo);
@@ -69,11 +72,73 @@ public class MainController {
 		return pService.getCirclePost(user_code);
 	}
 	
+	@RequestMapping(value = "/circle", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer circlePOST(HttpSession session, PostVO vo) {
+		logger.debug("circlePOST(MemberVO) - vo : "+vo);
+		
+		Integer postingCode = (pService.getLastCirclePostCode() != null) ? pService.getLastCirclePostCode() + 1 : 1;
+		Integer writerCode = (Integer)session.getAttribute("user_code");
+		
+		vo.setPost_code(postingCode);
+		vo.setPost_writer(writerCode);
+        
+		try {
+			List<MultipartFile> files = vo.getPosting_files(); 
+			StringBuilder post_file_path = new StringBuilder();
+			
+			if(files != null && !files.isEmpty()) {
+				int i = 1;
+				for (MultipartFile file : files) {
+				    if (!file.isEmpty()) {
+				        String originalFileName = file.getOriginalFilename();
+		
+				        String extension = "";
+				        if (originalFileName != null && originalFileName.contains(".")) {
+				            extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+				        }
+		
+				        String fileName = writerCode.toString()  + "_" + postingCode + "_" + i + extension;
+		
+				        if (post_file_path.length() > 0) {
+				        	post_file_path.append(",");
+				        }
+				        post_file_path.append(fileName);
+		
+				        File dest = new File(uploadPath_circle + fileName);
+				        try {
+				            file.transferTo(dest);
+				        } catch (IOException e) {
+				            e.printStackTrace();
+				        }
+		
+				        i++;
+				    }
+				}
+			}
+			
+			vo.setPost_file_path(post_file_path.toString());
+			
+			return pService.uploadCirclePost(vo);
+			
+		} catch (Exception e) {
+	    	return 0;
+	    }
+	}
+	
 	@RequestMapping(value = "/reple", method = RequestMethod.GET)
 	@ResponseBody
-	public List<PostVO> repleGET(HttpSession session, RepleVO vo) {
+	public List<RepleVO> repleGET(HttpSession session, RepleVO vo) {
 		logger.debug("repleGET(RepleVO vo) - vo : "+vo);
 		
-		return null;
+		return pService.getReple(vo);
+	}
+	
+	@RequestMapping(value = "/reple", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer replePOST(HttpSession session, RepleVO vo) {
+		logger.debug("replePOST(RepleVO vo) - vo : "+vo);
+		vo.setReple_writer((Integer)session.getAttribute("user_code"));
+		return pService.uploadReple(vo);
 	}
 }

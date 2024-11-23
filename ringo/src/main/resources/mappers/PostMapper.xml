@@ -5,6 +5,31 @@
   
 <mapper namespace="com.ringo.mapper.PostMapper">
 	
+	<resultMap id="circlePostMap" type="PostVO">
+	    <result property="post_code" column="post_code"/>
+	    <result property="post_writer" column="post_writer"/>
+	    <result property="post_content" column="post_content"/>
+	    <result property="post_tag" column="post_tag"/>
+	    <result property="post_time" column="post_time"/>
+	    <result property="post_file_path" column="post_file_path"/>
+	    <result property="post_recomm_count" column="post_recomm_count"/>
+	    <result property="post_recomm_user" column="post_recomm_user"/>
+	    <result property="post_ismodify" column="post_ismodify"/>
+	    <result property="writer_thumbnail_path" column="writer_thumbnail_path"/>
+	    <result property="writer_nickname" column="writer_nickname"/>
+	    
+	    <collection property="reples" ofType="RepleVO">
+	        <result property="reple_code" column="reple_code"/>
+	        <result property="writer_nickname" column="r_writer_nickname"/>
+	        <result property="writer_thumbnail_path" column="r_writer_thumbnail_path"/>
+	        <result property="reple_writer" column="reple_writer"/>
+	        <result property="reple_content" column="reple_content"/>
+	        <result property="reple_time" column="reple_time"/>
+	        <result property="reple_type" column="reple_type"/>
+	        <result property="reple_recomm_count" column="reple_recomm_count"/>
+	    </collection>
+	</resultMap>
+	
 	<select id="selectLastCirclePostCode" resultType="Integer">
 		select max(post_code) from _ringo_circle_post
 	</select>
@@ -25,22 +50,33 @@
         )
     </insert>
 	
-	<select id="selectCirclePost" resultType="PostVO">
-		select p.*, m.user_thumbnail_path as writer_thumbnail_path, m.user_nickname as writer_nickname, m.user_code as writer_code
+	<select id="selectCirclePost" resultMap="circlePostMap">
+		select p.*, 
+		 m1.user_thumbnail_path as writer_thumbnail_path, 
+		 m1.user_nickname as writer_nickname,
+		 r.reple_code, 
+		 r.reple_writer, 
+		 r.reple_content, 
+		 r.reple_time,
+		 r.reple_recomm_count,
+		 m2.user_thumbnail_path as r_writer_thumbnail_path, 
+		 m2.user_nickname as r_writer_nickname
+		 
    		 from _ringo_circle_post p
-    	 join _ringo_member m
-    	 on p.post_writer = m.user_code
+    	 join _ringo_member m1 on p.post_writer = m1.user_code
+    	 left join _ringo_reple r on r.reple_target = p.post_code and r.reple_type = 1
+    	 left join _ringo_member m2 on r.reple_writer = m2.user_code
+    	 
     	 where p.post_writer = #{post_writer}
-    	 order by p.post_time desc
+    	 order by p.post_time desc, r.reple_time desc
 	</select>
 	
 	<select id="selectReple" resultType="RepleVO">
-		select p.*, m.user_thumbnail_path as writer_thumbnail_path, m.user_nickname as writer_nickname, m.user_code as writer_code
+		select r.*, m.user_thumbnail_path as writer_thumbnail_path, m.user_nickname as writer_nickname
    		 from _ringo_reple r
-    	 join _ringo_member m
-    	 on r.reple_writer = m.user_code
-    	 where p.post_writer = #{post_writer}
-    	 order by r.post_time desc
+    	 join _ringo_member m on r.reple_writer = m.user_code
+    	 where r.reple_target = #{reple_target} and r.reple_type = #{reple_type}
+    	 order by r.reple_time desc
 	</select>
 	
 	<insert id="insertReple" parameterType="PostVO">
