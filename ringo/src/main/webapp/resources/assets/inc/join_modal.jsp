@@ -482,7 +482,7 @@
 			        				<div class="max_div column">
 			        					<div class="picture_container max_div column thumbnail">
 			        						<div class="picture_content">
-		        							    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);" multiple>
+		        							    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);">
 			        							<i class="fa-solid fa-plus"></i>
 			        						</div>
 			        						<div class="picture_name">
@@ -497,7 +497,7 @@
 								<div class="cards_inner_body_right">		
 									<div class="small_picture_container">
 										<div class="picture_content">
-	        							    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this)" multiple>
+	        							    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this)">
 		        							<i class="fa-solid fa-plus"></i>
 		        						</div>
 		        					</div>

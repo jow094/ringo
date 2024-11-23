@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.ringo.mapper.PostMapper">
+	
+	<select id="selectLastCirclePostCode" resultType="Integer">
+		select max(post_code) from _ringo_circle_post
+	</select>
+	
+	<insert id="insertCirclePost" parameterType="PostVO">
+        insert into _ringo_circle_post (
+        	post_code,
+            post_writer,
+            post_content,
+            post_tag,
+            post_file_path
+        ) values (
+            #{post_code},
+            #{post_writer},
+            #{post_content},
+            #{post_tag},
+            #{post_file_path}
+        )
+    </insert>
+	
+	<select id="selectCirclePost" resultType="PostVO">
+		select p.*, m.user_thumbnail_path as writer_thumbnail_path, m.user_nickname as writer_nickname, m.user_code as writer_code
+   		 from _ringo_circle_post p
+    	 join _ringo_member m
+    	 on p.post_writer = m.user_code
+    	 where p.post_writer = #{post_writer}
+    	 order by p.post_time desc
+	</select>
+	
+	<select id="selectReple" resultType="RepleVO">
+		select p.*, m.user_thumbnail_path as writer_thumbnail_path, m.user_nickname as writer_nickname, m.user_code as writer_code
+   		 from _ringo_reple r
+    	 join _ringo_member m
+    	 on r.reple_writer = m.user_code
+    	 where p.post_writer = #{post_writer}
+    	 order by r.post_time desc
+	</select>
+	
+	<insert id="insertReple" parameterType="PostVO">
+        insert into _ringo_reple (
+            reple_writer,
+            reple_type,
+            reple_target,
+            reple_content
+        ) values (
+            #{reple_writer},
+            #{reple_type},
+            #{reple_target},
+            #{reple_content}
+        )
+    </insert>
+
+	
+</mapper>  

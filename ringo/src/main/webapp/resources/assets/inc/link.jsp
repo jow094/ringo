@@ -21,28 +21,28 @@
    		 			<div class="card link_card">
 						<div class="card_body">
 							<div class="card_body_content">
-								<div class="link_img_container">
-									<div class="link_thumbnail">
+								<div class="image_container">
+									<div class="image_main">
 										<img src="/img/profiles/${user_thumbnail_path}"/>
 									</div>
-									<div class="link_profiles">
-										<div class="link_profiles_belt">
-											<div class="link_profile">
+									<div class="image_queue">
+										<div class="image_queue_belt">
+											<div class="image_waiting">
 												<img src="/img/profiles/${user_thumbnail_path}"/>
 											</div>
-											<div class="link_profile">
+											<div class="image_waiting">
 												<img src="/img/profiles/${user_thumbnail_path}"/>
 											</div>
-											<div class="link_profile">
+											<div class="image_waiting">
 												<img src="/img/profiles/${user_thumbnail_path}"/>
 											</div>
-											<div class="link_profile">
+											<div class="image_waiting">
 												<img src="/img/profiles/${user_thumbnail_path}"/>
 											</div>
-											<div class="link_profile">
+											<div class="image_waiting">
 												<img src="/img/profiles/${user_thumbnail_path}"/>
 											</div>
-											<div class="link_profile">
+											<div class="image_waiting">
 												<img src="/img/profiles/${user_thumbnail_path}"/>
 											</div>
 										</div>

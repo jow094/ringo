@@ -42,7 +42,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 /*
  * @RequestMapping("/api")
  * 
- * @Api(tags = "메인 컨트롤러")
+ * @Api(tags = "硫붿씤 而⑦듃濡ㅻ윭")
  */
 public class MemberController {
 	
@@ -78,7 +78,7 @@ public class MemberController {
 		logger.debug("loginPOST(MemberVO) - vo : "+vo);
 		
 		MemberVO result = mService.memberLogin(vo);
-		session.setAttribute("user_id", result.getUser_id());
+		session.setAttribute("user_code", result.getUser_code());
 		session.setAttribute("user_name", result.getUser_name());
 		session.setAttribute("user_thumbnail_path", result.getUser_thumbnail_path());
 		session.setAttribute("unity_thumbnail_path", "1.jpg");
@@ -97,8 +97,8 @@ public class MemberController {
 	
 	@RequestMapping(value = "/loginCheck", method = RequestMethod.GET)
 	@ResponseBody
-	public String loginCheck(HttpSession session) {
-		return (String)session.getAttribute("user_id");
+	public Integer loginCheck(HttpSession session) {
+		return (Integer)session.getAttribute("user_code");
 	}
 	
 	@RequestMapping(value = "/join", method = RequestMethod.GET)
@@ -203,7 +203,7 @@ public class MemberController {
         
         logger.debug("sendSms: "+user_tel);
         
-        smsService.sendSms(user_tel, "Ringo 인증번호는 [" + smsCode + "] 입니다. 5분 내에 입력해주세요.");
+        smsService.sendSms(user_tel, "Ringo �씤利앸쾲�샇�뒗 [" + smsCode + "] �엯�땲�떎. 5遺� �궡�뿉 �엯�젰�빐二쇱꽭�슂.");
         
         return 1;
     }
@@ -216,7 +216,7 @@ public class MemberController {
         session.setAttribute("emailCode", emailCode);
         logger.debug("emailCode:"+emailCode);
         
-        authService.sendEmail(user_email, "Ringo 인증번호는 [" + emailCode + "] 입니다. 5분 내에 입력해주세요.");
+        authService.sendEmail(user_email, "Ringo �씤利앸쾲�샇�뒗 [" + emailCode + "] �엯�땲�떎. 5遺� �궡�뿉 �엯�젰�빐二쇱꽭�슂.");
         
         return 1;
     }
@@ -236,7 +236,7 @@ public class MemberController {
 		if(target.equals("sms")) {
 			if(user_code.equals(session.getAttribute("smsCode"))) {
 				session.removeAttribute("smsCode");
-				logger.debug("sms 인증 성공");
+				logger.debug("sms �씤利� �꽦怨�");
 				return 1;
 			}else {
 				return 0;
@@ -246,7 +246,7 @@ public class MemberController {
 		if(target.equals("email")) {
 			if(user_code.equals(session.getAttribute("emailCode"))) {
 				session.removeAttribute("emailCode");
-				logger.debug("email 인증 성공");
+				logger.debug("email �씤利� �꽦怨�");
 				return 1;
 			}else {
 				return 0;

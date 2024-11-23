@@ -2,6 +2,7 @@ var unity;
 var person;
 var profile_type='person';
 var profile_length=1;
+let circle_posting_files = [];
 
 $(document).ready(function() {
 	login_check();
@@ -24,7 +25,7 @@ $(document).ready(function() {
 	    }
 	});
 	
-	$('.link_profiles_belt').on('wheel', function (event) {
+	$('.image_queue_belt').on('wheel', function (event) {
         event.preventDefault();
         const delta = event.originalEvent.deltaY;
         $(this).scrollLeft($(this).scrollLeft() + delta);
@@ -141,7 +142,7 @@ function login_check(){
             type: "GET",
             url: "/member/loginCheck",
             success: function(data) {
-            	if(data == null || data == ""){
+            	if(data == null || data == "" || data==0){
             		if (!currentURL.includes('join') && !currentURL.includes('login')) {
             			alert("로그인 정보가 없습니다. 로그인 페이지로 이동합니다.");
             		}
@@ -235,6 +236,11 @@ function main_show(e,target) {
 	showing(`.main_card.main_${target}`);
 	$(e).siblings().not('.article_container_menu_messenger').removeClass('active');
     $(e).addClass('active');
+    if(target=='circle'){
+    	if ($(".main_circle .main_card_body .scroll_box_inner").scrollTop() == 0 || $(".main_circle .main_card_body .scroll_box_inner").children().length ==0) {
+    	    get_circle_post();
+    	}
+    }
 }
 function main_messenger() {
     if ($('.article_container_menu_messenger').hasClass('active')) {
@@ -1262,27 +1268,46 @@ function check_thumbnail(e){
 }
 
 function mouse_over(e) {
-	$(e).find('img').addClass('ready_to_delete');
-	$(e).removeClass('have_img');
-	$(e).addClass('to_gray');
-	if ($(e).find('i').length === 0) {
-		$(e).append(`<i class="fa-solid fa-xmark"></i>`);
-		$(e).find('i').css('color', 'rgb(50,50,50)');
+	if($(e).closest('.join_modal').length>0){
+		$(e).find('img').addClass('ready_to_delete');
+		$(e).removeClass('have_img');
+		$(e).addClass('to_gray');
+		if ($(e).find('i').length === 0) {
+			$(e).append(`<i class="fa-solid fa-xmark"></i>`);
+			$(e).find('i').css('color', 'rgb(50,50,50)');
+		}
+		if ($(e).find('span').length === 0) {
+			$(e).append(`<span>드래그 하여 이동</span>`);
+		}
 	}
-	if ($(e).find('span').length === 0) {
-		$(e).append(`<span>드래그 하여 이동</span>`);
+	
+	if($(e).hasClass('upload_file')){
+		$(e).find('img').addClass('ready_to_delete');
+		if ($(e).find('i').length === 0) {
+			$(e).find('.preview_image').append(`<i class="fa-solid fa-xmark"></i>`);
+			$(e).find('i').css('color', 'rgb(50,50,50)');
+		}
 	}
 }
 
 function mouse_leave(e) {
-	$(e).find('img').removeClass('ready_to_delete');
-	$(e).removeClass('to_gray');
-	$(e).addClass('have_img');
-	if ($(e).find('i').length != 0) {
-		$(e).find('i').remove();
+	if($(e).closest('.join_modal').length>0){
+		$(e).find('img').removeClass('ready_to_delete');
+		$(e).removeClass('to_gray');
+		$(e).addClass('have_img');
+		if ($(e).find('i').length != 0) {
+			$(e).find('i').remove();
+		}
+		if ($(e).find('span').length != 0) {
+			$(e).find('span').remove();
+		}
 	}
-	if ($(e).find('span').length != 0) {
-		$(e).find('span').remove();
+	
+	if($(e).hasClass('upload_file')){
+		$(e).find('img').removeClass('ready_to_delete');
+		setTimeout(function() {
+			$(e).find('i').remove();
+		}, 1);
 	}
 }
 
@@ -1662,28 +1687,13 @@ function toggle_link_card(e){
 	$(`.link_card`).html(`
 		<div class="card_body">
 			<div class="card_body_content">
-				<div class="link_img_container">
-					<div class="link_thumbnail">
+				<div class="image_container">
+					<div class="image_main">
 						<img src="/img/profiles/"/>
 					</div>
-					<div class="link_profiles">
-						<div class="link_profiles_belt">
-							<div class="link_profile">
-								<img src="/img/profiles/"/>
-							</div>
-							<div class="link_profile">
-								<img src="/img/profiles/"/>
-							</div>
-							<div class="link_profile">
-								<img src="/img/profiles/"/>
-							</div>
-							<div class="link_profile">
-								<img src="/img/profiles/"/>
-							</div>
-							<div class="link_profile">
-								<img src="/img/profiles/"/>
-							</div>
-							<div class="link_profile">
+					<div class="image_queue">
+						<div class="image_queue_belt">
+							<div class="image_waiting">
 								<img src="/img/profiles/"/>
 							</div>
 						</div>
@@ -1731,25 +1741,275 @@ function say_upload(e){
 	console.log($(e).find('input[type="file"]').val());
 }
 
-function preview_img(e){
+function upload_file(e) {
 	
-	var file = e.files[0];
-	var container = $(e).closest('.card').find('.upload_files');
-	
-	if (file) {
-		var reader = new FileReader();
-		
-		reader.onload = function(e) {
-			container.append(`
-				<div class="preview_img">
-					<img src="${e.target.result}"/>
-					<div class="preview_file_name">
-						${file.name}
+    const files = e.files; // 선택된 파일 배열
+    const container = $(e).closest('.card').find('.upload_files');
+
+    if (files.length > 0) {
+        Array.from(files).forEach((file) => {
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                container.append(`
+                	<div class="upload_file" data-file_index="${circle_posting_files.length}" onclick="delete_file(this)" onmouseleave="mouse_leave(this)" onmouseover="mouse_over(this)">
+						<div class="preview_image">
+							<img src="${event.target.result}"/>
+						</div>
+						<div class="preview_file_name">
+							${file.name}
+						</div>
 					</div>
-				</div>
-			`);
-		};
-		
-		reader.readAsDataURL(file);
+                `);
+                circle_posting_files.push(file);
+            };
+            
+            reader.readAsDataURL(file);
+        });
+    }
+    
+	if(container.hasClass('col_shrinked')){
+		col_toggle(container);
 	}
 }
+
+function delete_file(e) {
+	console.log('circle_posting_files.length : ',circle_posting_files.length);
+	
+	const index = $(e).attr('data-file_index');
+	console.log('delete ',index);
+	
+	const container = $(e).closest('.card').find('.upload_files');
+	
+	circle_posting_files.splice(index, 1);
+	console.log('circle_posting_files.length ',circle_posting_files.length);
+	
+	setTimeout(function() {
+        $(e).remove();
+        
+        const files = container.find('.upload_file');
+        files.each(function(new_index) {
+        	$(this).attr('data-file_index', new_index);
+        });
+        
+        if(circle_posting_files.length == 0 && container.hasClass('expanded')){
+        	col_toggle(container);
+        }
+    }, 1);
+	
+}
+
+function add_tag(e){
+	$(e).after(`
+		<div class="tag_card" data-tag="${$(e).val()}" onclick='delete_tag(this)'>#${$(e).val()}</div>
+	`);
+	$(e).val('');
+}
+
+function delete_tag(e){
+	setTimeout(function() {
+        $(e).remove();
+    }, 1);
+}
+
+function submit_circle(e){
+	if($(e).closest('.write_container').find('textarea').val().trim()==''){
+		alert('게시글은 1자 이상이어야 합니다.');
+		return;
+	}
+	
+	var formData = new FormData();
+	
+	formData.append('post_content',$(e).closest('.write_container').find('textarea').val());
+	if(circle_posting_files.length > 0 && circle_posting_files[0] !== ''){
+		circle_posting_files.forEach(function(file) {
+	        formData.append('posting_files', file);
+	    });
+	}
+
+	var tags = "";
+	
+    $(e).closest('.write_container').find('.tag_card').each(function(index) {
+        if (index > 0) {
+            tags += ",";
+        }
+        tags += $(this).attr('data-tag');
+    });
+    
+    if (tags !== "") {
+        formData.append('post_tag', tags);
+    }
+    
+    console.log([...formData.entries()]);
+
+    $.ajax({
+    	type: 'POST',
+        url: '/main/circle',
+        data: formData,
+        processData: false, // FormData 사용 시 false로 설정
+        contentType: false, // FormData 사용 시 false로 설정
+        dataType: "json",
+        success: function (response) {
+	    	if(response==1){
+	    		get_circle_post();
+	    		invalidate_write_container('circle');
+	    	}
+	    },
+	    error: function(error) {
+	        console.log("데이터 전송 실패:", error);
+	        alert('게시글 작성에 실패하였습니다.');
+	    }
+    });
+}
+
+function submit_reple(e){
+	if($(e).closest('.card_foot_comment_input').find('textarea').val().trim()==''){
+		alert('게시글은 1자 이상이어야 합니다.');
+		return;
+	}
+	const card = $(e).closest('.card');
+	
+	$.ajax({
+        type: "POST",
+        url: "/post/reple",
+        data: {reple_content:$(e).closest('.card_foot_comment_input').find('textarea').val(),
+        		reple_type:card.attr('data-post_type'),
+        		reple_target:card.attr('data-post_code')},
+        dataType: "json",
+        success: function (response) {
+	    },
+	    error: function(error) {
+	        console.log("데이터 전송 실패:", error);
+	        alert('댓글 작성에 실패하였습니다.');
+	    }
+    });
+}
+
+function invalidate_write_container(target){
+	if(target='circle'){
+		circle_posting_files = [];
+		$('.main_circle').find('.write_container').remove('.tag_card');
+		$('.main_circle').find('.write_container').find('.upload_files').empty();
+		$('.main_circle').find('.write_container').find('textarea').val('');
+		$('.main_circle').find('.write_container').find('input').val('');
+		if($('.main_circle').find('.upload_files').hasClass('expanded')){
+			col_toggle($('.main_circle').find('.upload_files'));
+		}
+		if($('.main_circle').find('.write_container').hasClass('expanded')){
+			col_toggle($('.main_circle').find('.write_container'));
+		}
+	}
+}
+
+function get_circle_post(e){
+	var user_code = 0;
+	
+	if (typeof e === 'number') {
+        user_code = e;
+    }
+	
+	$.ajax({
+        type: "GET",
+        url: "/main/circle",
+        data: {user_code:user_code},
+        dataType: "json",
+        success: function(data) {
+        	$('.circle_cards').empty();
+        	
+        	for (const postVO of data){
+        		const post = `
+	        		<div class="card" data-post_type="1" data-post_code="${postVO.post_code}">
+						<div class="card_header">
+							<div class="card_header_image" onclick="get_circle_post(${postVO.writer_code})">
+								<img src="/img/profiles/${postVO.writer_thumbnail_path}"/>
+							</div>
+							<div class="card_header_name" onclick="get_circle_post(${postVO.writer_code})">
+								${postVO.writer_nickname}
+							</div>
+							<div class="card_header_tools">
+								<div class="card_header_tool">
+									<i class="fa-regular fa-heart" style="font-size: 20px;"></i>
+									<span>${postVO.post_recomm_count}</span>
+								</div>
+								<div class="card_header_tool">
+									<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
+								</div>
+							</div>
+						</div>
+						<div class="card_body">
+							<div class="card_body_content">
+								<div class="scroll_box">
+									<div class="scroll_box_inner">${postVO.post_content}</div>
+								</div>
+							</div>
+							<div class="card_body_tags">
+								#태그
+							</div>
+						</div>
+						<div class="card_foot">
+							<div class="card_foot_comment_input">
+								<textarea></textarea>
+								<button type="button">
+									<i class="fa-solid fa-paper-plane"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+	        	`;
+        		
+        		const $card = $(post);
+                $('.circle_cards').append($card);
+        		
+                if (postVO.post_tag != null && postVO.post_tag != '') {
+                    const tags = postVO.post_tag.split(',');
+                    for (const tag_value of tags) {
+                        $card.find('.card_body_tags').append(`
+                            <div class="tag_card" data-tag="${tag_value}" onclick="search_tag(this)">#${tag_value}</div>
+                        `);
+                    }
+                }
+                
+                if (postVO.post_file_path != null && postVO.post_file_path != '') {
+                	
+                	console.log(postVO.post_file_path);
+                	
+                    const files = postVO.post_file_path.split(',');
+                    var img_container = `
+            			<div class="image_container">
+							<div class="image_main">
+							</div>
+						</div>`;
+                    var $img = $(img_container);
+                    for (const file of files) {
+                    	if($img.find('.image_main').find('img').length==0){
+                    		$img.find('.image_main').append(`
+                				<img src="/img/circle/upload/${file}"/>
+                    		`);
+                    	}else if($img.find('.image_queue').length==0){
+                    		$img.append(`
+                				<div class="image_queue">
+									<div class="image_queue_belt">
+										<div class="image_waiting">
+											<img src="/img/circle/upload/${file}"/>
+										</div>
+									</div>
+								</div>
+                        	`);
+                    	}else{
+                    		$img.find('.image_queue_belt').append(`
+                				<div class="image_waiting">
+									<img src="/img/circle/upload/${file}"/>
+								</div>
+                    		`);
+                    	}
+                    }
+                    $card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
+                }
+        	}
+        	
+        },
+        error: function(xhr, status, error) {
+        }
+    });
+}
+

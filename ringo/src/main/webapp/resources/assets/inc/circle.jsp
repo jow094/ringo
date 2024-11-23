@@ -17,56 +17,31 @@
 			<div class="card_body">
 				<div class="card_body_content">
 					<div class="scroll_box">
-						<textarea class="scroll">asdasd</textarea>
+						<textarea class="scroll"></textarea>
 					</div>
 				</div>
 				<div class="card_body_tags">
-					#태그<input class="tag_input" type="text" placeholder="태그를 입력하세요.">
-					<div class="tag_card">#asd</div>
+					#태그<input class="tag_input" type="text" placeholder="태그를 입력하세요." onkeydown="if(event.key === 'Enter'){ add_tag(this); }">
 				</div>
 				<div class="card_body_buttons">
 					<div class="button">
 						<i class="fa-solid fa-link" onclick="open_itf(this); say_upload(this)">
-							<input type="file" name="" class="none" accept="image/*" onchange="preview_img(this)" multiple>
+							<input type="file" name="" class="none" accept="image/*" onchange="upload_file(this)" multiple>
 						</i>
 					</div>
 					<div class="button">
-						<i class="fa-solid fa-check" onclick="submit_circle()"></i>
+						<i class="fa-solid fa-check" onclick="submit_circle(this)"></i>
 					</div>
 				</div>
-				<div class="upload_files expanded">
-					<div class="preview_img">
-						<img src="/img/profiles/${user_thumbnail_path}"/>
-						<div class="preview_file_name">
-						asasdasdsadasdd.jpg
-						</div>
-					</div>
-					<div class="preview_img">
-						<img src="/img/profiles/${user_thumbnail_path}"/>
-						<div class="preview_file_name">
-						asd.jpg
-						</div>
-					</div>
+				<div class="upload_files col_shrinked">
 				</div>
 			</div>
 		</div>
 	</div>
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	<div class="main_card_body">
 		<div class="scroll_box">
-			<div class="scroll_box_inner" >
+			<div class="scroll_box_inner circle_cards" >
 				<!-- card start -->
 				<div class="card">
 					<div class="card_header">

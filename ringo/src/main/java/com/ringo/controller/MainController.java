@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
@@ -23,22 +24,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ringo.domain.MemberVO;
+import com.ringo.domain.PostVO;
+import com.ringo.domain.RepleVO;
 import com.ringo.service.MemberService;
 import com.ringo.service.MessageService;
+import com.ringo.service.PostService;
 import com.ringo.service.TwilloService;
 import com.ringo.service.AuthenticationService;
 
 import io.swagger.annotations.Api;
 
-// http://localhost:8082/swagger-ui/index.html
-
 @Controller
 @RequestMapping(value = "/main/*")
-/*
- * @RequestMapping("/api")
- * 
- * @Api(tags = "메인 컨트롤러")
- */
 public class MainController {
 	
 	@Inject
@@ -49,12 +46,8 @@ public class MainController {
     private TwilloService tService;
 	@Inject
 	private AuthenticationService emailService;
-	
-	/*
-	 * private String uploadPath = System.getProperty("catalina.base") +
-	 * "/webapps/ringo/uploads/";
-	 */
-	private String uploadPath = "C:/ringo_files/profiles/";
+	@Inject
+	private PostService pService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
@@ -63,5 +56,24 @@ public class MainController {
 		logger.debug("mainGET(MemberVO) - vo : "+vo);
 		
 		return "home";
+	}
+	
+	@RequestMapping(value = "/circle", method = RequestMethod.GET)
+	@ResponseBody
+	public List<PostVO> circleGET(HttpSession session, Integer user_code) {
+		logger.debug("circleGET(Integer user_code) - user_code : "+user_code);
+		if(user_code==0||user_code==null) {
+			user_code = (Integer)session.getAttribute("user_code");
+		}
+		
+		return pService.getCirclePost(user_code);
+	}
+	
+	@RequestMapping(value = "/reple", method = RequestMethod.GET)
+	@ResponseBody
+	public List<PostVO> repleGET(HttpSession session, RepleVO vo) {
+		logger.debug("repleGET(RepleVO vo) - vo : "+vo);
+		
+		return null;
 	}
 }

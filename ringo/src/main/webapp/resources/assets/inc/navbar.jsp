@@ -70,7 +70,7 @@
 			</button>
 			<span class="nav_badge"></span>
 		</li> --%>
-		<c:if test="${!empty sessionScope.user_id}">
+		<c:if test="${!empty sessionScope.user_code}">
 			<li>
 				<span class="profile-username" style="color:white; font-size:15px;">
 					<span>안녕하세요,  </span>
