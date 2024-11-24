@@ -2,7 +2,7 @@ package com.ringo.service;
 
 import java.util.List;
 
-import com.ringo.domain.MemberVO;
+import com.ringo.domain.UserVO;
 import com.ringo.domain.MessageVO;
 import com.ringo.domain.SettingVO;
 

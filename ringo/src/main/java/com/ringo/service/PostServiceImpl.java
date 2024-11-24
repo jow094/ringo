@@ -15,7 +15,7 @@ import com.ringo.persistence.PostDAO;
 @Service
 public class PostServiceImpl implements PostService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(MemberServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(PostServiceImpl.class);
 	
 	@Inject
 	private PostDAO pdao;

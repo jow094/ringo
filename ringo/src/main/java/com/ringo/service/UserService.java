@@ -4,24 +4,25 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.ringo.domain.MemberVO;
+import com.ringo.domain.UserVO;
 import com.ringo.domain.SettingVO;
 
-public interface MemberService {
+public interface UserService {
 	
-	public MemberVO memberLogin(MemberVO vo);
-	public Integer memberJoin(MemberVO vo);
+	public UserVO userLogin(UserVO vo);
+	public Integer userJoin(UserVO vo);
 	public Integer getLastUserCode();
 	public Integer checkDuplication(String target, String data);
+	public UserVO getUserProfile(Integer user_code);
 	
 	
 	/*
 	 * 
-	 * public MemberVO memberInfo(String userid);
+	 * public UserVO memberInfo(String userid);
 	 * 
-	 * public List<MemberVO> memberSearch(String keyword);
+	 * public List<UserVO> memberSearch(String keyword);
 	 * 
-	 * public List<MemberVO> getTeammate(String emp_id);
+	 * public List<UserVO> getTeammate(String emp_id);
 	 * 
 	 * public List<SettingVO> searchTools(String keyword);
 	 * 

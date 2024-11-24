@@ -25,10 +25,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ringo.domain.MemberVO;
-import com.ringo.service.MemberService;
+import com.ringo.domain.UserVO;
+import com.ringo.domain.UserVO;
+import com.ringo.service.UserService;
 import com.ringo.service.MessageService;
 import com.ringo.service.TwilloService;
+import com.ringo.service.UserService;
 import com.ringo.service.AddressService;
 import com.ringo.service.AuthenticationService;
 
@@ -47,7 +49,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 public class MemberController {
 	
 	@Inject
-	private MemberService mService;
+	private UserService uService;
 	@Inject
 	private MessageService msgService;
 	@Inject
@@ -74,10 +76,10 @@ public class MemberController {
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String loginPOST(HttpSession session, MemberVO vo) {
+	public String loginPOST(HttpSession session, UserVO vo) {
 		logger.debug("loginPOST(MemberVO) - vo : "+vo);
 		
-		MemberVO result = mService.memberLogin(vo);
+		UserVO result = uService.userLogin(vo);
 		session.setAttribute("user_code", result.getUser_code());
 		session.setAttribute("user_name", result.getUser_name());
 		session.setAttribute("user_thumbnail_path", result.getUser_thumbnail_path());
@@ -88,7 +90,7 @@ public class MemberController {
 	}
 	
 	@RequestMapping(value = "/logout", method = RequestMethod.POST)
-	public String logoutPOST(HttpSession session, MemberVO vo) {
+	public String logoutPOST(HttpSession session, UserVO vo) {
 		logger.debug("logoutPOST(MemberVO) - vo : "+vo);
 		session.invalidate();
 		
@@ -102,7 +104,7 @@ public class MemberController {
 	}
 	
 	@RequestMapping(value = "/join", method = RequestMethod.GET)
-	public String joinGET(HttpSession session, MemberVO vo) {
+	public String joinGET(HttpSession session, UserVO vo) {
 		logger.debug("joinGET(MemberVO) - vo : "+vo);
 		
 		return "join";
@@ -110,14 +112,14 @@ public class MemberController {
 	
 	@RequestMapping(value = "/join", method = RequestMethod.POST)
 	@ResponseBody
-	public Integer joinPOST(HttpSession session,MemberVO vo) {
+	public Integer joinPOST(HttpSession session,UserVO vo) {
 		
 		logger.debug("joinPOST - vo : " + vo);
 		logger.debug("joinPOST - thumbnailFile : " + vo.getUser_thumbnail_file());
 		logger.debug("joinPOST - fileList : " + vo.getUser_profile_file());
 		try {
 			
-			Integer user_code = mService.getLastUserCode();
+			Integer user_code = uService.getLastUserCode();
 			
 			if(user_code==null) {
 				user_code = 0;
@@ -184,7 +186,7 @@ public class MemberController {
 			vo.setUser_thumbnail_path(user_thumbnail_path);
 			vo.setUser_profile_path((user_profile_path.toString()));
 			
-			return mService.memberJoin(vo);
+			return uService.userJoin(vo);
 			
 		} catch (NullPointerException e) {
 	        return 3;
@@ -278,6 +280,16 @@ public class MemberController {
 	@ResponseBody
     public Integer checkDuple(String target, String data) {
 		
-		return mService.checkDuplication(target,data);
+		return uService.checkDuplication(target,data);
+	}
+	
+	@RequestMapping(value = "/profile", method = RequestMethod.GET)
+	@ResponseBody
+    public UserVO profileGET(HttpSession session, Integer user_code) {
+		logger.debug("circleGET(Integer user_code) - user_code : "+user_code);
+		if(user_code==0||user_code==null) {
+			user_code = (Integer)session.getAttribute("user_code");
+		}
+		return uService.getUserProfile(user_code);
 	}
 }

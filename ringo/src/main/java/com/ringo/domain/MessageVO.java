@@ -38,6 +38,6 @@ public class MessageVO {
 	private String personal_receiver_emp_id;
 	private String personal_receiver_emp_name;
 	private String personal_receiver_emp_position;
-	private MemberVO msg_sender;
-	private List<MemberVO> room_people;
+	private UserVO msg_sender;
+	private List<UserVO> room_people;
 }

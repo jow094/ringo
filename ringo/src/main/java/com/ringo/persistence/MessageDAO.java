@@ -2,9 +2,10 @@ package com.ringo.persistence;
 
 import java.util.List;
 
-import com.ringo.domain.MemberVO;
+import com.ringo.domain.UserVO;
 import com.ringo.domain.MessageVO;
 import com.ringo.domain.SettingVO;
+import com.ringo.domain.UserVO;
 
 public interface MessageDAO {
 
@@ -21,7 +22,7 @@ public interface MessageDAO {
 	public void update_room_info(MessageVO vo);
 	public void update_room_name(MessageVO vo);
 	public void delete_room_name(MessageVO vo);
-	public List<MemberVO> get_person(int room_id);
+	public List<UserVO> get_person(int room_id);
 	public List<MessageVO> get_message_unread_alarm(String emp_id);
 	public List<MessageVO> get_message_realtime_alarm(String emp_id);
 	public void insert_system_message(MessageVO vo);

@@ -3,15 +3,15 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
-<mapper namespace="com.ringo.mapper.MemberMapper">
+<mapper namespace="com.ringo.mapper.UserMapper">
 
-	<select id="selectMember" parameterType="MemberVO" resultType="MemberVO">
-	   select * from _ringo_member
+	<select id="selectUser" parameterType="UserVO" resultType="UserVO">
+	   select * from _ringo_user
 	    where user_id=#{user_id} and user_pw=#{user_pw}
 	</select>
 	
-	<insert id="insertMember" parameterType="MemberVO">
-	   insert into _ringo_member (
+	<insert id="insertUser" parameterType="UserVO">
+	   insert into _ringo_user (
         user_fcode, user_code, user_id, user_pw, user_name, user_nickname, user_birth,
         user_nation, user_gender, user_tel, user_email, user_address,
         user_native_lang, user_fluent_lang, user_learning_lang, 
@@ -29,13 +29,19 @@
 	    )
 	</insert>
 	
-	<select id="selectLastCode" parameterType="MemberVO" resultType="Integer">
-		select max(user_code) from _ringo_member
+	<select id="selectLastCode" parameterType="UserVO" resultType="Integer">
+		select max(user_code) from _ringo_user
 	</select>
 	
 	<select id="selectDuplication" parameterType="Map" resultType="Integer">
-	    select count(*) from _ringo_member
+	    select count(*) from _ringo_user
 	    where ${target} = #{value}
+	</select>
+	
+	<select id="selectProfile" resultType="UserVO">
+	    select *
+	     from _ringo_user
+	     where user_code = #{user_code}
 	</select>
 	
 	<!-- 

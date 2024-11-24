@@ -4,7 +4,9 @@
 <%@ include file="/resources/assets/inc/modal.jsp" %>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<script src="${pageContext.request.contextPath }/resources/assets/js/ringo.js"></script>
+<script src="${pageContext.request.contextPath }/resources/assets/js/method.js"></script>
+<script src="${pageContext.request.contextPath }/resources/assets/js/function.js"></script>
+<script src="${pageContext.request.contextPath }/resources/assets/js/docReady.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/assets/css/ringo.css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/assets/css/modal.css" />

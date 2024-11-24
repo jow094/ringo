@@ -4,10 +4,7 @@
 	<div class="user_profile_container">
 		<div class="profile_container_head">
 			<div class="profile_container_head_basic">
-				<img
-				src="/img/profiles/${user_thumbnail_path}"
-				style="width: 150px; height: 150px; margin-bottom:10px;"
-				/>
+				<img src="/img/profiles/${user_thumbnail_path}"/>
 				<div class="profile_container_head_basic_name">
 				조우영
 				</div>

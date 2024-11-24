@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ringo.domain.MemberVO;
+import com.ringo.domain.UserVO;
 import com.ringo.domain.MessageVO;
 import com.ringo.domain.SettingVO;
-import com.ringo.persistence.MemberDAO;
+import com.ringo.persistence.UserDAO;
 import com.ringo.persistence.MessageDAO;
 
 @Service
@@ -24,7 +24,7 @@ public class MessageServiceImpl implements MessageService{
 	private MessageDAO msgdao;
 	
 	@Inject
-	private MemberDAO mdao;
+	private UserDAO mdao;
 	
 	/*
 	 * @Override public List<MessageVO> openPersonalChat(String sender_User_id,
@@ -57,8 +57,8 @@ public class MessageServiceImpl implements MessageService{
 	 * vo.setRoom_thumbnail(person.getUser_profile()); } } }
 	 * 
 	 * vo.setRoom_name( vo.getRoom_name() .replaceAll("(^|,)\\s*" + User_name.trim()
-	 * + "\\s*(,|$)", "$1$2") // �돹�몴 �뮘 怨듬갚 �룷�븿�븯�뿬 �씠由� �젣嫄� .replaceAll(",,",
-	 * ",") // 以묐났 �돹�몴 �젣嫄� .replaceAll("^,|,$", "") // �븵�뮘 �돹�몴 �젣嫄� );
+	 * + "\\s*(,|$)", "$1$2") // 占쎈뤉占쎈ご 占쎈츟 �⑤벉媛� 占쎈７占쎈맙占쎈릭占쎈연 占쎌뵠�뵳占� 占쎌젫椰꾬옙 .replaceAll(",,",
+	 * ",") // 餓λ쵎�궗 占쎈뤉占쎈ご 占쎌젫椰꾬옙 .replaceAll("^,|,$", "") // 占쎈링占쎈츟 占쎈뤉占쎈ご 占쎌젫椰꾬옙 );
 	 * 
 	 * } return result; }
 	 * 
@@ -72,8 +72,8 @@ public class MessageServiceImpl implements MessageService{
 	 * vo.setRoom_thumbnail(person.getUser_profile()); } } }
 	 * 
 	 * vo.setRoom_name( vo.getRoom_name() .replaceAll("(^|,)\\s*" + User_name.trim()
-	 * + "\\s*(,|$)", "$1$2") // �돹�몴 �뮘 怨듬갚 �룷�븿�븯�뿬 �씠由� �젣嫄� .replaceAll(",,",
-	 * ",") // 以묐났 �돹�몴 �젣嫄� .replaceAll("^,|,$", "") // �븵�뮘 �돹�몴 �젣嫄� ); } return
+	 * + "\\s*(,|$)", "$1$2") // 占쎈뤉占쎈ご 占쎈츟 �⑤벉媛� 占쎈７占쎈맙占쎈릭占쎈연 占쎌뵠�뵳占� 占쎌젫椰꾬옙 .replaceAll(",,",
+	 * ",") // 餓λ쵎�궗 占쎈뤉占쎈ご 占쎌젫椰꾬옙 .replaceAll("^,|,$", "") // 占쎈링占쎈츟 占쎈뤉占쎈ご 占쎌젫椰꾬옙 ); } return
 	 * result; }
 	 * 
 	 * @Override public List<MessageVO> searchRoom(String User_id, String keyword) {
@@ -101,9 +101,9 @@ public class MessageServiceImpl implements MessageService{
 	 * String User_name = mdao.getMember(User_id).getUser_name();
 	 * 
 	 * for(MessageVO vo : result) { vo.setRoom_name( vo.getRoom_name()
-	 * .replaceAll("(^|,)\\s*" + User_name.trim() + "\\s*(,|$)", "$1$2") // �돹�몴 �뮘
-	 * 怨듬갚 �룷�븿�븯�뿬 �씠由� �젣嫄� .replaceAll(",,", ",") // 以묐났 �돹�몴 �젣嫄�
-	 * .replaceAll("^,|,$", "") // �븵�뮘 �돹�몴 �젣嫄� ); } return result; }
+	 * .replaceAll("(^|,)\\s*" + User_name.trim() + "\\s*(,|$)", "$1$2") // 占쎈뤉占쎈ご 占쎈츟
+	 * �⑤벉媛� 占쎈７占쎈맙占쎈릭占쎈연 占쎌뵠�뵳占� 占쎌젫椰꾬옙 .replaceAll(",,", ",") // 餓λ쵎�궗 占쎈뤉占쎈ご 占쎌젫椰꾬옙
+	 * .replaceAll("^,|,$", "") // 占쎈링占쎈츟 占쎈뤉占쎈ご 占쎌젫椰꾬옙 ); } return result; }
 	 * 
 	 * @Override public int countParticipant(int room_id) { return
 	 * msgdao.check_participant_count(room_id); }

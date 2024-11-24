@@ -23,13 +23,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ringo.domain.MemberVO;
+import com.ringo.domain.UserVO;
 import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
-import com.ringo.service.MemberService;
+import com.ringo.domain.UserVO;
+import com.ringo.service.UserService;
 import com.ringo.service.MessageService;
 import com.ringo.service.PostService;
 import com.ringo.service.TwilloService;
+import com.ringo.service.UserService;
 import com.ringo.service.AuthenticationService;
 
 import io.swagger.annotations.Api;
@@ -39,7 +41,7 @@ import io.swagger.annotations.Api;
 public class MainController {
 	
 	@Inject
-	private MemberService mService;
+	private UserService uService;
 	@Inject
 	private MessageService msgService;
 	@Inject
@@ -55,7 +57,7 @@ public class MainController {
 	private String uploadPath_unity = "C:/ringo_files/unity/upload/";
 	
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
-	public String homeGET(HttpSession session, MemberVO vo) {
+	public String homeGET(HttpSession session, UserVO vo) {
 		logger.debug("mainGET(MemberVO) - vo : "+vo);
 		
 		return "home";

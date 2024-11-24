@@ -15,7 +15,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Data
-public class MemberVO {
+public class UserVO {
 	
 	private String user_fcode;
 	private Integer user_code;

@@ -12,9 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.ringo.domain.MemberVO;
+import com.ringo.domain.UserVO;
 import com.ringo.domain.MessageVO;
 import com.ringo.domain.SettingVO;
+import com.ringo.domain.UserVO;
 
 @Repository
 public class MessageDAOImpl implements MessageDAO {
@@ -136,7 +137,7 @@ public class MessageDAOImpl implements MessageDAO {
 	}
 
 	@Override
-	public List<MemberVO> get_person(int room_id) {
+	public List<UserVO> get_person(int room_id) {
 			
 		return sqlSession.selectList(NAMESPACE + ".getPersonalInfo",room_id);
 	}
