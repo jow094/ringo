@@ -1,6 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<div class="article_container_menu">	
+<div class="article_container_menu">
+	<div class="article_container_menu_other" data-user_code="${user_code}" onclick="main_show(this,'around'); enter_person(this)">
+		<i class="fa-solid fa-person"></i>
+		<span>조우영</span>
+		<i class="fa-solid fa-circle-xmark"></i>
+	</div>
 	<div class="article_container_menu_around" data-user_code="${user_code}" onclick="main_show(this,'around'); enter_person(this)">
 		<i class="fa-solid fa-circle-dot"></i>
 		<span>어라운드</span>

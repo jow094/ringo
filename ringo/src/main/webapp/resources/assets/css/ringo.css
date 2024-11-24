@@ -1005,11 +1005,12 @@ button:not(.custom_button){
 }
 
 .article_container_menu div {
-	flex-grow: 1;
+	flex: 1 0 0;
 	height:100%;
 	border-radius: 5px;
 	background-color: white;
-	min-width:90px;
+	min-width:100px;
+	position:relative;
 }
 .article_container_menu div i{
 	color: var(--basic);
@@ -1017,6 +1018,18 @@ button:not(.custom_button){
 
 .article_container_menu div * {
 	margin:5px;
+}
+.article_container_menu div span{
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	display: inline-block;
+}
+
+.article_container_menu div i:last-child{
+	position:absolute;
+	right:5px;
+	color: var(--gray);
 }
 
 .article_container_menu div:first-child {
