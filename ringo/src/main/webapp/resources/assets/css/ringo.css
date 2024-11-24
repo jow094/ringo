@@ -2427,3 +2427,187 @@ textarea.scroll {
 	display: block;
 	text-align: center;
 }
+.unity_create_container{
+	width:100%;
+	display:flex;
+	flex-direction:column;
+	justify-content: flex-start;
+	align-items: center;
+	border-radius:5px;
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
+	background-color: var(--back);
+	margin-bottom:10px;
+	padding:10px 20px;
+	flex:1;
+	overflow-y:auto;
+}
+.unity_essential_info{
+	width:100%;
+	display:flex;
+	justify-content: flex-start;
+	align-items: center;
+	height:300px;
+}
+.input_box.textarea .input_cell{
+	height:80px;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+}
+.input_box.textarea textarea{
+	height:100% !important;
+	background-color: var(--inner);
+}
+.unity_thumbnail .picture_content{
+	background-color: white;
+}
+.unity_additianal_info{
+	width:100%;
+	flex:1;
+	display:flex;
+}
+.unity_infos{
+	flex:1;
+	height:100%;
+	display:flex;
+	flex-direction: column;
+	justify-content:flex-start;
+	padding-right:10px;
+}
+.unity_setting{
+	flex:1;
+	height:100%;
+	display:flex;
+	flex-direction: column;
+	justify-content:flex-start;
+	padding-left:10px;
+}
+.unity_thumbnail{
+	width:300px;
+}
+.unity_basic_info{
+	flex:1;
+	display:flex;
+	flex-direction:column;
+	justify-content: flex-start;
+	align-items: center;
+}
+.input_box{
+	display:flex;
+	flex-direction:column;
+	justify-content:flex-start;
+	align-content:flex-start;
+	width:100%;
+	margin-bottom:10px;
+}
+.input_cell{
+	display:flex;
+	justify-content: flex-start;
+	align-content: center;
+	border-radius:5px;
+	box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
+	width:100%;
+	background: white;
+	padding-left:7px;
+	overflow:hidden
+}
+.input_multi_cell{
+	display:flex;
+	flex-direction:column;
+	justify-content: flex-start;
+	align-content: center;
+	border-radius:5px;
+	box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
+	width:100%;
+	background: white;
+	padding-left:7px;
+	overflow:hidden
+}
+.input_multi_cell .input_cells{
+	display:flex;
+	justify-content: flex-start;
+	align-content: center;
+	width:100%;
+	overflow:hidden;
+	font-size:12px;
+}
+.added_input_cells{
+	padding:5px;
+	font-size:12px;
+	width:100%;
+}
+.input_name{
+	display:flex;
+	justify-content: center;
+	align-items: center;
+	border-right:1px solid rgba(0,0,0,0.1);
+	font-size:12px;
+	padding:10px;
+	min-width:70px;
+	height:100%;
+}
+.input_value{
+	flex: 1 0 0;
+	font-size:12px;
+	padding:5px;
+	height:100%;
+}
+.input_value_container{
+	display:flex;
+	flex-direction:column;
+	justify-content: flex-start;
+	align-content: center;
+	flex: 1 0 0;
+	font-size:12px;
+}
+.input_value_container .input_value{
+	width:100% !important;
+}
+.input_cell_button{
+	min-width:60px;
+	padding:5px;
+	margin-left:5px;
+	display:flex;
+    justify-content: center;
+	align-items: center;
+	border-radius:3px;
+	box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.1);
+	font-size:10px;
+	height:30px;
+}
+
+.input_value_container .input_value:last-child{
+	padding-top:0px !important;
+}
+
+.input_hint{
+	font-size:12px;
+	width:100%;
+	display:flex;
+	justify-content: flex-start;
+	align-items: center;
+	padding-left: 10px;
+	margin-top:8px;
+}
+.submit_hint{
+	font-size:12px;
+	width:100%;
+	display:flex;
+	justify-content: flex-end;
+	align-items: flex-end;
+	padding-right: 10px;
+	height:100%;
+}
+
+.input_box input:not([type="submit"]){
+	justify-content: flex-start;
+	align-content: center;
+	border : none;
+	background-color: rgba(230,230,230,0.1);
+	height:30px;
+	border-radius:5px;
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
+	padding-left:10px;
+	width:100%;
+	font-size:12px;
+}

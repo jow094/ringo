@@ -641,7 +641,6 @@ function get_circle_post(user_code){
     });
 }
 
-
 function get_person_profile(user_code){
 	
 	if(person == self && user_code == null){
