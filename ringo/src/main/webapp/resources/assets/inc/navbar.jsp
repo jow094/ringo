@@ -72,16 +72,16 @@
 			</button>
 			<span class="nav_badge"></span>
 		</li> --%>
-		<c:if test="${!empty sessionScope.user_code}">
+		<c:if test="${!empty sessionScope.user_fcode}">
 			<li>
 				<span class="profile-username" style="color:white; font-size:15px;">
 					<span>안녕하세요,  </span>
-					<span> ${user_name} </span>
+					<span> ${user_nickname} </span>
 					<span> 님!</span>
 				</span>
 			</li>
 			<li>
-				<form action="/member/logout" method="POST" onclick="logout()">
+				<form action="/user/logout" method="POST" onclick="logout()">
 					<button type="submit">
 						<i class="fa-solid fa-xmark"></i>
 					</button>

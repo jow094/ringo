@@ -40,13 +40,13 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 // http://localhost:8082/swagger-ui/index.html 
 
 @Controller
-@RequestMapping(value = "/member/*")
+@RequestMapping(value = "/user/*")
 /*
  * @RequestMapping("/api")
  * 
  * @Api(tags = "硫붿씤 而⑦듃濡ㅻ윭")
  */
-public class MemberController {
+public class UserController {
 	
 	@Inject
 	private UserService uService;
@@ -65,7 +65,21 @@ public class MemberController {
 	 */
 	private String uploadPath = "C:/ringo_files/profiles/";
 	
-	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+	
+	public Integer getCode(String user_fcode) {
+	    if (user_fcode.contains("_")) {
+	        return Integer.parseInt(user_fcode.split("_")[0]);
+	    }
+	    return Integer.parseInt(user_fcode);
+	}
+	
+	public Integer getPrivate(String user_fcode) {
+	    if (user_fcode.contains("_")) {
+	        return Integer.parseInt(user_fcode.split("_")[1]);
+	    }
+	    return null;
+	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String loginGET(HttpSession session, Model model) {
@@ -81,6 +95,7 @@ public class MemberController {
 		
 		UserVO result = uService.userLogin(vo);
 		session.setAttribute("user_code", result.getUser_code());
+		session.setAttribute("user_fcode", result.getUser_fcode());
 		session.setAttribute("user_name", result.getUser_name());
 		session.setAttribute("user_thumbnail_path", result.getUser_thumbnail_path());
 		session.setAttribute("unity_thumbnail_path", "1.jpg");
@@ -94,7 +109,7 @@ public class MemberController {
 		logger.debug("logoutPOST(MemberVO) - vo : "+vo);
 		session.invalidate();
 		
-		return "redirect:/member/login";
+		return "redirect:/user/login";
 	}
 	
 	@RequestMapping(value = "/loginCheck", method = RequestMethod.GET)
@@ -205,7 +220,7 @@ public class MemberController {
         
         logger.debug("sendSms: "+user_tel);
         
-        smsService.sendSms(user_tel, "Ringo �씤利앸쾲�샇�뒗 [" + smsCode + "] �엯�땲�떎. 5遺� �궡�뿉 �엯�젰�빐二쇱꽭�슂.");
+        smsService.sendSms(user_tel, "Ringo 본인인증 코드는 [" + smsCode + "] 입니다. 5분 내에 입력 해주세요.");
         
         return 1;
     }
@@ -218,7 +233,7 @@ public class MemberController {
         session.setAttribute("emailCode", emailCode);
         logger.debug("emailCode:"+emailCode);
         
-        authService.sendEmail(user_email, "Ringo �씤利앸쾲�샇�뒗 [" + emailCode + "] �엯�땲�떎. 5遺� �궡�뿉 �엯�젰�빐二쇱꽭�슂.");
+        authService.sendEmail(user_email, "Ringo 본인인증 코드는 [" + emailCode + "] 입니다. 5분 내에 입력 해주세요.");
         
         return 1;
     }
@@ -238,7 +253,7 @@ public class MemberController {
 		if(target.equals("sms")) {
 			if(user_code.equals(session.getAttribute("smsCode"))) {
 				session.removeAttribute("smsCode");
-				logger.debug("sms �씤利� �꽦怨�");
+				logger.debug("sms validated");
 				return 1;
 			}else {
 				return 0;
@@ -248,7 +263,7 @@ public class MemberController {
 		if(target.equals("email")) {
 			if(user_code.equals(session.getAttribute("emailCode"))) {
 				session.removeAttribute("emailCode");
-				logger.debug("email �씤利� �꽦怨�");
+				logger.debug("email validated");
 				return 1;
 			}else {
 				return 0;
@@ -286,10 +301,11 @@ public class MemberController {
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	@ResponseBody
     public UserVO profileGET(HttpSession session, Integer user_code) {
-		logger.debug("circleGET(Integer user_code) - user_code : "+user_code);
-		if(user_code==0||user_code==null) {
+		if(user_code==null) {
 			user_code = (Integer)session.getAttribute("user_code");
 		}
+		
+		logger.debug("profileGET(Integer user_code) - user_code : "+user_code);
 		return uService.getUserProfile(user_code);
 	}
 }

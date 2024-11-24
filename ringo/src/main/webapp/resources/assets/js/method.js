@@ -3,8 +3,12 @@ var person;
 var profile_type='person';
 var profile_length=1;
 let circle_posting_files = [];
+var contextPath = '<%= request.getContextPath() %>';
+var self_code = "";
 
 function login_check(){
+	
+	console.log('check');
 	
 	var currentURL = window.location.href;
 	
@@ -12,21 +16,26 @@ function login_check(){
 		$('.left_navbar').addClass('none');
         return;
     }else{
-    	
     	$('.left_navbar').removeClass('none');
+    	console.log('check2');
     	
     	$.ajax({
             type: "GET",
-            url: "/member/loginCheck",
+            url: "/user/loginCheck",
+            dataType: "json",
             success: function(data) {
+            	console.log('data is',data);
             	if(data == null || data == "" || data==0){
             		if (!currentURL.includes('join') && !currentURL.includes('login')) {
             			alert("로그인 정보가 없습니다. 로그인 페이지로 이동합니다.");
             		}
-                    window.location.href = "/member/login";
+                    window.location.href = "/user/login";
+            	}else{
+            		self_code = data;
             	}
             },
             error: function(xhr, status, error) {
+            	console.log('check failed');
             }
         });
     }
@@ -69,7 +78,7 @@ function send_sms(e){
 	    	
 	    	$.ajax({
 	    		type: "GET",
-	    		url: "/member/authentication/sms",
+	    		url: "/user/authentication/sms",
 	    		data: {user_tel : input.val()},
 	    		success: function(data) {
 	    			$('.cards_inner_body_right').scrollTop($('.cards_inner_body_right')[0].scrollHeight);
@@ -114,7 +123,7 @@ function send_email(e){
 	    	
 	    	$.ajax({
 	            type: "GET",
-	            url: "/member/authentication/email",
+	            url: "/user/authentication/email",
 	            data: {user_email : input.val()},
 	            success: function(data) {
 	            	$('.cards_inner_body_right').scrollTop($('.cards_inner_body_right')[0].scrollHeight);
@@ -131,7 +140,7 @@ function check_code(e,target){
 	
 	$.ajax({
         type: "POST",
-        url: "/member/authentication/check",
+        url: "/user/authentication/check",
         dataType: 'json',
         data: {user_code : $(e).siblings('input').val(), target : target},
         success: function(data) {
@@ -286,7 +295,7 @@ function last_submit(e){
 
     $.ajax({
     	type: 'POST',
-        url: '/member/join',
+        url: '/user/join',
         data: formData,
         processData: false, // FormData 사용 시 false로 설정
         contentType: false, // FormData 사용 시 false로 설정
@@ -294,7 +303,7 @@ function last_submit(e){
         success: function (response) {
 	    	if(response==1){
 	    		alert('회원가입에 성공하였습니다.');
-	    		window.location.href = '/member/login';
+	    		window.location.href = '/user/login';
 	    	}
 	    	if(response==3){
 	    		alert('입력하지 않은 항목이 있습니다.');
@@ -318,7 +327,7 @@ function check_duple(input, callback){
 	
 	$.ajax({
     	type: 'GET',
-        url: '/member/checkDuple',
+        url: '/user/checkDuple',
         data: {target : target, data : inputValue},
         dataType: "json",
         success: function (response) {
@@ -439,14 +448,14 @@ function get_reple(e){
                     		
                     		$comment.find('.scroll_box_inner').prepend(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
-                    				<div class="card_comment_thumbnail" onclick="get_circle_post(${reple.reple_writer})">
+                    				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
     	                				<img src="/img/profiles/${reple.writer_thumbnail_path}"/>
                     				</div>
                     				<div class="card_comment_body">
-    	                				<div class="card_comment_name" onclick="get_circle_post(${reple.reple_writer})">${reple.writer_nickname}</div>
+    	                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.writer_nickname}</div>
     	                				<div class="card_comment_content">${reple.reple_content}</div>
     	                				<div class="card_comment_time">
-    	                				<i class="fa-regular fa-thumbs-up" onclick="like()"></i>${reple.reple_recomm_count}
+    	                				<i class="fa-regular fa-thumbs-up" onclick="like(this)"></i>${reple.reple_recomm_count}
     	                				<span>${auto_format_date(reple.reple_time)}</span>
     	                				</div>
                     				</div>
@@ -463,11 +472,11 @@ function get_reple(e){
                     		
 		        			$(e).closest('.card').find('.card_foot_comment').find('.scroll_box_inner').append(`
 		            				<div class="card_comment" data-reple_code="${reple.reple_code}">
-		            				<div class="card_comment_thumbnail" onclick="get_circle_post(${reple.reple_writer})">
+		            				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
 		                				<img src="/img/profiles/${reple.writer_thumbnail_path}"/>
 		            				</div>
 		            				<div class="card_comment_body">
-		                				<div class="card_comment_name" onclick="get_circle_post(${reple.reple_writer})">${reple.writer_nickname}</div>
+		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
 		                				<i class="fa-regular fa-thumbs-up" onclick="like()"></i>${reple.reple_recomm_count}
@@ -484,15 +493,9 @@ function get_reple(e){
         error: function(xhr, status, error) {
         }
     });
-	
 }
 
-function get_circle_post(e){
-	var user_code = 0;
-	
-	if (typeof e === 'number') {
-        user_code = e;
-    }
+function get_circle_post(user_code){
 	
 	$.ajax({
         type: "GET",
@@ -500,16 +503,24 @@ function get_circle_post(e){
         data: {user_code:user_code},
         dataType: "json",
         success: function(data) {
-        	$('.circle_cards').empty();
+        	var target;
+        	
+        	if(user_code==null){
+        		target = $('.circle_cards');
+        	}else{
+        		target = $('.visit_cards');
+        	}
+        	
+        	target.empty();
         	
         	for (const postVO of data){
         		const post = `
 	        		<div class="card" data-post_type="1" data-post_code="${postVO.post_code}">
 						<div class="card_header">
-							<div class="card_header_image" onclick="get_circle_post(${postVO.writer_code})">
+							<div class="card_header_image" onclick="visit(${postVO.post_writer},this)">
 								<img src="/img/profiles/${postVO.writer_thumbnail_path}"/>
 							</div>
-							<div class="card_header_name" onclick="get_circle_post(${postVO.writer_code})">
+							<div class="card_header_nickname" onclick="visit(${postVO.post_writer},this)">
 								${postVO.writer_nickname}
 							</div>
 							<div class="card_header_tools">
@@ -544,7 +555,7 @@ function get_circle_post(e){
 	        	`;
         		
         		const $card = $(post);
-                $('.circle_cards').append($card);
+                target.append($card);
         		
                 if (postVO.post_tag != null && postVO.post_tag != '') {
                     const tags = postVO.post_tag.split(',');
@@ -605,11 +616,11 @@ function get_circle_post(e){
                     		
                     		$comment.find('.scroll_box_inner').append(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
-	                				<div class="card_comment_thumbnail" onclick="get_circle_post(${reple.reple_writer})">
+	                				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
 		                				<img src="/img/profiles/${reple.writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
-		                				<div class="card_comment_name" onclick="get_circle_post(${reple.reple_writer})">${reple.writer_nickname}</div>
+		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
 		                				<i class="fa-regular fa-thumbs-up" onclick="like()"></i>${reple.reple_recomm_count}
@@ -623,7 +634,7 @@ function get_circle_post(e){
                 	$card.find('.card_foot').append($comment);
                 }
         	}
-        	$('.circle_cards').scrollTop(0);
+        	target.scrollTop(0);
         },
         error: function(xhr, status, error) {
         }
@@ -631,19 +642,37 @@ function get_circle_post(e){
 }
 
 
-function get_profile(e){
-	var user_code = 0;
+function get_person_profile(user_code){
 	
-	if (typeof e === 'number') {
-        user_code = e;
-    }
+	if(person == self && user_code == null){
+		return;
+	}
 	
 	$.ajax({
         type: "GET",
-        url: "/member/profile",
+        url: "/user/profile",
         data: {user_code:user_code},
         dataType: "json",
         success: function(data) {
+        	$('.profile_container').addClass('hidden');
+        	
+        	if(user_code != null && person != user_code){
+        		if($('.profile_container').hasClass('shrinked')){
+            		expand_profile();
+            	}
+            	if($('.detail_profile_container').hasClass('expanded')){
+            		shrink_profile();
+            	}
+        	}
+        	
+        	if(user_code==null){
+        		person = self;
+        	}else{
+        		person = user_code;
+        	}
+        	
+        	profile_type='person';
+        	
         	$('.profile_container .profile_container_head_basic').html(`
         		<img src="/img/profiles/${data.user_thumbnail_path}"/>
 				<div class="profile_container_head_basic_nickname">
@@ -664,23 +693,23 @@ function get_profile(e){
         	`);
         	$('.profile_container .profile_container_head_tools').html(`
         		<div class="profile_container_head_tool">
-					<img src="${pageContext.request.contextPath }/resources/assets/img/message.png" class="icons">
+					<img src="" class="icons">
 					메세지
 				</div>
 				<div class="profile_container_head_tool">
-					<img src="${pageContext.request.contextPath }/resources/assets/img/follow.png" class="icons">
+					<img src="" class="icons">
 					팔로우
 				</div>
 				<div class="profile_container_head_tool">
-					<img src="${pageContext.request.contextPath }/resources/assets/img/to_favorite.png" class="icons">
+					<img src="" class="icons">
 					즐겨찾기
 				</div>
 				<div class="profile_container_head_tool">
-					<img src="${pageContext.request.contextPath }/resources/assets/img/prohibit.png" class="icons">
+					<img src="" class="icons">
 					차단
 				</div>
 				<div class="profile_container_head_tool">
-					<img src="${pageContext.request.contextPath }/resources/assets/img/report.png" class="icons">
+					<img src="" class="icons">
 					신고
 				</div>
         	`);
@@ -717,17 +746,13 @@ function get_profile(e){
 					</div>
 				</div>
         	`);
-        	
-        	if($('.profile_container').hasClass('shrinked')){
-        		expand_profile();
-        	}
-        	if($('.detail_profile_container').hasClass('expanded')){
-        		shrink_profile();
-        	}
+        	setTimeout(function() {
+        		$('.profile_container').removeClass('hidden');
+            }, 10);
         },
         error: function(xhr, status, error) {
         }
     });
-	
 }
+
 

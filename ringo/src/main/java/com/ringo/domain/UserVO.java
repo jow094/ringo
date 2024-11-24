@@ -55,7 +55,7 @@ public class UserVO {
 	
 	private Integer user_private;
 	private SettingVO user_setting;
-	private List<String> follower;
-	private List<String> following;
+	private List<UserVO> user_follower;
+	private List<UserVO> user_following;
 	
 }

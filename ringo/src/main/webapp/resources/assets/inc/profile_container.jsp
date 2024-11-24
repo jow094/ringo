@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<div class="profile_container expanded">
+<div class="profile_container hidden expanded">
 	<div class="user_profile_container">
 		<div class="profile_container_head">
 			<div class="profile_container_head_basic">
 				<img src="/img/profiles/${user_thumbnail_path}"/>
-				<div class="profile_container_head_basic_name">
+				<div class="profile_container_head_basic_nickname">
 				조우영
 				</div>
 				<div class="profile_container_head_basic_info">
@@ -119,7 +119,7 @@
 				src="/img/unity/thumbnail/${unity_thumbnail_path}"
 				style="width: 150px; height: 150px; margin-bottom:10px;"
 				/>
-				<div class="profile_container_head_basic_name">
+				<div class="profile_container_head_basic_unity_name">
 				[부울경] 아마추어 풋살
 				</div>
 				<div class="profile_container_head_basic_info">
@@ -237,7 +237,7 @@
 							/>
 						</div>
 						<div class="card_person_info">
-							<div class="card_person_info_name">즐겨찾는사람</div>
+							<div class="card_person_info_nickname">즐겨찾는사람</div>
 							<div class="card_person_info_comment"></div>
 							<div class="card_person_info_logon"></div>
 						</div>

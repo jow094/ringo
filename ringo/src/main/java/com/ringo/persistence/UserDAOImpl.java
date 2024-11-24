@@ -32,8 +32,8 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public UserVO selectUser(UserVO vo) {
-		logger.debug("selectMember(UserVO) - vo : "+vo);
-		return sqlSession.selectOne(NAMESPACE + ".selectMember",vo);		
+		logger.debug("selectUser(UserVO) - vo : "+vo);
+		return sqlSession.selectOne(NAMESPACE + ".selectUser",vo);		
 	}
 	
 	@Override
@@ -44,8 +44,8 @@ public class UserDAOImpl implements UserDAO {
 	
 	@Override
 	public Integer insertUser(UserVO vo) {
-		logger.debug("insertMember(UserVO) - vo : "+vo);
-		return sqlSession.insert(NAMESPACE + ".insertMember",vo);	
+		logger.debug("insertUser(UserVO) - vo : "+vo);
+		return sqlSession.insert(NAMESPACE + ".insertUser",vo);	
 	}
 
 	@Override
@@ -60,7 +60,8 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public UserVO selectUserProfile(Integer user_code) {
-		return sqlSession.selectOne(NAMESPACE + ".selectProfile",user_code);	
+		logger.debug("selectUserProfile(Integer user_code) - user_code : "+user_code);
+		return sqlSession.selectOne(NAMESPACE + ".selectUserProfile",user_code);	
 	}
 
 	

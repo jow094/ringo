@@ -56,6 +56,20 @@ public class MainController {
 	private String uploadPath_circle = "C:/ringo_files/circle/upload/";
 	private String uploadPath_unity = "C:/ringo_files/unity/upload/";
 	
+	public Integer getCode(String user_fcode) {
+	    if (user_fcode.contains("_")) {
+	        return Integer.parseInt(user_fcode.split("_")[0]);
+	    }
+	    return Integer.parseInt(user_fcode);
+	}
+	
+	public Integer getPrivate(String user_fcode) {
+	    if (user_fcode.contains("_")) {
+	        return Integer.parseInt(user_fcode.split("_")[1]);
+	    }
+	    return null;
+	}
+	
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String homeGET(HttpSession session, UserVO vo) {
 		logger.debug("mainGET(MemberVO) - vo : "+vo);
@@ -66,11 +80,11 @@ public class MainController {
 	@RequestMapping(value = "/circle", method = RequestMethod.GET)
 	@ResponseBody
 	public List<PostVO> circleGET(HttpSession session, Integer user_code) {
-		logger.debug("circleGET(Integer user_code) - user_code : "+user_code);
-		if(user_code==0||user_code==null) {
+		if(user_code==null) {
 			user_code = (Integer)session.getAttribute("user_code");
 		}
 		
+		logger.debug("circleGET(Integer user_code) - user_code : "+user_code);
 		return pService.getCirclePost(user_code);
 	}
 	

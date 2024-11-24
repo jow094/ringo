@@ -20,7 +20,7 @@
 			<img src="/resources/assets/img/">
 		</div>
 		<div class="login_inputs">
-			<form action="/member/login" method="POST">
+			<form action="/user/login" method="POST">
 				<div class="input_cell">
 					<div class="input_name">
 						아이디

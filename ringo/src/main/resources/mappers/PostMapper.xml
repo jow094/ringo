@@ -5,7 +5,7 @@
   
 <mapper namespace="com.ringo.mapper.PostMapper">
 	
-	<resultMap id="circlePostMap" type="PostVO">
+	<resultMap id="selectCirclePost_Map" type="PostVO">
 	    <result property="post_code" column="post_code"/>
 	    <result property="post_writer" column="post_writer"/>
 	    <result property="post_content" column="post_content"/>
@@ -50,31 +50,31 @@
         )
     </insert>
 	
-	<select id="selectCirclePost" resultMap="circlePostMap">
-		select p.*, 
-		 m1.user_thumbnail_path as writer_thumbnail_path, 
-		 m1.user_nickname as writer_nickname,
+	<select id="selectCirclePost" resultMap="selectCirclePost_Map">
+		select cp.*, 
+		 u1.user_thumbnail_path as writer_thumbnail_path, 
+		 u1.user_nickname as writer_nickname,
 		 r.reple_code, 
 		 r.reple_writer, 
 		 r.reple_content, 
 		 r.reple_time,
 		 r.reple_recomm_count,
-		 m2.user_thumbnail_path as r_writer_thumbnail_path, 
-		 m2.user_nickname as r_writer_nickname
+		 u2.user_thumbnail_path as r_writer_thumbnail_path, 
+		 u2.user_nickname as r_writer_nickname
 		 
-   		 from _ringo_circle_post p
-    	 join _ringo_member m1 on p.post_writer = m1.user_code
-    	 left join _ringo_reple r on r.reple_target = p.post_code and r.reple_type = 1
-    	 left join _ringo_member m2 on r.reple_writer = m2.user_code
+   		 from _ringo_circle_post cp
+    	 join _ringo_user u1 on cp.post_writer = u1.user_code
+    	 left join _ringo_reple r on r.reple_target = cp.post_code and r.reple_type = 1
+    	 left join _ringo_user u2 on r.reple_writer = u2.user_code
     	 
-    	 where p.post_writer = #{post_writer}
-    	 order by p.post_time desc, r.reple_time desc
+    	 where cp.post_writer = #{post_writer}
+    	 order by cp.post_time desc, r.reple_time desc
 	</select>
 	
 	<select id="selectReple" resultType="RepleVO">
-		select r.*, m.user_thumbnail_path as writer_thumbnail_path, m.user_nickname as writer_nickname
+		select r.*, u.user_thumbnail_path as writer_thumbnail_path, u.user_nickname as writer_nickname
    		 from _ringo_reple r
-    	 join _ringo_member m on r.reple_writer = m.user_code
+    	 join _ringo_user u on r.reple_writer = u.user_code
     	 where r.reple_target = #{reple_target} and r.reple_type = #{reple_type}
     	 order by r.reple_time desc
 	</select>

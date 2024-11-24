@@ -9,7 +9,7 @@
 
 <div class="join_container">
 	<div class="box">
-		<form action="/main/join" method="POST" enctype="multipart/form-data">
+		<form action="/user/join" method="POST" enctype="multipart/form-data">
 		
 			
 			

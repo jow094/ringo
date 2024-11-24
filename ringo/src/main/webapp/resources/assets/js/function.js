@@ -114,11 +114,20 @@ function col_toggle(target,e) {
 	}
 }
 
-function main_show(e,target) {
-	$(`.main_card:not(.main_${target})`).addClass('none');
+function main_show(target) {
+	$(`.main_card:not(.none)`).addClass('none');
 	showing(`.main_card.main_${target}`);
-	$(e).siblings().not('.article_container_menu_messenger').removeClass('active');
-    $(e).addClass('active');
+	
+	$(`.article_container_menu > :not(.article_container_menu_messenger):not([data-target="${target}"])`).removeClass('active');
+	$(`.article_container_menu > [data-target="${target}"]`).addClass('active');
+	
+    if(target!='visit'){
+    	$('.article_container_menu_added').find('.active').removeClass('active');
+    	get_person_profile();
+    }
+    if(target=='visit'){
+    	$('.article_container_menu').find('.active:not(.article_container_menu_messenger)').removeClass('active');
+    }
     if(target=='circle'){
     	if ($(".main_circle .main_card_body .scroll_box_inner").scrollTop() == 0 || $(".main_circle .main_card_body .scroll_box_inner").children().length ==0) {
     	    get_circle_post();
@@ -1401,4 +1410,74 @@ function invalidate_write_container(target){
 			col_toggle($('.main_circle').find('.write_container'));
 		}
 	}
+}
+
+function visit(user_code,e){
+	
+	if(user_code == self_code){
+		main_show('circle');
+		return;
+	}
+	
+	var thumbnail;
+	var nickname;
+	
+	if($(e).closest('.card_comment').length>0){
+		const container = $(e).closest('.card_comment');
+		thumbnail = container.find('.card_comment_thumbnail img').attr('src');
+		nickname = container.find('.card_comment_nickname').text();
+	}else if($(e).closest('.card').length>0){
+		const container = $(e).closest('.card');
+		thumbnail = container.find('.card_header_image img').attr('src');
+		nickname = container.find('.card_header_nickname').text();
+	}else if($(e).closest('.person_card').length>0){
+		const container = $(e).closest('.person_card');
+		thumbnail = container.find('img').attr('src');
+		nickname = container.find('span').text();
+	}
+	
+	$('.added_menu_inner').find('.person_card.active').removeClass('active');
+	
+	if($('.added_menu_inner').find(`[data-user_code="${user_code}"]`).length == 0){
+		$('.added_menu_inner').prepend(`
+			<div class="person_card shrinked active" data-user_code="${user_code}" onclick="visit(${user_code},this);">
+				<img src="${thumbnail}"/>
+				<span>${nickname}</span>
+				<i class="fa-solid fa-circle-xmark" onclick="delete_person_card(event)"></i>
+			</div>`
+		);
+	}else if(!$(`.added_menu_inner > [data-user_code="${user_code}"]`).is(':first-child')){
+		$('.added_menu_inner > [data-user_code="${user_code}"]').remove();
+		$('.added_menu_inner').prepend(`
+			<div class="person_card shrinked active" data-user_code="${user_code}" onclick="visit(${user_code},this);">
+				<img src="${thumbnail}"/>
+				<span>${nickname}</span>
+				<i class="fa-solid fa-circle-xmark" onclick="delete_person_card(event)"></i>
+			</div>`
+		);
+	}else{
+		$(`.added_menu_inner > [data-user_code="${user_code}"]`).addClass('active');
+	}
+	
+	setTimeout(function() {
+		if($('.added_menu_inner').find(`[data-user_code="${user_code}"]`).hasClass('shrinked')){
+			row_toggle($('.added_menu_inner').find(`[data-user_code="${user_code}"]`));
+		}
+		if($('.article_container_menu_added').hasClass('col_shrinked')){
+			col_toggle('.article_container_menu_added');
+		}
+    }, 1);
+	
+	$('.visit_target').text(nickname);
+	get_person_profile(user_code);
+	get_circle_post(user_code);
+	main_show('visit');
+}
+
+function delete_person_card(event) {
+    event.stopPropagation();
+    $(event.target).closest('.person_card').remove();
+    if($('.added_menu_inner').find('.person_card').length==0 && $('.article_container_menu_added').hasClass('expanded')){
+    	col_toggle('.article_container_menu_added');
+    }
 }

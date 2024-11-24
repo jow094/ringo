@@ -48,8 +48,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public UserVO getUserProfile(Integer user_code) {
-		// TODO Auto-generated method stub
-		return null;
+		return udao.selectUserProfile(user_code);
 	}
 
 	

@@ -13,7 +13,7 @@
 					/>
 				</div>
 				<div class="card_person_info">
-					<div class="card_person_info_name"></div>
+					<div class="card_person_info_nickname"></div>
 					<div class="card_person_info_comment"></div>
 					<div class="card_person_info_logon"></div>
 				</div>
@@ -88,7 +88,7 @@
 			<div class="messenger_navbar_back" onclick="exit_room()">
 				<i class="fa-solid fa-arrow-left"></i>
 			</div>
-			<div class="messenger_navbar_name">name</div>
+			<div class="messenger_navbar_nickname">nickname</div>
 			<div class="messenger_navbar_menu">
 				<i class="fa-solid fa-bars"></i>
 			</div>
@@ -102,8 +102,8 @@
 					/>
 				</div>
 				<div class="message_info">	
-					<div class="message_sender_name">
-					sender_name
+					<div class="message_sender_nickname">
+					sender_nickname
 					</div>
 					<div class="message_body">
 						<div class="message_content">본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문마지막</div>

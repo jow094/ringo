@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	login_check();
-	main_show('.article_container_menu_around','around');
+	main_show('around');
 	get_coordinates();
 	
 	window.onclick = function(e) {
@@ -19,7 +19,7 @@ $(document).ready(function() {
 	    }
 	});
 	
-	$('.image_queue_belt').on('wheel', function (event) {
+	$('.image_queue_belt, .added_menu_inner').on('wheel', function (event) {
         event.preventDefault();
         const delta = event.originalEvent.deltaY;
         $(this).scrollLeft($(this).scrollLeft() + delta);
