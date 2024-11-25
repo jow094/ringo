@@ -22,7 +22,7 @@
 	    <result property="unity_create_time" column="unity_create_time"/>
 	    <result property="unity_grade" column="unity_grade"/>
 	    
-	    <collection property="unity_board" ofType="UnityBoardVO">
+	    <collection property="unity_boards" ofType="UnityBoardVO">
 	        <result property="unity_board_category" column="unity_board_category"/>
 	        <result property="unity_board_name" column="unity_board_name"/>
 	    </collection>

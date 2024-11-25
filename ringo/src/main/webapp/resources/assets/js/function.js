@@ -1666,7 +1666,9 @@ function select_banner_setting() {
     $('input[name="unity_banner_set"]').val(banner_setting);
 
     const img = $('.unity_banner_preview').find('img')[0];
-    img.style.cssText = banner_setting;
+    if(img!=null){
+    	img.style.cssText = banner_setting;
+    }
 }
 
 function expand_create_unity(){

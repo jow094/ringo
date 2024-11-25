@@ -835,10 +835,13 @@ function get_unities(){
         url: "/unity/home",
         dataType: "json",
         success: function(data) {
+        	$('.favorite_unities').empty();
+        	$('.joined_unities').empty();
+        	$('.recomm_unities').empty();
+        	$('.near_unities').empty();
         	
         	for (const unity of data){
         		if(unity.unity_type == 'favoriteUnity'){
-        			$('.favorite_unities').empty();
         			$('.favorite_unities').prepend(`
         				<div class="favorite_unity" data-unity_code="${unity.unity_code}" onclick="enter_unity($(this).attr('data-unity_code'))">
 							<img src="/img/unity/thumbnail/${unity.unity_thumbnail_path}"></img>
@@ -848,7 +851,6 @@ function get_unities(){
         			`);
         		}
         		if(unity.unity_type == 'joinedUnity'){
-        			$('.joined_unities').empty();
         			
         			var unity_card = `
         				<div class="unity_card" data-unity_code="${unity.unity_code}" onclick="enter_unity($(this).attr('data-unity_code'))">
@@ -875,7 +877,6 @@ function get_unities(){
         			$('.joined_unities').prepend($card);
         		}
         		if(unity.unity_type == 'recommUnity'){
-        			$('.recomm_unities').empty();
         			
         			var unity_card = `
         				<div class="unity_card" data-unity_code="${unity.unity_code}" onclick="enter_unity($(this).attr('data-unity_code'))">
@@ -902,7 +903,6 @@ function get_unities(){
         			$('.recomm_unities').prepend($card);
         		}
         		if(unity.unity_type == 'nearUnity'){
-        			$('.near_unities').empty();
         			
         			var unity_card = `
         				<div class="unity_card" data-unity_code="${unity.unity_code}" onclick="enter_unity($(this).attr('data-unity_code'))">

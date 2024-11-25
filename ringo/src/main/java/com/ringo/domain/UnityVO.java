@@ -20,6 +20,7 @@ public class UnityVO {
 	private String unity_lang;
 	private String unity_location;
 	private Integer unity_private;
+	private String unity_grade;
 	private String unity_thumbnail_path;
 	private String unity_banner_path;
 	private String unity_banner_set;

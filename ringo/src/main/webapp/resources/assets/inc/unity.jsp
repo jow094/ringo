@@ -53,10 +53,10 @@
 					<input type="hidden" name="unity_banner_set"/>
 				</div>
 				<div class="input_hint annotation_message">
-					* 배너의 빈공간을 채울 색상과 배치를 선택 해주세요.
+					* 배너는 가로 6 : 세로 1 비율로 적용되며, 세로 최대 160px까지 표현됩니다.
 				</div>
 				<div class="input_hint annotation_message">
-					* 배너는 가로 9 : 세로 2 비율로 적용됩니다.	
+					* 배너의 빈공간을 채울 색상과 이미지 배치 방법을 선택 해주세요.
 				</div>
 			</div>
 		</div>
@@ -279,256 +279,216 @@
 	<div class="main_card_body unity_main_container expanded">
 	
 	
-		<!-- unity unity -->
-		<div class="unity_unity none">
-			<div class="unity_board expanded">
-				<div class="unity_boardlist">
-					<div class="unity_boardlist_header">
-						<div class="post_num">번호</div>
-						<div class="post_title">제목</div>
-						<div class="post_writer">작성자</div>
-						<div class="post_view">조회수</div>
-						<div class="post_time">일시</div>
-					</div>
-					<div class="unity_boardlist_body">
-						<div class="post_row">
-							<div class="post_num">1</div>
-							<div class="post_title">제목임ㄴㅋㅋㅋㅋㅋ</div>
-							<div class="post_writer">조우영</div>
-							<div class="post_view">2</div>
-							<div class="post_time">12:28</div>
+		<!-- in_unity -->
+		<div class="in_unity_home">
+			<div class="in_unity_banner">
+				<img src="/img/profiles/${user_thumbnail_path}"/>
+			</div>
+			<div class="in_unity_home_container">
+				<div class="in_unity_home_left_container">
+					<div class="unity_member_profile">
+						<div class="unity_member_basic_info">
+							<div class="unity_member_personal_info">
+								<div class="unity_member_thumbnail">
+									<img src="/img/profiles/${user_thumbnail_path}"/>
+								</div>
+								<div class="unity_member_infos">조우영</div>
+							</div>
+							<div class="unity_member_additional_info">
+								<div class="unity_member_infos">유니티 회원등급 :</div>
+								<div class="unity_member_infos">방문횟수 :</div>
+								<div class="unity_member_infos">가입일:</div>
+							</div>
 						</div>
-						<div class="post_row">
-							<div class="post_num">2</div>
-							<div class="post_title">제제목제목제목목</div>
-							<div class="post_writer">작성자</div>
-							<div class="post_view">441</div>
-							<div class="post_time">12:30</div>
-						</div>
-						<div class="post_row">
-							<div class="post_num">3</div>
-							<div class="post_title">제목</div>
-							<div class="post_writer">조우영</div>
-							<div class="post_view">123</div>
-							<div class="post_time">12:30</div>
+						<div class="unity_member_activity_info">
+							<div class="unity_member_infos">작성한 게시글 :</div>
+							<div class="unity_member_infos">작성한 댓글 :</div>
+							<div class="unity_member_infos">새로 달린 댓글 :</div>
+							<div class="unity_member_infos">작성한 게시글 :</div>
 						</div>
 					</div>
-					<div class="unity_boardlist_footer">
-						<div>페이징처리</div>
-						<div>검색창</div>
+					<div class="unity_recent_post">
+						<div class="inner_title">최근 게시물</div>
+						<div class="scroll_box_inner">
+							<div class="post_card">
+								<div class="post_card_thumbnail">
+									<img src="/img/profiles/${user_thumbnail_path}"/>
+								</div>
+								<div class="post_card_body">
+									<div class="post_card_title">조우영 님의 게시물</div>
+									<div class="post_card_info">자유게시판</div>
+									<div class="post_card_info">ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</div>
+								</div>
+								<div class="post_card_footer">
+									<div class="post_card_info">추천수 : 153</div>
+									<div class="post_card_info">댓글수 : 153</div>
+									<div class="post_card_info">작성일 : 11:59</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="unity_content">
-				<div class="scroll_box_inner">
-				
-					<!-- card start -->
-					<div class="card">
-						<div class="card_header">
-							<div class="card_header_img">
-								<img
-								src="/img/profiles/${user_thumbnail_path}"
-								style="width: 40px; height: 40px; border-radius: 50%; shrink:0; box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);"
-								/>
-							</div>
-							<div class="card_header_name">
-								작성자
-							</div>
-							<div class="card_header_tools">
-								<div class="card_header_tool">
-									<i class="fa-regular fa-heart" style="font-size: 20px;"></i>
-									<span>1,430</span>
-								</div>
-								<div class="card_header_tool">
-									<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
-									</div>
-								</div>
-							</div>
-							<div class="card_body">
-								<div class="card_body_content">
-									<div class="scroll_box">
-										<div class="scroll_box_inner">
-										본문
-										</div>
-									</div>
-								</div>
-								<div class="card_body_tags">
-									#태그
-								</div>
-							</div>
-							<div class="card_foot">
-								<div class="card_foot_comment_input">
-									<textarea></textarea>
-									<button type="button">
-										<i class="fa-solid fa-paper-plane"></i>
-									</button>
-								</div>
-								<div class="card_foot_comment">
-									<div class="scroll_box">
-										<div class="scroll_box_inner">
-											<div class="card_comment">
-												<div class="card_comment_thumbnail">
-													<img
-													src="/img/profiles/${user_thumbnail_path}"
-												style="width: 40px; height: 40px; border-radius: 30%;"
-												/>
-											</div>
-											<div class="card_comment_body">
-												<div class="card_comment_name">작성자</div>
-												<div class="card_comment_content">유니티,링크,메신저 채팅방,유니티 프로필,검색창,정보수정,가입절차</div>
-												<div class="card_comment_time">
-													<i class="fa-regular fa-thumbs-up"></i>36
-													<i class="fa-regular fa-thumbs-down"></i>12
-													<span>작성시간</span>
-												</div>
-											</div>
-										</div>
-										<div class="card_comment">
-											<div class="card_comment_thumbnail">
-												<img
-												src="/img/profiles/${user_thumbnail_path}"
-												style="width: 40px; height: 40px; border-radius: 30%;"
-												/>
-											</div>
-											<div class="card_comment_body">
-												<div class="card_comment_name">작성자</div>
-												<div class="card_comment_content">내용</div>
-												<div class="card_comment_time">
-													<i class="fa-regular fa-thumbs-up"></i>36
-													<i class="fa-regular fa-thumbs-down"></i>12
-													<span>작성시간</span>
-												</div>
-											</div>
-										</div>
-										<div class="card_comment">
-											<div class="card_comment_thumbnail">
-												<img
-												src="/img/profiles/${user_thumbnail_path}"
-												style="width: 40px; height: 40px; border-radius: 30%;"
-												/>
-											</div>
-											<div class="card_comment_body">
-												<div class="card_comment_name">작성자</div>
-												<div class="card_comment_content">내용</div>
-												<div class="card_comment_time">
-													<i class="fa-regular fa-thumbs-up"></i>36
-													<i class="fa-regular fa-thumbs-down"></i>12
-													<span>작성시간</span>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
+				<div class="in_unity_home_right_container">
+					<div class="unity_hot_post">
+						<div class="inner_title">인기 게시물</div>
+						<div class="scroll_box_inner">
 						</div>
 					</div>
-					<!-- card end -->
-					<!-- card start -->
-					<div class="card">
-						<div class="card_header">
-							<div class="card_header_img">
-								<img
-								src="/img/profiles/${user_thumbnail_path}"
-								style="width: 40px; height: 40px; border-radius: 50%; shrink:0; box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);"
-								/>
-							</div>
-							<div class="card_header_name">
-								작성자
-							</div>
-							<div class="card_header_tools">
-								<div class="card_header_tool">
-									<i class="fa-regular fa-heart" style="font-size: 20px;"></i>
-									<span>1,430</span>
-								</div>
-								<div class="card_header_tool">
-									<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
-									</div>
-								</div>
-							</div>
-							<div class="card_body">
-								<div class="card_body_content">
-									<div class="scroll_box">
-										<div class="scroll_box_inner">
-										본문
-										</div>
-									</div>
-								</div>
-								<div class="card_body_tags">
-									#태그
-								</div>
-							</div>
-							<div class="card_foot">
-								<div class="card_foot_comment_input">
-									<textarea></textarea>
-									<button type="button">
-										<i class="fa-solid fa-paper-plane"></i>
-									</button>
-								</div>
-								<div class="card_foot_comment">
-									<div class="scroll_box">
-										<div class="scroll_box_inner">
-											<div class="card_comment">
-												<div class="card_comment_thumbnail">
-													<img
-													src="/img/profiles/${user_thumbnail_path}"
-												style="width: 40px; height: 40px; border-radius: 30%;"
-												/>
-											</div>
-											<div class="card_comment_body">
-												<div class="card_comment_name">작성자</div>
-												<div class="card_comment_content">유니티,링크,메신저 채팅방,유니티 프로필,검색창,정보수정,가입절차</div>
-												<div class="card_comment_time">
-													<i class="fa-regular fa-thumbs-up"></i>36
-													<i class="fa-regular fa-thumbs-down"></i>12
-													<span>작성시간</span>
-												</div>
-											</div>
-										</div>
-										<div class="card_comment">
-											<div class="card_comment_thumbnail">
-												<img
-												src="/img/profiles/${user_thumbnail_path}"
-												style="width: 40px; height: 40px; border-radius: 30%;"
-												/>
-											</div>
-											<div class="card_comment_body">
-												<div class="card_comment_name">작성자</div>
-												<div class="card_comment_content">내용</div>
-												<div class="card_comment_time">
-													<i class="fa-regular fa-thumbs-up"></i>36
-													<i class="fa-regular fa-thumbs-down"></i>12
-													<span>작성시간</span>
-												</div>
-											</div>
-										</div>
-										<div class="card_comment">
-											<div class="card_comment_thumbnail">
-												<img
-												src="/img/profiles/${user_thumbnail_path}"
-												style="width: 40px; height: 40px; border-radius: 30%;"
-												/>
-											</div>
-											<div class="card_comment_body">
-												<div class="card_comment_name">작성자</div>
-												<div class="card_comment_content">내용</div>
-												<div class="card_comment_time">
-													<i class="fa-regular fa-thumbs-up"></i>36
-													<i class="fa-regular fa-thumbs-down"></i>12
-													<span>작성시간</span>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!-- card end -->
 				</div>
 			</div>
 		</div>
-		<!-- unity unity -->
-		
+				
+				
+				
+		<div class="scroll_box none">
+			<div class="scroll_box_inner">
+				<div class="unity_board none">
+					<div class="unity_post_list">
+						<div class="unity_boardlist_header">
+							<div class="post_num">번호</div>
+							<div class="post_title">제목</div>
+							<div class="post_writer">작성자</div>
+							<div class="post_view">조회수</div>
+							<div class="post_time">일시</div>
+						</div>
+						<div class="unity_boardlist_body">
+							<div class="post_row">
+								<div class="post_num">1</div>
+								<div class="post_title">제목임ㄴㅋㅋㅋㅋㅋ</div>
+								<div class="post_writer">조우영</div>
+								<div class="post_view">2</div>
+								<div class="post_time">12:28</div>
+							</div>
+							<div class="post_row">
+								<div class="post_num">2</div>
+								<div class="post_title">제제목제목제목목</div>
+								<div class="post_writer">작성자</div>
+								<div class="post_view">441</div>
+								<div class="post_time">12:30</div>
+							</div>
+							<div class="post_row">
+								<div class="post_num">3</div>
+								<div class="post_title">제목</div>
+								<div class="post_writer">조우영</div>
+								<div class="post_view">123</div>
+								<div class="post_time">12:30</div>
+							</div>
+						</div>
+						<div class="unity_boardlist_footer">
+							<div>페이징처리</div>
+							<div>검색창</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="unity_post none">
+					<div class="scroll_box_inner">
+						<!-- card start -->
+						<div class="card">
+							<div class="card_header">
+								<div class="card_header_img">
+									<img
+									src="/img/profiles/${user_thumbnail_path}"
+									style="width: 40px; height: 40px; border-radius: 50%; shrink:0; box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);"
+									/>
+								</div>
+								<div class="card_header_name">
+									작성자
+								</div>
+								<div class="card_header_tools">
+									<div class="card_header_tool">
+										<i class="fa-regular fa-heart" style="font-size: 20px;"></i>
+										<span>1,430</span>
+									</div>
+									<div class="card_header_tool">
+										<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
+										</div>
+									</div>
+								</div>
+								<div class="card_body">
+									<div class="card_body_content">
+										<div class="scroll_box">
+											<div class="scroll_box_inner">
+											본문
+											</div>
+										</div>
+									</div>
+									<div class="card_body_tags">
+										#태그
+									</div>
+								</div>
+								<div class="card_foot">
+									<div class="card_foot_comment_input">
+										<textarea></textarea>
+										<button type="button">
+											<i class="fa-solid fa-paper-plane"></i>
+										</button>
+									</div>
+									<div class="card_foot_comment">
+										<div class="scroll_box">
+											<div class="scroll_box_inner">
+												<div class="card_comment">
+													<div class="card_comment_thumbnail">
+														<img
+														src="/img/profiles/${user_thumbnail_path}"
+													style="width: 40px; height: 40px; border-radius: 30%;"
+													/>
+												</div>
+												<div class="card_comment_body">
+													<div class="card_comment_name">작성자</div>
+													<div class="card_comment_content">유니티,링크,메신저 채팅방,유니티 프로필,검색창,정보수정,가입절차</div>
+													<div class="card_comment_time">
+														<i class="fa-regular fa-thumbs-up"></i>36
+														<i class="fa-regular fa-thumbs-down"></i>12
+														<span>작성시간</span>
+													</div>
+												</div>
+											</div>
+											<div class="card_comment">
+												<div class="card_comment_thumbnail">
+													<img
+													src="/img/profiles/${user_thumbnail_path}"
+													style="width: 40px; height: 40px; border-radius: 30%;"
+													/>
+												</div>
+												<div class="card_comment_body">
+													<div class="card_comment_name">작성자</div>
+													<div class="card_comment_content">내용</div>
+													<div class="card_comment_time">
+														<i class="fa-regular fa-thumbs-up"></i>36
+														<i class="fa-regular fa-thumbs-down"></i>12
+														<span>작성시간</span>
+													</div>
+												</div>
+											</div>
+											<div class="card_comment">
+												<div class="card_comment_thumbnail">
+													<img
+													src="/img/profiles/${user_thumbnail_path}"
+													style="width: 40px; height: 40px; border-radius: 30%;"
+													/>
+												</div>
+												<div class="card_comment_body">
+													<div class="card_comment_name">작성자</div>
+													<div class="card_comment_content">내용</div>
+													<div class="card_comment_time">
+														<i class="fa-regular fa-thumbs-up"></i>36
+														<i class="fa-regular fa-thumbs-down"></i>12
+														<span>작성시간</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- card end -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- in unity -->
 		
 		
 	
