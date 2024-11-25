@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.ringo.mapper.UnityMapper">
+	
+	<resultMap id="selectUnity_Map" type="UnityVO">
+	    <result property="unity_code" column="unity_code"/>
+	    <result property="unity_name" column="unity_name"/>
+	    <result property="unity_admin" column="unity_admin"/>
+	    <result property="unity_tag" column="unity_tag"/>
+	    <result property="unity_intro" column="unity_intro"/>
+	    <result property="unity_method" column="unity_method"/>
+	    <result property="unity_topic" column="unity_topic"/>
+	    <result property="unity_lang" column="unity_lang"/>
+	    <result property="unity_location" column="unity_location"/>
+	    <result property="unity_private" column="unity_private"/>
+	    <result property="unity_thumbnail_path" column="unity_thumbnail_path"/>
+	    <result property="unity_banner_path" column="unity_banner_path"/>
+	    <result property="unity_banner_set" column="unity_banner_set"/>
+	    <result property="unity_create_time" column="unity_create_time"/>
+	    <result property="unity_grade" column="unity_grade"/>
+	    
+	    <collection property="unity_board" ofType="UnityBoardVO">
+	        <result property="unity_board_category" column="unity_board_category"/>
+	        <result property="unity_board_name" column="unity_board_name"/>
+	    </collection>
+	</resultMap>
+	
+	<select id="selectLastUnityCode" resultType="Integer">
+		select max(unity_code) from _ringo_unity
+	</select>
+	
+	<select id="selectDupleUnityName" resultType="Integer">
+		select count(unity_name) from _ringo_unity where unity_name = #{data}
+	</select>
+	
+	<insert id="insertUnity" parameterType="UnityVO">
+	    insert into _ringo_unity (
+	        unity_code,
+	        unity_name,
+	        unity_admin,
+	        unity_topic,
+	        unity_lang,
+	        unity_location,
+	        unity_tag,
+	        unity_intro,
+	        unity_method,
+	        unity_private,
+	        unity_thumbnail_path,
+	        unity_banner_set,
+	        unity_banner_path
+	    ) values (
+	        #{unity_code},
+	        #{unity_name},
+	        #{unity_admin},
+	        #{unity_topic},
+	        #{unity_lang},
+	        #{unity_location},
+	        #{unity_tag},
+	        #{unity_intro},
+	        #{unity_method},
+	        #{unity_private},
+	        #{unity_thumbnail_path},
+	        #{unity_banner_set},
+	        #{unity_banner_path}
+	    )
+	</insert>
+	
+	<insert id="insertUnityMember" parameterType="UnityVO">
+		insert into _ringo_unity_member (
+	        unity_code,
+	        user_code
+	    ) values (
+	    	#{unity_code},
+	    	#{user_code}
+	    )
+	</insert>
+	
+	<update id="updateUnityMember" parameterType="UnityVO">
+		update _ringo_unity_member
+	     set unity_member_grade = #{unity_member_grade}
+	     where user_code = #{user_code}
+	</update>
+	
+	<select id="selectUnities" resultType="UnityVO">
+		select
+		    unt.unity_code as unity_code,
+		    unt.unity_name as unity_name,
+		    unt.unity_tag as unity_tag,
+		    unt.unity_thumbnail_path as unity_thumbnail_path,
+		    (select up.unity_post_title
+		     from _ringo_unity_post up
+		     where up.unity_post_place = unt.unity_code
+		     order by up.unity_post_time desc
+		     limit 1) as unity_last_post,
+		    'joinedUnity' as unity_type
+		from _ringo_unity unt
+		join _ringo_unity_member untm ON unt.unity_code = untm.unity_code
+		where untm.user_code = #{user_code}
+		
+		union all
+		
+		select
+		    unt.unity_code as unity_code,
+		    unt.unity_name as unity_name,
+		    unt.unity_tag as unity_tag,
+		    unt.unity_thumbnail_path as unity_thumbnail_path,
+		    NULL as unity_last_post,
+		    'favoriteUnity' as unity_type
+		from _ringo_unity unt
+		join _ringo_favorite f on unt.unity_code = f.target_code
+		where f.user_code = #{user_code} and f.target_type = 2;
+
+	</select>
+	
+	<select id="selectUnity" resultMap="selectUnity_Map">
+		select 
+			unt.unity_code,
+			unt.unity_name,
+			unt.unity_admin,
+			unt.unity_tag,
+			unt.unity_intro,
+			unt.unity_method,
+			unt.unity_topic,
+			unt.unity_lang,
+			unt.unity_location,
+			unt.unity_private,
+			unt.unity_thumbnail_path,
+			unt.unity_banner_path,
+			unt.unity_banner_set,
+			unt.unity_create_time,
+			unt.unity_grade,
+			ub.unity_board_category,
+			ub.unity_board_name
+		from _ringo_unity unt
+		left join _ringo_unity_board ub on unt.unity_code = ub.unity_code
+		where unt.unity_code = #{unity_code} 
+	</select>
+</mapper>  

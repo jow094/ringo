@@ -281,7 +281,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="selected_card_container none">
+									<div class="selected_card_container col_shrinked">
 									</div>
 									<div class="input_box">
 										<div class="input_cell unfinished_row">
@@ -300,7 +300,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="selected_card_container none">
+									<div class="selected_card_container col_shrinked">
 									</div>
 									<div class="input_box">
 										<div class="input_cell unfinished_row">
@@ -319,7 +319,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="selected_card_container none">
+									<div class="selected_card_container col_shrinked">
 									</div>
 		        				</div>
 		        			</div>
@@ -408,7 +408,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="selected_card_container none">
+									<div class="selected_card_container col_shrinked">
 									</div>
 									
 									<div class="input_box">
@@ -428,7 +428,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="selected_card_container none">
+									<div class="selected_card_container col_shrinked">
 									</div>
 									
 									<div class="input_box">
@@ -447,7 +447,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="selected_card_container none">
+									<div class="selected_card_container col_shrinked">
 									</div>
 									
 									<div class="input_box">

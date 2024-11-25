@@ -16,16 +16,53 @@
 		</div>
 	</div>
 	
-	<div class="unity_create_container">
-		<div class="unity_essential_info">
+	
+	<!-- unity create -->
+	<div class="unity_create_container none">
+		<div class="unity_image_info">
 			<div class="picture_container column unity_thumbnail">
-				<div class="picture_content">
-				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);">
+				<div class="picture_content unity_thumbnail_preview">
+				    <input type="file" name="unity_thumbnail_file" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container();">
 					<i class="fa-solid fa-plus"></i>
 				</div>
 				<div class="picture_name">유니티 썸네일</div>
 			</div>
-			<div class="unity_basic_info">
+			<div class="picture_container column unity_banner">
+				<div class="picture_content unity_banner_preview">
+				    <input type="file" name="unity_banner_file" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container();">
+					<i class="fa-solid fa-plus"></i>
+				</div>
+				<div class="picture_name">유니티 배너</div>
+				<div class="banner_style">
+					<div class="select_style select_color">
+						<input type="color" class="outform" id="banner_color_value" onchange="select_banner_setting(this)"/>
+						<span>배너 배경색</span>
+					</div>
+					<div class="justify_set">
+						<div class="select_style">
+							<input type="range" class="outform" id="banner_horizontal_value" onchange="select_banner_setting(this)" class="slider" min="0" max="100" value="50">
+							<span>가로정렬</span>
+						</div>
+					</div>
+					<div class="justify_set">
+						<div class="select_style">
+							<input type="range" class="outform" id="banner_vertical_value" onchange="select_banner_setting(this)" class="slider" min="0" max="100" value="50">
+							<span>세로정렬</span>
+						</div>
+					</div>
+					<input type="hidden" name="unity_banner_set"/>
+				</div>
+				<div class="input_hint annotation_message">
+					* 배너의 빈공간을 채울 색상과 배치를 선택 해주세요.
+				</div>
+				<div class="input_hint annotation_message">
+					* 배너는 가로 9 : 세로 2 비율로 적용됩니다.	
+				</div>
+			</div>
+		</div>
+		<div class="unity_basic_info">
+			<div class="unity_infos">
+			
 				<div class="input_box">
   						<div class="input_cell unfinished_row">
 						<div class="input_name">유니티 이름</div>
@@ -42,16 +79,17 @@
 							주제
 						</div>
 						<div class="input_value">
-							<select name="user_private" class="annotation_message">
+							<select name="unity_topic" class="annotation_message">
 								<option class="annotation_message" value="" selected disabled>대분류</option>
 								<option value="1">공개</option>
 								<option value="3">비공개</option>
 							</select>
-							<select name="user_private" class="annotation_message">
+							<select name="unity_topic" class="annotation_message">
 								<option class="annotation_message" value="" selected disabled>소분류</option>
 								<option value="1">공개</option>
 								<option value="3">비공개</option>
 							</select>
+							<input type="hidden" name="unity_topic"/>
 						</div>
 					</div>
 					<div class="input_hint annotation_message">
@@ -74,10 +112,6 @@
 						* 유니티를 소개할 문구를 작성 해주세요.			
 					</div>
 	    		</div>
-			</div>
-		</div>
-		<div class="unity_additianal_info">
-			<div class="unity_infos">
 			
 				<div class="input_box">
 					<div class="input_cell unfinished_row">
@@ -96,7 +130,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="selected_card_container none">
+				<div class="selected_card_container col_shrinked">
 				</div>
 				
 				<div class="input_box">
@@ -116,21 +150,42 @@
 						</div>
 					</div>
 				</div>
-				<div class="selected_card_container none">
+				<div class="selected_card_container col_shrinked">
+				</div>
+				
+				<div class="input_box">
+					<div class="input_cell unfinished_row">
+						<div class="input_name" style="font-size:10px;">
+							주 활동방식
+						</div>
+						<div class="input_value">
+							<select class="annotation_message" onchange="select_card(this)">
+								<option class="annotation_message" value="" selected disabled>주 활동방식을 선택하세요.</option>
+								<option value="kor">오프라인</option>
+								<option value="us">온라인</option>
+								<option value="jp">모두</option>
+							</select>
+							<input type="hidden" name="unity_method"/>
+						</div>
+					</div>
+				</div>
+				<div class="selected_card_container col_shrinked">
 				</div>
 				
 				<div class="input_box">
  					<div class="input_cell unfinished_row">
 						<div class="input_name">태그</div>
 						<div class="input_value">
-							<input type="text" name="unity_tag"/>
-							<input type="hidden" name="unity_location"/>
-							<div class="input_cell_button" onclick="">
+							<input type="text" name="unity_add_tag" onkeydown="if(event.key === 'Enter'){ add_tag(this); }"/>
+							<input type="hidden" name="unity_tag"/>
+							<div class="input_cell_button" onclick="add_tag(`input[name='unity_add_tag']`)">
 								추가
 							</div>
 						</div>
 					</div>
 					<div class="input_hint annotation_message">* 유니티를 표현하는 태그를 입력해주세요.</div>
+				</div>
+				<div class="selected_card_container col_shrinked">
 				</div>
 				
 			</div>
@@ -141,7 +196,7 @@
 							자동 가입
 						</div>
 						<div class="input_value">
-							<select name="user_private" class="annotation_message">
+							<select name="unity_private" class="annotation_message">
 								<option class="annotation_message" value="" selected disabled>자동 가입 허용 여부</option>
 								<option value="1">허용</option>
 								<option value="3">불허용</option>
@@ -158,7 +213,7 @@
 							검색 공개
 						</div>
 						<div class="input_value">
-							<select name="user_private" class="annotation_message">
+							<select name="unity_private" class="annotation_message">
 								<option class="annotation_message" value="" selected disabled>검색 공개 여부</option>
 								<option value="1">공개</option>
 								<option value="3">비공개</option>
@@ -175,7 +230,7 @@
 							추천 노출
 						</div>
 						<div class="input_value">
-							<select name="user_private" class="annotation_message">
+							<select name="unity_private" class="annotation_message">
 								<option class="annotation_message" value="" selected disabled>추천 유니티 노출 여부</option>
 								<option value="1">공개</option>
 								<option value="3">비공개</option>
@@ -192,7 +247,7 @@
 							게시글 공개
 						</div>
 						<div class="input_value">
-							<select name="user_private" class="annotation_message">
+							<select name="unity_private" class="annotation_message">
 								<option class="annotation_message" value="" selected disabled>게시글 공개 여부</option>
 								<option value="1">공개</option>
 								<option value="3">비공개</option>
@@ -205,19 +260,26 @@
 				</div>
 			</div>
 		</div>
-		
-		
-		
-		
-		
-		
+		<div class="unity_create_container_button">
+			<div class="submit_hint annotation_message">
+				* 미 입력 된 항목이 있습니다.
+			</div>
+			<div class="cards_footer_button last_submit unfinished_row" onclick="check_submit('.unity_create_container')">
+				<span>가입하기</span>
+			</div>
+			<div class="cards_footer_button" onclick="hiding('.modal'); toggle_card('.join_modal',1,0);">
+				<span>닫기</span>
+			</div>
+		</div>
 	</div>
+	<!-- unity create -->
 	
 	
 	
-	<div class="main_card_body unity_main_container col_shrinked">
+	<div class="main_card_body unity_main_container expanded">
 	
 	
+		<!-- unity unity -->
 		<div class="unity_unity none">
 			<div class="unity_board expanded">
 				<div class="unity_boardlist">
@@ -462,12 +524,15 @@
 						</div>
 					</div>
 					<!-- card end -->
-				
-				
 				</div>
 			</div>
 		</div>
+		<!-- unity unity -->
+		
+		
+		
 	
+		<!-- unity home -->
 		<div class="unity_home main_card_content">
 			<div class="unity_menu">
 				<div class="menu_tag" onclick="col_toggle($(this).next('.favorite_unities'),this)">
@@ -475,157 +540,31 @@
 					<i class="fas fa-chevron-circle-up"></i>
 				</div>
 				<div class="favorite_unities expanded">
-					<div class="favorite_unity deletable" data-unity_code="" onclick="enter_unity($(this).attr('data-unity_code'))">
-						<img src="/img/unity/thumbnail/${unity_thumbnail_path}"></img>
-						<div>즐겨찾</div>
-						<i class="fa-solid fa-circle-xmark"></i>
-					</div>
-					<div class="favorite_unity deletable" data-unity_code="" onclick="enter_unity($(this).attr('data-unity_code'))">
-						<img src="/img/unity/thumbnail/1.jpg"></img>
-						<div>즐겨찾는유니티즐겨찾는유니티즐겨찾는유니티즐</div>
-						<i class="fa-solid fa-circle-xmark"></i>
-					</div>
-					<div class="favorite_unity deletable" data-unity_code="" onclick="enter_unity($(this).attr('data-unity_code'))">
-						<img src="/img/unity/thumbnail/${unity_thumbnail_path}"></img>
-						<div>즐겨찾는유니티즐겨찾는유니티즐겨찾는유니티즐겨찾는유니티즐겨찾는유니티</div>
-						<i class="fa-solid fa-circle-xmark"></i>
-					</div>
-					<div class="favorite_unity deletable" data-unity_code="" onclick="enter_unity($(this).attr('data-unity_code'))">
-						<img src="/img/unity/thumbnail/${unity_thumbnail_path}"></img>
-						<div>즐겨찾는유니티즐겨찾는</div>
-						<i class="fa-solid fa-circle-xmark"></i>
-					</div>
-					<div class="favorite_unity deletable" data-unity_code="" onclick="enter_unity($(this).attr('data-unity_code'))">
-						<img src="/img/unity/thumbnail/${unity_thumbnail_path}"></img>
-						<div>즐겨찾는유니티즐겨찾는유니티즐겨찾는유니티즐겨찾는유니티즐겨찾는유니티</div>
-						<i class="fa-solid fa-circle-xmark"></i>
-					</div>
-					<div class="favorite_unity deletable" data-unity_code="" onclick="enter_unity($(this).attr('data-unity_code'))">
-						<img src="/img/unity/thumbnail/${unity_thumbnail_path}"></img>
-						<div>즐겨찾는유니티즐겨찾는</div>
-						<i class="fa-solid fa-circle-xmark"></i>
-					</div>
-					<div class="favorite_unity deletable" data-unity_code="" onclick="enter_unity($(this).attr('data-unity_code'))">
-						<img src="/img/unity/thumbnail/${unity_thumbnail_path}"></img>
-						<div>즐겨찾는유니티즐겨찾는유니티즐겨찾는유니티즐겨찾는유니티즐겨찾는유니티</div>
-						<i class="fa-solid fa-circle-xmark"></i>
-					</div>
-					<div class="favorite_unity deletable" data-unity_code="" onclick="enter_unity($(this).attr('data-unity_code'))">
-						<img src="/img/unity/thumbnail/${unity_thumbnail_path}"></img>
-						<div>즐겨찾는유니티즐겨찾는유니티즐겨찾는유니티즐겨찾는유니티즐겨찾는유니티</div>
-						<i class="fa-solid fa-circle-xmark"></i>
-					</div>
 				</div>
 			</div>
 			<div class="unity_article">
 				<div class="menu_tag" onclick="col_toggle($(this).next('.unities_container'),this)">
+					<span>가입한 유니티</span>
+					<i class="fas fa-chevron-circle-up"></i>
+				</div>
+				<div class="joined_unities unities_container expanded">
+				</div>	
+				<div class="menu_tag" onclick="col_toggle($(this).next('.unities_container'),this)">
 					<span>추천 유니티</span>
 					<i class="fas fa-chevron-circle-up"></i>
 				</div>
-				<div class="unities_container expanded">
-					<div class="unity_card" data-unity_code="asd" onclick="enter_unity($(this).attr('data-unity_code'))">
-						<div class="unity_card_thumbnail">
-							<img src="/img/unity/thumbnail/${unity_thumbnail_path}"></img>
-						</div>
-						<div class="unity_card_body">
-							<div class="unity_card_name">asdasd름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름</div>
-							<div class="unity_card_message">새로운 게시글새로운 게시글새로운 게시글새로운 게시글유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름</div>
-							<div class="unity_card_tags">
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-							</div>
-						</div>
-					</div>
-					<div class="unity_card" data-unity_code="" onclick="enter_unity($(this).attr('data-unity_code'))">
-						<div class="unity_card_thumbnail">
-							<img src="/img/unity/thumbnail/${unity_thumbnail_path}"></img>
-						</div>
-						<div class="unity_card_body">
-							<div class="unity_card_name">유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름</div>
-							<div class="unity_card_message">새로운 게시글새로운 게시글새로운 게시글새로운 게시글유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름</div>
-							<div class="unity_card_tags">
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-							</div>
-						</div>
-					</div>
+				<div class="recomm_unities unities_container expanded">
 				</div>	
-				
 				<div class="menu_tag" onclick="col_toggle($(this).next('.unities_container'),this)">
 					<span>근처 유니티</span>
 					<i class="fas fa-chevron-circle-up"></i>
 				</div>
-				<div class="unities_container expanded">
-					<div class="unity_card" data-unity_code="" onclick="enter_unity($(this).attr('data-unity_code'))">
-						<div class="unity_card_thumbnail">
-							<img src="/img/unity/thumbnail/${unity_thumbnail_path}"></img>
-						</div>
-						<div class="unity_card_body">
-							<div class="unity_card_name">유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름</div>
-							<div class="unity_card_message">새로운 게시글새로운 게시글새로운 게시글새로운 게시글유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름</div>
-							<div class="unity_card_tags">
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-							</div>
-						</div>
-					</div>
+				<div class="near_unities unities_container expanded">
 				</div>	
 				
-				<div class="menu_tag" onclick="col_toggle($(this).next('.unities_container'),this)">
-					<span>가입한 유니티</span>
-					<i class="fas fa-chevron-circle-up"></i>
-				</div>
-				<div class="unities_container expanded">
-					<div class="unity_card" data-unity_code="" onclick="enter_unity($(this).attr('data-unity_code'))">
-						<div class="unity_card_thumbnail">
-							<img src="/img/unity/thumbnail/${unity_thumbnail_path}"></img>
-						</div>
-						<div class="unity_card_body">
-							<div class="unity_card_name">유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름</div>
-							<div class="unity_card_message">새로운 게시글새로운 게시글새로운 게시글새로운 게시글유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름유니티이름</div>
-							<div class="unity_card_tags">
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-								<div class="tag_card">#축구</div>
-							</div>
-						</div>
-					</div>
-					<div class="unity_card">
-					</div>
-					<div class="unity_card">
-					</div>
-					<div class="unity_card">
-					</div>
-					<div class="unity_card">
-					</div>
-					<div class="unity_card">
-					</div>
-					<div class="unity_card">
-					</div>
-					<div class="unity_card">
-					</div>
-					<div class="unity_card">
-					</div>
-					<div class="unity_card">
-					</div>
-				</div>	
 			</div>
 		</div>
+		<!-- unity home -->
 		
 		
 	</div>

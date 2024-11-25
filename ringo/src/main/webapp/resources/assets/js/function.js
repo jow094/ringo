@@ -133,6 +133,9 @@ function main_show(target) {
     	    get_circle_post();
     	}
     }
+    if(target=='unity'){
+    	check_unity();
+    }
 }
 function main_messenger() {
     if ($('.article_container_menu_messenger').hasClass('active')) {
@@ -642,6 +645,41 @@ function validate_nickname(input) {
     }
 }
 
+function validate_unity_name(input) {
+	
+	const unity_name = $(input).val();
+    
+    if (unity_name === '') {
+        set_unfinished(input, 'row');
+        set_hint(input, '* 4~20자리의 유니티 이름을 입력 해주세요.', 'annotation_message');
+    }
+    else if (unity_name.startsWith('_')) {
+        set_failed(input, 'row');
+        set_hint(input, `* 유니티 이름은 '_' 로 시작할 수 없습니다.`, 'failed_message');
+    }
+    else if (!/^[가-힣a-zA-Z0-9_]+$/.test(unity_name)) {
+        set_failed(input, 'row');
+        set_hint(input, `* 유니티 이름은 한글, 영문, 숫자, '_' 만 포함할 수 있습니다.`, 'failed_message');
+    }
+    else if (unity_name.length < 4 || unity_name.length > 20) {
+        set_failed(input, 'row');
+        set_hint(input, '* 유니티 이름은 4~20자리여야 합니다.', 'failed_message');
+    }
+    else {
+    	check_duple(input, function(response) {
+    		if (response==1) {
+    	        set_failed(input, 'row');
+    	        set_hint(input, '* 이미 사용중인 유니티 이름입니다.', 'failed_message');
+    	        return;
+    	    }
+	    	else {
+	            set_finished(input, 'row');
+	            set_hint(input, '* 사용할 수 있는 유니티 이름입니다.', 'success_message');
+	        }
+    	});
+    }
+}
+
 function validate_text(input,annotation_message) {
     const text = $(input).val();
 
@@ -665,9 +703,15 @@ function set_finished(e, direction) {
 	if (!target.hasClass(`finished_${direction}`)) {
 		target.removeClass(`unfinished_${direction}`).addClass(`finished_${direction}`);
 	}
-	const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
-	const index = match ? match[1] : undefined;
-	check_finished(index,'.join_modal');
+	if($(e).closest('.join_modal').length>0){
+		const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
+		const index = match ? match[1] : undefined;
+		check_finished(index,'.join_modal');
+	}
+	
+	if($(e).closest('.unity_create_container').length>0){
+		clear_unity_create_container();
+	}
 }
 
 function set_unfinished(e, direction) {
@@ -676,9 +720,15 @@ function set_unfinished(e, direction) {
     if (!target.hasClass(`unfinished_${direction}`)) {
         target.removeClass(`finished_${direction}`).addClass(`unfinished_${direction}`);
     }
-    const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
-    const index = match ? match[1] : undefined;
-    check_finished(index,'.join_modal');
+    if($(e).closest('.join_modal').length>0){
+	    const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
+	    const index = match ? match[1] : undefined;
+	    check_finished(index,'.join_modal');
+    }
+    
+	if($(e).closest('.unity_create_container').length>0){
+		clear_unity_create_container();
+	}
 }
 
 function set_failed(e, direction) {
@@ -686,9 +736,11 @@ function set_failed(e, direction) {
     if (!target.hasClass(`failed_${direction}`)) {
     	target.removeClass(`finished_${direction}`).removeClass(`unfinished_${direction}`).addClass(`failed_${direction}`);
     }
-    const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
-    const index = match ? match[1] : undefined;
-    check_finished(index,'.join_modal');
+    if($(e).closest('.join_modal').length>0){
+	    const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
+	    const index = match ? match[1] : undefined;
+	    check_finished(index,'.join_modal');
+    }
 }
 
 function set_hint(e,msg,className){
@@ -787,21 +839,19 @@ function select_card(e) {
 		if (currentValue) {
 	        hiddenInput.val(currentValue + ',' + value);
 	    } else {
-	    	showing($(e).closest('.input_box').next('.selected_card_container'));
+	    	if($(e).closest('.input_box').next('.selected_card_container').hasClass('col_shrinked')){
+	    		col_toggle($(e).closest('.input_box').next('.selected_card_container'));
+	    	}
 	    	set_finished(e,'row');
 	        hiddenInput.val(value);
 	    }
 		
 		$(e).closest('.input_box').next('.selected_card_container').append(`
-				<div class="selected_card deletable none" data-value="${value}" onclick="delete_card(this)">
+				<div class="selected_card expanded" data-value="${value}" onclick="delete_card(this)">
 					<i class="fa-solid fa-circle-xmark"></i>
 					${text}
 				</div>
 		`);
-		
-		setTimeout(() => {
-			showing($('.selected_card.deletable.none').last());
-		}, 1);
 	}
 	
 	$(e).prop('selectedIndex', 0);
@@ -831,13 +881,13 @@ function delete_card(e) {
     }
 	
     if (!$(e).siblings().length) {
-        hide($(e).closest('.selected_card_container'));
+    	if($(e).closest('.selected_card_container').hasClass('expanded')){
+    		col_toggle($(e).closest('.selected_card_container'));
+    	}
         set_unfinished($(e).closest('.selected_card_container').prev('.input_box').find('select'),'row');
     }
     setTimeout(function() {
-    	if($(e).hasClass('deletable')){
-        	$(e).remove();
-        }
+        $(e).remove();
     }, 1);
     
 }
@@ -869,11 +919,17 @@ function add_image(input) {
     
     if($(input).closest('.small_picture_container').length>0){
     	$(input).closest('.picture_content').after(`
-    			<div class="picture_content">
-				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this)" multiple>
-					<i class="fa-solid fa-plus"></i>
-				</div>
+			<div class="picture_content">
+			    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this)" multiple>
+				<i class="fa-solid fa-plus"></i>
+			</div>
     	`);
+    }
+    
+    if($(input).closest('.unity_banner').length>0){
+    	setTimeout(function() {
+    		select_banner_setting();
+    	},10);
     }
 }
 
@@ -911,6 +967,31 @@ function delete_image(e) {
 	    	if(!$(thumbnail).closest('.modal').find(`[data-targetindex="${index}"]`).hasClass('unfinished_column')){
 	    		$(thumbnail).closest('.modal').find(`[data-targetindex="${index}"]`).addClass('unfinished_column');
 			}
+		}
+		
+		if($(e).closest('.unity_thumbnail').length>0){
+			
+			const unity_thumbnail = $(e).closest('.unity_thumbnail');
+			
+			unity_thumbnail.html(`
+				<div class="picture_content unity_thumbnail_preview">
+				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);">
+					<i class="fa-solid fa-plus"></i>
+				</div>
+				<div class="picture_name">유니티 썸네일</div>
+			`);
+		}
+		
+		if($(e).closest('.unity_banner').length>0){
+			
+			const unity_banner = $(e).closest('.unity_banner');
+			$(e).remove();
+			unity_banner.prepend(`
+				<div class="picture_content unity_banner_preview">
+				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);">
+					<i class="fa-solid fa-plus"></i>
+				</div>
+			`);
 		}
     }, 1);
 }
@@ -972,6 +1053,16 @@ function mouse_over(e) {
 			$(e).find('i').css('color', 'rgb(50,50,50)');
 		}
 	}
+	
+	if($(e).hasClass('unity_thumbnail_preview')||$(e).hasClass('unity_banner_preview')){
+		$(e).find('img').addClass('ready_to_delete');
+		if ($(e).find('i').length === 0) {
+			$(e).removeClass('have_img');
+			$(e).addClass('to_gray');
+			$(e).append(`<i class="fa-solid fa-xmark"></i>`);
+			$(e).find('i').css('color', 'rgb(50,50,50)');
+		}
+	}
 }
 
 function mouse_leave(e) {
@@ -993,14 +1084,57 @@ function mouse_leave(e) {
 			$(e).find('i').remove();
 		}, 1);
 	}
+	
+	if($(e).hasClass('unity_thumbnail_preview')||$(e).hasClass('unity_banner_preview')){
+		$(e).find('img').removeClass('ready_to_delete');
+		$(e).removeClass('to_gray');
+		$(e).addClass('have_img');
+		if ($(e).find('i').length != 0) {
+			$(e).find('i').remove();
+		}
+	}
 }
 
 function clear_card(container){
-	var count = $(container).find('.cards').filter('.unfinished_column').length;
+	
+	var count = $(container).find('.cards').filter('.unfinished_column').length + $(container).find('.cards').filter('.failed_column').length;
 	var target = $(container).find('.last_submit');
 	var hint = $(container).find('.submit_hint');
 	
 	if(count==0){
+		target.removeClass(`unfinished_row`)
+		if (!target.hasClass(`finished_row`)) {
+			target.addClass(`finished_row`);
+		}
+		hint.removeClass('annotation_message');
+		hint.removeClass('failed_message');
+		if(!hint.hasClass('success_message')){
+			hint.addClass('success_message');
+		}
+		hint.text('* 모든 정보를 입력하셨습니다.');
+	}else{
+		target.removeClass(`finished_row`)
+		if (!target.hasClass(`unfinished_row`)) {
+			target.addClass(`unfinished_row`);
+		}
+		hint.removeClass('success_message');
+		hint.removeClass('failed_message');
+		if(!hint.hasClass('annotation_message')){
+			hint.addClass('annotation_message');
+		}
+		hint.text('* 미 입력 된 항목이 있습니다.');
+	}
+}
+
+function clear_unity_create_container(){
+	
+	var count = $('.unity_create_container').find(':not(.last_submit)').filter('.unfinished_row').length + $('.unity_create_container').find(':not(.last_submit)').filter('.failed_row').length;
+	var target = $('.unity_create_container').find('.last_submit');
+	var hint = $('.unity_create_container').find('.submit_hint');
+	var thumbnail = $('.unity_create_container').find('input[name="unity_thumbnail_file"]').val();
+	var banner = $('.unity_create_container').find('input[name="unity_banner_file"]').val();
+	
+	if(thumbnail != '' && banner != '' && count==0){
 		target.removeClass(`unfinished_row`)
 		if (!target.hasClass(`finished_row`)) {
 			target.addClass(`finished_row`);
@@ -1030,7 +1164,12 @@ function check_submit(e){
 	var hint = $(e).find('.submit_hint');
 	
 	if(button.hasClass('finished_row')&&!button.hasClass('unfinished_row')){
-		last_submit(e);
+		if(e=='.unity_create_container'){
+			create_unity();
+		}
+		if(e=='.join_modal'){
+			last_submit(e);
+		}
 	}else{
 		button.removeClass('finished_row').removeClass('unfinished_row');
 		
@@ -1059,14 +1198,22 @@ function check_submit(e){
 	}
 }
 function unity_home(){
-	hide('.unity_profile_container');
-	showing('.user_profile_container');
-	showing('.unity_home');
+	get_person_profile();
+	
 	hide('.unity_unity');
-	unity=null;
-	person="${user_code}";
-	profile_type='person';
-	check_profile_button();
+	hide('.unity_create_container');
+	showing('.unity_home');
+	
+	unity="";
+	get_unities();
+}
+
+function check_unity(){
+	if(unity!=''){
+		enter_unity(unity);
+	}else{
+		unity_home();
+	}
 }
 
 function enter_unity(e){
@@ -1076,13 +1223,7 @@ function enter_unity(e){
 	showing('.unity_unity');
 	unity=e;
 	profile_type='unity';
-	check_profile_button();
-}
-function enter_person(e){
-	hide('.unity_profile_container');
-	showing('.user_profile_container');
-	person = $(e).attr('data-user_code');
-	profile_type='person';
+	get_unity(e);
 	check_profile_button();
 }
 function enter_room(e){
@@ -1095,11 +1236,6 @@ function exit_room(e){
 	showing('.out_of_room');
 }
 
-function check_unity(){
-	if($('.unity_home').hasClass('none')){
-		enter_unity(unity);
-	}
-}
 
 function check_profile_button(){
 	const top=$('.profile_button_container .container_side_button_section.top');
@@ -1384,15 +1520,53 @@ function delete_file(e) {
 }
 
 function add_tag(e){
-	$(e).after(`
-		<div class="tag_card" data-tag="${$(e).val()}" onclick='delete_tag(this)'>#${$(e).val()}</div>
-	`);
-	$(e).val('');
+	
+	if($(e).val()==''){
+		return;
+	}
+	
+	if($(e).closest('.card_body_tags').length>0){
+		$(e).after(`
+			<div class="tag_card expanded" data-tag="${$(e).val()}" onclick='delete_tag(this)'>#${$(e).val()}</div>
+		`);
+		$(e).val('');
+		
+		return;
+	}
+	
+	if($(e).closest('.unity_infos').length>0){
+		$(e).closest('.input_box').next('.selected_card_container').append(`
+			<div class="tag_card expanded" data-tag="${$(e).val()}" onclick='delete_tag(this)'>#${$(e).val()}</div>
+		`);
+		$(e).val('');
+		
+		if($(e).closest('.input_box').next('.selected_card_container').hasClass('col_shrinked')){
+			col_toggle($(e).closest('.input_box').next('.selected_card_container'));
+		}
+		
+		set_hint(e,'* 입력이 완료되었습니다.','success_message');
+		set_finished(e, 'row');
+		
+		return;
+	}
 }
 
 function delete_tag(e){
+	const container = $(e).closest('.selected_card_container');
+	
 	setTimeout(function() {
-        $(e).remove();
+		$(e).remove();
+		
+		if(container.closest('.unity_infos').length>0 && container.find('.tag_card').length==0){
+			
+			set_hint(container.prev('.input_box').find('input'),'* 유니티를 표현하는 태그를 입력해주세요.','annotation_message');
+			set_unfinished(container.prev('.input_box').find('input'), 'row');
+			
+			if(container.hasClass('expanded')){
+				col_toggle(container);
+			}
+		}
+	
     }, 1);
 }
 
@@ -1480,4 +1654,31 @@ function delete_person_card(event) {
     if($('.added_menu_inner').find('.person_card').length==0 && $('.article_container_menu_added').hasClass('expanded')){
     	col_toggle('.article_container_menu_added');
     }
+}
+
+function select_banner_setting() {
+    const horizon = $('#banner_horizontal_value').val();
+    const vertical = $('#banner_vertical_value').val();
+    const color = $('#banner_color_value').val();
+
+    const banner_setting = `background-color: ${color}; object-position: ${horizon}% ${vertical}%;`;
+
+    $('input[name="unity_banner_set"]').val(banner_setting);
+
+    const img = $('.unity_banner_preview').find('img')[0];
+    img.style.cssText = banner_setting;
+}
+
+function expand_create_unity(){
+	if($('.unity_create_container').hasClass('none')){
+		showing('.unity_create_container');
+		if(!$('.unity_main_container').hasClass('none')){
+			hide('.unity_main_container');
+		}
+	}else{
+		hide('.unity_create_container');
+		if($('.unity_main_container').hasClass('none')){
+			showing('.unity_main_container');
+		}
+	}
 }

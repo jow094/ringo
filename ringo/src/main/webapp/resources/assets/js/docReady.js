@@ -71,12 +71,24 @@ $(document).ready(function() {
 		var target = $(this).closest('.with_select');
 		var currentClass = target.attr('class');
 		
+		var unselected = target.find('select').filter(function() {
+	        return $(this).val() === "";
+	    });
+		
+		var null_selected = target.find('select').filter(function() {
+	        return $(this).val() == null;
+	    });
+		
+		 if (unselected.length == 0 && null_selected.length == 0) {
 	    	if (currentClass.includes('finished_row') || currentClass.includes('unfinished_row')){
 	    		set_finished(target,'row');
+	    		set_hint($(this), '* 입력이 완료되었습니다.', 'success_message');
 	    	}
 	    	if (currentClass.includes('finished_column') || currentClass.includes('unfinished_column')){
 	    		set_finished(target,'column');
+	    		set_hint($(this), '* 입력이 완료되었습니다.', 'success_message');
 	    	}
+		 }
 	});
 	
 	let draggedElement = null;

@@ -58,4 +58,5 @@ public class UserVO {
 	private List<UserVO> user_follower;
 	private List<UserVO> user_following;
 	
+	private String unity_member_grade;
 }

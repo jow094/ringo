@@ -30,6 +30,7 @@ import com.ringo.domain.UserVO;
 import com.ringo.service.UserService;
 import com.ringo.service.MessageService;
 import com.ringo.service.TwilloService;
+import com.ringo.service.UnityService;
 import com.ringo.service.UserService;
 import com.ringo.service.AddressService;
 import com.ringo.service.AuthenticationService;
@@ -50,6 +51,8 @@ public class UserController {
 	
 	@Inject
 	private UserService uService;
+	@Inject
+	private UnityService unityService;
 	@Inject
 	private MessageService msgService;
 	@Inject
@@ -294,7 +297,9 @@ public class UserController {
 	@RequestMapping(value = "/checkDuple", method = RequestMethod.GET)
 	@ResponseBody
     public Integer checkDuple(String target, String data) {
-		
+		if(target.equals("unity_name")) {
+			return unityService.checkDuplication(data);
+		}
 		return uService.checkDuplication(target,data);
 	}
 	

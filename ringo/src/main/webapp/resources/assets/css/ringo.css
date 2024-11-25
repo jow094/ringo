@@ -105,6 +105,37 @@ i.ringo {
 	border:none;
 }
 
+i.align_top {
+	width:23px;
+	height:23px;
+	background-image: url(../icon/align_top.png); 
+	border-radius: 5px;
+}
+i.align_center {
+	width:23px;
+	height:23px;
+	background-image: url(../icon/align_center.png); 
+	border-radius: 5px;
+}
+i.align_bottom {
+	width:23px;
+	height:23px;
+	background-image: url(../icon/align_bottom.png); 
+	border-radius: 5px;
+}
+i.justify_left {
+	width:23px;
+	height:23px;
+	background-image: url(../icon/justify_left.png); 
+	border-radius: 5px;
+}
+i.justify_right {
+	width:23px;
+	height:23px;
+	background-image: url(../icon/justify_right.png); 
+	border-radius: 5px;
+}
+
 i.unity {
 	background-image: url(../icon/unity.png); 
 }
@@ -1164,6 +1195,7 @@ button:not(.custom_button){
 	display:flex;
 	flex-direction: column;
 	justify-content: flex-start;
+	align-items:flex-start;
 	align-content:flex-start;
 	overflow-x: auto;
 	max-width:100%;
@@ -1950,8 +1982,9 @@ textarea{
 	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 	grid-gap: 5px;
 	align-items: flex-start;
-	height:auto;
-	max-height: 230px;
+	height:230;
+	min-height: 120px !important;
+	max-height: 230px !important;
 	grid-auto-rows: auto;
 	margin-bottom:10px;
 }
@@ -2460,11 +2493,14 @@ textarea.scroll {
 }
 .unity_thumbnail .picture_content{
 	background-color: white;
+	width:250px;
+	flex-shrink: 
 }
-.unity_additianal_info{
+.unity_basic_info{
 	width:100%;
 	flex:1;
 	display:flex;
+	justify-content: flex-start;
 }
 .unity_infos{
 	flex:1;
@@ -2485,12 +2521,118 @@ textarea.scroll {
 .unity_thumbnail{
 	width:300px;
 }
-.unity_basic_info{
+.unity_banner{
 	flex:1;
+	height:100%;
 	display:flex;
-	flex-direction:column;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+}
+input[type="color"] {
+      width: 30px; /* 너비 */
+      height: 30px; /* 높이 */
+      border-radius: 50%; /* 부모를 둥글게 */
+      border: 1px solid var(--basic); /* 외부 검정색 테두리 1px */
+      padding: 3px; /* 테두리 간격을 두기 위해 패딩 추가 */
+      appearance: none; /* 기본 스타일 제거 */
+      -webkit-appearance: none;
+      overflow: hidden; /* 내부 넘침 방지 */
+      cursor: pointer;
+      background: transparent; /* 배경 투명 */
+}
+
+/* 내부 색상 표시 영역 */
+input[type="color"]::-webkit-color-swatch {
+	width: 100%; /* 부모 크기에 맞게 */
+	height: 100%;
+	border-radius: 50%; /* 내부를 원형으로 */
+	margin: 0;
+	padding: 0;
+	border: 1px solid white; /* 내부 흰색 테두리 3px */
+	box-sizing: border-box; /* 크기 계산 정밀도 보장 */
+}
+
+/* 내부 기본 테두리 제거 (WebKit 브라우저에서 추가적으로 필요) */
+input[type="color"]::-webkit-color-swatch-wrapper {
+	padding: 0;
+	margin: 0;
+}
+.banner_style{
+	width:100%;
+	max-width:700px;
+	height:70px;
+	padding:10px;
+	gap:15px;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+}
+.select_style{
+	display:flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap:5px;
+}
+.select_style span{
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	display: inline-block;
+	font-size:10px;
+}
+.justify_set{
+	padding:10px;
+	gap:10px;
+	display:flex;
 	justify-content: flex-start;
 	align-items: center;
+	border-radius:5px;
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
+	background-color: var(--inner);
+	flex-shrink:1;
+	box-sizing: border-box !important;
+}
+.unity_banner .picture_name{
+	max-width:700px;
+	width:100%;
+	display: flex;
+	margin-bottom:5px;
+	justify-content: center;
+}
+.unity_banner .picture_content{
+	width:100%;
+	max-width:700px;
+	aspect-ratio: 9 / 2;
+	background-color: white;
+}
+.unity_banner .picture_content img{
+	width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.unity_banner .input_hint{
+	width:100%;
+	max-width:700px;
+	display:flex;
+	justify-content: flex-end;
+}
+.unity_image_info{
+	flex:1;
+	display:flex;
+	justify-content: flex-start;
+	align-items: center;
+	width:100%;
+	margin-bottom:5px;
+}
+.unity_create_container_button{
+	width:100%;
+	min-height:35px;
+	display:flex;
+	justify-content: flex-end;
+	align-items: center;
+	gap:5px;
 }
 .input_box{
 	display:flex;
