@@ -59,7 +59,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public UserVO selectUserProfile(Integer user_code) {
+	public UserVO selectUserProfile(String user_code) {
 		logger.debug("selectUserProfile(Integer user_code) - user_code : "+user_code);
 		return sqlSession.selectOne(NAMESPACE + ".selectUserProfile",user_code);	
 	}

@@ -25,13 +25,12 @@
 	        <result property="reple_writer" column="reple_writer"/>
 	        <result property="reple_content" column="reple_content"/>
 	        <result property="reple_time" column="reple_time"/>
-	        <result property="reple_type" column="reple_type"/>
 	        <result property="reple_recomm_count" column="reple_recomm_count"/>
 	    </collection>
 	</resultMap>
 	
 	<select id="selectLastCirclePostCode" resultType="Integer">
-		select max(post_code) from _ringo_circle_post
+		select max(cast(substring_index(post_code, '_', -1) as unsigned)) from _ringo_circle_post where post_code like 'cp_%'
 	</select>
 	
 	<insert id="insertCirclePost" parameterType="PostVO">
@@ -64,7 +63,7 @@
 		 
    		 from _ringo_circle_post cp
     	 join _ringo_user u1 on cp.post_writer = u1.user_code
-    	 left join _ringo_reple r on r.reple_target = cp.post_code and r.reple_type = 1
+    	 left join _ringo_reple r on r.reple_target = cp.post_code
     	 left join _ringo_user u2 on r.reple_writer = u2.user_code
     	 
     	 where cp.post_writer = #{post_writer}
@@ -75,19 +74,17 @@
 		select r.*, u.user_thumbnail_path as writer_thumbnail_path, u.user_nickname as writer_nickname
    		 from _ringo_reple r
     	 join _ringo_user u on r.reple_writer = u.user_code
-    	 where r.reple_target = #{reple_target} and r.reple_type = #{reple_type}
+    	 where r.reple_target = #{reple_target}
     	 order by r.reple_time desc
 	</select>
 	
 	<insert id="insertReple" parameterType="PostVO">
         insert into _ringo_reple (
             reple_writer,
-            reple_type,
             reple_target,
             reple_content
         ) values (
             #{reple_writer},
-            #{reple_type},
             #{reple_target},
             #{reple_content}
         )

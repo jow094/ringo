@@ -2,7 +2,7 @@
 
 <div class="article_container_menu">
 	<div class="article_container_menu_around" data-target="around" onclick="main_show('around');">
-		<i class="fa-solid fa-circle-dot"></i>
+		<i class="material-symbols-outlined">fiber_smart_record</i>
 		<span>어라운드</span>
 	</div>
 	<div class="article_container_menu_circle" data-target="circle" onclick="main_show('circle');">
@@ -10,19 +10,19 @@
 		<span>서클</span>
 	</div>
 	<div class="article_container_menu_timeline" data-target="timeline" onclick="main_show('timeline');">
-		<i class="fa-solid fa-timeline"></i>
+		<i class="material-symbols-outlined">timeline</i>
 		<span>타임라인</span>
 	</div>
-	<div class="article_container_menu_unity" data-target="unity" onclick="main_show('unity'); check_unity()">
-		<i class="ringo unity"></i>
+	<div class="article_container_menu_unity" data-target="unity" onclick="main_show('unity');">
+		<i class="material-symbols-outlined">forum</i>
 		<span>유니티</span>
 	</div>
 	<div class="article_container_menu_link" data-target="link" onclick="main_show('link');">
-		<i class="ringo link"></i>
+		<i class="material-symbols-outlined">join</i>
 		<span>링크</span>
 	</div>
 	<div class="article_container_menu_messenger" onclick="main_messenger(this);">
-		<i class="fa-solid fa-message"></i>
+		<i class="material-symbols-outlined">sms</i>
 		<span>메신저</span>
 	</div>
 </div>

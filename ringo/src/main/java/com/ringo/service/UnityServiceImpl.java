@@ -47,7 +47,7 @@ public class UnityServiceImpl implements UnityService {
 	}
 
 	@Override
-	public List<UnityVO> getUnities(Integer user_code) {
+	public List<UnityVO> getUnities(String user_code) {
 		return unitydao.selectUnities(user_code);
 	}
 	

@@ -1,124 +1,28 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <div class="profile_container hidden expanded">
-	<div class="user_profile_container">
+
+
+	<div class="user_profile_container expanded">
 		<div class="profile_container_head">
 			<div class="profile_container_head_basic">
-				<img src="/img/profiles/${user_thumbnail_path}"/>
-				<div class="profile_container_head_basic_nickname">
-				조우영
-				</div>
-				<div class="profile_container_head_basic_info">
-				국적 : 대한민국
-				</div>
-				<div class="profile_container_head_basic_info">
-				나이 : 31세
-				</div>
-				<div class="profile_container_head_basic_info">
-				성별 : 남성
-				</div>
-				<div class="profile_container_head_basic_info">
-				접속 정보 : 비공개
-				</div>
 			</div>
 			<div class="profile_container_head_tools">
-				<div class="profile_container_head_tool">
-					<img src="${pageContext.request.contextPath }/resources/assets/img/message.png" class="icons">
-					메세지
-				</div>
-				<div class="profile_container_head_tool">
-					<img src="${pageContext.request.contextPath }/resources/assets/img/follow.png" class="icons">
-					팔로우
-				</div>
-				<div class="profile_container_head_tool">
-					<img src="${pageContext.request.contextPath }/resources/assets/img/to_favorite.png" class="icons">
-					즐겨찾기
-				</div>
-				<div class="profile_container_head_tool">
-					<img src="${pageContext.request.contextPath }/resources/assets/img/prohibit.png" class="icons">
-					차단
-				</div>
-				<div class="profile_container_head_tool">
-					<img src="${pageContext.request.contextPath }/resources/assets/img/report.png" class="icons">
-					신고
-				</div>
-				<div class="profile_container_head_tool">
-					<img src="${pageContext.request.contextPath }/resources/assets/img/update.png" class="icons">
-					수정
-				</div>
 			</div>
 		</div>
 		<div class="profile_container_body">
 			<div class="scroll_box">
-				<div class="scroll_box_inner">
-					<div class="user_languages">
-						<div class="user_language">
-							<div class="user_language_type">모국어</div>
-							<div class="user_language_name">
-								<img src="https://flagcdn.com/w80/kr.png" class="flags">
-								한국어
-							</div>
-						</div>
-						<div class="user_language">
-							<div class="user_language_type">유창한 언어</div>
-							<div class="user_language_name">
-								<img src="https://flagcdn.com/w80/kr.png" class="flags">
-								한국어
-							</div>
-						</div>
-						<div class="user_language">
-							<div class="user_language_type">학습 언어</div>
-							<div class="user_language_name">
-								<img src="https://flagcdn.com/w80/us.png" class="flags">
-								영어
-							</div>
-						</div>
-					</div>
-					<div class="user_infos">
-						<div class="user_info_box">
-							<div class="user_info_title">
-							기타
-							</div>
-							<div class="user_info_content">
-							기타등등 정보들
-							</div>
-						</div>
-						<div class="user_info_box">
-							<div class="user_info_title">
-							기타
-							</div>
-							<div class="user_info_content">
-							기타등등 정보들
-							</div>
-						</div>
-						<div class="user_info_box">
-							<div class="user_info_title">
-							기타
-							</div>
-							<div class="user_info_content">
-							기타등등 정보들
-							</div>
-						</div>
-						<div class="user_info_box">
-							<div class="user_info_title">
-							기타
-							</div>
-							<div class="user_info_content">
-							기타등등 정보들
-							</div>
-						</div>
-					</div>
+				<div class="scroll_box_inner col">
 				</div>
 			</div>
 		</div> 
 	</div>
-	<div class="unity_profile_container none">
+	
+	
+	<div class="unity_profile_container none expanded">
 		<div class="profile_container_head">
 			<div class="profile_container_head_basic">
-				<img
-				src="/img/unity/thumbnail/${unity_thumbnail_path}"
-				style="width: 150px; height: 150px; margin-bottom:10px;"
-				/>
+				<img src="/img/unity/thumbnail/${unity_thumbnail_path}"/>
 				<div class="profile_container_head_basic_unity_name">
 				[부울경] 아마추어 풋살
 				</div>
@@ -232,7 +136,7 @@
 					<div class="card_person">
 						<div class="card_person_thumbnail">
 							<img
-							src="/img/profiles/${user_thumbnail}"
+							src="/img/user/profiles/${user_thumbnail}"
 							style="width: 40px; height: 40px; border-radius: 30%;"
 							/>
 						</div>

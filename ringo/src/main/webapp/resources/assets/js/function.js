@@ -657,9 +657,9 @@ function validate_unity_name(input) {
         set_failed(input, 'row');
         set_hint(input, `* 유니티 이름은 '_' 로 시작할 수 없습니다.`, 'failed_message');
     }
-    else if (!/^[가-힣a-zA-Z0-9_]+$/.test(unity_name)) {
+    else if (!/^[가-힣a-zA-Z0-9_\-\[\]:=\+\*\^&% .,]+$/.test(unity_name)) {
         set_failed(input, 'row');
-        set_hint(input, `* 유니티 이름은 한글, 영문, 숫자, '_' 만 포함할 수 있습니다.`, 'failed_message');
+        set_hint(input, '* 사용할 수 없는 문자가 포함되어 있습니다.', 'failed_message');
     }
     else if (unity_name.length < 4 || unity_name.length > 20) {
         set_failed(input, 'row');
@@ -1200,9 +1200,11 @@ function check_submit(e){
 function unity_home(){
 	get_person_profile();
 	
-	hide('.unity_unity');
-	hide('.unity_create_container');
+	hide('.in_unity');
 	showing('.unity_home');
+	
+	hide('.unity_create_container');
+	showing('.unity_main_container');
 	
 	unity="";
 	get_unities();
@@ -1217,10 +1219,12 @@ function check_unity(){
 }
 
 function enter_unity(e){
-	hide('.user_profile_container');
-	showing('.unity_profile_container');
+	hide('.unity_create_container');
+	showing('.unity_main_container');
+	
 	hide('.unity_home');
-	showing('.unity_unity');
+	showing('.in_unity');
+	
 	unity=e;
 	profile_type='unity';
 	get_unity(e);

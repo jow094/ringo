@@ -8,7 +8,7 @@
 			<div class="card_person">
 				<div class="card_person_thumbnail">
 					<img
-					src="/img/profiles/${user_thumbnail_path}"
+					src="/img/user/profiles/${user_thumbnail_path}"
 					style="width: 40px; height: 40px; border-radius: 30%;"
 					/>
 				</div>
@@ -42,7 +42,7 @@
 			<div class="messenger_rooms favorite expanded">
 				<div class="messenger_room" onclick="enter_room()">
 					<div class="room_thumbnail">
-						<img src="/img/profiles/${user_thumbnail_path}"/>
+						<img src="/img/user/profiles/${user_thumbnail_path}"/>
 					</div>
 					<div class="room_body">
 						<div class="room_name">조우영</div>
@@ -97,7 +97,7 @@
 			<div class="message_box_received">
 				<div class="message_sender_thumbnail">
 					<img
-					src="/img/profiles/${user_thumbnail_path}"
+					src="/img/user/profiles/${user_thumbnail_path}"
 					style="width: 40px; height: 40px; border-radius: 30%;"
 					/>
 				</div>

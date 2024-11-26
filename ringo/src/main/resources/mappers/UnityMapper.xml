@@ -21,19 +21,21 @@
 	    <result property="unity_banner_set" column="unity_banner_set"/>
 	    <result property="unity_create_time" column="unity_create_time"/>
 	    <result property="unity_grade" column="unity_grade"/>
+	    <result property="unity_member_count" column="unity_member_count"/>
 	    
-	    <collection property="unity_boards" ofType="UnityBoardVO">
+	    <collection property="unity_board" ofType="UnityBoardVO">
+	        <result property="unity_board_code" column="unity_board_code"/>
 	        <result property="unity_board_category" column="unity_board_category"/>
 	        <result property="unity_board_name" column="unity_board_name"/>
 	    </collection>
 	</resultMap>
 	
 	<select id="selectLastUnityCode" resultType="Integer">
-		select max(unity_code) from _ringo_unity
+		select max(cast(substring_index(unity_code, '_', -1) as unsigned)) from _ringo_unity where unity_code like 'unt_%'
 	</select>
 	
 	<select id="selectDupleUnityName" resultType="Integer">
-		select count(unity_name) from _ringo_unity where unity_name = #{data}
+		select count(*) from _ringo_unity where unity_name = #{data}
 	</select>
 	
 	<insert id="insertUnity" parameterType="UnityVO">
@@ -95,7 +97,7 @@
 		     where up.unity_post_place = unt.unity_code
 		     order by up.unity_post_time desc
 		     limit 1) as unity_last_post,
-		    'joinedUnity' as unity_type
+		    'joined' as unity_type
 		from _ringo_unity unt
 		join _ringo_unity_member untm ON unt.unity_code = untm.unity_code
 		where untm.user_code = #{user_code}
@@ -108,10 +110,10 @@
 		    unt.unity_tag as unity_tag,
 		    unt.unity_thumbnail_path as unity_thumbnail_path,
 		    NULL as unity_last_post,
-		    'favoriteUnity' as unity_type
+		    'favorite' as unity_type
 		from _ringo_unity unt
 		join _ringo_favorite f on unt.unity_code = f.target_code
-		where f.user_code = #{user_code} and f.target_type = 2;
+		where f.user_code = #{user_code}
 
 	</select>
 	
@@ -132,10 +134,43 @@
 			unt.unity_banner_set,
 			unt.unity_create_time,
 			unt.unity_grade,
+			unt.unity_member_count,
+			ub.unity_board_code,
 			ub.unity_board_category,
 			ub.unity_board_name
+			
 		from _ringo_unity unt
 		left join _ringo_unity_board ub on unt.unity_code = ub.unity_code
 		where unt.unity_code = #{unity_code} 
 	</select>
+	
+	<select id="selectUnityBasicPost" resultType="PostVO">
+    select
+        unity_post_code as post_code,
+        unity_post_writer as post_writer,
+        unity_post_recomm_count as post_recomm_count,
+        unity_post_reple_count as reple_count,
+        unity_post_title as post_title,
+        unity_post_time as post_time,
+        'hotposts' as unity_post_type
+    from _ringo_unity_post
+    where substring_index(unity_post_place, '_', 2) = #{unity_code}
+      and unity_post_time >= now() - interval 3 day
+    order by (unity_post_reple_count + unity_post_recomm_count) desc
+    
+	union all
+
+    select
+        unity_post_code as post_code,
+        unity_post_writer as post_writer,
+        unity_post_recomm_count as post_recomm_count,
+        unity_post_reple_count as reple_count,
+        unity_post_title as post_title,
+        unity_post_time as post_time,
+        'recentposts' as unity_post_type
+    from _ringo_unity_post
+    where substring_index(unity_post_place, '_', 2) = #{unity_code}
+    order by unity_post_time desc
+	</select>
+	
 </mapper>  

@@ -52,7 +52,7 @@ public class UnityDAOImpl implements UnityDAO {
 	}
 	
 	@Override
-	public List<UnityVO> selectUnities(Integer user_code) {
+	public List<UnityVO> selectUnities(String user_code) {
 		return sqlSession.selectList(NAMESPACE + ".selectUnities",user_code);	
 	}
 	

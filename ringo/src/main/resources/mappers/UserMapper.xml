@@ -72,7 +72,7 @@
 	</insert>
 	
 	<select id="selectLastCode" parameterType="UserVO" resultType="Integer">
-		select max(user_code) from _ringo_user
+		select max(cast(substring_index(user_code, '_', -1) as unsigned)) from _ringo_user where user_code like 'r_%';
 	</select>
 	
 	<select id="selectDuplication" parameterType="Map" resultType="Integer">

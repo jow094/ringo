@@ -33,7 +33,7 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public List<PostVO> getCirclePost(Integer user_code) {
+	public List<PostVO> getCirclePost(String user_code) {
 		logger.debug("getCirclePost(Integer user_code) - user_code : "+user_code);
 		return pdao.selectCirclePost(user_code);
 	}

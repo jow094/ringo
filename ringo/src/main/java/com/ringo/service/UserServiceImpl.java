@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public UserVO getUserProfile(Integer user_code) {
+	public UserVO getUserProfile(String user_code) {
 		return udao.selectUserProfile(user_code);
 	}
 

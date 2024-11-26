@@ -5,6 +5,7 @@ import java.util.List;
 import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
 import com.ringo.domain.UnityVO;
+import com.ringo.domain.UserVO;
 
 public interface UnityDAO {
 	public Integer selectDupleUnityName(String data);
@@ -12,10 +13,8 @@ public interface UnityDAO {
 	public Integer insertUnityMember(UnityVO vo);
 	public Integer updateUnityMember(UnityVO vo);
 	public Integer selectLastUnityCode();
-	public List<UnityVO> selectUnities(Integer user_code);
+	public List<UnityVO> selectUnities(String user_code);
 	public UnityVO selectUnity(UnityVO vo);
-	
-	
 	
 	public List<PostVO> selectUnityPost(UnityVO vo);
 	public List<RepleVO> selectReple(UnityVO vo);

@@ -11,10 +11,9 @@ import lombok.Data;
 public class RepleVO {
 	private String writer_thumbnail_path;
 	private String writer_nickname;
-	private Integer reple_writer;
-	private Integer reple_code;
-	private Integer reple_type;
-	private Integer reple_target;
+	private String reple_writer;
+	private String reple_code;
+	private String reple_target;
 	private String reple_content;
 	private Timestamp reple_time;
 	private Integer reple_recomm_count;

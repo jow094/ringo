@@ -79,9 +79,9 @@ public class MainController {
 	
 	@RequestMapping(value = "/circle", method = RequestMethod.GET)
 	@ResponseBody
-	public List<PostVO> circleGET(HttpSession session, Integer user_code) {
+	public List<PostVO> circleGET(HttpSession session, String user_code) {
 		if(user_code==null) {
-			user_code = (Integer)session.getAttribute("user_code");
+			user_code = (String)session.getAttribute("user_code");
 		}
 		
 		logger.debug("circleGET(Integer user_code) - user_code : "+user_code);
@@ -93,11 +93,17 @@ public class MainController {
 	public Integer circlePOST(HttpSession session, PostVO vo) {
 		logger.debug("circlePOST(MemberVO) - vo : "+vo);
 		
-		Integer postingCode = (pService.getLastCirclePostCode() != null) ? pService.getLastCirclePostCode() + 1 : 1;
-		Integer writerCode = (Integer)session.getAttribute("user_code");
+		Integer last_post_code = pService.getLastCirclePostCode();
 		
-		vo.setPost_code(postingCode);
-		vo.setPost_writer(writerCode);
+		if(last_post_code==null) {
+			last_post_code = 0;
+		}
+		
+		String post_code = "cp_"+(last_post_code+1);
+		String writer = (String)session.getAttribute("user_code");
+		
+		vo.setPost_code(post_code);
+		vo.setPost_writer(writer);
         
 		try {
 			List<MultipartFile> files = vo.getPosting_files(); 
@@ -114,7 +120,7 @@ public class MainController {
 				            extension = originalFileName.substring(originalFileName.lastIndexOf("."));
 				        }
 		
-				        String fileName = writerCode.toString()  + "_" + postingCode + "_" + i + extension;
+				        String fileName = post_code + "_" + i + extension;
 		
 				        if (post_file_path.length() > 0) {
 				        	post_file_path.append(",");
@@ -154,7 +160,7 @@ public class MainController {
 	@ResponseBody
 	public Integer replePOST(HttpSession session, RepleVO vo) {
 		logger.debug("replePOST(RepleVO vo) - vo : "+vo);
-		vo.setReple_writer((Integer)session.getAttribute("user_code"));
+		vo.setReple_writer((String)session.getAttribute("user_code"));
 		return pService.uploadReple(vo);
 	}
 }

@@ -10,7 +10,7 @@
 			<div class="card_alarm">
 				<div class="card_alarm_thumbnail">
 					<img
-					src="/img/profiles/${user_thumbnail}"
+					src="/img/user/profiles/${user_thumbnail_path}"
 					style="width: 40px; height: 40px; border-radius: 30%;"
 					/>
 				</div>

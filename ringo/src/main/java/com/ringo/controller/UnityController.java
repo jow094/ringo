@@ -57,7 +57,6 @@ public class UnityController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UnityController.class);
 	
-	private String uploadPath_circle = "C:/ringo_files/circle/upload/";
 	private String uploadPath_unity = "C:/ringo_files/unity/upload/";
 	private String uploadPath_unity_thumbnail = "C:/ringo_files/unity/thumbnail/";
 	private String uploadPath_unity_banner = "C:/ringo_files/unity/banner/";
@@ -80,13 +79,13 @@ public class UnityController {
 		
 		try {
 			
-			Integer unity_code = unityService.getLastUnityCode();
+			Integer last_unity_code = unityService.getLastUnityCode();
 			
-			if(unity_code==null) {
-				unity_code = 0;
+			if(last_unity_code==null) {
+				last_unity_code = 0;
 			}
 			
-			unity_code++;
+			String unity_code = "unt_"+(last_unity_code+1);
 			
 			MultipartFile unity_thumbnail_file = vo.getUnity_thumbnail_file();
 			String unity_thumbnail_path = "";
@@ -130,8 +129,8 @@ public class UnityController {
 			}
 			
 			vo.setUnity_code(unity_code);
-			vo.setUnity_admin((Integer)session.getAttribute("user_code"));
-			vo.setUser_code((Integer)session.getAttribute("user_code"));
+			vo.setUnity_admin((String)session.getAttribute("user_code"));
+			vo.setUser_code((String)session.getAttribute("user_code"));
 			vo.setUnity_thumbnail_path(unity_thumbnail_path);
 			vo.setUnity_banner_path(unity_banner_path);
 			vo.setUnity_member_grade("admin");
@@ -158,19 +157,19 @@ public class UnityController {
 	public List<UnityVO> unityHomeGET(HttpSession session) {
 		logger.debug("unityHomeGET()");
 		
-		Integer user_code = (Integer)session.getAttribute("user_code");
+		String user_code = (String)session.getAttribute("user_code");
 		
 		return unityService.getUnities(user_code);
 	}
 	
 	@RequestMapping(value = "/unity", method = RequestMethod.GET)
 	@ResponseBody
-	public UnityVO unityUnityGET(HttpSession session, Integer unity_code) {
+	public UnityVO unityUnityGET(HttpSession session, String unity_code) {
 		logger.debug("unityUnityGET(Integer unity_code) - unity_code : "+unity_code);
 		
 		UnityVO vo = new UnityVO();
 		vo.setUnity_code(unity_code);
-		vo.setUser_code((Integer)session.getAttribute("user_code"));
+		vo.setUser_code((String)session.getAttribute("user_code"));
 		
 		UnityVO result = unityService.getUnity(vo);
 		

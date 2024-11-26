@@ -18,7 +18,7 @@ import lombok.ToString;
 public class UserVO {
 	
 	private String user_fcode;
-	private Integer user_code;
+	private String user_code;
 	private String user_id;
 	private String user_pw;
 	private String user_name;
@@ -57,6 +57,4 @@ public class UserVO {
 	private SettingVO user_setting;
 	private List<UserVO> user_follower;
 	private List<UserVO> user_following;
-	
-	private String unity_member_grade;
 }

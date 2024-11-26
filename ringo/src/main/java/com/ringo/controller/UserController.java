@@ -66,22 +66,26 @@ public class UserController {
 	 * private String uploadPath = System.getProperty("catalina.base") +
 	 * "/webapps/ringo/uploads/";
 	 */
-	private String uploadPath = "C:/ringo_files/profiles/";
+	private String uploadPath = "C:/ringo_files/user/profiles/";
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 	
-	public Integer getCode(String user_fcode) {
-	    if (user_fcode.contains("_")) {
-	        return Integer.parseInt(user_fcode.split("_")[0]);
+	public String getCode(String user_fcode) {
+		if (user_fcode == null || user_fcode.chars().filter(ch -> ch == '_').count() != 2) {
+	        return user_fcode;
 	    }
-	    return Integer.parseInt(user_fcode);
+	    return user_fcode.substring(0, user_fcode.lastIndexOf("_"));
 	}
-	
+
 	public Integer getPrivate(String user_fcode) {
-	    if (user_fcode.contains("_")) {
-	        return Integer.parseInt(user_fcode.split("_")[1]);
+		if (user_fcode == null || user_fcode.chars().filter(ch -> ch == '_').count() != 2) {
+	        return null;
 	    }
-	    return null;
+	    try {
+	        return Integer.parseInt(user_fcode.substring(user_fcode.lastIndexOf("_") + 1));
+	    } catch (NumberFormatException e) {
+	        return null;
+	    }
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -117,8 +121,8 @@ public class UserController {
 	
 	@RequestMapping(value = "/loginCheck", method = RequestMethod.GET)
 	@ResponseBody
-	public Integer loginCheck(HttpSession session) {
-		return (Integer)session.getAttribute("user_code");
+	public String loginCheck(HttpSession session) {
+		return (String)session.getAttribute("user_code");
 	}
 	
 	@RequestMapping(value = "/join", method = RequestMethod.GET)
@@ -137,13 +141,13 @@ public class UserController {
 		logger.debug("joinPOST - fileList : " + vo.getUser_profile_file());
 		try {
 			
-			Integer user_code = uService.getLastUserCode();
+			Integer last_user_code = uService.getLastUserCode();
 			
-			if(user_code==null) {
-				user_code = 0;
+			if(last_user_code==null) {
+				last_user_code = 0;
 			}
 			
-			user_code++;
+			String user_code = "r_"+(last_user_code+1);
 			
 			List<MultipartFile> profile_files = vo.getUser_profile_file(); 
 			StringBuilder user_profile_path = new StringBuilder();
@@ -243,18 +247,18 @@ public class UserController {
 	
 	@RequestMapping(value = "/authentication/check", method = RequestMethod.POST)
 	@ResponseBody
-    public Integer checkCode(String user_code,String target,HttpSession session) {
+    public Integer checkCode(String input_code,String target,HttpSession session) {
 		
 		
 		logger.debug("smsCode:"+session.getAttribute("smsCode"));
 		logger.debug("emailCode:"+session.getAttribute("emailCode"));
-		logger.debug("userCode:"+user_code);
+		logger.debug("input_code:"+input_code);
 		logger.debug("target:"+target);
 		
 		
 		
 		if(target.equals("sms")) {
-			if(user_code.equals(session.getAttribute("smsCode"))) {
+			if(input_code.equals(session.getAttribute("smsCode"))) {
 				session.removeAttribute("smsCode");
 				logger.debug("sms validated");
 				return 1;
@@ -264,7 +268,7 @@ public class UserController {
 		}
 		
 		if(target.equals("email")) {
-			if(user_code.equals(session.getAttribute("emailCode"))) {
+			if(input_code.equals(session.getAttribute("emailCode"))) {
 				session.removeAttribute("emailCode");
 				logger.debug("email validated");
 				return 1;
@@ -305,9 +309,9 @@ public class UserController {
 	
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	@ResponseBody
-    public UserVO profileGET(HttpSession session, Integer user_code) {
+    public UserVO userProfileGET(HttpSession session, String user_code) {
 		if(user_code==null) {
-			user_code = (Integer)session.getAttribute("user_code");
+			user_code = (String)session.getAttribute("user_code");
 		}
 		
 		logger.debug("profileGET(Integer user_code) - user_code : "+user_code);

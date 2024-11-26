@@ -140,7 +140,7 @@ function check_code(e,target){
         type: "POST",
         url: "/user/authentication/check",
         dataType: 'json',
-        data: {user_code : $(e).siblings('input').val(), target : target},
+        data: {input_code : $(e).siblings('input').val(), target : target},
         success: function(data) {
         	console.log(data);
         	if(data==1){
@@ -471,7 +471,6 @@ function submit_reple(e){
         type: "POST",
         url: "/main/reple/",
         data: {reple_content:$(e).val(),
-        		reple_type:card.attr('data-post_type'),
         		reple_target:card.attr('data-post_code')},
         dataType: "json",
         success: function (response) {
@@ -489,8 +488,7 @@ function get_reple(e){
 	$.ajax({
         type: "GET",
         url: "/main/reple/",
-        data: {reple_type: $(e).closest('.card').attr('data-post_type'),
-        		reple_target: $(e).closest('.card').attr('data-post_code')},
+        data: {reple_target: $(e).closest('.card').attr('data-post_code')},
         dataType: "json",
         success: function(data) {
         	console.log(data);
@@ -514,13 +512,13 @@ function get_reple(e){
                     		$comment.find('.scroll_box_inner').prepend(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
                     				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
-    	                				<img src="/img/profiles/${reple.writer_thumbnail_path}"/>
+    	                				<img class="small_img" src="/img/user/profiles/${reple.writer_thumbnail_path}"/>
                     				</div>
                     				<div class="card_comment_body">
     	                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.writer_nickname}</div>
     	                				<div class="card_comment_content">${reple.reple_content}</div>
     	                				<div class="card_comment_time">
-    	                				<i class="fa-regular fa-thumbs-up" onclick="like(this)"></i>${reple.reple_recomm_count}
+    	                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
     	                				<span>${auto_format_date(reple.reple_time)}</span>
     	                				</div>
                     				</div>
@@ -538,13 +536,13 @@ function get_reple(e){
 		        			$(e).closest('.card').find('.card_foot_comment').find('.scroll_box_inner').append(`
 		            				<div class="card_comment" data-reple_code="${reple.reple_code}">
 		            				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
-		                				<img src="/img/profiles/${reple.writer_thumbnail_path}"/>
+		                				<img class="small_img" src="/img/user/profiles/${reple.writer_thumbnail_path}"/>
 		            				</div>
 		            				<div class="card_comment_body">
 		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
-		                				<i class="fa-regular fa-thumbs-up" onclick="like()"></i>${reple.reple_recomm_count}
+		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
 		                				<span>${auto_format_date(reple.reple_time)}</span>
 		                				</div>
 		            				</div>
@@ -580,17 +578,17 @@ function get_circle_post(user_code){
         	
         	for (const postVO of data){
         		const post = `
-	        		<div class="card" data-post_type="1" data-post_code="${postVO.post_code}">
+	        		<div class="card" data-post_code="${postVO.post_code}">
 						<div class="card_header">
 							<div class="card_header_image" onclick="visit(${postVO.post_writer},this)">
-								<img src="/img/profiles/${postVO.writer_thumbnail_path}"/>
+								<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
 							</div>
 							<div class="card_header_nickname" onclick="visit(${postVO.post_writer},this)">
 								${postVO.writer_nickname}
 							</div>
 							<div class="card_header_tools">
 								<div class="card_header_tool">
-									<i class="fa-regular fa-heart" style="font-size: 20px;"></i>
+									<i class="material-symbols-outlined">favorite</i>
 									<span>${postVO.post_recomm_count}</span>
 								</div>
 								<div class="card_header_tool">
@@ -612,7 +610,7 @@ function get_circle_post(user_code){
 							<div class="card_foot_comment_input">
 								<textarea onkeydown="if(event.key === 'Enter'){event.preventDefault(); submit_reple(this)}"></textarea>
 								<button type="button" onclick="submit_reple($(this).prev())">
-									<i class="fa-solid fa-paper-plane"></i>
+									<i class="material-symbols-outlined">send</i>
 								</button>
 							</div>
 						</div>
@@ -682,13 +680,13 @@ function get_circle_post(user_code){
                     		$comment.find('.scroll_box_inner').append(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
 	                				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
-		                				<img src="/img/profiles/${reple.writer_thumbnail_path}"/>
+		                				<img class="small_img" src="/img/user/profiles/${reple.writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
 		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
-		                				<i class="fa-regular fa-thumbs-up" onclick="like()"></i>${reple.reple_recomm_count}
+		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
 		                				<span>${auto_format_date(reple.reple_time)}</span>
 		                				</div>
 	                				</div>
@@ -729,6 +727,8 @@ function get_person_profile(user_code){
             	}
         	}
         	
+        	profile_length=1;
+        	
         	if(user_code==null){
         		person = self;
         	}else{
@@ -737,8 +737,8 @@ function get_person_profile(user_code){
         	
         	profile_type='person';
         	
-        	$('.profile_container .profile_container_head_basic').html(`
-        		<img src="/img/profiles/${data.user_thumbnail_path}"/>
+        	$('.user_profile_container .profile_container_head_basic').html(`
+        		<img class="black" src="/img/user/profiles/${data.user_thumbnail_path}"/>
 				<div class="profile_container_head_basic_nickname">
 					${data.user_nickname}
 				</div>
@@ -755,59 +755,53 @@ function get_person_profile(user_code){
         			접속 정보 : ${data.user_logon}
 				</div>
         	`);
-        	$('.profile_container .profile_container_head_tools').html(`
+        	$('.user_profile_container .profile_container_head_tools').html(`
         		<div class="profile_container_head_tool">
-					<img src="" class="icons">
+					<i class="material-symbols-outlined">sms</i>
 					메세지
 				</div>
 				<div class="profile_container_head_tool">
-					<img src="" class="icons">
+					<i class="material-symbols-outlined">for_you</i>
 					팔로우
 				</div>
 				<div class="profile_container_head_tool">
-					<img src="" class="icons">
+					<i class="material-symbols-outlined">bookmark_star</i>
 					즐겨찾기
 				</div>
 				<div class="profile_container_head_tool">
-					<img src="" class="icons">
+					<i class="material-symbols-outlined">block</i>
 					차단
 				</div>
 				<div class="profile_container_head_tool">
-					<img src="" class="icons">
+					<i class="material-symbols-outlined">partner_reports</i>
 					신고
 				</div>
+    			<div class="profile_container_head_tool">
+	    			<i class="material-symbols-outlined">contract_edit</i>
+	    			수정
+    			</div>
         	`);
-        	$('.profile_container .user_languages').html(`
-        		<div class="user_language">
-					<div class="user_language_type">모국어</div>
-					<div class="user_language_name">
+        	$('.user_profile_container .profile_container_body .scroll_box_inner').html(`
+        		<div class="inner_box mw p5 mgb">
+					<div class="inner_title">모국어</div>
+					<div class="scroll_box row">
 						<img src="https://flagcdn.com/w80/kr.png" class="flags">
 						${data.user_native_lang}
-					</div>
+        			</div>
 				</div>
-				<div class="user_language">
-					<div class="user_language_type">유창한 언어</div>
-					<div class="user_language_name">
+				<div class="inner_box mw p5 mgb">
+					<div class="inner_title">유창한 언어</div>
+					<div class="scroll_box row">
 						<img src="https://flagcdn.com/w80/kr.png" class="flags">
 						${data.user_fluent_lang}
-					</div>
+        			</div>
 				</div>
-				<div class="user_language">
-					<div class="user_language_type">학습 언어</div>
-					<div class="user_language_name">
-						<img src="https://flagcdn.com/w80/us.png" class="flags">
+				<div class="inner_box mw p5 mgb">
+					<div class="inner_title">학습중인 언어</div>
+					<div class="scroll_box row">
+						<img src="https://flagcdn.com/w80/kr.png" class="flags">
 						${data.user_learning_lang}
-					</div>
-				</div>
-        	`);
-        	$('.profile_container .user_infos').html(`
-        		<div class="user_info_box">
-					<div class="user_info_title">
-					기타
-					</div>
-					<div class="user_info_content">
-					기타등등 정보들
-					</div>
+        			</div>
 				</div>
         	`);
         	setTimeout(function() {
@@ -826,8 +820,6 @@ function get_person_profile(user_code){
     });
 }
 
-
-
 function get_unities(){
 	
 	$.ajax({
@@ -835,13 +827,12 @@ function get_unities(){
         url: "/unity/home",
         dataType: "json",
         success: function(data) {
+        	console.log(data);
         	$('.favorite_unities').empty();
-        	$('.joined_unities').empty();
-        	$('.recomm_unities').empty();
-        	$('.near_unities').empty();
+        	$('.unities').empty();
         	
         	for (const unity of data){
-        		if(unity.unity_type == 'favoriteUnity'){
+        		if(unity.unity_type == 'favorite'){
         			$('.favorite_unities').prepend(`
         				<div class="favorite_unity" data-unity_code="${unity.unity_code}" onclick="enter_unity($(this).attr('data-unity_code'))">
 							<img src="/img/unity/thumbnail/${unity.unity_thumbnail_path}"></img>
@@ -849,13 +840,11 @@ function get_unities(){
 							<i class="fa-solid fa-circle-xmark"></i>
 						</div>
         			`);
-        		}
-        		if(unity.unity_type == 'joinedUnity'){
-        			
+        		}else{
         			var unity_card = `
         				<div class="unity_card" data-unity_code="${unity.unity_code}" onclick="enter_unity($(this).attr('data-unity_code'))">
 							<div class="unity_card_thumbnail">
-								<img src="/img/unity/thumbnail/${unity.unity_thumbnail_path}"></img>
+								<img class="small_img" src="/img/unity/thumbnail/${unity.unity_thumbnail_path}"></img>
 							</div>
 							<div class="unity_card_body">
 								<div class="unity_card_name">${unity.unity_name}</div>
@@ -868,88 +857,137 @@ function get_unities(){
         			
         			var $card = $(unity_card);
         			
-        			const tags = unity.unity_tag;
-        			
-        			for (const tag of tags){
-        				$card.find('.unity_card_tags').prepend(`<div class="tag_card" data-value="${tag}">#${tag}</div>`);
+        			if(unity.unity_tag!=null){
+        				
+        				const tags = unity.unity_tag.split(",").map(item => item.trim());;
+        				
+        				for (const tag of tags){
+        					$card.find('.unity_card_tags').prepend(`<div class="tag_card" data-value="${tag}">#${tag}</div>`);
+        				}
         			}
         			
-        			$('.joined_unities').prepend($card);
-        		}
-        		if(unity.unity_type == 'recommUnity'){
-        			
-        			var unity_card = `
-        				<div class="unity_card" data-unity_code="${unity.unity_code}" onclick="enter_unity($(this).attr('data-unity_code'))">
-							<div class="unity_card_thumbnail">
-								<img src="/img/unity/thumbnail/${unity.unity_thumbnail_path}"></img>
-							</div>
-							<div class="unity_card_body">
-								<div class="unity_card_name">${unity.unity_name}</div>
-								<div class="unity_card_message">${unity.unity_last_post}</div>
-								<div class="unity_card_tags">
-								</div>
-							</div>
-						</div>
-	        			`;
-        			
-        			var $card = $(unity_card);
-        			
-        			const tags = unity.unity_tag;
-        			
-        			for (const tag of tags){
-        				$card.find('.unity_card_tags').prepend(`<div class="tag_card" data-value="${tag}">#${tag}</div>`);
-        			}
-        			
-        			$('.recomm_unities').prepend($card);
-        		}
-        		if(unity.unity_type == 'nearUnity'){
-        			
-        			var unity_card = `
-        				<div class="unity_card" data-unity_code="${unity.unity_code}" onclick="enter_unity($(this).attr('data-unity_code'))">
-							<div class="unity_card_thumbnail">
-								<img src="/img/unity/thumbnail/${unity.unity_thumbnail_path}"></img>
-							</div>
-							<div class="unity_card_body">
-								<div class="unity_card_name">${unity.unity_name}</div>
-								<div class="unity_card_message">${unity.unity_last_post}</div>
-								<div class="unity_card_tags">
-								</div>
-							</div>
-						</div>
-	        			`;
-        			
-        			var $card = $(unity_card);
-        			
-        			const tags = unity.unity_tag;
-        			
-        			for (const tag of tags){
-        				$card.find('.unity_card_tags').prepend(`<div class="tag_card" data-value="${tag}">#${tag}</div>`);
-        			}
-        			
-        			$('.near_unities').prepend($card);
+        			$(`.${unity.unity_type}_unities`).prepend($card);
         		}
         	}
+        	
+        	setTimeout(function() {
+        		if($('.favorite_unities').find('.favorite_unity').length==0){
+        			$('.favorite_unities').append(`<div class="annotation_message max_div">즐겨찾는 유니티가 없습니다.</div>`);
+        		}
+        		if($('.unities.joined_unities').find('.unity_card').length==0){
+        			$('.unities.joined_unities').append(`<div class="annotation_message max_div">가입한 유니티가 없습니다.</div>`);
+        		}
+        		if($('.unities.recomm_unities').find('.unity_card').length==0){
+        			$('.unities.unities.recomm_unities').append(`<div class="annotation_message max_div">추천 대상 유니티가 없습니다.</div>`);
+        		}
+        		if($('.unities.near_unities').find('.unity_card').length==0){
+        			$('.unities.near_unities').append(`<div class="annotation_message max_div">근처의 유니티가 없습니다.</div>`);
+        		}
+        	}, 1);
+        	
         },
         error: function(xhr, status, error) {
         }
     });
+	
+	
 }
 
 function get_unity(unity_code){
 	
-	console.log('unity_code:',unity_code);
+	if(unity_code == null){
+		return;
+	}
 	
 	$.ajax({
-        type: "GET",
-        url: "/unity/unity",
-        data: {unity_code:unity_code},
-        dataType: "json",
-        success: function(data) {
-        	console.log(data);
-        },
-        error: function(xhr, status, error) {
-        }
-    });
+		type: "GET",
+		url: "/unity/unity",
+		data: {unity_code:unity_code},
+		dataType: "json",
+		success: function(data) {
+			$('.profile_container').addClass('hidden');
+			
+			if($('.profile_container').hasClass('shrinked')){
+				expand_profile();
+			}
+			if($('.detail_profile_container').hasClass('expanded')){
+				shrink_profile();
+			}
+			profile_length=1;
+			unity = unity_code;
+			profile_type='unity';
+			
+			$('.unity_profile_container .profile_container_head_basic').html(`
+				<img class="black" src="/img/unity/thumbnail/${data.unity_thumbnail_path}"/>
+				<div class="profile_container_head_basic_unity_name">
+					${data.unity_name}
+				</div>
+				<div class="profile_container_head_basic_info">
+					등급 : ${data.unity_grade}
+				</div>
+				<div class="profile_container_head_basic_info">
+					회원 수 : ${data.unity_member_count}명
+				</div>
+				<div class="profile_container_head_basic_info">
+					생성일 : ${data.unity_create_time}
+				</div>
+				
+			`);
+			
+			/*if(){
+				$('.unity_profile_container .profile_container_head_tools').prepend(`
+						<div class="profile_container_head_tool">
+						<img src="" class="icons">
+						관리
+						</div>
+				`);
+			}*/
+			
+			$('.unity_profile_container .user_languages').html(`
+					<div class="user_language">
+					<div class="user_language_type">모국어</div>
+					<div class="user_language_name">
+					<img src="https://flagcdn.com/w80/kr.png" class="flags">
+					${data.user_native_lang}
+					</div>
+					</div>
+					<div class="user_language">
+					<div class="user_language_type">유창한 언어</div>
+					<div class="user_language_name">
+					<img src="https://flagcdn.com/w80/kr.png" class="flags">
+					${data.user_fluent_lang}
+					</div>
+					</div>
+					<div class="user_language">
+					<div class="user_language_type">학습 언어</div>
+					<div class="user_language_name">
+					<img src="https://flagcdn.com/w80/us.png" class="flags">
+					${data.user_learning_lang}
+					</div>
+					</div>
+			`);
+			$('.unity_profile_container .user_infos').html(`
+					<div class="user_info_box">
+					<div class="user_info_title">
+					기타
+					</div>
+					<div class="user_info_content">
+					기타등등 정보들
+					</div>
+					</div>
+			`);
+			setTimeout(function() {
+				$('.profile_container').removeClass('hidden');
+			}, 10);
+			
+			if(!$('.user_profile_container').hasClass('none')){
+				hide('.user_profile_container');
+				showing('.unity_profile_container');
+			}
+			
+			check_profile_button();
+		},
+		error: function(xhr, status, error) {
+		}
+	});
 }
-
-

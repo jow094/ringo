@@ -34,7 +34,7 @@ public class PostDAOImpl implements PostDAO {
 	}
 
 	@Override
-	public List<PostVO> selectCirclePost(Integer user_code) {
+	public List<PostVO> selectCirclePost(String user_code) {
 		logger.debug("selectCirclePost(Integer user_code) - user_code : "+user_code);
 		return sqlSession.selectList(NAMESPACE + ".selectCirclePost",user_code);		
 	}

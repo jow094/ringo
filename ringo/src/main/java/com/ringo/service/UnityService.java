@@ -11,7 +11,7 @@ public interface UnityService {
 	public Integer checkDuplication(String data);
 	public Integer joinUnity(UnityVO vo);
 	public Integer modifyUnityMember(UnityVO vo);
-	public List<UnityVO> getUnities(Integer user_code);
+	public List<UnityVO> getUnities(String user_code);
 	public UnityVO getUnity(UnityVO vo);
 	
 	

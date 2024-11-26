@@ -13,7 +13,7 @@ public interface UserService {
 	public Integer userJoin(UserVO vo);
 	public Integer getLastUserCode();
 	public Integer checkDuplication(String target, String data);
-	public UserVO getUserProfile(Integer user_code);
+	public UserVO getUserProfile(String user_code);
 	
 	
 	/*

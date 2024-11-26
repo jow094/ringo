@@ -4,9 +4,9 @@
 		<i class="fa-solid fa-circle-notch"></i>
 		<span>서클</span>
 		<div class="title_button">
-			<i class="fa-solid fa-pen-to-square" onclick="write_circle()" style="cursor:pointer;"></i>
+			<i class="material-symbols-outlined" onclick="write_circle()">edit_note</i>
 			<div class="input_wrapper">
-				<i class="input_icon fa-solid fa-magnifying-glass"></i>
+				<i class="material-symbols-outlined">search</i>
 				<input type="text"></input>
 			</div>
 		</div>

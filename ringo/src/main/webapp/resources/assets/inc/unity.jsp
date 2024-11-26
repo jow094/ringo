@@ -3,14 +3,14 @@
 <div class="main_card main_unity none">
 	<div class="main_card_title">
 		<div class="unity_home_button" onclick="unity_home()" style="cursor:pointer;">
-			<i class="ringo unity"></i>
+			<i class="material-symbols-outlined">forum</i>
 			<span>유니티</span>
 		</div>
 		<div class="title_button">
-			<i class="fa-solid fa-plus" onclick="expand_create_unity()" style="cursor:pointer;"></i>
-			<i class="fa-solid fa-house" onclick="unity_home()" style="cursor:pointer;"></i>
+			<i class="material-symbols-outlined" onclick="expand_create_unity()">add</i>
+			<i class="material-symbols-outlined" onclick="unity_home()">home</i>
 			<div class="input_wrapper">
-				<i class="input_icon fa-solid fa-magnifying-glass"></i>
+				<i class="material-symbols-outlined">search</i>
 				<input type="text"></input>
 			</div>
 		</div>
@@ -18,7 +18,7 @@
 	
 	
 	<!-- unity create -->
-	<div class="unity_create_container none">
+	<div class="unity_create_container expanded none">
 		<div class="unity_image_info">
 			<div class="picture_container column unity_thumbnail">
 				<div class="picture_content unity_thumbnail_preview">
@@ -278,60 +278,66 @@
 	
 	<div class="main_card_body unity_main_container expanded">
 	
-	
+	<div class="in_unity none expanded">
 		<!-- in_unity -->
-		<div class="in_unity_home">
+		<div class="in_unity_home expanded">
 			<div class="in_unity_banner">
 				<img src="/img/profiles/${user_thumbnail_path}"/>
 			</div>
 			<div class="in_unity_home_container">
 				<div class="in_unity_home_left_container">
 					<div class="unity_member_profile">
-						<div class="unity_member_basic_info">
-							<div class="unity_member_personal_info">
-								<div class="unity_member_thumbnail">
-									<img src="/img/profiles/${user_thumbnail_path}"/>
+						<div class="inner_box mw col">
+							<div class="inner_title h30"><i class="material-symbols-outlined mgr">counter_5</i>조우영</div>
+							<div class="scroll_box row">
+								<div class="unity_member_basic_info">
+									<div class="unity_member_infos">유니티 회원등급 :</div>
+									<div class="unity_member_infos">방문횟수 :</div>
+									<div class="unity_member_infos">가입일:</div>
 								</div>
-								<div class="unity_member_infos">조우영</div>
+								<div class="unity_member_activity_info">
+									<div class="unity_member_infos">작성한 게시글 :</div>
+									<div class="unity_member_infos">작성한 댓글 :</div>
+									<div class="unity_member_infos">새로 달린 댓글 :</div>
+								</div>
 							</div>
-							<div class="unity_member_additional_info">
-								<div class="unity_member_infos">유니티 회원등급 :</div>
-								<div class="unity_member_infos">방문횟수 :</div>
-								<div class="unity_member_infos">가입일:</div>
-							</div>
-						</div>
-						<div class="unity_member_activity_info">
-							<div class="unity_member_infos">작성한 게시글 :</div>
-							<div class="unity_member_infos">작성한 댓글 :</div>
-							<div class="unity_member_infos">새로 달린 댓글 :</div>
-							<div class="unity_member_infos">작성한 게시글 :</div>
 						</div>
 					</div>
-					<div class="unity_recent_post">
-						<div class="inner_title">최근 게시물</div>
-						<div class="scroll_box_inner">
-							<div class="post_card">
-								<div class="post_card_thumbnail">
-									<img src="/img/profiles/${user_thumbnail_path}"/>
-								</div>
-								<div class="post_card_body">
-									<div class="post_card_title">조우영 님의 게시물</div>
-									<div class="post_card_info">자유게시판</div>
-									<div class="post_card_info">ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</div>
-								</div>
-								<div class="post_card_footer">
-									<div class="post_card_info">추천수 : 153</div>
-									<div class="post_card_info">댓글수 : 153</div>
-									<div class="post_card_info">작성일 : 11:59</div>
+					<div class="unity_recent_post ff mw mh">
+						<div class="inner_box mw mh">
+							<div class="inner_title h30"><i class="material-symbols-outlined mgr">search_activity</i>최근 게시물</div>
+							<div class="scroll_box">
+								<div class="scroll_box_inner">
+									<div class="post_card">
+										<div class="post_card_thumbnail">
+											<img class="small_img" src="/img/user/profiles/${user_thumbnail_path}"/>
+										</div>
+										<div class="post_card_body">
+											<div class="post_card_title">조우영 님의 게시물</div>
+											<div class="post_card_info">자유게시판</div>
+											<div class="post_card_info">ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</div>
+										</div>
+										<div class="post_card_footer">
+											<div class="post_card_info">
+												<i class="fa-regular fa-heart"></i><span>153</span>
+											</div>
+											<div class="post_card_info">
+												<i class="fa-regular fa-comment-dots"></i><span>13</span>
+											</div>
+											<div class="post_card_info">11:59</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="in_unity_home_right_container">
-					<div class="unity_hot_post">
-						<div class="inner_title">인기 게시물</div>
-						<div class="scroll_box_inner">
+					<div class="inner_box mw mh">
+						<div class="inner_title h30"><i class="material-symbols-outlined mgr">local_fire_department</i>인기 게시물</div>
+						<div class="scroll_box">
+							<div class="scroll_box_inner">
+							</div>
 						</div>
 					</div>
 				</div>
@@ -489,13 +495,13 @@
 			</div>
 		</div>
 		<!-- in unity -->
-		
+	</div>	
 		
 	
 		<!-- unity home -->
-		<div class="unity_home main_card_content">
+		<div class="unity_home main_card_content expanded">
 			<div class="unity_menu">
-				<div class="menu_tag" onclick="col_toggle($(this).next('.favorite_unities'),this)">
+				<div class="menu_tag" onclick="col_toggle('.favorite_unities',this)">
 					<span>즐겨찾기</span>
 					<i class="fas fa-chevron-circle-up"></i>
 				</div>
@@ -503,23 +509,21 @@
 				</div>
 			</div>
 			<div class="unity_article">
-				<div class="menu_tag" onclick="col_toggle($(this).next('.unities_container'),this)">
-					<span>가입한 유니티</span>
-					<i class="fas fa-chevron-circle-up"></i>
-				</div>
-				<div class="joined_unities unities_container expanded">
+				<div class="unities_container">
+					<div class="inner_title">가입한 유니티</div>
+					<div class="joined_unities unities expanded"></div>
 				</div>	
-				<div class="menu_tag" onclick="col_toggle($(this).next('.unities_container'),this)">
-					<span>추천 유니티</span>
-					<i class="fas fa-chevron-circle-up"></i>
-				</div>
-				<div class="recomm_unities unities_container expanded">
-				</div>	
-				<div class="menu_tag" onclick="col_toggle($(this).next('.unities_container'),this)">
-					<span>근처 유니티</span>
-					<i class="fas fa-chevron-circle-up"></i>
-				</div>
-				<div class="near_unities unities_container expanded">
+				<div class="unities_container">
+					<div class="inner_title" onclick="col_toggle($(this).next('.unities'),this)">
+						추천 유니티
+					</div>
+					<div class="recomm_unities unities expanded"></div>
+				</div>		
+				<div class="unities_container">
+					<div class="inner_title" onclick="col_toggle($(this).next('.unities'),this)">
+						근처 유니티
+					</div>
+					<div class="near_unities unities expanded"></div>
 				</div>	
 				
 			</div>

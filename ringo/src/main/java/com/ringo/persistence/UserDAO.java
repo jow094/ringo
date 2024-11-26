@@ -15,5 +15,5 @@ public interface UserDAO {
 	public Integer insertUser(UserVO vo);
 	public Integer selectLastCode();
 	public Integer selectDuplication(String target, String data);
-	public UserVO selectUserProfile(Integer user_code);
+	public UserVO selectUserProfile(String user_code);
 }
