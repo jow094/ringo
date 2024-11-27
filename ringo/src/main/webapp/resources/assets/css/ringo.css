@@ -2084,11 +2084,12 @@ textarea{
 	justify-content: center;
 	align-items: center;
 	padding:5px;
-	width:60px;
+	width:70px;
+	margin-right:10px;
 }
 .unity_card_thumbnail img{
-	width:50px;
-	height:50px;
+	width:60px;
+	height:60px;
 }
 .unity_card_button i{
 	margin-right:3px;
@@ -2119,9 +2120,6 @@ textarea{
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	margin-bottom:3px;
-}
-.unity_card_message:hover{
-	text-decoration: underline;
 }
 
 .unity_card_tags{

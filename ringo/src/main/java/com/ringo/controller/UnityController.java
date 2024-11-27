@@ -145,7 +145,7 @@ public class UnityController {
 				
 				UnityMemberVO mvo = new UnityMemberVO();
 				mvo.setUnity_code(vo.getUnity_code());
-				mvo.setUser_code(vo.getUser_code());
+				mvo.setUser_code((String)session.getAttribute("user_code"));
 				mvo.setUnity_member_grade("admin");
 				
 				Integer joinResult = unityService.joinUnity(mvo);
@@ -185,6 +185,14 @@ public class UnityController {
 		
 		logger.debug("result : "+result);
 		return result;
+	}
+	
+	@RequestMapping(value = "/post", method = RequestMethod.GET)
+	@ResponseBody
+	public List<PostVO> unityPostGET(HttpSession session, String post_code) {
+		
+		logger.debug("unityPostGET(String post_code) - post_code : "+post_code);
+		return pService.getUnityPost(post_code);
 	}
 	
 	

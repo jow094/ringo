@@ -22,21 +22,37 @@ public class PostDAOImpl implements PostDAO {
 	private static final Logger logger = LoggerFactory.getLogger(PostDAOImpl.class);
 	
 	@Override
+	public Integer selectLastCirclePostCode() {
+		return sqlSession.selectOne(NAMESPACE + ".selectLastCirclePostCode");		
+	}
+	
+	@Override
 	public Integer insertCirclePost(PostVO vo) {
-		logger.debug("insertPost(PostVO) - vo : "+vo);
+		logger.debug("insertCirclePost(PostVO) - vo : "+vo);
 		return sqlSession.insert(NAMESPACE + ".insertCirclePost",vo);		
 	}
 
 	@Override
-	public Integer selectLastCirclePostCode() {
-		logger.debug("selectLastCode");
-		return sqlSession.selectOne(NAMESPACE + ".selectLastCirclePostCode");		
+	public List<PostVO> selectCirclePost(String user_code) {
+		logger.debug("selectCirclePost(String user_code) - user_code : "+user_code);
+		return sqlSession.selectList(NAMESPACE + ".selectCirclePost",user_code);		
 	}
 
 	@Override
-	public List<PostVO> selectCirclePost(String user_code) {
-		logger.debug("selectCirclePost(Integer user_code) - user_code : "+user_code);
-		return sqlSession.selectList(NAMESPACE + ".selectCirclePost",user_code);		
+	public Integer selectLastUnityPostCode() {
+		return sqlSession.selectOne(NAMESPACE + ".selectLastUnityPostCode");		
+	}
+
+	@Override
+	public Integer insertUnityPost(PostVO vo) {
+		logger.debug("insertUnityPost(PostVO) - vo : "+vo);
+		return sqlSession.insert(NAMESPACE + ".insertUnityPost",vo);	
+	}
+
+	@Override
+	public List<PostVO> selectUnityPost(String post_code) {
+		logger.debug("selectUnityPost(String post_code) - post_code : "+post_code);
+		return sqlSession.selectList(NAMESPACE + ".selectUnityPost",post_code);		
 	}
 
 	@Override

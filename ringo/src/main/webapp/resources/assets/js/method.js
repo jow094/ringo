@@ -850,7 +850,7 @@ function get_unities(){
 							</div>
 							<div class="unity_card_body">
 								<div class="unity_card_name">${unity.unity_name}</div>
-								<div class="unity_card_message">${unity.unity_last_post}</div>
+								<div class="unity_card_message">${unity.unity_intro}</div>
 								<div class="unity_card_tags">
 								</div>
 							</div>
@@ -1099,6 +1099,144 @@ function get_unity_main(unity_code){
         	
     		$('#unity_member_grade_icon').text('counter_5');
         	
+        },
+        error: function(xhr, status, error) {
+        }
+    });
+}
+
+function get_unity_post(post_code){
+	
+	$.ajax({
+        type: "GET",
+        url: "/unity/post",
+        data: {post_code:post_code},
+        dataType: "json",
+        success: function(data) {
+        	var target;
+        	
+        	for (const postVO of data){
+        		const post = `
+	        		<div class="card" data-post_code="${postVO.post_code}">
+						<div class="card_header">
+							<div class="card_header_image" onclick="visit(${postVO.post_writer},this)">
+								<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
+							</div>
+							<div class="card_header_nickname" onclick="visit(${postVO.post_writer},this)">
+								${postVO.writer_nickname}
+							</div>
+							<div class="card_header_tools">
+								<div class="card_header_tool">
+									<i class="material-symbols-outlined">favorite</i>
+									<span>${postVO.post_recomm_count}</span>
+								</div>
+								<div class="card_header_tool">
+									<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
+								</div>
+							</div>
+						</div>
+						<div class="card_body">
+							<div class="card_body_content">
+								<div class="scroll_box">
+									<div class="scroll_box_inner">${postVO.post_content}</div>
+								</div>
+							</div>
+							<div class="card_body_tags">
+								#태그
+							</div>
+						</div>
+						<div class="card_foot">
+							<div class="card_foot_comment_input">
+								<textarea onkeydown="if(event.key === 'Enter'){event.preventDefault(); submit_reple(this)}"></textarea>
+								<button type="button" onclick="submit_reple($(this).prev())">
+									<i class="material-symbols-outlined">send</i>
+								</button>
+							</div>
+						</div>
+					</div>
+	        	`;
+        		
+        		const $card = $(post);
+                $('.unity_cards').append($card);
+        		
+                if (postVO.post_tag != null && postVO.post_tag != '') {
+                    const tags = postVO.post_tag.split(',');
+                    for (const tag_value of tags) {
+                        $card.find('.card_body_tags').append(`
+                            <div class="tag_card" data-tag="${tag_value}" onclick="search_tag(this)">#${tag_value}</div>
+                        `);
+                    }
+                }
+                
+                if (postVO.post_file_path != null && postVO.post_file_path != '') {
+                	
+                    const files = postVO.post_file_path.split(',');
+                    var img_container = `
+            			<div class="image_container">
+							<div class="image_main">
+							</div>
+						</div>`;
+                    var $img = $(img_container);
+                    for (const file of files) {
+                    	if($img.find('.image_main').find('img').length==0){
+                    		$img.find('.image_main').append(`
+                				<img src="/img/circle/upload/${file}"/>
+                    		`);
+                    	}else if($img.find('.image_queue').length==0){
+                    		$img.append(`
+                				<div class="image_queue">
+									<div class="image_queue_belt">
+										<div class="image_waiting">
+											<img src="/img/circle/upload/${file}"/>
+										</div>
+									</div>
+								</div>
+                        	`);
+                    	}else{
+                    		$img.find('.image_queue_belt').append(`
+                				<div class="image_waiting">
+									<img src="/img/circle/upload/${file}"/>
+								</div>
+                    		`);
+                    	}
+                    }
+                    $card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
+                }
+                
+                if (postVO.reples != null && postVO.reples.length>0) {
+                	var reple_container= `
+                		<div class="card_foot_comment">
+	                		<div class="scroll_box">
+		                		<div class="scroll_box_inner">
+		                		</div>
+	                		</div>
+                		</div>
+                		`;
+                	var $comment = $(reple_container);
+                	for (const reple of postVO.reples) {
+                    	if(reple.reple_content!=null && reple.reple_content!=''){
+                    		
+                    		$comment.find('.scroll_box_inner').append(`
+                				<div class="card_comment" data-reple_code="${reple.reple_code}">
+	                				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
+		                				<img class="small_img" src="/img/user/profiles/${reple.writer_thumbnail_path}"/>
+	                				</div>
+	                				<div class="card_comment_body">
+		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.writer_nickname}</div>
+		                				<div class="card_comment_content">${reple.reple_content}</div>
+		                				<div class="card_comment_time">
+		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
+		                				<span>${auto_format_date(reple.reple_time)}</span>
+		                				</div>
+	                				</div>
+                				</div>
+                    		`);
+                    	}
+                    }
+                	$card.find('.card_foot').append($comment);
+                }
+        	}
+        	$('.unity_cards').scrollTop(0);
         },
         error: function(xhr, status, error) {
         }

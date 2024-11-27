@@ -104,15 +104,11 @@
 	
 	<select id="selectUnities" resultType="UnityVO">
 		select
-		    unt.unity_code as unity_code,
-		    unt.unity_name as unity_name,
-		    unt.unity_tag as unity_tag,
-		    unt.unity_thumbnail_path as unity_thumbnail_path,
-		    (select up.unity_post_title
-		     from _ringo_unity_post up
-		     where up.unity_post_place = unt.unity_code
-		     order by up.unity_post_time desc
-		     limit 1) as unity_last_post,
+		    unt.unity_code,
+		    unt.unity_name,
+		    unt.unity_tag,
+		    unt.unity_thumbnail_path,
+		    unt.unity_intro,
 		    'joined' as unity_type
 		from _ringo_unity unt
 		join _ringo_unity_member untm ON unt.unity_code = untm.unity_code
@@ -121,10 +117,10 @@
 		union all
 		
 		select
-		    unt.unity_code as unity_code,
-		    unt.unity_name as unity_name,
-		    unt.unity_tag as unity_tag,
-		    unt.unity_thumbnail_path as unity_thumbnail_path,
+		    unt.unity_code,
+		    unt.unity_name,
+		    unt.unity_tag,
+		    unt.unity_thumbnail_path,
 		    NULL as unity_last_post,
 		    'favorite' as unity_type
 		from _ringo_unity unt

@@ -38,7 +38,7 @@ import io.swagger.annotations.Api;
 
 @Controller
 @RequestMapping(value = "/main/*")
-public class MainController {
+public class PostController {
 	
 	@Inject
 	private UserService uService;
@@ -51,31 +51,10 @@ public class MainController {
 	@Inject
 	private PostService pService;
 	
-	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
+	private static final Logger logger = LoggerFactory.getLogger(PostController.class);
 	
-	private String uploadPath_circle = "C:/ringo_files/circle/upload/";
-	private String uploadPath_unity = "C:/ringo_files/unity/upload/";
-	
-	public Integer getCode(String user_fcode) {
-	    if (user_fcode.contains("_")) {
-	        return Integer.parseInt(user_fcode.split("_")[0]);
-	    }
-	    return Integer.parseInt(user_fcode);
-	}
-	
-	public Integer getPrivate(String user_fcode) {
-	    if (user_fcode.contains("_")) {
-	        return Integer.parseInt(user_fcode.split("_")[1]);
-	    }
-	    return null;
-	}
-	
-	@RequestMapping(value = "/home", method = RequestMethod.GET)
-	public String mainHomeGET(HttpSession session, UserVO vo) {
-		logger.debug("mainHomeGET(MemberVO) - vo : "+vo);
-		
-		return "home";
-	}
+	private String uploadPath_circle_upload = "C:/ringo_files/circle/upload/";
+	private String uploadPath_unity_upload = "C:/ringo_files/unity/upload/";
 	
 	@RequestMapping(value = "/circle", method = RequestMethod.GET)
 	@ResponseBody

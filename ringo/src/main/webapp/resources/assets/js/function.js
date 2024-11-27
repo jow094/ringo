@@ -654,7 +654,7 @@ function validate_unity_name(input) {
     
     if (unity_name === '') {
         set_unfinished(input, 'row');
-        set_hint(input, '* 4~20자리의 유니티 이름을 입력 해주세요.', 'annotation_message');
+        set_hint(input, '* 4~30자리의 유니티 이름을 입력 해주세요.', 'annotation_message');
     }
     else if (unity_name.startsWith('_')) {
         set_failed(input, 'row');
@@ -664,9 +664,9 @@ function validate_unity_name(input) {
         set_failed(input, 'row');
         set_hint(input, '* 사용할 수 없는 문자가 포함되어 있습니다.', 'failed_message');
     }
-    else if (unity_name.length < 4 || unity_name.length > 20) {
+    else if (unity_name.length < 4 || unity_name.length > 30) {
         set_failed(input, 'row');
-        set_hint(input, '* 유니티 이름은 4~20자리여야 합니다.', 'failed_message');
+        set_hint(input, '* 유니티 이름은 4~30자리여야 합니다.', 'failed_message');
     }
     else {
     	check_duple(input, function(response) {
@@ -932,6 +932,7 @@ function add_image(input) {
     if($(input).closest('.unity_banner').length>0){
     	setTimeout(function() {
     		select_banner_setting();
+    		$(input).closest('.picture_content').next('img').css('transition','object-position 0s');
     	},10);
     }
 }

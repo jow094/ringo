@@ -21,34 +21,45 @@ public class PostServiceImpl implements PostService {
 	private PostDAO pdao;
 	
 	@Override
-	public Integer uploadCirclePost(PostVO vo) {
-		logger.debug("uploadPost(PostVO) - vo : "+vo);
-		return pdao.insertCirclePost(vo);
+	public Integer getLastCirclePostCode() {
+		return pdao.selectLastCirclePostCode();
 	}
 	
 	@Override
-	public Integer getLastCirclePostCode() {
-		logger.debug("getLastUserCode()");
-		return pdao.selectLastCirclePostCode();
+	public Integer uploadCirclePost(PostVO vo) {
+		return pdao.insertCirclePost(vo);
 	}
 
 	@Override
 	public List<PostVO> getCirclePost(String user_code) {
-		logger.debug("getCirclePost(Integer user_code) - user_code : "+user_code);
 		return pdao.selectCirclePost(user_code);
 	}
 
 	@Override
+	public Integer getLastUnityPostCode() {
+		return pdao.selectLastUnityPostCode();
+	}
+	
+	@Override
+	public Integer uploadUnityPost(PostVO vo) {
+		return pdao.insertUnityPost(vo);
+	}
+	
+	@Override
+	public List<PostVO> getUnityPost(String post_code) {
+		return pdao.selectUnityPost(post_code);
+	}
+	
+	@Override
 	public Integer uploadReple(RepleVO vo) {
-		logger.debug("uploadReple(RepleVO) - vo : "+vo);
 		return pdao.insertReple(vo);
 	}
 
 	@Override
 	public List<RepleVO> getReple(RepleVO vo) {
-		logger.debug("getReple(RepleVO) - vo : "+vo);
 		return pdao.selectReple(vo);
 	}
+
 	
 	
 	

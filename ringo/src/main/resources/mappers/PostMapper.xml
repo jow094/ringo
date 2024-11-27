@@ -29,6 +29,31 @@
 	    </collection>
 	</resultMap>
 	
+	<resultMap id="selectUnityPost_Map" type="PostVO">
+	    <result property="post_code" column="post_code"/>
+	    <result property="post_writer" column="post_writer"/>
+	    <result property="post_content" column="post_content"/>
+	    <result property="post_title" column="post_title"/>
+	    <result property="post_tag" column="post_tag"/>
+	    <result property="post_time" column="post_time"/>
+	    <result property="post_file_path" column="post_file_path"/>
+	    <result property="post_recomm_count" column="post_recomm_count"/>
+	    <result property="post_recomm_user" column="post_recomm_user"/>
+	    <result property="post_ismodify" column="post_ismodify"/>
+	    <result property="writer_thumbnail_path" column="writer_thumbnail_path"/>
+	    <result property="writer_nickname" column="writer_nickname"/>
+	    
+	    <collection property="reples" ofType="RepleVO">
+	        <result property="reple_code" column="reple_code"/>
+	        <result property="writer_nickname" column="r_writer_nickname"/>
+	        <result property="writer_thumbnail_path" column="r_writer_thumbnail_path"/>
+	        <result property="reple_writer" column="reple_writer"/>
+	        <result property="reple_content" column="reple_content"/>
+	        <result property="reple_time" column="reple_time"/>
+	        <result property="reple_recomm_count" column="reple_recomm_count"/>
+	    </collection>
+	</resultMap>
+	
 	<select id="selectLastCirclePostCode" resultType="Integer">
 		select max(cast(substring_index(post_code, '_', -1) as unsigned)) from _ringo_circle_post where post_code like 'cp_%'
 	</select>
@@ -70,12 +95,49 @@
     	 order by cp.post_time desc, r.reple_time desc
 	</select>
 	
-	<select id="selectReple" resultType="RepleVO">
-		select r.*, u.user_thumbnail_path as writer_thumbnail_path, u.user_nickname as writer_nickname
-   		 from _ringo_reple r
-    	 join _ringo_user u on r.reple_writer = u.user_code
-    	 where r.reple_target = #{reple_target}
-    	 order by r.reple_time desc
+	<select id="selectLastUnityPostCode" resultType="Integer">
+		select max(cast(substring_index(post_code, '_', -1) as unsigned)) from _ringo_unity_post where post_code like 'up_%'
+	</select>
+	
+	<insert id="insertUnityPost" parameterType="PostVO">
+        insert into _ringo_unity_post (
+        	post_code,
+        	post_place,
+            post_writer,
+            post_title,
+            post_content,
+            post_tag,
+            post_file_path
+        ) values (
+            #{post_code},
+            #{post_place},
+            #{post_writer},
+            #{post_title},
+            #{post_content},
+            #{post_tag},
+            #{post_file_path}
+        )
+    </insert>
+	
+	<select id="selectUnityPost" resultMap="selectUnityPost_Map">
+		select up.*, 
+		 u1.user_thumbnail_path as writer_thumbnail_path, 
+		 u1.user_nickname as writer_nickname,
+		 r.reple_code, 
+		 r.reple_writer, 
+		 r.reple_content, 
+		 r.reple_time,
+		 r.reple_recomm_count,
+		 u2.user_thumbnail_path as r_writer_thumbnail_path, 
+		 u2.user_nickname as r_writer_nickname
+		 
+   		 from _ringo_unity_post up
+    	 join _ringo_user u1 on up.post_writer = u1.user_code
+    	 left join _ringo_reple r on r.reple_target = up.post_code
+    	 left join _ringo_user u2 on r.reple_writer = u2.user_code
+    	 
+    	 where up.post_code = #{post_code}
+    	 order by up.post_time desc, r.reple_time desc
 	</select>
 	
 	<insert id="insertReple" parameterType="PostVO">
@@ -89,6 +151,15 @@
             #{reple_content}
         )
     </insert>
+    
+	<select id="selectReple" resultType="RepleVO">
+		select r.*, u.user_thumbnail_path as writer_thumbnail_path, u.user_nickname as writer_nickname
+   		 from _ringo_reple r
+    	 join _ringo_user u on r.reple_writer = u.user_code
+    	 where r.reple_target = #{reple_target}
+    	 order by r.reple_time desc
+	</select>
+	
 
 	
 </mapper>  
