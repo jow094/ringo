@@ -77,90 +77,31 @@ public class MainController {
 		return "home";
 	}
 	
-	@RequestMapping(value = "/circle", method = RequestMethod.GET)
+	@RequestMapping(value = "/reple", method = RequestMethod.POST)
 	@ResponseBody
-	public List<PostVO> mainCircleGET(HttpSession session, String user_code) {
-		if(user_code==null) {
-			user_code = (String)session.getAttribute("user_code");
+	public Integer replePOST(HttpSession session, RepleVO vo) {
+		logger.debug("replePOST(RepleVO vo) - vo : "+vo);
+		
+		Integer last_reple_code = pService.getLastRepleCode();
+		
+		if(last_reple_code==null) {
+			last_reple_code = 0;
 		}
 		
-		logger.debug("mainCircleGET(String user_code) - user_code : "+user_code);
-		return pService.getCirclePost(user_code);
-	}
-	
-	@RequestMapping(value = "/circle", method = RequestMethod.POST)
-	@ResponseBody
-	public Integer mainCirclePOST(HttpSession session, PostVO vo) {
-		logger.debug("maincirclePOST(MemberVO) - vo : "+vo);
+		String reple_code = "rp_"+(last_reple_code+1);
 		
-		Integer last_post_code = pService.getLastCirclePostCode();
+		vo.setReple_writer((String)session.getAttribute("user_code"));
+		vo.setReple_code(reple_code);
 		
-		if(last_post_code==null) {
-			last_post_code = 0;
-		}
-		
-		String post_code = "cp_"+(last_post_code+1);
-		String writer = (String)session.getAttribute("user_code");
-		
-		vo.setPost_code(post_code);
-		vo.setPost_writer(writer);
-        
-		try {
-			List<MultipartFile> files = vo.getPosting_files(); 
-			StringBuilder post_file_path = new StringBuilder();
-			
-			if(files != null && !files.isEmpty()) {
-				int i = 1;
-				for (MultipartFile file : files) {
-				    if (!file.isEmpty()) {
-				        String originalFileName = file.getOriginalFilename();
-		
-				        String extension = "";
-				        if (originalFileName != null && originalFileName.contains(".")) {
-				            extension = originalFileName.substring(originalFileName.lastIndexOf("."));
-				        }
-		
-				        String fileName = post_code + "_" + i + extension;
-		
-				        if (post_file_path.length() > 0) {
-				        	post_file_path.append(",");
-				        }
-				        post_file_path.append(fileName);
-		
-				        File dest = new File(uploadPath_circle + fileName);
-				        try {
-				            file.transferTo(dest);
-				        } catch (IOException e) {
-				            e.printStackTrace();
-				        }
-		
-				        i++;
-				    }
-				}
-			}
-			
-			vo.setPost_file_path(post_file_path.toString());
-			
-			return pService.uploadCirclePost(vo);
-			
-		} catch (Exception e) {
-	    	return 0;
-	    }
+		return pService.uploadReple(vo);
 	}
 	
 	@RequestMapping(value = "/reple", method = RequestMethod.GET)
 	@ResponseBody
-	public List<RepleVO> mainRepleGET(HttpSession session, RepleVO vo) {
+	public List<RepleVO> repleGET(HttpSession session, RepleVO vo) {
 		logger.debug("repleGET(RepleVO vo) - vo : "+vo);
 		
 		return pService.getReple(vo);
 	}
 	
-	@RequestMapping(value = "/reple", method = RequestMethod.POST)
-	@ResponseBody
-	public Integer mainReplePOST(HttpSession session, RepleVO vo) {
-		logger.debug("replePOST(RepleVO vo) - vo : "+vo);
-		vo.setReple_writer((String)session.getAttribute("user_code"));
-		return pService.uploadReple(vo);
-	}
 }

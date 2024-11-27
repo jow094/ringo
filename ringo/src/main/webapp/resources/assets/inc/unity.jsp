@@ -388,26 +388,28 @@
 		<!-- unity home -->
 		<div class="unity_home main_card_content expanded">
 			<div class="unity_menu">
-				<div class="menu_tag" onclick="col_toggle('.favorite_unities',this)">
+				<div class="menu_tag" onclick="col_toggle('.favorite_unities',$(this).find('i'))">
 					<span>즐겨찾기</span>
-					<i class="fas fa-chevron-circle-up"></i>
+					<i class="material-symbols-outlined xlf">expand_circle_up</i>
 				</div>
 				<div class="favorite_unities expanded">
 				</div>
 			</div>
 			<div class="unity_article">
 				<div class="unities_container">
-					<div class="inner_title">가입한 유니티</div>
+					<div class="inner_title h30">
+						가입한 유니티
+					</div>
 					<div class="joined_unities unities expanded"></div>
 				</div>	
 				<div class="unities_container">
-					<div class="inner_title" onclick="col_toggle($(this).next('.unities'),this)">
+					<div class="inner_title h30" onclick="col_toggle($(this).next('.unities'),this)">
 						추천 유니티
 					</div>
 					<div class="recomm_unities unities expanded"></div>
 				</div>		
 				<div class="unities_container">
-					<div class="inner_title" onclick="col_toggle($(this).next('.unities'),this)">
+					<div class="inner_title h30" onclick="col_toggle($(this).next('.unities'),this)">
 						근처 유니티
 					</div>
 					<div class="near_unities unities expanded"></div>

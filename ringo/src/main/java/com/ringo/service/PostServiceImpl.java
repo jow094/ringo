@@ -21,6 +21,21 @@ public class PostServiceImpl implements PostService {
 	private PostDAO pdao;
 	
 	@Override
+	public Integer getLastRepleCode() {
+		return pdao.selectLastRepleCode();
+	}
+	
+	@Override
+	public Integer uploadReple(RepleVO vo) {
+		return pdao.insertReple(vo);
+	}
+
+	@Override
+	public List<RepleVO> getReple(RepleVO vo) {
+		return pdao.selectReple(vo);
+	}
+	
+	@Override
 	public Integer getLastCirclePostCode() {
 		return pdao.selectLastCirclePostCode();
 	}
@@ -49,18 +64,4 @@ public class PostServiceImpl implements PostService {
 	public List<PostVO> getUnityPost(String post_code) {
 		return pdao.selectUnityPost(post_code);
 	}
-	
-	@Override
-	public Integer uploadReple(RepleVO vo) {
-		return pdao.insertReple(vo);
-	}
-
-	@Override
-	public List<RepleVO> getReple(RepleVO vo) {
-		return pdao.selectReple(vo);
-	}
-
-	
-	
-	
 }

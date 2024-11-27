@@ -439,7 +439,7 @@ function submit_circle(e){
 
     $.ajax({
     	type: 'POST',
-        url: '/main/circle/',
+        url: '/circle/post/',
         data: formData,
         processData: false,
         contentType: false,
@@ -559,7 +559,7 @@ function get_circle_post(user_code){
 	
 	$.ajax({
         type: "GET",
-        url: "/main/circle/",
+        url: "/circle/post/",
         data: {user_code:user_code},
         dataType: "json",
         success: function(data) {
@@ -604,12 +604,18 @@ function get_circle_post(user_code){
 							</div>
 						</div>
 						<div class="card_foot">
-							<div class="card_foot_comment_input">
-								<textarea onkeydown="if(event.key === 'Enter'){event.preventDefault(); submit_reple(this)}"></textarea>
-								<button type="button" onclick="submit_reple($(this).prev())">
-									<i class="material-symbols-outlined">send</i>
-								</button>
+							<div class="reple_button_section" onclick="col_toggle($(this).next('.reple_container'),$(this).find('.material-symbols-outlined'))">
+								<span class="cell">댓글 ${postVO.post_reple_count}개</span>
+								<i class="material-symbols-outlined">expand_circle_down</i>
 							</div>
+							<div class="reple_container col_shrinked">
+								<div class="card_foot_comment_input">
+									<textarea onkeydown="if(event.key === 'Enter'){event.preventDefault(); submit_reple(this)}"></textarea>
+									<button type="button" onclick="submit_reple($(this).prev())">
+										<i class="material-symbols-outlined">send</i>
+									</button>
+								</div>
+        					</div>
 						</div>
 					</div>
 	        	`;
@@ -691,7 +697,7 @@ function get_circle_post(user_code){
                     		`);
                     	}
                     }
-                	$card.find('.card_foot').append($comment);
+                	$card.find('.reple_container').append($comment);
                 }
         	}
         	target.scrollTop(0);
@@ -755,27 +761,27 @@ function get_person_profile(user_code){
         	$('.user_profile_container .profile_container_head_tools').html(`
         		<div class="profile_container_head_tool">
 					<i class="material-symbols-outlined">sms</i>
-					메세지
+					<span>메세지</span>
 				</div>
 				<div class="profile_container_head_tool">
 					<i class="material-symbols-outlined">for_you</i>
-					팔로우
+					<span>팔로우</span>
 				</div>
 				<div class="profile_container_head_tool">
 					<i class="material-symbols-outlined">bookmark_star</i>
-					즐겨찾기
+					<span>즐겨찾기</span>
 				</div>
 				<div class="profile_container_head_tool">
 					<i class="material-symbols-outlined">block</i>
-					차단
+					<span>차단</span>
 				</div>
 				<div class="profile_container_head_tool">
 					<i class="material-symbols-outlined">partner_reports</i>
-					신고
+					<span>신고</span>
 				</div>
     			<div class="profile_container_head_tool">
 	    			<i class="material-symbols-outlined">contract_edit</i>
-	    			수정
+	    			<span>수정</span>
     			</div>
         	`);
         	$('.user_profile_container .profile_container_body .scroll_box_inner').html(`
@@ -839,7 +845,7 @@ function get_unities(){
         				<div class="favorite_unity" data-unity_code="${unity.unity_code}" onclick="enter_unity($(this).attr('data-unity_code'))">
 							<img src="/img/unity/thumbnail/${unity.unity_thumbnail_path}"></img>
 							<div>${unity.unity_name}</div>
-							<i class="fa-solid fa-circle-xmark"></i>
+							<i class="fa-solid fa-circle-xmark pin"></i>
 						</div>
         			`);
         		}else{
@@ -953,27 +959,27 @@ function get_unity_profile(unity_code){
         	$('.unity_profile_container .profile_container_head_tools').html(`
     			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity($(this).attr('data-unity_code'))">
 	    			<i class="material-symbols-outlined">other_houses</i>
-	    			메인
+	    			<span>메인</span>
     			</div>
     			<div class="profile_container_head_tool" data-unity_code="${unity_code}">
         			<i class="material-symbols-outlined">input_circle</i>
-        			가입
+        			<span>가입</span>
     			</div>
 				<div class="profile_container_head_tool" data-unity_code="${unity_code}">
 					<i class="material-symbols-outlined">bookmark_star</i>
-					즐겨찾기
+					<span>즐겨찾기</span>
 				</div>
 				<div class="profile_container_head_tool" data-unity_code="${unity_code}">
 					<i class="material-symbols-outlined">block</i>
-					차단
+					<span>차단</span>
 				</div>
 				<div class="profile_container_head_tool" data-unity_code="${unity_code}">
 					<i class="material-symbols-outlined">partner_reports</i>
-					신고
+					<span>신고</span>
 				</div>
     			<div class="profile_container_head_tool" data-unity_code="${unity_code}">
 	    			<i class="material-symbols-outlined">contract_edit</i>
-	    			수정
+	    			<span>수정</span>
     			</div>
         	`);
         	
@@ -991,11 +997,11 @@ function get_unity_profile(unity_code){
         	        $categoryContainer = $('<div class="inner_box mw p5 mgb"></div>')
         	            .attr('data-category', untCodeCategory)
         	            .append(`
-        	                <div class="inner_title">
+        	                <div class="inner_title h30" onclick="inner_box_toggle(this)">
         	                    ${boardData.unity_board_category}
-        	                    <i class="material-symbols-outlined col_tgb" onclick="inner_box_toggle(this)">expand_circle_up</i>
+        	                    <i class="material-symbols-outlined col_tgb">expand_circle_up</i>
         	                </div>
-        	                <div class="inner_content expanded gap5 back">
+        	                <div class="inner_content expanded gap5">
         	                </div>
         	            `);
 
@@ -1003,7 +1009,7 @@ function get_unity_profile(unity_code){
         	    }
 
         	    $categoryContainer.find('.inner_content').append(`
-        	        <div class="unity_board sf" data-unity_board_code="${board}">${boardData.unity_board_name}</div>
+        	        <div class="unity_board" data-unity_board_code="${board}" onclick="get_unity_board()">${boardData.unity_board_name}</div>
         	    `);
         	}
 
@@ -1146,12 +1152,18 @@ function get_unity_post(post_code){
 							</div>
 						</div>
 						<div class="card_foot">
-							<div class="card_foot_comment_input">
-								<textarea onkeydown="if(event.key === 'Enter'){event.preventDefault(); submit_reple(this)}"></textarea>
-								<button type="button" onclick="submit_reple($(this).prev())">
-									<i class="material-symbols-outlined">send</i>
-								</button>
+							<div class="reple_button_section" onclick="col_toggle($(this).next('.reple_container'),$(this).find('.material-symbols-outlined'))">
+								<span class="cell">댓글 ${postVO.post_reple_count}개</span>
+								<i class="material-symbols-outlined">expand_circle_down</i>
 							</div>
+							<div class="reple_container col_shrinked">
+								<div class="card_foot_comment_input">
+									<textarea onkeydown="if(event.key === 'Enter'){event.preventDefault(); submit_reple(this)}"></textarea>
+									<button type="button" onclick="submit_reple($(this).prev())">
+										<i class="material-symbols-outlined">send</i>
+									</button>
+								</div>
+        					</div>
 						</div>
 					</div>
 	        	`;
@@ -1233,7 +1245,7 @@ function get_unity_post(post_code){
                     		`);
                     	}
                     }
-                	$card.find('.card_foot').append($comment);
+                	$card.find('.reple_container').append($comment);
                 }
         	}
         	$('.unity_cards').scrollTop(0);

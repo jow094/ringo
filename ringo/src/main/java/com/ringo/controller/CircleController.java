@@ -37,40 +37,31 @@ import com.ringo.service.AuthenticationService;
 import io.swagger.annotations.Api;
 
 @Controller
-@RequestMapping(value = "/main/*")
-public class PostController {
+@RequestMapping(value = "/circle/*")
+public class CircleController {
 	
-	@Inject
-	private UserService uService;
-	@Inject
-	private MessageService msgService;
-	@Inject
-    private TwilloService tService;
-	@Inject
-	private AuthenticationService emailService;
 	@Inject
 	private PostService pService;
 	
-	private static final Logger logger = LoggerFactory.getLogger(PostController.class);
+	private static final Logger logger = LoggerFactory.getLogger(CircleController.class);
 	
-	private String uploadPath_circle_upload = "C:/ringo_files/circle/upload/";
-	private String uploadPath_unity_upload = "C:/ringo_files/unity/upload/";
+	private String uploadPath = "C:/ringo_files/circle/upload/";
 	
-	@RequestMapping(value = "/circle", method = RequestMethod.GET)
+	@RequestMapping(value = "/post", method = RequestMethod.GET)
 	@ResponseBody
-	public List<PostVO> mainCircleGET(HttpSession session, String user_code) {
+	public List<PostVO> circlePostGET(HttpSession session, String user_code) {
 		if(user_code==null) {
 			user_code = (String)session.getAttribute("user_code");
 		}
 		
-		logger.debug("mainCircleGET(String user_code) - user_code : "+user_code);
+		logger.debug("circlePostsGET(String user_code) - user_code : "+user_code);
 		return pService.getCirclePost(user_code);
 	}
 	
-	@RequestMapping(value = "/circle", method = RequestMethod.POST)
+	@RequestMapping(value = "/post", method = RequestMethod.POST)
 	@ResponseBody
-	public Integer mainCirclePOST(HttpSession session, PostVO vo) {
-		logger.debug("maincirclePOST(MemberVO) - vo : "+vo);
+	public Integer circlePostPOST(HttpSession session, PostVO vo) {
+		logger.debug("circlePostPOST(MemberVO) - vo : "+vo);
 		
 		Integer last_post_code = pService.getLastCirclePostCode();
 		
@@ -106,7 +97,7 @@ public class PostController {
 				        }
 				        post_file_path.append(fileName);
 		
-				        File dest = new File(uploadPath_circle + fileName);
+				        File dest = new File(uploadPath + fileName);
 				        try {
 				            file.transferTo(dest);
 				        } catch (IOException e) {
@@ -125,21 +116,5 @@ public class PostController {
 		} catch (Exception e) {
 	    	return 0;
 	    }
-	}
-	
-	@RequestMapping(value = "/reple", method = RequestMethod.GET)
-	@ResponseBody
-	public List<RepleVO> mainRepleGET(HttpSession session, RepleVO vo) {
-		logger.debug("repleGET(RepleVO vo) - vo : "+vo);
-		
-		return pService.getReple(vo);
-	}
-	
-	@RequestMapping(value = "/reple", method = RequestMethod.POST)
-	@ResponseBody
-	public Integer mainReplePOST(HttpSession session, RepleVO vo) {
-		logger.debug("replePOST(RepleVO vo) - vo : "+vo);
-		vo.setReple_writer((String)session.getAttribute("user_code"));
-		return pService.uploadReple(vo);
 	}
 }

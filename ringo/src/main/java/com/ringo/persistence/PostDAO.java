@@ -6,6 +6,11 @@ import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
 
 public interface PostDAO {
+	
+	public Integer selectLastRepleCode();
+	public Integer insertReple(RepleVO vo);
+	public List<RepleVO> selectReple(RepleVO vo);
+	
 	public Integer selectLastCirclePostCode();
 	public Integer insertCirclePost(PostVO vo);
 	public List<PostVO> selectCirclePost(String user_code);
@@ -17,6 +22,5 @@ public interface PostDAO {
 	
 	
 	
-	public Integer insertReple(RepleVO vo);
-	public List<RepleVO> selectReple(RepleVO vo);
+	
 }

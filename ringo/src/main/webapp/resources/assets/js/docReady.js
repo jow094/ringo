@@ -3,10 +3,6 @@ $(document).ready(function() {
 	main_show('around');
 	get_coordinates();
 	
-	$(document).on('mouseenter', '[onclick]', function() {
-	    $(this).css('cursor', 'pointer');
-	});
-	
 	window.onclick = function(e) {
 		if ($('.join_modal:not(.none)').length > 0) {
 	        if (!$(e.target).closest('.modal_content').length && !$(e.target).closest('.modal_button').length) {
