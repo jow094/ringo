@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ringo.domain.UserVO;
 import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
+import com.ringo.domain.UnityMemberVO;
 import com.ringo.domain.UnityVO;
 import com.ringo.domain.UserVO;
 import com.ringo.service.UserService;
@@ -61,12 +62,14 @@ public class UnityController {
 	private String uploadPath_unity_thumbnail = "C:/ringo_files/unity/thumbnail/";
 	private String uploadPath_unity_banner = "C:/ringo_files/unity/banner/";
 	
-	@RequestMapping(value = "/main", method = RequestMethod.GET)
+	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	@ResponseBody
-	public UnityVO unityMainGET(HttpSession session, UnityVO vo) {
-		logger.debug("unityMainGET(UnityVO) - vo : "+vo);
+	public List<UnityVO> unityHomeGET(HttpSession session) {
+		logger.debug("unityHomeGET()");
 		
-		return null;
+		String user_code = (String)session.getAttribute("user_code");
+		
+		return unityService.getUnities(user_code);
 	}
 	
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -130,7 +133,6 @@ public class UnityController {
 			
 			vo.setUnity_code(unity_code);
 			vo.setUnity_admin((String)session.getAttribute("user_code"));
-			vo.setUser_code((String)session.getAttribute("user_code"));
 			vo.setUnity_thumbnail_path(unity_thumbnail_path);
 			vo.setUnity_banner_path(unity_banner_path);
 			vo.setUnity_member_grade("admin");
@@ -140,9 +142,15 @@ public class UnityController {
 			Integer result = unityService.createUnity(vo);
 			
 			if(result == 1) {
-				Integer joinResult = unityService.joinUnity(vo);
+				
+				UnityMemberVO mvo = new UnityMemberVO();
+				mvo.setUnity_code(vo.getUnity_code());
+				mvo.setUser_code(vo.getUser_code());
+				mvo.setUnity_member_grade("admin");
+				
+				Integer joinResult = unityService.joinUnity(mvo);
 				if(joinResult == 1) {
-					unityService.modifyUnityMember(vo);
+					unityService.modifyUnityMember(mvo);
 				}
 			}
 			return result;
@@ -152,30 +160,39 @@ public class UnityController {
 	    }
 	}
 	
-	@RequestMapping(value = "/home", method = RequestMethod.GET)
+	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	@ResponseBody
-	public List<UnityVO> unityHomeGET(HttpSession session) {
-		logger.debug("unityHomeGET()");
-		
-		String user_code = (String)session.getAttribute("user_code");
-		
-		return unityService.getUnities(user_code);
-	}
-	
-	@RequestMapping(value = "/unity", method = RequestMethod.GET)
-	@ResponseBody
-	public UnityVO unityUnityGET(HttpSession session, String unity_code) {
+	public UnityVO unityProfileGET(HttpSession session, String unity_code) {
 		logger.debug("unityUnityGET(Integer unity_code) - unity_code : "+unity_code);
 		
 		UnityVO vo = new UnityVO();
 		vo.setUnity_code(unity_code);
 		vo.setUser_code((String)session.getAttribute("user_code"));
 		
-		UnityVO result = unityService.getUnity(vo);
+		return unityService.getUnityProfile(vo);
+	}
+	
+	@RequestMapping(value = "/main", method = RequestMethod.GET)
+	@ResponseBody
+	public UnityVO unityMainGET(HttpSession session, String unity_code) {
+		logger.debug("unityMainGET(Integer unity_code) - unity_code : "+unity_code);
+		
+		UnityVO vo = new UnityVO();
+		vo.setUnity_code(unity_code);
+		vo.setUser_code((String)session.getAttribute("user_code"));
+		
+		UnityVO result = unityService.getUnityMain(vo);
 		
 		logger.debug("result : "+result);
 		return result;
 	}
+	
+	
+	
+	
+	
+	
+	
 	
 	@RequestMapping(value = "/unity", method = RequestMethod.POST)
 	@ResponseBody

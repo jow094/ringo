@@ -23,20 +23,21 @@ public class UnityVO {
 	private String unity_thumbnail_path;
 	private String unity_banner_path;
 	private String unity_banner_set;
-	private Timestamp unity_create_time;
+	private Timestamp unity_since;
 	private String unity_grade;
 	private String unity_member_count;
 
 	private String unity_last_post;
 	
 	private List<UnityBoardVO> unity_board;
-	private List<UnityMemberVO> unity_member;
 	private List<PostVO> unity_post;
 	
 	private MultipartFile unity_thumbnail_file;
 	private MultipartFile unity_banner_file;
 
 	private String user_code;
+	private UnityMemberVO unity_member;
 	private String unity_member_grade;
+	
 	private String unity_type;
 }

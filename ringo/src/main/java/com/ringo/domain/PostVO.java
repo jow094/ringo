@@ -13,7 +13,9 @@ public class PostVO {
 	private String writer_nickname;
 	private String post_code;
 	private String post_place;
+	private String post_place_name;
 	private String post_writer;
+	private String post_title;
 	private String post_content;
 	private Timestamp post_time;
 	private List<MultipartFile> posting_files;

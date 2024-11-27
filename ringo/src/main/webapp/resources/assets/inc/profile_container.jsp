@@ -22,90 +22,12 @@
 	<div class="unity_profile_container none expanded">
 		<div class="profile_container_head">
 			<div class="profile_container_head_basic">
-				<img src="/img/unity/thumbnail/${unity_thumbnail_path}"/>
-				<div class="profile_container_head_basic_unity_name">
-				[부울경] 아마추어 풋살
-				</div>
-				<div class="profile_container_head_basic_info">
-				등급 : 2등급
-				</div>
-				<div class="profile_container_head_basic_info">
-				회원 수 : 171,239명
-				</div>
-				<div class="profile_container_head_basic_info">
-				유니티 정보들 좌측정렬
-				</div>
 			</div>
 			<div class="profile_container_head_tools">
-				<div class="profile_container_head_tool">
-					가입
-				</div>
-				<div class="profile_container_head_tool">
-					채팅
-				</div>
-				<div class="profile_container_head_tool">
-					나의 활동
-				</div>
-				<div class="profile_container_head_tool double">
-					<div>
-						<i class="fa-solid fa-ban"></i>
-						차단
-					</div>
-					<div>
-						<i class="fa-solid fa-message"></i>
-						신고
-					</div>
-				</div>
 			</div>
 		</div>
 		<div class="profile_container_body">
 			<div class="scroll_box">
-				<div class="scroll_box_inner">
-					<div class="user_infos">
-						<div class="user_info_box">
-							<div class="user_info_title">
-							게시판
-							</div>
-							<div class="user_info_content">
-							게시판
-							</div>
-							<div class="user_info_content">
-							게시판
-							</div>
-							<div class="user_info_content">
-							게시판
-							</div>
-						</div>
-						<div class="user_info_box">
-							<div class="user_info_title">
-							게시판
-							</div>
-							<div class="user_info_content">
-							게시판
-							</div>
-							<div class="user_info_content">
-							게시판
-							</div>
-							<div class="user_info_content">
-							게시판
-							</div>
-						</div>
-						<div class="user_info_box">
-							<div class="user_info_title">
-							게시판
-							</div>
-							<div class="user_info_content">
-							게시판
-							</div>
-							<div class="user_info_content">
-							게시판
-							</div>
-							<div class="user_info_content">
-							게시판
-							</div>
-						</div>
-					</div>
-				</div>
 			</div>
 		</div>
 	</div>

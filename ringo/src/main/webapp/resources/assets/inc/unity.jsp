@@ -1,13 +1,29 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="main_card main_unity none">
-	<div class="main_card_title">
-		<div class="unity_home_button" onclick="unity_home()" style="cursor:pointer;">
+
+	<div class="main_card_title unity_home_title expanded">
+		<div class="main_title_button" onclick="unity_home()">
 			<i class="material-symbols-outlined">forum</i>
 			<span>유니티</span>
 		</div>
 		<div class="title_button">
-			<i class="material-symbols-outlined" onclick="expand_create_unity()">add</i>
+			<i class="material-symbols-outlined" onclick="expand_create_unity()">add_link</i>
+			<i class="material-symbols-outlined" onclick="unity_home()">home</i>
+			<div class="input_wrapper">
+				<i class="material-symbols-outlined">search</i>
+				<input type="text"></input>
+			</div>
+		</div>
+	</div>
+	
+	<div class="main_card_title unity_main_title none expanded">
+		<div class="main_title_button" onclick="enter_unity()">
+			<i class="material-symbols-outlined">forum</i>
+			<span id="title_unity_name"></span>
+		</div>
+		<div class="title_button">
+			<i class="material-symbols-outlined" onclick="write_circle()">edit_note</i>
 			<i class="material-symbols-outlined" onclick="unity_home()">home</i>
 			<div class="input_wrapper">
 				<i class="material-symbols-outlined">search</i>
@@ -278,224 +294,95 @@
 	
 	<div class="main_card_body unity_main_container expanded">
 	
-	<div class="in_unity none expanded">
 		<!-- in_unity -->
-		<div class="in_unity_home expanded">
-			<div class="in_unity_banner">
-				<img src="/img/profiles/${user_thumbnail_path}"/>
-			</div>
-			<div class="in_unity_home_container">
-				<div class="in_unity_home_left_container">
-					<div class="unity_member_profile">
-						<div class="inner_box mw col">
-							<div class="inner_title h30"><i class="material-symbols-outlined mgr">counter_5</i>조우영</div>
-							<div class="scroll_box row">
-								<div class="unity_member_basic_info">
-									<div class="unity_member_infos">유니티 회원등급 :</div>
-									<div class="unity_member_infos">방문횟수 :</div>
-									<div class="unity_member_infos">가입일:</div>
+		<div class="in_unity br5 inset inner expanded">
+		
+			<!-- in_unity -->
+			<div class="in_unity_main none expanded">
+				<div class="in_unity_banner">
+				</div>
+				<div class="in_unity_home_container">
+					<div class="in_unity_home_left_container">
+						<div class="unity_member_profile">
+							<div class="inner_box mw col">
+								<div id="user_nickname" class="inner_title h30"><i class="material-symbols-outlined mgr" id="unity_member_grade_icon"></i><span class="cell mf"></span></div>
+								<div class="scroll_box row">
+									<div class="unity_member_basic_info">
+										<div id="unity_member_grade" class="unity_member_infos">유니티 회원등급 : <span class="cell"></span></div>
+										<div id="unity_member_visit_times" class="unity_member_infos">방문횟수 : <span class="cell"></span></div>
+										<div id="unity_member_since" class="unity_member_infos">가입일 : <span class="cell"></span></div>
+									</div>
+									<div class="unity_member_activity_info">
+										<div id="unity_member_write_count" class="unity_member_infos">작성한 게시글  : <span class="cell"></span></div>
+										<div id="unity_member_reple_count" class="unity_member_infos">작성한 댓글 : <span class="cell"></span></div>
+										<div id="unity_member_new_reple" class="unity_member_infos">새로 달린 댓글 : <span class="cell"></span></div>
+									</div>
 								</div>
-								<div class="unity_member_activity_info">
-									<div class="unity_member_infos">작성한 게시글 :</div>
-									<div class="unity_member_infos">작성한 댓글 :</div>
-									<div class="unity_member_infos">새로 달린 댓글 :</div>
+							</div>
+						</div>
+						<div class="unity_recent_post ff mw mh">
+							<div class="inner_box mw mh">
+								<div class="inner_title h30"><i class="material-symbols-outlined mgr">search_activity</i>최근 게시물</div>
+								<div class="scroll_box">
+									<div class="scroll_box_inner recent_post gap5">
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="unity_recent_post ff mw mh">
+					<div class="in_unity_home_right_container">
 						<div class="inner_box mw mh">
-							<div class="inner_title h30"><i class="material-symbols-outlined mgr">search_activity</i>최근 게시물</div>
+							<div class="inner_title h30"><i class="material-symbols-outlined mgr">local_fire_department</i>인기 게시물</div>
 							<div class="scroll_box">
-								<div class="scroll_box_inner">
-									<div class="post_card">
-										<div class="post_card_thumbnail">
-											<img class="small_img" src="/img/user/profiles/${user_thumbnail_path}"/>
-										</div>
-										<div class="post_card_body">
-											<div class="post_card_title">조우영 님의 게시물</div>
-											<div class="post_card_info">자유게시판</div>
-											<div class="post_card_info">ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</div>
-										</div>
-										<div class="post_card_footer">
-											<div class="post_card_info">
-												<i class="fa-regular fa-heart"></i><span>153</span>
-											</div>
-											<div class="post_card_info">
-												<i class="fa-regular fa-comment-dots"></i><span>13</span>
-											</div>
-											<div class="post_card_info">11:59</div>
-										</div>
-									</div>
+								<div class="scroll_box_inner hot_post gap5">
 								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="in_unity_home_right_container">
-					<div class="inner_box mw mh">
-						<div class="inner_title h30"><i class="material-symbols-outlined mgr">local_fire_department</i>인기 게시물</div>
-						<div class="scroll_box">
-							<div class="scroll_box_inner">
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-				
-				
-				
-		<div class="scroll_box none">
-			<div class="scroll_box_inner">
-				<div class="unity_board none">
-					<div class="unity_post_list">
-						<div class="unity_boardlist_header">
-							<div class="post_num">번호</div>
-							<div class="post_title">제목</div>
-							<div class="post_writer">작성자</div>
-							<div class="post_view">조회수</div>
-							<div class="post_time">일시</div>
-						</div>
-						<div class="unity_boardlist_body">
-							<div class="post_row">
-								<div class="post_num">1</div>
-								<div class="post_title">제목임ㄴㅋㅋㅋㅋㅋ</div>
-								<div class="post_writer">조우영</div>
-								<div class="post_view">2</div>
-								<div class="post_time">12:28</div>
-							</div>
-							<div class="post_row">
-								<div class="post_num">2</div>
-								<div class="post_title">제제목제목제목목</div>
-								<div class="post_writer">작성자</div>
-								<div class="post_view">441</div>
-								<div class="post_time">12:30</div>
-							</div>
-							<div class="post_row">
-								<div class="post_num">3</div>
-								<div class="post_title">제목</div>
-								<div class="post_writer">조우영</div>
-								<div class="post_view">123</div>
-								<div class="post_time">12:30</div>
+					
+					
+			<div class="in_unity_post none expanded">
+				<div class="inner_box max_div inner row ap10 gap5 inset">
+					<div class="unity_post_list_container expanded resizable">
+						<div class="max_div column" style="max-width:calc(100% - 20px);">
+							<div class="inner_title h30">게시판 이름</div>
+							<div class="inner_content">
+								<div class="post_list">
+									<div class="post_row">
+										<div>zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz</div>
+										<div><i class="fa-regular fa-comment-dots"></i><span>13</span></div>
+										<div><i class="fa-regular fa-heart"></i><span>125</span></div>
+										<div><i class="material-symbols-outlined sf">counter_5</i><span>조우영</span></div>
+										<div><span>12.01 11:29</span></div>
+									</div>
+									<div class="post_row">
+										<div>zzzzzzzzzz</div>
+										<div><i class="fa-regular fa-comment-dots"></i><span>1,123</span></div>
+										<div><i class="fa-regular fa-heart"></i><span>125</span></div>
+										<div><i class="material-symbols-outlined sf">counter_5</i><span>조우영</span></div>
+										<div><span>12.01 11:24</span></div>
+									</div>
+								</div>
 							</div>
 						</div>
-						<div class="unity_boardlist_footer">
-							<div>페이징처리</div>
-							<div>검색창</div>
+						<div class="container_side_button_section post_list_button resize_handle">
+							<i class="material-symbols-outlined">pan_zoom</i>
 						</div>
 					</div>
-				</div>
-				
-				<div class="unity_post none">
-					<div class="scroll_box_inner">
-						<!-- card start -->
-						<div class="card">
-							<div class="card_header">
-								<div class="card_header_img">
-									<img
-									src="/img/profiles/${user_thumbnail_path}"
-									style="width: 40px; height: 40px; border-radius: 50%; shrink:0; box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);"
-									/>
-								</div>
-								<div class="card_header_name">
-									작성자
-								</div>
-								<div class="card_header_tools">
-									<div class="card_header_tool">
-										<i class="fa-regular fa-heart" style="font-size: 20px;"></i>
-										<span>1,430</span>
-									</div>
-									<div class="card_header_tool">
-										<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
-										</div>
-									</div>
-								</div>
-								<div class="card_body">
-									<div class="card_body_content">
-										<div class="scroll_box">
-											<div class="scroll_box_inner">
-											본문
-											</div>
-										</div>
-									</div>
-									<div class="card_body_tags">
-										#태그
-									</div>
-								</div>
-								<div class="card_foot">
-									<div class="card_foot_comment_input">
-										<textarea></textarea>
-										<button type="button">
-											<i class="fa-solid fa-paper-plane"></i>
-										</button>
-									</div>
-									<div class="card_foot_comment">
-										<div class="scroll_box">
-											<div class="scroll_box_inner">
-												<div class="card_comment">
-													<div class="card_comment_thumbnail">
-														<img
-														src="/img/profiles/${user_thumbnail_path}"
-													style="width: 40px; height: 40px; border-radius: 30%;"
-													/>
-												</div>
-												<div class="card_comment_body">
-													<div class="card_comment_name">작성자</div>
-													<div class="card_comment_content">유니티,링크,메신저 채팅방,유니티 프로필,검색창,정보수정,가입절차</div>
-													<div class="card_comment_time">
-														<i class="fa-regular fa-thumbs-up"></i>36
-														<i class="fa-regular fa-thumbs-down"></i>12
-														<span>작성시간</span>
-													</div>
-												</div>
-											</div>
-											<div class="card_comment">
-												<div class="card_comment_thumbnail">
-													<img
-													src="/img/profiles/${user_thumbnail_path}"
-													style="width: 40px; height: 40px; border-radius: 30%;"
-													/>
-												</div>
-												<div class="card_comment_body">
-													<div class="card_comment_name">작성자</div>
-													<div class="card_comment_content">내용</div>
-													<div class="card_comment_time">
-														<i class="fa-regular fa-thumbs-up"></i>36
-														<i class="fa-regular fa-thumbs-down"></i>12
-														<span>작성시간</span>
-													</div>
-												</div>
-											</div>
-											<div class="card_comment">
-												<div class="card_comment_thumbnail">
-													<img
-													src="/img/profiles/${user_thumbnail_path}"
-													style="width: 40px; height: 40px; border-radius: 30%;"
-													/>
-												</div>
-												<div class="card_comment_body">
-													<div class="card_comment_name">작성자</div>
-													<div class="card_comment_content">내용</div>
-													<div class="card_comment_time">
-														<i class="fa-regular fa-thumbs-up"></i>36
-														<i class="fa-regular fa-thumbs-down"></i>12
-														<span>작성시간</span>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
+					
+					<div class="unity_post_container">
+						<div class="inner_box max_div ap10">
+							<div class="inner_content">
+								<div class="scroll_box_inner unity_cards">
 								</div>
 							</div>
 						</div>
-						<!-- card end -->
 					</div>
 				</div>
 			</div>
-		</div>
-		<!-- in unity -->
-	</div>	
+		</div>	
 		
 	
 		<!-- unity home -->

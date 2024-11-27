@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.ringo.domain.UnityVO;
 import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
+import com.ringo.domain.UnityMemberVO;
 
 @Repository
 public class UnityDAOImpl implements UnityDAO {
@@ -35,14 +36,14 @@ public class UnityDAOImpl implements UnityDAO {
 	}
 	
 	@Override
-	public Integer insertUnityMember(UnityVO vo) {
-		logger.debug("insertUnityMember(UnityVO vo) - vo : "+vo);
+	public Integer insertUnityMember(UnityMemberVO vo) {
+		logger.debug("insertUnityMember(UnityMemberVO vo) - vo : "+vo);
 		return sqlSession.insert(NAMESPACE + ".insertUnityMember",vo);		
 	}
 	
 	@Override
-	public Integer updateUnityMember(UnityVO vo) {
-		logger.debug("updateUnityMember(UnityVO vo) - vo : "+vo);
+	public Integer updateUnityMember(UnityMemberVO vo) {
+		logger.debug("updateUnityMember(UnityMemberVO vo) - vo : "+vo);
 		return sqlSession.update(NAMESPACE + ".updateUnityMember",vo);	
 	}
 
@@ -53,20 +54,42 @@ public class UnityDAOImpl implements UnityDAO {
 	
 	@Override
 	public List<UnityVO> selectUnities(String user_code) {
+		logger.debug("selectUnities(String user_code) - user_code : "+user_code);
 		return sqlSession.selectList(NAMESPACE + ".selectUnities",user_code);	
 	}
 	
 	@Override
 	public UnityVO selectUnity(UnityVO vo) {
+		logger.debug("selectUnity(UnityVO vo) - vo : "+vo);
 		return sqlSession.selectOne(NAMESPACE + ".selectUnity",vo);	
 	}
+	
+	@Override
+	public UnityVO selectUnityMain(UnityVO vo) {
+		logger.debug("selectUnityMain(UnityVO vo) - vo : "+vo);
+		return sqlSession.selectOne(NAMESPACE + ".selectUnityMain",vo);	
+	}
 
+	@Override
+	public List<PostVO> selectUnityBasicPost(UnityVO vo) {
+		logger.debug("selectUnityBasicPost(UnityVO vo) - vo : "+vo);
+		return sqlSession.selectList(NAMESPACE + ".selectUnityBasicPost",vo);	
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	@Override
 	public List<PostVO> selectUnityPost(UnityVO vo) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	@Override
 	public List<RepleVO> selectReple(UnityVO vo) {
 		// TODO Auto-generated method stub

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.ringo.domain.UnityVO;
 import com.ringo.domain.RepleVO;
+import com.ringo.domain.UnityMemberVO;
 import com.ringo.persistence.UnityDAO;
 import com.ringo.persistence.UnityDAO;
 
@@ -37,12 +38,12 @@ public class UnityServiceImpl implements UnityService {
 	}
 
 	@Override
-	public Integer joinUnity(UnityVO vo) {
+	public Integer joinUnity(UnityMemberVO vo) {
 		return unitydao.insertUnityMember(vo);
 	}
 
 	@Override
-	public Integer modifyUnityMember(UnityVO vo) {
+	public Integer modifyUnityMember(UnityMemberVO vo) {
 		return unitydao.updateUnityMember(vo);
 	}
 
@@ -52,11 +53,17 @@ public class UnityServiceImpl implements UnityService {
 	}
 	
 	@Override
-	public UnityVO getUnity(UnityVO vo) {
+	public UnityVO getUnityProfile(UnityVO vo) {
+		
 		return unitydao.selectUnity(vo);
 	}
 	
-	
-	
-	
+	@Override
+	public UnityVO getUnityMain(UnityVO vo) {
+		
+		UnityVO result = unitydao.selectUnityMain(vo);
+		result.setUnity_post(unitydao.selectUnityBasicPost(vo));
+		
+		return result;
+	}
 }

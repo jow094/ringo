@@ -7,8 +7,6 @@ var self_code = "";
 
 function login_check(){
 	
-	console.log('check');
-	
 	var currentURL = window.location.href;
 	
 	if (currentURL.includes('join') || currentURL.includes('login')) {
@@ -16,14 +14,13 @@ function login_check(){
         return;
     }else{
     	$('.left_navbar').removeClass('none');
-    	console.log('check2');
     	
     	$.ajax({
             type: "GET",
             url: "/user/loginCheck",
-            dataType: "json",
+            dataType: "text",
             success: function(data) {
-            	if(data == null || data == "" || data==0){
+            	if(data == null || data == ""){
             		if (!currentURL.includes('join') && !currentURL.includes('login')) {
             			alert("로그인 정보가 없습니다. 로그인 페이지로 이동합니다.");
             		}
@@ -444,8 +441,8 @@ function submit_circle(e){
     	type: 'POST',
         url: '/main/circle/',
         data: formData,
-        processData: false, // FormData 사용 시 false로 설정
-        contentType: false, // FormData 사용 시 false로 설정
+        processData: false,
+        contentType: false,
         dataType: "json",
         success: function (response) {
 	    	if(response==1){
@@ -746,7 +743,7 @@ function get_person_profile(user_code){
         			국적 : ${data.user_nation}
 				</div>
 				<div class="profile_container_head_basic_info">
-        			출생 : ${data.user_birth}
+        			출생 : ${format_date(data.user_birth,'yymmdd')}
 				</div>
 				<div class="profile_container_head_basic_info">
         			성별 : ${data.user_gender}
@@ -806,6 +803,12 @@ function get_person_profile(user_code){
         	`);
         	setTimeout(function() {
         		$('.profile_container').removeClass('hidden');
+        		
+        		const container = $('.user_profile_container').outerHeight();
+        		const header = $('.user_profile_container .profile_container_head').outerHeight();
+        		const max_height = container - header;
+        		$('.profile_container_body').css('max-height',max_height);
+        		
             }, 10);
         	
         	if(!$('.unity_profile_container').hasClass('none')){
@@ -827,7 +830,6 @@ function get_unities(){
         url: "/unity/home",
         dataType: "json",
         success: function(data) {
-        	console.log(data);
         	$('.favorite_unities').empty();
         	$('.unities').empty();
         	
@@ -893,7 +895,7 @@ function get_unities(){
 	
 }
 
-function get_unity(unity_code){
+function get_unity_profile(unity_code){
 	
 	if(unity_code == null){
 		return;
@@ -901,93 +903,204 @@ function get_unity(unity_code){
 	
 	$.ajax({
 		type: "GET",
-		url: "/unity/unity",
+		url: "/unity/profile",
 		data: {unity_code:unity_code},
 		dataType: "json",
 		success: function(data) {
-			$('.profile_container').addClass('hidden');
 			
-			if($('.profile_container').hasClass('shrinked')){
-				expand_profile();
-			}
-			if($('.detail_profile_container').hasClass('expanded')){
-				shrink_profile();
-			}
-			profile_length=1;
-			unity = unity_code;
-			profile_type='unity';
-			
-			$('.unity_profile_container .profile_container_head_basic').html(`
-				<img class="black" src="/img/unity/thumbnail/${data.unity_thumbnail_path}"/>
+        	$('.profile_container').addClass('hidden');
+        	
+    		if($('.profile_container').hasClass('shrinked')){
+        		expand_profile();
+        	}
+        	if($('.detail_profile_container').hasClass('expanded')){
+        		shrink_profile();
+        	}
+        	
+        	profile_length=1;
+        	unity = unity_code;
+        	profile_type='unity';
+        	
+        	$('.unity_profile_container .profile_container_head_basic').attr('data-unity_code',unity_code);
+        	$('.unity_profile_container .profile_container_head_basic').attr('onclick',`enter_unity('${unity_code}')`);
+        	$('.unity_profile_container .profile_container_head_basic').html(`
+        		<img class="black" src="/img/unity/thumbnail/${data.unity_thumbnail_path}"/>
 				<div class="profile_container_head_basic_unity_name">
 					${data.unity_name}
 				</div>
+    			<div class="profile_container_head_intro">
+        			${data.unity_intro}
+    			</div>
 				<div class="profile_container_head_basic_info">
-					등급 : ${data.unity_grade}
+        			등급 : ${data.unity_grade}
 				</div>
 				<div class="profile_container_head_basic_info">
-					회원 수 : ${data.unity_member_count}명
+        			회원 수 : ${data.unity_member_count}명
 				</div>
 				<div class="profile_container_head_basic_info">
-					생성일 : ${data.unity_create_time}
+        			생성일 : ${format_date(data.unity_since,'yymmdd')}
 				</div>
-				
-			`);
+    			<div class="profile_container_head_basic_info">
+        			태그 : ${data.unity_tag}
+    			</div>
+    			<div class="profile_container_head_basic_info">
+        			활동지역 : ${data.unity_location}
+    			</div>
+    			<div class="profile_container_head_basic_info">
+        			주 사용언어 : ${data.unity_lang}
+    			</div>
+        	`);
+        	$('.unity_profile_container .profile_container_head_tools').html(`
+    			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity($(this).attr('data-unity_code'))">
+	    			<i class="material-symbols-outlined">other_houses</i>
+	    			메인
+    			</div>
+    			<div class="profile_container_head_tool" data-unity_code="${unity_code}">
+        			<i class="material-symbols-outlined">input_circle</i>
+        			가입
+    			</div>
+				<div class="profile_container_head_tool" data-unity_code="${unity_code}">
+					<i class="material-symbols-outlined">bookmark_star</i>
+					즐겨찾기
+				</div>
+				<div class="profile_container_head_tool" data-unity_code="${unity_code}">
+					<i class="material-symbols-outlined">block</i>
+					차단
+				</div>
+				<div class="profile_container_head_tool" data-unity_code="${unity_code}">
+					<i class="material-symbols-outlined">partner_reports</i>
+					신고
+				</div>
+    			<div class="profile_container_head_tool" data-unity_code="${unity_code}">
+	    			<i class="material-symbols-outlined">contract_edit</i>
+	    			수정
+    			</div>
+        	`);
+        	
+        	var $boards = $('<div class="scroll_box_inner"></div>');
+        	
+        	for (const boardData of data.unity_board) {
+        	    const category = boardData.unity_board_code.split("_")[2];
+        	    const board = boardData.unity_board_code.split("_")[2];
+        	    const untCodeCategory = boardData.unity_board_code.split("_").slice(0, 3).join("_");
+
+        	    var $categoryContainer = $boards.find(`[data-category="${untCodeCategory}"]`);
+
+        	    if ($categoryContainer.length === 0) {
+
+        	        $categoryContainer = $('<div class="inner_box mw p5 mgb"></div>')
+        	            .attr('data-category', untCodeCategory)
+        	            .append(`
+        	                <div class="inner_title">
+        	                    ${boardData.unity_board_category}
+        	                    <i class="material-symbols-outlined col_tgb" onclick="inner_box_toggle(this)">expand_circle_up</i>
+        	                </div>
+        	                <div class="inner_content expanded gap5 back">
+        	                </div>
+        	            `);
+
+        	        $boards.append($categoryContainer);
+        	    }
+
+        	    $categoryContainer.find('.inner_content').append(`
+        	        <div class="unity_board sf" data-unity_board_code="${board}">${boardData.unity_board_name}</div>
+        	    `);
+        	}
+
+        	$('.unity_profile_container .scroll_box').html($boards);
+        	
+        	setTimeout(function() {
+        		$('.profile_container').removeClass('hidden');
+        		
+        		const container = $('.unity_profile_container').outerHeight();
+        		const header = $('.unity_profile_container .profile_container_head').outerHeight();
+        		const max_height = container - header;
+        		$('.profile_container_body').css('max-height',max_height);
+        		
+            }, 1);
+        	
+        	if(!$('.user_profile_container').hasClass('none')){
+        		hide('.user_profile_container');
+        		showing('.unity_profile_container');
+        	}
+        	
+        	$('#title_unity_name').text(`${data.unity_name}`);
+        	
+        	check_profile_button();
+        },
+        error: function(xhr, status, error) {
+        }
+    });
+}
+
+
+
+
+function get_unity_main(unity_code){
+	
+	if(unity_code == null){
+		return;
+	}
+	
+	$.ajax({
+		type: "GET",
+		url: "/unity/main",
+		data: {unity_code:unity_code},
+		dataType: "json",
+		success: function(data) {
 			
-			/*if(){
-				$('.unity_profile_container .profile_container_head_tools').prepend(`
-						<div class="profile_container_head_tool">
-						<img src="" class="icons">
-						관리
+        	unity = unity_code;
+        	
+        	$('.in_unity_banner').html(`
+        		<img src="/img/unity/banner/${data.unity_banner_path}" style="${data.unity_banner_set}"/>
+        	`);
+        	
+        	$('.in_unity_main .recent_post').empty();
+        	$('.in_unity_main .hot_post').empty();
+        	
+        	for (const post of data.unity_post) {
+        	    $(`.${post.post_type}`).append(`
+        	    	<div class="post_card" data-post_code="${post.post_code}" data-post_place="${post.post_place}" onclick="enter_unity_post($(this).attr('data-post_code'))">
+						<div class="post_card_thumbnail">
+							<img class="small_img" src="/img/user/profiles/${post.writer_thumbnail_path}"/>
 						</div>
-				`);
-			}*/
-			
-			$('.unity_profile_container .user_languages').html(`
-					<div class="user_language">
-					<div class="user_language_type">모국어</div>
-					<div class="user_language_name">
-					<img src="https://flagcdn.com/w80/kr.png" class="flags">
-					${data.user_native_lang}
+						<div class="post_card_body">
+							<div class="post_card_title">${post.writer_nickname} 님의 게시물</div>
+							<div class="post_card_info">${post.post_place_name}</div>
+							<div class="post_card_info">${post.post_title}</div>
+						</div>
+						<div class="post_card_footer">
+							<div class="post_card_info">
+								<i class="fa-regular fa-heart"></i><span>${post.post_recomm_count}</span>
+							</div>
+							<div class="post_card_info">
+								<i class="fa-regular fa-comment-dots"></i><span>${post.post_reple_count}</span>
+							</div>
+							<div class="post_card_info">${auto_format_date(post.post_time)}</div>
+						</div>
 					</div>
-					</div>
-					<div class="user_language">
-					<div class="user_language_type">유창한 언어</div>
-					<div class="user_language_name">
-					<img src="https://flagcdn.com/w80/kr.png" class="flags">
-					${data.user_fluent_lang}
-					</div>
-					</div>
-					<div class="user_language">
-					<div class="user_language_type">학습 언어</div>
-					<div class="user_language_name">
-					<img src="https://flagcdn.com/w80/us.png" class="flags">
-					${data.user_learning_lang}
-					</div>
-					</div>
-			`);
-			$('.unity_profile_container .user_infos').html(`
-					<div class="user_info_box">
-					<div class="user_info_title">
-					기타
-					</div>
-					<div class="user_info_content">
-					기타등등 정보들
-					</div>
-					</div>
-			`);
-			setTimeout(function() {
-				$('.profile_container').removeClass('hidden');
-			}, 10);
-			
-			if(!$('.user_profile_container').hasClass('none')){
-				hide('.user_profile_container');
-				showing('.unity_profile_container');
-			}
-			
-			check_profile_button();
-		},
-		error: function(xhr, status, error) {
-		}
-	});
+        	    `);
+        	}
+        	
+        	for (var [key, value] of Object.entries(data.unity_member)) {
+        		
+        		if(key=="unity_member_since"){
+        			value = format_date(value,'yymmdd');
+        		}
+        		if (key.endsWith("_count")) {
+        		    value = `${value}개`;
+        		}
+        		if (key.endsWith("_times")) {
+        		    value = `${value}회`;
+        		}
+        	    $(`.in_unity_main #${key} .cell`).text(`${value}`);
+        	    
+        	}
+        	
+    		$('#unity_member_grade_icon').text('counter_5');
+        	
+        },
+        error: function(xhr, status, error) {
+        }
+    });
 }

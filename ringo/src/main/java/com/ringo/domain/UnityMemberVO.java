@@ -17,16 +17,16 @@ import lombok.ToString;
 @Data
 public class UnityMemberVO {
 	
-	private String unity_member_code;
-	private String unity_member_nickname;
-	private String unity_member_nation;
-	private String unity_member_gender;
-	private String unity_member_birth;
+	private String unity_code;
+	private String user_code;
+	private String user_nickname;
+	private String user_logon;
 	
-	private String unity_member_logon;
+	private Integer unity_member_visit_times;
+	private Integer unity_member_write_count;
+	private Integer unity_member_reple_count;
 	private String unity_member_grade;
-	private Integer unity_visit_count;
-	private Integer unity_write_count;
-	private Integer unity_reple_count;
-	private Timestamp unity_join_time;
+	private Timestamp unity_member_since;
+	
+	private UserVO unity_member_info;
 }

@@ -19,7 +19,52 @@
 <i class="material-symbols-outlined">local_fire_department</i> : hot
 <i class="material-symbols-outlined">search_activity</i> : recent
 <i class="material-symbols-outlined">home</i> : 홈
+<i class="material-symbols-outlined">expand_circle_up</i> : 방향
+
+join_left : 조인
 
 search
 
 edit_note : 글쓰기
+
+input_circle : 가입
+
+
+<div class="unity_board none">
+					<div class="unity_post_list">
+						<div class="unity_boardlist_header">
+							<div class="post_num">번호</div>
+							<div class="post_title">제목</div>
+							<div class="post_writer">작성자</div>
+							<div class="post_view">조회수</div>
+							<div class="post_time">일시</div>
+						</div>
+						<div class="unity_boardlist_body">
+							<div class="post_row">
+								<div class="post_num">1</div>
+								<div class="post_title">제목임ㄴㅋㅋㅋㅋㅋ</div>
+								<div class="post_writer">조우영</div>
+								<div class="post_view">2</div>
+								<div class="post_time">12:28</div>
+							</div>
+							<div class="post_row">
+								<div class="post_num">2</div>
+								<div class="post_title">제제목제목제목목</div>
+								<div class="post_writer">작성자</div>
+								<div class="post_view">441</div>
+								<div class="post_time">12:30</div>
+							</div>
+							<div class="post_row">
+								<div class="post_num">3</div>
+								<div class="post_title">제목</div>
+								<div class="post_writer">조우영</div>
+								<div class="post_view">123</div>
+								<div class="post_time">12:30</div>
+							</div>
+						</div>
+						<div class="unity_boardlist_footer">
+							<div>페이징처리</div>
+							<div>검색창</div>
+						</div>
+					</div>
+				</div>

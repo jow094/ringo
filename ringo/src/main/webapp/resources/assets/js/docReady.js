@@ -3,6 +3,10 @@ $(document).ready(function() {
 	main_show('around');
 	get_coordinates();
 	
+	$(document).on('mouseenter', '[onclick]', function() {
+	    $(this).css('cursor', 'pointer');
+	});
+	
 	window.onclick = function(e) {
 		if ($('.join_modal:not(.none)').length > 0) {
 	        if (!$(e.target).closest('.modal_content').length && !$(e.target).closest('.modal_button').length) {
@@ -130,5 +134,29 @@ $(document).ready(function() {
 	$(document).on('change', '.thumbnail input[type="file"]', function () {
 	    check_thumbnail(this);
 	});
+	
+	const $resizeContainer = $('.resizable');
+    const $resizeHandle = $('.resize_handle');
+    let isResizing = false;
+
+    $resizeHandle.on('mousedown', function(e) {
+        isResizing = true;
+        $(document).on('mousemove', handleMouseMove);
+        $(document).on('mouseup', handleMouseUp);
+    });
+
+    function handleMouseMove(e) {
+        if (isResizing) {
+            const offsetX = e.clientX - $resizeContainer.offset().left;
+            const newWidth = Math.max(100, offsetX);
+            $resizeContainer.css('width', newWidth + 'px');
+        }
+    }
+
+    function handleMouseUp() {
+        isResizing = false;
+        $(document).off('mousemove', handleMouseMove);
+        $(document).off('mouseup', handleMouseUp);
+    }
 	
 });

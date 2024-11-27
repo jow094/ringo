@@ -2,6 +2,7 @@ function format_date(stringDate,degree){
     if (!stringDate) return '';
     
     const date = new Date(stringDate);
+    const realyear = String(date.getFullYear());
     const year = String(date.getFullYear()).slice(-2);
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
@@ -14,6 +15,8 @@ function format_date(stringDate,degree){
     	return `${month}.${day}  ${hours}:${minutes}`;
     }else if(degree=='time'){
     	return `${hours}:${minutes}`;
+    }else if(degree=='yymmdd'){
+    	return `${realyear}년 ${month}월 ${day}일`;
     }
 }
 
@@ -1197,18 +1200,6 @@ function check_submit(e){
 	    }, 1000);
 	}
 }
-function unity_home(){
-	get_person_profile();
-	
-	hide('.in_unity');
-	showing('.unity_home');
-	
-	hide('.unity_create_container');
-	showing('.unity_main_container');
-	
-	unity="";
-	get_unities();
-}
 
 function check_unity(){
 	if(unity!=''){
@@ -1218,6 +1209,24 @@ function check_unity(){
 	}
 }
 
+function unity_home(){
+	if(person!='self'){
+	get_person_profile();
+	}
+	
+	hide('.in_unity');
+	showing('.unity_home');
+	
+	hide('.unity_create_container');
+	showing('.unity_main_container');
+	
+	hide('.unity_main_title');
+	showing('.unity_home_title');
+	
+	unity="";
+	get_unities();
+}
+
 function enter_unity(e){
 	hide('.unity_create_container');
 	showing('.unity_main_container');
@@ -1225,11 +1234,39 @@ function enter_unity(e){
 	hide('.unity_home');
 	showing('.in_unity');
 	
-	unity=e;
-	profile_type='unity';
-	get_unity(e);
+	hide('.unity_home_title');
+	showing('.unity_main_title');
+	
+	hide('.in_unity_post');
+	showing('.in_unity_main');
+	
+	get_unity_main(e);
+	
+	if(unity!=e){
+		get_unity_profile(e);
+	}
+	
 	check_profile_button();
 }
+
+function enter_unity_post(e){
+	hide('.unity_create_container');
+	showing('.unity_main_container');
+	
+	hide('.unity_home');
+	showing('.in_unity');
+	hide('.in_unity_main');
+	showing('.in_unity_post');
+	
+	get_unity_post(e);
+	
+	if(unity!=e){
+		get_unity_profile(e);
+	}
+	
+	check_profile_button();
+}
+
 function enter_room(e){
 	hide('.out_of_room');
 	showing('.in_room');
@@ -1686,5 +1723,17 @@ function expand_create_unity(){
 		if($('.unity_main_container').hasClass('none')){
 			showing('.unity_main_container');
 		}
+	}
+}
+
+function inner_box_toggle(e){
+	if($(e).closest('.inner_box').find('.inner_content').hasClass('expanded')){
+		$(e).text('expand_circle_down');
+		col_toggle($(e).closest('.inner_box').find('.inner_content'));
+		$(e).closest('.inner_box').css('max-height','20px');
+	}else {
+		$(e).text('expand_circle_up');
+		col_toggle($(e).closest('.inner_box').find('.inner_content'));
+		$(e).closest('.inner_box').css('max-height','1000px');
 	}
 }
