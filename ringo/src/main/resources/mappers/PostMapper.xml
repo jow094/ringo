@@ -149,24 +149,81 @@
     </insert>
 	
 	<select id="selectUnityPost" resultMap="selectUnityPost_Map">
-		select up.*, 
-		 u1.user_thumbnail_path as writer_thumbnail_path, 
-		 u1.user_nickname as writer_nickname,
-		 r.reple_code, 
-		 r.reple_writer, 
-		 r.reple_content, 
-		 r.reple_time,
-		 r.reple_recomm_count,
-		 u2.user_thumbnail_path as r_writer_thumbnail_path, 
-		 u2.user_nickname as r_writer_nickname
-		 
-   		 from _ringo_unity_post up
-    	 join _ringo_user u1 on up.upost_writer = u1.user_code
-    	 left join _ringo_reple r on r.reple_target = up.upost_code
-    	 left join _ringo_user u2 on r.reple_writer = u2.user_code
-    	 
-    	 where up.upost_code = #{post_code}
-    	 order by up.upost_time desc, r.reple_time desc
+		select up.*,
+           u1.user_thumbnail_path as writer_thumbnail_path, 
+           u1.user_nickname as writer_nickname,
+           r.reple_code, 
+           r.reple_writer, 
+           r.reple_content, 
+           r.reple_time,
+           r.reple_recomm_count,
+           u2.user_thumbnail_path as r_writer_thumbnail_path, 
+           u2.user_nickname as r_writer_nickname
+	    from _ringo_unity_post up
+	    join _ringo_user u1 on up.upost_writer = u1.user_code
+	    left join _ringo_reple r on r.reple_target = up.upost_code
+	    left join _ringo_user u2 on r.reple_writer = u2.user_code
+	    where up.upost_place = #{post_place}
+	    <if test="post_code != null">
+	        and up.upost_time &lt;= (
+	            select upost_time from _ringo_unity_post where upost_code = #{post_code}
+	        )
+	    </if>
+	    order by up.upost_time desc
+	    limit 10 offset #{unity_board_page} 
 	</select>
+	
+	<select id="selectUnityBoard" resultType="PostVO">
+	
+	    <choose>
+	        <when test="post_code == null">
+	            select
+	                up.upost_code as post_code,
+	                up.upost_title as post_title,
+	                up.upost_recomm_count as post_recomm_count,
+	                up.upost_reple_count as post_reple_count,
+	                up.upost_time as post_time,
+	                concat('[', ub.unity_board_category, '] - ', ub.unity_board_name) as unity_board_name,
+	                um.unity_member_grade as writer_unity_member_grade,
+	                u.user_nickname as writer_nickname
+	            from _ringo_unity_post up
+	            left join _ringo_unity_member um on um.unity_code = #{unity_code} and up.upost_writer = um.user_code
+	            left join _ringo_user u on up.upost_writer = u.user_code
+	            left join _ringo_unity_board ub on ub.unity_board_code = #{post_place}
+	            where up.upost_place = #{post_place}
+	            order by up.upost_time desc
+	            limit 10 offset #{unity_board_page}
+	        </when>
+	        
+	        <when test="post_code != null">
+	            with post_rank as (
+	                select
+	                    up.upost_code,
+	                    row_number() over (order by up.upost_time desc) as location,
+	                    ceil(row_number() over (order by up.upost_time desc)/10)-1 as page
+	                from _ringo_unity_post up
+	                where up.upost_place = #{post_place}
+	            )
+	            select
+	                up.upost_code as post_code,
+	                up.upost_title as post_title,
+	                up.upost_recomm_count as post_recomm_count,
+	                up.upost_reple_count as post_reple_count,
+	                up.upost_time as post_time,
+	                concat('[', ub.unity_board_category, '] - ', ub.unity_board_name) as unity_board_name,
+	                um.unity_member_grade as writer_unity_member_grade,
+	                u.user_nickname as writer_nickname
+	            from _ringo_unity_post up
+	            left join _ringo_unity_member um on um.unity_code = #{unity_code} and up.upost_writer = um.user_code
+	            left join _ringo_user u on up.upost_writer = u.user_code
+	            left join _ringo_unity_board ub on ub.unity_board_code = #{post_place}
+	            left join post_rank pr on up.upost_code = pr.upost_code
+	            where up.upost_place = #{post_place} and pr.page = (select page from post_rank where upost_code = #{post_code})
+	            order by up.upost_time desc
+	            limit 10;
+	        </when>
+	    </choose>
+	</select>
+
 	
 </mapper>  

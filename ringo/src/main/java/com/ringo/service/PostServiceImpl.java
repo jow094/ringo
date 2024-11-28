@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
+import com.ringo.domain.UnityBoardVO;
 import com.ringo.persistence.PostDAO;
 
 @Service
@@ -61,7 +62,14 @@ public class PostServiceImpl implements PostService {
 	}
 	
 	@Override
-	public List<PostVO> getUnityPost(String post_code) {
-		return pdao.selectUnityPost(post_code);
+	public List<PostVO> getUnityPost(PostVO vo) {
+		return pdao.selectUnityPost(vo);
 	}
+
+	@Override
+	public List<PostVO> getUnityBoard(PostVO vo) {
+		return pdao.selectUnityBoard(vo);
+	}
+	
+	
 }

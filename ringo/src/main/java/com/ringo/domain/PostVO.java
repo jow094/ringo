@@ -9,6 +9,7 @@ import lombok.Data;
 
 @Data
 public class PostVO {
+	private String writer_unity_member_grade;
 	private String writer_thumbnail_path;
 	private String writer_nickname;
 	private String post_code;
@@ -25,5 +26,10 @@ public class PostVO {
 	private Integer post_reple_count;
 	private boolean post_ismodify;
 	private List<RepleVO> reples;
+	
 	private String post_type;
+	
+	private String unity_code;
+	private String unity_board_name;
+	private Integer unity_board_page;
 }

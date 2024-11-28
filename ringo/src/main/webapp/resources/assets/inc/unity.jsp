@@ -23,12 +23,44 @@
 			<span id="title_unity_name"></span>
 		</div>
 		<div class="title_button">
-			<i class="material-symbols-outlined" onclick="write_circle()">edit_note</i>
+			<i class="material-symbols-outlined" onclick="col_toggle('.unity_write')">edit_note</i>
 			<i class="material-symbols-outlined" onclick="unity_home()">home</i>
 			<div class="input_wrapper">
 				<i class="material-symbols-outlined">search</i>
 				<input type="text"></input>
 			</div>
+		</div>
+	</div>
+	
+	<div class="unity_write col_shrinked col_resizable">
+		<div class="write_container">
+			<div class="card">
+				<div class="card_body">
+					<div class="card_body_content">
+						<div class="scroll_box">
+							<textarea class="scroll"></textarea>
+						</div>
+					</div>
+					<div class="card_body_tags">
+						#태그<input class="tag_input" type="text" placeholder="태그를 입력하세요." onkeydown="if(event.key === 'Enter'){ add_tag(this); }">
+					</div>
+					<div class="card_body_buttons">
+						<div class="button">
+							<i class="fa-solid fa-link" onclick="open_itf(this);">
+								<input type="file" name="" class="none" accept="image/*" onchange="upload_file(this)" multiple>
+							</i>
+						</div>
+						<div class="button">
+							<i class="fa-solid fa-check" onclick="submit_unity(this)"></i>
+						</div>
+					</div>
+					<div class="upload_files col_shrinked">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="write_container_button_section col_resize_handle">
+			<i class="material-symbols-outlined" >drag_handle</i>
 		</div>
 	</div>
 	
@@ -295,7 +327,7 @@
 	<div class="main_card_body unity_main_container expanded">
 	
 		<!-- in_unity -->
-		<div class="in_unity br5 inset inner expanded">
+		<div class="in_unity br5 inset inner none expanded">
 		
 			<!-- in_unity -->
 			<div class="in_unity_main none expanded">
@@ -347,33 +379,19 @@
 				<div class="inner_box max_div inner row ap10 gap5 inset">
 					<div class="unity_post_list_container expanded resizable">
 						<div class="max_div column" style="max-width:calc(100% - 20px);">
-							<div class="inner_title h30">게시판 이름</div>
+							<div id="unity_board_info" class="inner_title h30"></div>
 							<div class="inner_content">
-								<div class="post_list">
-									<div class="post_row">
-										<div>zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz</div>
-										<div><i class="fa-regular fa-comment-dots"></i><span>13</span></div>
-										<div><i class="fa-regular fa-heart"></i><span>125</span></div>
-										<div><i class="material-symbols-outlined sf">counter_5</i><span>조우영</span></div>
-										<div><span>12.01 11:29</span></div>
-									</div>
-									<div class="post_row">
-										<div>zzzzzzzzzz</div>
-										<div><i class="fa-regular fa-comment-dots"></i><span>1,123</span></div>
-										<div><i class="fa-regular fa-heart"></i><span>125</span></div>
-										<div><i class="material-symbols-outlined sf">counter_5</i><span>조우영</span></div>
-										<div><span>12.01 11:24</span></div>
-									</div>
+								<div id="unity_post_list" class="post_list">
 								</div>
 							</div>
 						</div>
 						<div class="container_side_button_section post_list_button resize_handle">
-							<i class="material-symbols-outlined">pan_zoom</i>
+							<i class="material-symbols-outlined" style="transform: rotate(90deg); display:flex;">drag_handle</i>
 						</div>
 					</div>
 					
 					<div class="unity_post_container">
-						<div class="inner_box max_div ap10">
+						<div id="unity_posts" class="inner_box max_div ap10">
 							<div class="inner_content">
 								<div class="scroll_box_inner unity_cards">
 								</div>
@@ -396,24 +414,28 @@
 				</div>
 			</div>
 			<div class="unity_article">
-				<div class="unities_container">
-					<div class="inner_title h30">
-						가입한 유니티
+				<div class="scroll_box back">
+					<div class="scroll_box_inner">
+						<div class="unities_container">
+							<div class="inner_title h30">
+								가입한 유니티
+							</div>
+							<div class="joined_unities unities expanded"></div>
+						</div>	
+						<div class="unities_container">
+							<div class="inner_title h30" onclick="col_toggle($(this).next('.unities'),this)">
+								추천 유니티
+							</div>
+							<div class="recomm_unities unities expanded"></div>
+						</div>		
+						<div class="unities_container">
+							<div class="inner_title h30" onclick="col_toggle($(this).next('.unities'),this)">
+								근처 유니티
+							</div>
+							<div class="near_unities unities expanded"></div>
+						</div>	
 					</div>
-					<div class="joined_unities unities expanded"></div>
-				</div>	
-				<div class="unities_container">
-					<div class="inner_title h30" onclick="col_toggle($(this).next('.unities'),this)">
-						추천 유니티
-					</div>
-					<div class="recomm_unities unities expanded"></div>
-				</div>		
-				<div class="unities_container">
-					<div class="inner_title h30" onclick="col_toggle($(this).next('.unities'),this)">
-						근처 유니티
-					</div>
-					<div class="near_unities unities expanded"></div>
-				</div>	
+				</div>
 				
 			</div>
 		</div>

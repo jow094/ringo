@@ -1,9 +1,9 @@
-var unity = "";
-var person = "";
-var profile_type='person';
+var profile_target = "";
 var profile_length=1;
+var unity = "";
 let circle_posting_files = [];
-var self_code = "";
+let unity_posting_files = [];
+var current_user = "";
 
 function login_check(){
 	
@@ -26,7 +26,8 @@ function login_check(){
             		}
                     window.location.href = "/user/login";
             	}else{
-            		self_code = data;
+            		current_user = data;
+            		get_user_profile(data);
             	}
             },
             error: function(xhr, status, error) {
@@ -457,6 +458,56 @@ function submit_circle(e){
     });
 }
 
+function submit_unity(e){
+	if($(e).closest('.write_container').find('textarea').val().trim()==''){
+		alert('게시글은 1자 이상이어야 합니다.');
+		return;
+	}
+	
+	var formData = new FormData();
+	
+	formData.append('post_content',$(e).closest('.write_container').find('textarea').val());
+	if(circle_posting_files.length > 0 && circle_posting_files[0] !== ''){
+		circle_posting_files.forEach(function(file) {
+	        formData.append('posting_files', file);
+	    });
+	}
+
+	var tags = "";
+	
+    $(e).closest('.write_container').find('.tag_card').each(function(index) {
+        if (index > 0) {
+            tags += ",";
+        }
+        tags += $(this).attr('data-tag');
+    });
+    
+    if (tags !== "") {
+        formData.append('post_tag', tags);
+    }
+    formData.append('post_place', $('#unity_board_info').attr('data-unity_board_code'));
+    console.log([...formData.entries()]);
+
+    $.ajax({
+    	type: 'POST',
+        url: '/unity/post/',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: "json",
+        success: function (response) {
+	    	if(response==1){
+	    		enter_unity_board('return',$('#unity_board_info'));
+	    		invalidate_write_container('unity');
+	    	}
+	    },
+	    error: function(error) {
+	        console.log("데이터 전송 실패:", error);
+	        alert('게시글 작성에 실패하였습니다.');
+	    }
+    });
+}
+
 function submit_reple(e){
 	if($(e).val().trim()==''){
 		alert('댓글은 1자 이상이어야 합니다.');
@@ -707,10 +758,19 @@ function get_circle_post(user_code){
     });
 }
 
-function get_person_profile(user_code){
-	
-	if(person == self && user_code == null){
+function get_user_profile(user_code){
+	if ((user_code == null || user_code === undefined) && profile_target == "") {
+		if(!$('.unity_profile_container').hasClass('none')){
+    		hide('.unity_profile_container');
+    		showing('.user_profile_container');
+    	}
 		return;
+	}
+	
+	if(user_code == null || user_code === undefined){
+		profile_target = "";
+	}else{
+		profile_target = user_code;
 	}
 	
 	$.ajax({
@@ -719,26 +779,10 @@ function get_person_profile(user_code){
         data: {user_code:user_code},
         dataType: "json",
         success: function(data) {
+        	
+        	unity = "";
+        	
         	$('.profile_container').addClass('hidden');
-        	
-        	if(user_code != null && person != user_code){
-        		if($('.profile_container').hasClass('shrinked')){
-            		expand_profile();
-            	}
-            	if($('.detail_profile_container').hasClass('expanded')){
-            		shrink_profile();
-            	}
-        	}
-        	
-        	profile_length=1;
-        	
-        	if(user_code==null){
-        		person = self;
-        	}else{
-        		person = user_code;
-        	}
-        	
-        	profile_type='person';
         	
         	$('.user_profile_container .profile_container_head_basic').html(`
         		<img class="black" src="/img/user/profiles/${data.user_thumbnail_path}"/>
@@ -822,7 +866,9 @@ function get_person_profile(user_code){
         		showing('.user_profile_container');
         	}
         	
-        	check_profile_button();
+        	if(current_user == user_code){
+        		profile_target = "";
+        	}
         },
         error: function(xhr, status, error) {
         }
@@ -842,7 +888,7 @@ function get_unities(){
         	for (const unity of data){
         		if(unity.unity_type == 'favorite'){
         			$('.favorite_unities').prepend(`
-        				<div class="favorite_unity" data-unity_code="${unity.unity_code}" onclick="enter_unity($(this).attr('data-unity_code'))">
+        				<div class="favorite_unity" data-unity_code="${unity.unity_code}" onclick="enter_unity_main($(this).attr('data-unity_code'))">
 							<img src="/img/unity/thumbnail/${unity.unity_thumbnail_path}"></img>
 							<div>${unity.unity_name}</div>
 							<i class="fa-solid fa-circle-xmark pin"></i>
@@ -850,7 +896,7 @@ function get_unities(){
         			`);
         		}else{
         			var unity_card = `
-        				<div class="unity_card" data-unity_code="${unity.unity_code}" onclick="enter_unity($(this).attr('data-unity_code'))">
+        				<div class="unity_card" data-unity_code="${unity.unity_code}" onclick="enter_unity_main($(this).attr('data-unity_code'))">
 							<div class="unity_card_thumbnail">
 								<img class="small_img" src="/img/unity/thumbnail/${unity.unity_thumbnail_path}"></img>
 							</div>
@@ -905,6 +951,8 @@ function get_unity_profile(unity_code){
 	
 	if(unity_code == null){
 		return;
+	}else{
+		profile_target = unity_code;
 	}
 	
 	$.ajax({
@@ -914,21 +962,12 @@ function get_unity_profile(unity_code){
 		dataType: "json",
 		success: function(data) {
 			
+			profile_target = unity_code;
+			
         	$('.profile_container').addClass('hidden');
         	
-    		if($('.profile_container').hasClass('shrinked')){
-        		expand_profile();
-        	}
-        	if($('.detail_profile_container').hasClass('expanded')){
-        		shrink_profile();
-        	}
-        	
-        	profile_length=1;
-        	unity = unity_code;
-        	profile_type='unity';
-        	
         	$('.unity_profile_container .profile_container_head_basic').attr('data-unity_code',unity_code);
-        	$('.unity_profile_container .profile_container_head_basic').attr('onclick',`enter_unity('${unity_code}')`);
+        	$('.unity_profile_container .profile_container_head_basic').attr('onclick',`enter_unity_main('${unity_code}')`);
         	$('.unity_profile_container .profile_container_head_basic').html(`
         		<img class="black" src="/img/unity/thumbnail/${data.unity_thumbnail_path}"/>
 				<div class="profile_container_head_basic_unity_name">
@@ -957,7 +996,7 @@ function get_unity_profile(unity_code){
     			</div>
         	`);
         	$('.unity_profile_container .profile_container_head_tools').html(`
-    			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity($(this).attr('data-unity_code'))">
+    			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity_main($(this).attr('data-unity_code'))">
 	    			<i class="material-symbols-outlined">other_houses</i>
 	    			<span>메인</span>
     			</div>
@@ -1009,7 +1048,7 @@ function get_unity_profile(unity_code){
         	    }
 
         	    $categoryContainer.find('.inner_content').append(`
-        	        <div class="unity_board" data-unity_board_code="${board}" onclick="get_unity_board()">${boardData.unity_board_name}</div>
+        	        <div class="unity_board" data-category="${boardData.unity_board_category}" data-unity_board_code="${boardData.unity_board_code}" onclick="enter_unity_board('board',this)">${boardData.unity_board_name}</div>
         	    `);
         	}
 
@@ -1031,8 +1070,6 @@ function get_unity_profile(unity_code){
         	}
         	
         	$('#title_unity_name').text(`${data.unity_name}`);
-        	
-        	check_profile_button();
         },
         error: function(xhr, status, error) {
         }
@@ -1055,7 +1092,7 @@ function get_unity_main(unity_code){
 		dataType: "json",
 		success: function(data) {
 			
-        	unity = unity_code;
+			unity = unity_code;
         	
         	$('.in_unity_banner').html(`
         		<img src="/img/unity/banner/${data.unity_banner_path}" style="${data.unity_banner_set}"/>
@@ -1066,7 +1103,7 @@ function get_unity_main(unity_code){
         	
         	for (const post of data.unity_post) {
         	    $(`.${post.post_type}`).append(`
-        	    	<div class="post_card" data-post_code="${post.post_code}" data-post_place="${post.post_place}" onclick="enter_unity_post($(this).attr('data-post_code'))">
+        	    	<div class="post_card" data-post_place="${post.post_place}" data-post_code="${post.post_code}" onclick="enter_unity_board('post',this)">
 						<div class="post_card_thumbnail">
 							<img class="small_img" src="/img/user/profiles/${post.writer_thumbnail_path}"/>
 						</div>
@@ -1111,17 +1148,26 @@ function get_unity_main(unity_code){
     });
 }
 
-function get_unity_post(post_code){
+function get_unity_post(unity_code,post_place,unity_board_page,post_code){
 	
 	$.ajax({
         type: "GET",
         url: "/unity/post",
-        data: {post_code:post_code},
+        data: {unity_code:unity_code,post_place:post_place,unity_board_page:unity_board_page,post_code:post_code,post_tag:null},
         dataType: "json",
         success: function(data) {
-        	var target;
         	
-        	for (const postVO of data){
+			unity = unity_code;
+        	
+        	if(data.titles.length>0 && data.titles[0].unity_board_name){
+        		$('#unity_board_info').text(data.titles[0].unity_board_name);
+        		$('#unity_board_info').attr('data-unity_board_code',post_place);
+        	}
+        	
+        	$('.unity_cards').empty();
+        	$('.in_unity_post .post_list').empty();
+        	for (const postVO of data.posts){
+        		
         		const post = `
 	        		<div class="card" data-post_code="${postVO.post_code}">
 						<div class="card_header">
@@ -1192,14 +1238,14 @@ function get_unity_post(post_code){
                     for (const file of files) {
                     	if($img.find('.image_main').find('img').length==0){
                     		$img.find('.image_main').append(`
-                				<img src="/img/circle/upload/${file}"/>
+                				<img src="/img/unity/upload/${file}"/>
                     		`);
                     	}else if($img.find('.image_queue').length==0){
                     		$img.append(`
                 				<div class="image_queue">
 									<div class="image_queue_belt">
 										<div class="image_waiting">
-											<img src="/img/circle/upload/${file}"/>
+											<img src="/img/unity/upload/${file}"/>
 										</div>
 									</div>
 								</div>
@@ -1207,7 +1253,7 @@ function get_unity_post(post_code){
                     	}else{
                     		$img.find('.image_queue_belt').append(`
                 				<div class="image_waiting">
-									<img src="/img/circle/upload/${file}"/>
+									<img src="/img/unity/upload/${file}"/>
 								</div>
                     		`);
                     	}
@@ -1247,6 +1293,18 @@ function get_unity_post(post_code){
                     }
                 	$card.find('.reple_container').append($comment);
                 }
+        	}
+        	
+        	for (const postVO of data.titles){
+        		$('.in_unity_post .post_list').append(`
+    				<div class="post_row" data-post_code=${postVO.post_code}>
+						<div>${postVO.post_title}</div>
+						<div><i class="fa-regular fa-comment-dots"></i><span>${postVO.post_reple_count}</span></div>
+						<div><i class="fa-regular fa-heart"></i><span>${postVO.post_recomm_count}</span></div>
+						<div><i class="material-symbols-outlined sf">counter_5</i><span>${postVO.writer_nickname}</span></div>
+						<div><span>${auto_format_date(postVO.post_time)}</span></div>
+					</div>
+        		`);
         	}
         	$('.unity_cards').scrollTop(0);
         },

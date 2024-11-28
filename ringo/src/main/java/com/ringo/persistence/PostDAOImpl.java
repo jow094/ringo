@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
+import com.ringo.domain.UnityBoardVO;
 
 @Repository
 public class PostDAOImpl implements PostDAO {
@@ -67,9 +68,16 @@ public class PostDAOImpl implements PostDAO {
 	}
 
 	@Override
-	public List<PostVO> selectUnityPost(String post_code) {
-		logger.debug("selectUnityPost(String post_code) - post_code : "+post_code);
-		return sqlSession.selectList(NAMESPACE + ".selectUnityPost",post_code);		
+	public List<PostVO> selectUnityPost(PostVO vo) {
+		logger.debug("selectUnityPost(PostVO vo) - vo : "+vo);
+		return sqlSession.selectList(NAMESPACE + ".selectUnityPost",vo);		
 	}
+
+	@Override
+	public List<PostVO> selectUnityBoard(PostVO vo) {
+		logger.debug("selectUnityBoard(PostVO vo) - vo : "+vo);
+		return sqlSession.selectList(NAMESPACE + ".selectUnityBoard",vo);		
+	}
+	
 	
 }

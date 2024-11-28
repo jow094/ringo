@@ -314,7 +314,7 @@ public class UserController {
 			user_code = (String)session.getAttribute("user_code");
 		}
 		
-		logger.debug("profileGET(Integer user_code) - user_code : "+user_code);
+		logger.debug("profileGET(String user_code) - user_code : "+user_code);
 		return uService.getUserProfile(user_code);
 	}
 }

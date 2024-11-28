@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
     
 <div class="container_side_button_section alarm_button" onclick="row_toggle('.alarm_container',this)">
-	<i class="fas fa-chevron-circle-right"></i>
+	<i class="fas fa-chevron-circle-left"></i>
 </div>
 
-<div class="alarm_container expanded">
+<div class="alarm_container shrinked">
 	<div class="scroll_box">
 		<div class="scroll_box_inner">
 			<div class="card_alarm">

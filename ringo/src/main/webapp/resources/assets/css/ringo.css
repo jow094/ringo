@@ -10,10 +10,10 @@
   --back: rgb(240,240,240);
   --navy: rgb(56, 72, 104);
 }
-[onclick] {
-    cursor: pointer !important; /* 커서 변경 */
+[onclick],.resize_handle,.col_resize_handle {
+    cursor: pointer !important;
 }
-[onclick]:hover i:not(.pin) {
+[onclick]:hover i:not(.pin),.resize_handle:hover i,.col_resize_handle:hover i {
     color: var(--basic) !important;
 }
 [onclick]:hover span {
@@ -261,6 +261,7 @@ i.link {
     margin-right: 0 !important;
     flex-shrink : 1 !important;
 	gap : 0 important;
+	transition: all 0.3s ease-in-out !important;
 	animation: fadeOut 0.3s ease-in-out forwards;
 }
 .col_shrinked {
@@ -273,6 +274,7 @@ i.link {
     margin-bottom: 0 !important;
     flex-shrink : 1 !important;
 	gap : 0 important;
+	transition: all 0.3s ease-in-out !important;
 	animation: fadeOut 0.3s ease-in-out forwards;
 }
 .annotation_message{
@@ -324,7 +326,19 @@ i.link {
 select::-ms-expand {
 	display: none;
 }
-
+.resize_handle,.col_resize_handle:hover{
+	animation: background_flashBlack 1s infinite !important;
+}
+.resizable.resizing,.col_resizable.resizing{
+	transition: all 0s !important;
+}
+.resize_handle.resizing,.col_resize_handle.resizing{
+	background-color: var(--back) !important;
+	border-radius: 2px;
+}
+.resizing i{
+	color: var(--basic) !important;
+}
 select {
   -webkit-appearance: none;
   -moz-appearance: none;/
@@ -1142,6 +1156,11 @@ button:not(.custom_button){
 	justify-content: space-between;
 	padding:10px;
 }
+.write_container_button_section{
+	width:100%;
+	height:20px;
+	background-color: white;
+}
 .main_container .center_container{
 	box-shadow: inset 2px 2px 3px rgba(0, 0, 0, 0.1);
 	z-index:0;
@@ -1803,6 +1822,7 @@ textarea{
 	width:100%;
 	padding:10px;
 	display:flex;
+	max-height:200px;
 }
 .card_foot_comment_input textarea{
 	flex-grow:1;
@@ -1812,6 +1832,7 @@ textarea{
 	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
 	resize: none;
 	border:none;
+	
 }
 .card_foot_comment_input button{
 	width:30px;
@@ -1994,6 +2015,7 @@ textarea{
 	padding:10px 20px 0px 20px;
 	display:flex;
 	flex-direction: column;
+	margin-bottom:10px;
 }
 .menu_tag{
 	display:flex;
@@ -2199,8 +2221,7 @@ textarea{
 .in_unity_banner{
 	width: 100%;
 	max-width:100%;
-    aspect-ratio: 6 / 1;
-    min-height:70px;
+    aspect-ratio: 6 / 1 !important;
     max-height:160px;
 }
 .in_unity_banner img{
@@ -2405,7 +2426,6 @@ textarea{
 	border-radius: 5px;
 	box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.1);
 	max-height:1000px;
-	transition:width 0s;
 }
 .post_list{
 	width:100%;
@@ -2454,13 +2474,20 @@ textarea{
 	line-height:25px;
 }
 
-
-
 .unity_post_container{
 	height:100%;
 	flex:1;
 }
 
+.unity_write,.circle_write{
+	max-height:1000px;
+	width:100%;
+	display:flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	height:300px;
+}
 
 .write_container{
 	width:100%;
@@ -2471,12 +2498,12 @@ textarea{
 	border-radius:5px;
 	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
 	background-color: var(--back);
-	margin-bottom:10px;
 	padding:10px 20px;
-	max-height:500px;
-	height:auto;
+	flex:1;
+	max-height:1000px;
 }
 .write_container .card{
+	flex:1;
 	margin-bottom:3px;
 }
 textarea.scroll {
@@ -2489,6 +2516,7 @@ textarea.scroll {
 	overflow-x:hidden;
 	overflow-y:auto;
 	height:200px;
+	flex:1;
 }
 .button{
 	display:flex;

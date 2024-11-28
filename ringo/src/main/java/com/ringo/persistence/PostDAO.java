@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
+import com.ringo.domain.UnityBoardVO;
 
 public interface PostDAO {
 	
@@ -17,7 +18,8 @@ public interface PostDAO {
 	
 	public Integer selectLastUnityPostCode();
 	public Integer insertUnityPost(PostVO vo);
-	public List<PostVO> selectUnityPost(String post_code);
+	public List<PostVO> selectUnityPost(PostVO vo);
+	public List<PostVO> selectUnityBoard(PostVO vo);
 	
 	
 	
