@@ -32,9 +32,16 @@
 		</div>
 	</div>
 	
+	<!-- unity write -->
 	<div class="unity_write col_shrinked col_resizable">
 		<div class="write_container">
 			<div class="card">
+				<div class="card_header input_title">
+					<select id="unity_post_place" class="annotation_message">
+						<option class="annotation_message" value="" selected disabled>작성 게시판을 선택하세요.</option>
+					</select>
+					<input type="text" id="unity_post_title" placeholder="제목을 입력하세요."/>
+				</div>
 				<div class="card_body">
 					<div class="card_body_content">
 						<div class="scroll_box">
@@ -63,7 +70,7 @@
 			<i class="material-symbols-outlined" >drag_handle</i>
 		</div>
 	</div>
-	
+	<!-- unity write -->
 	
 	<!-- unity create -->
 	<div class="unity_create_container expanded none">
@@ -322,14 +329,11 @@
 	</div>
 	<!-- unity create -->
 	
-	
-	
+	<!-- main card body -->
 	<div class="main_card_body unity_main_container expanded">
-	
 		<!-- in_unity -->
 		<div class="in_unity br5 inset inner none expanded">
-		
-			<!-- in_unity -->
+			<!-- unity main -->
 			<div class="in_unity_main none expanded">
 				<div class="in_unity_banner">
 				</div>
@@ -373,15 +377,33 @@
 					</div>
 				</div>
 			</div>
-					
-					
+			<!-- unity main -->		
+			<!-- unity post -->		
 			<div class="in_unity_post none expanded">
 				<div class="inner_box max_div inner row ap10 gap5 inset">
 					<div class="unity_post_list_container expanded resizable">
 						<div class="max_div column" style="max-width:calc(100% - 20px);">
-							<div id="unity_board_info" class="inner_title h30"></div>
+							<div id="unity_board_info" class="inner_title h40 lf"></div>
 							<div class="inner_content">
 								<div id="unity_post_list" class="post_list">
+								</div>
+								<div class="pagenation">
+									<div class="numbers">
+										<div class="page">=</div>
+										<div class="page">-</div>
+										<div class="page">1</div>
+										<div class="page">2</div>
+										<div class="page">3</div>
+										<div class="page pressed">4</div>
+										<div class="page">5</div>
+										<div class="page">6</div>
+										<div class="page">7</div>
+										<div class="page">8</div>
+										<div class="page">9</div>
+										<div class="page">10</div>
+										<div class="page">-</div>
+										<div class="page">=</div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -400,8 +422,9 @@
 					</div>
 				</div>
 			</div>
+			<!-- unity post -->		
 		</div>	
-		
+		<!-- in unity -->		
 	
 		<!-- unity home -->
 		<div class="unity_home main_card_content expanded">
@@ -440,7 +463,6 @@
 			</div>
 		</div>
 		<!-- unity home -->
-		
-		
 	</div>
+	<!-- main card body -->
 </div>

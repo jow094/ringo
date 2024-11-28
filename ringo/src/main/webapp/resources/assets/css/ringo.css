@@ -28,7 +28,14 @@
 .inset{
 	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1) !important;
 }
-
+.looking{
+	box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.3) !important;
+	background: linear-gradient(to right, var(--basic) 5px, white 5px) !important;
+}
+.rounding{
+	box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.3) !important;
+	background: linear-gradient(to right, var(--basic) 5px, white 5px) !important;
+}
 .material-symbols-outlined{
 	font-size:18px !important;
 	display:flex !important;
@@ -72,6 +79,15 @@
 }
 .h30{
 	height:30px !important;
+}
+.h40{
+	height:40px !important;
+}
+.h50{
+	height:50px !important;
+}
+.h60{
+	height:60px !important;
 }
 .p5{
 	padding:0px 5px 5px 5px !important;
@@ -610,7 +626,7 @@ input[type="submit"]{
 	background-color: white;
 	border-radius: 5px;
 	box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.1);
-	max-height:1000px;
+	max-height:100%;
 }
 .inner_title{
     width:100%;
@@ -1033,6 +1049,7 @@ button:not(.custom_button){
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	
 }
 .detail_profile_container{
 	display:flex;
@@ -1709,6 +1726,30 @@ textarea{
 	justify-content: flex-start;
 	align-content: center;
 }
+.card_header.input_title{
+	height:50px;
+	padding:10px;
+	gap:10px;
+}
+.card_header.input_title select{
+	height:30px;
+	width:200px;
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1) !important;
+	border-radius: 5px;
+	background-color: var(--inner);
+	font-size:12px !important;
+}
+.card_header.input_title input{
+	box-sizing:border-box;
+	height:30px !important;
+	flex:1;
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1) !important;
+	border-radius: 5px;
+	background-color: var(--inner);
+	font-size:12px;
+	padding-left:10px;
+	border:none;
+}
 .card_header_image {
 	height:100%;
 	width:80px;
@@ -1757,7 +1798,7 @@ textarea{
 	flex-grow:1;
 	overflow-y:auto;
 	white-space: pre-wrap;
-	max-height:400px;
+	max-height:650px;
 	min-height:60px;
 }
 .card_body_tags{
@@ -2241,9 +2282,10 @@ textarea{
 	display:flex;
 	flex-direction: column;
 	flex:1;
-	height:100%;
 	gap:10px;
 	padding:10px 5px 10px 10px;
+	height:100%;
+	max-height:100%;
 	max-width:50%;
 	min-width:300px;
 	overflow-x:auto;
@@ -2252,6 +2294,7 @@ textarea{
 	display:flex;
 	flex-direction: row;
 	flex:1;
+	max-height:100%;
 	height:100%;
 	padding:10px 10px 10px 5px;
 	max-width:50%;
@@ -2310,6 +2353,7 @@ textarea{
 	box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
 }
 .post_card{
+	min-height:60px;
 	height:60px;
 	width:100%;
 	max-width:100%;
@@ -2436,18 +2480,54 @@ textarea{
 	justify-content: flex-start;
 	align-items: center;
 	overflow-y:auto;
+	padding:0px 5px;
+}
+.pagenation{
+	width:100%;
+	height:30px;
+	display:flex;
+	padding:5px;
+	justify-content: center;
+	align-items:center;
+	margin-top:auto;
+}
+.numbers{
+	width:100%;
+	height:100%;
+	display:flex;
+	justify-content: space-between;
+	max-width: 400px;
+}
+.page{
+	width:20px;
+	height:20px;
+	font-size:11px;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 5px;
+	box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+.page:hover{
+	box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.2);
+}
+.page.pressed{
+	box-shadow: none;
+	background-color: var(--basic);
+	color: var(--inner);
 }
 .post_row{
 	width:100%;
 	max-width:100%;
-	height:25px;
+	height:27px;
 	border-radius: 3px;
 	box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
 	background-color: white;
 	display:flex;
 	justify-content: flex-end;
 	gap:5px;
-	padding:0px 5px;
+	padding:0px 5px 0px 10px;
+	background: linear-gradient(to right, var(--waiting) 5px, white 5px);
 }
 .post_row div{
 	height:100%;
@@ -2486,7 +2566,7 @@ textarea{
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: center;
-	height:300px;
+	height:350px;
 }
 
 .write_container{

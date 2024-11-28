@@ -192,7 +192,7 @@
 	            left join _ringo_unity_board ub on ub.unity_board_code = #{post_place}
 	            where up.upost_place = #{post_place}
 	            order by up.upost_time desc
-	            limit 10 offset #{unity_board_page}
+	            limit 20 offset #{unity_board_page}
 	        </when>
 	        
 	        <when test="post_code != null">
@@ -220,7 +220,7 @@
 	            left join post_rank pr on up.upost_code = pr.upost_code
 	            where up.upost_place = #{post_place} and pr.page = (select page from post_rank where upost_code = #{post_code})
 	            order by up.upost_time desc
-	            limit 10;
+	            limit 20;
 	        </when>
 	    </choose>
 	</select>

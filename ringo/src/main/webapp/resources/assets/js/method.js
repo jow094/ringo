@@ -4,6 +4,7 @@ var unity = "";
 let circle_posting_files = [];
 let unity_posting_files = [];
 var current_user = "";
+var board_code = "";
 
 function login_check(){
 	
@@ -293,8 +294,8 @@ function last_submit(e){
     	type: 'POST',
         url: '/user/join',
         data: formData,
-        processData: false, // FormData 사용 시 false로 설정
-        contentType: false, // FormData 사용 시 false로 설정
+        processData: false,
+        contentType: false,
         dataType: "json",
         success: function (response) {
 	    	if(response==1){
@@ -304,10 +305,8 @@ function last_submit(e){
 	    	if(response==3){
 	    		alert('입력하지 않은 항목이 있습니다.');
 	    	}
-	        console.log("데이터 전송 성공:", response);
 	    },
 	    error: function(error) {
-	        console.log("데이터 전송 실패:", error);
 	        alert('회원가입에 실패하였습니다.');
 	    }
     });
@@ -360,21 +359,19 @@ function create_unity(){
     	type: 'POST',
         url: '/unity/create',
         data: formData,
-        processData: false, // FormData 사용 시 false로 설정
-        contentType: false, // FormData 사용 시 false로 설정
+        processData: false,
+        contentType: false,
         dataType: "json",
         success: function (response) {
 	    	if(response==1){
 	    		alert('유니티 생성에 성공하였습니다.');
-	    		/*window.location.href = '/unity/main';*/
+	    		window.location.href = '/unity/main';
 	    	}
 	    	if(response==0){
 	    		alert('유니티 생성에 실패하였습니다.');
 	    	}
-	        console.log("데이터 전송 성공:", response);
 	    },
 	    error: function(error) {
-	        console.log("데이터 전송 실패:", error);
 	        alert('유니티 생성에 실패하였습니다.');
 	    }
     });
@@ -395,10 +392,8 @@ function check_duple(input, callback){
         dataType: "json",
         success: function (response) {
 	    	if(response>0){
-	    		console.log(target,'duple!!!!');
 	    		callback(response);
 	    	}else{
-	    		console.log(target,' is unique.');
 	    		callback(response);
 	    	}
 	    },
@@ -436,8 +431,6 @@ function submit_circle(e){
         formData.append('post_tag', tags);
     }
     
-    console.log([...formData.entries()]);
-
     $.ajax({
     	type: 'POST',
         url: '/circle/post/',
@@ -459,23 +452,36 @@ function submit_circle(e){
 }
 
 function submit_unity(e){
-	if($(e).closest('.write_container').find('textarea').val().trim()==''){
-		alert('게시글은 1자 이상이어야 합니다.');
+	if($('.unity_write').find('textarea').val().trim()==''){
+		alert('게시글을 입력 해주세요.');
+		return;
+	}
+	if($('#unity_post_title').val().trim()==''){
+		alert('제목을 입력 해주세요.');
+		return;
+	}
+	if($('#unity_post_place').val()==null || $('#unity_post_place').val()==""){
+		alert('작성하실 게시판을 선택 해주세요.');
 		return;
 	}
 	
 	var formData = new FormData();
 	
-	formData.append('post_content',$(e).closest('.write_container').find('textarea').val());
-	if(circle_posting_files.length > 0 && circle_posting_files[0] !== ''){
-		circle_posting_files.forEach(function(file) {
+	formData.append('post_place', $('#unity_post_place').val());
+	
+	formData.append('post_title', $('#unity_post_title').val());
+	
+	formData.append('post_content',$('.unity_write').find('textarea').val());
+	
+	if(unity_posting_files.length > 0 && unity_posting_files[0] !== ''){
+		unity_posting_files.forEach(function(file) {
 	        formData.append('posting_files', file);
 	    });
 	}
 
 	var tags = "";
 	
-    $(e).closest('.write_container').find('.tag_card').each(function(index) {
+	$('.unity_write').find('.tag_card').each(function(index) {
         if (index > 0) {
             tags += ",";
         }
@@ -485,8 +491,6 @@ function submit_unity(e){
     if (tags !== "") {
         formData.append('post_tag', tags);
     }
-    formData.append('post_place', $('#unity_board_info').attr('data-unity_board_code'));
-    console.log([...formData.entries()]);
 
     $.ajax({
     	type: 'POST',
@@ -497,7 +501,7 @@ function submit_unity(e){
         dataType: "json",
         success: function (response) {
 	    	if(response==1){
-	    		enter_unity_board('return',$('#unity_board_info'));
+	    		enter_unity_board('return',$('#unity_post_place').val());
 	    		invalidate_write_container('unity');
 	    	}
 	    },
@@ -1028,6 +1032,7 @@ function get_unity_profile(unity_code){
         	    const category = boardData.unity_board_code.split("_")[2];
         	    const board = boardData.unity_board_code.split("_")[2];
         	    const untCodeCategory = boardData.unity_board_code.split("_").slice(0, 3).join("_");
+        	    const select = $('.unity_write').find('#unity_post_place');
 
         	    var $categoryContainer = $boards.find(`[data-category="${untCodeCategory}"]`);
 
@@ -1045,11 +1050,23 @@ function get_unity_profile(unity_code){
         	            `);
 
         	        $boards.append($categoryContainer);
+        	        
+        	        const $optgroup = $('<optgroup>', { 
+        	            label: boardData.unity_board_category,
+        	            'data-category': untCodeCategory
+        	        });
+
+        	        select.append($optgroup);
         	    }
 
         	    $categoryContainer.find('.inner_content').append(`
         	        <div class="unity_board" data-category="${boardData.unity_board_category}" data-unity_board_code="${boardData.unity_board_code}" onclick="enter_unity_board('board',this)">${boardData.unity_board_name}</div>
         	    `);
+        	    
+        	    $(`optgroup[data-category="${untCodeCategory}"]`).append(`
+        	            <option value="${boardData.unity_board_code}">[${boardData.unity_board_category}] - ${boardData.unity_board_name}</option>
+        	        `);
+        	
         	}
 
         	$('.unity_profile_container .scroll_box').html($boards);
@@ -1141,6 +1158,15 @@ function get_unity_main(unity_code){
         	}
         	
     		$('#unity_member_grade_icon').text('counter_5');
+    		
+    		setTimeout(function() {
+        		
+        		const container = $('.in_unity_main').outerHeight();
+        		const banner = $('.in_unity_banner').outerHeight();
+        		const max_height = container - banner;
+        		$('.in_unity_home_container').css('max-height',max_height);
+        		
+            }, 10);
         	
         },
         error: function(xhr, status, error) {
@@ -1306,6 +1332,10 @@ function get_unity_post(unity_code,post_place,unity_board_page,post_code){
 					</div>
         		`);
         	}
+        	
+        	$('.post_list').find('.post_row').first().addClass('looking');
+            $('.looking').first().css('margin-top', '5px');
+            $('.looking').last().css('margin-bottom', '5px');
         	$('.unity_cards').scrollTop(0);
         },
         error: function(xhr, status, error) {

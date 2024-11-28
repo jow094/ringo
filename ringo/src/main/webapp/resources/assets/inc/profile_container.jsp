@@ -18,7 +18,6 @@
 		</div> 
 	</div>
 	
-	
 	<div class="unity_profile_container none expanded">
 		<div class="profile_container_head">
 			<div class="profile_container_head_basic">
@@ -26,7 +25,7 @@
 			<div class="profile_container_head_tools">
 			</div>
 		</div>
-		<div class="profile_container_body">
+		<div class="profile_container_body unity_board_names">
 			<div class="scroll_box">
 			</div>
 		</div>

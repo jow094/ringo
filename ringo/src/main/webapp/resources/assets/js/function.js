@@ -1259,6 +1259,8 @@ function enter_unity_main(e){
 }
 
 function enter_unity_board(method,e){
+	$('.unity_board_names').find('.rounding').removeClass('rounding');
+	
 	hide('.unity_create_container');
 	showing('.unity_main_container');
 	
@@ -1276,7 +1278,7 @@ function enter_unity_board(method,e){
 	var post_code = "";
 	
 	if(method=='return'){
-		post_place = $(e).attr('data-unity_board_code');
+		post_place = e;
 	}
 	if(method=='board'){
 		post_place = $(e).attr('data-unity_board_code');
@@ -1295,6 +1297,8 @@ function enter_unity_board(method,e){
 	if(profile_target != unity_code){
 		get_unity_profile(unity_code);
 	}
+	$('.unity_board_names').find(`[data-unity_board_code=${post_place}]`).addClass('rounding');
+	$('#unity_post_place').find(`option[value="${post_place}"]`).prop('selected', true);
 }
 
 function enter_room(e){
@@ -1526,30 +1530,58 @@ function open_itf(e){
 
 function upload_file(e) {
 	
-    const files = e.files; // 선택된 파일 배열
+    const files = e.files;
     const container = $(e).closest('.card').find('.upload_files');
+    
+    if($(e).closest('.circle_write').length>0){
+    	
+    	if (files.length > 0) {
+            Array.from(files).forEach((file) => {
+                const reader = new FileReader();
 
-    if (files.length > 0) {
-        Array.from(files).forEach((file) => {
-            const reader = new FileReader();
-
-            reader.onload = function (event) {
-                container.append(`
-                	<div class="upload_file" data-file_index="${circle_posting_files.length}" onclick="delete_file(this)" onmouseleave="mouse_leave(this)" onmouseover="mouse_over(this)">
-						<div class="preview_image">
-							<img src="${event.target.result}"/>
-						</div>
-						<div class="preview_file_name">
-							${file.name}
-						</div>
-					</div>
-                `);
-                circle_posting_files.push(file);
-            };
-            
-            reader.readAsDataURL(file);
-        });
+                reader.onload = function (event) {
+                    container.append(`
+                    	<div class="upload_file" data-file_index="${circle_posting_files.length}" onclick="delete_file(this)" onmouseleave="mouse_leave(this)" onmouseover="mouse_over(this)">
+    						<div class="preview_image">
+    							<img src="${event.target.result}"/>
+    						</div>
+    						<div class="preview_file_name">
+    							${file.name}
+    						</div>
+    					</div>
+                    `);
+                    circle_posting_files.push(file);
+                };
+                
+                reader.readAsDataURL(file);
+            });
+        }
     }
+    if($(e).closest('.unity_write').length>0){
+    	
+    	if (files.length > 0) {
+            Array.from(files).forEach((file) => {
+                const reader = new FileReader();
+
+                reader.onload = function (event) {
+                    container.append(`
+                    	<div class="upload_file" data-file_index="${unity_posting_files.length}" onclick="delete_file(this)" onmouseleave="mouse_leave(this)" onmouseover="mouse_over(this)">
+    						<div class="preview_image">
+    							<img src="${event.target.result}"/>
+    						</div>
+    						<div class="preview_file_name">
+    							${file.name}
+    						</div>
+    					</div>
+                    `);
+                    unity_posting_files.push(file);
+                };
+                
+                reader.readAsDataURL(file);
+            });
+        }
+    }
+
     
 	if(container.hasClass('col_shrinked')){
 		col_toggle(container);
@@ -1557,28 +1589,48 @@ function upload_file(e) {
 }
 
 function delete_file(e) {
-	console.log('circle_posting_files.length : ',circle_posting_files.length);
 	
 	const index = $(e).attr('data-file_index');
-	console.log('delete ',index);
 	
 	const container = $(e).closest('.card').find('.upload_files');
 	
-	circle_posting_files.splice(index, 1);
-	console.log('circle_posting_files.length ',circle_posting_files.length);
+	if($(e).closest('.circle_write').length>0){
+		
+		circle_posting_files.splice(index, 1);
+		
+		setTimeout(function() {
+	        $(e).remove();
+	        
+	        const files = container.find('.upload_file');
+	        files.each(function(new_index) {
+	        	$(this).attr('data-file_index', new_index);
+	        });
+	        
+	        if(circle_posting_files.length == 0 && container.hasClass('expanded')){
+	        	col_toggle(container);
+	        }
+	    }, 1);
+		
+	}
 	
-	setTimeout(function() {
-        $(e).remove();
-        
-        const files = container.find('.upload_file');
-        files.each(function(new_index) {
-        	$(this).attr('data-file_index', new_index);
-        });
-        
-        if(circle_posting_files.length == 0 && container.hasClass('expanded')){
-        	col_toggle(container);
-        }
-    }, 1);
+	if($(e).closest('.unity_write').length>0){
+		
+		unity_posting_files.splice(index, 1);
+		
+		setTimeout(function() {
+	        $(e).remove();
+	        
+	        const files = container.find('.upload_file');
+	        files.each(function(new_index) {
+	        	$(this).attr('data-file_index', new_index);
+	        });
+	        
+	        if(unity_posting_files.length == 0 && container.hasClass('expanded')){
+	        	col_toggle(container);
+	        }
+	    }, 1);
+		
+	}
 	
 }
 
@@ -1647,14 +1699,11 @@ function invalidate_write_container(target){
 	container.find('.upload_files').empty();
 	container.find('textarea').val('');
 	container.find('input').val('');
-	console.log(`.${target}_write`);
-	console.log(target);
+	
 	if($(`.${target}_write`).find('.upload_files').hasClass('expanded')){
-		console.log(target);
 		col_toggle(container.find('.upload_files'));
 	}
 	if($(`.${target}_write`).hasClass('expanded')){
-		console.log(target);
 		col_toggle(`.${target}_write`);
 	}
 }
@@ -1739,6 +1788,7 @@ function select_banner_setting() {
     $('input[name="unity_banner_set"]').val(banner_setting);
 
     const img = $('.unity_banner_preview').find('img')[0];
+    
     if(img!=null){
     	img.style.cssText = banner_setting;
     }
