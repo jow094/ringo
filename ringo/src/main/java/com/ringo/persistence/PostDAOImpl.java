@@ -68,16 +68,23 @@ public class PostDAOImpl implements PostDAO {
 	}
 
 	@Override
-	public List<PostVO> selectUnityPost(PostVO vo) {
-		logger.debug("selectUnityPost(PostVO vo) - vo : "+vo);
+	public UnityBoardVO selectUnityBoard(UnityBoardVO vo) {
+		logger.debug("selectUnityBoard(UnityBoardVO vo) - vo : "+vo);
+		return sqlSession.selectOne(NAMESPACE + ".selectUnityBoard",vo);		
+	}
+	
+	@Override
+	public List<PostVO> selectUnityPost(UnityBoardVO vo) {
+		logger.debug("selectUnityPost(PostVO vo) - PostVO vo : "+vo);
 		return sqlSession.selectList(NAMESPACE + ".selectUnityPost",vo);		
 	}
-
+	
 	@Override
-	public List<PostVO> selectUnityBoard(PostVO vo) {
-		logger.debug("selectUnityBoard(PostVO vo) - vo : "+vo);
-		return sqlSession.selectList(NAMESPACE + ".selectUnityBoard",vo);		
+	public List<PostVO> selectMoreUnityPost(UnityBoardVO vo) {
+		logger.debug("selectMoreUnityPost(PostVO vo) - PostVO vo : "+vo);
+		return sqlSession.selectList(NAMESPACE + ".selectMoreUnityPost",vo);		
 	}
+
 	
 	
 }

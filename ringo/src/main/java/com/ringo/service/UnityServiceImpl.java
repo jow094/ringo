@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.ringo.domain.UnityVO;
 import com.ringo.domain.RepleVO;
+import com.ringo.domain.UnityBoardVO;
 import com.ringo.domain.UnityMemberVO;
 import com.ringo.persistence.UnityDAO;
 import com.ringo.persistence.UnityDAO;
@@ -54,7 +55,6 @@ public class UnityServiceImpl implements UnityService {
 	
 	@Override
 	public UnityVO getUnityProfile(UnityVO vo) {
-		
 		return unitydao.selectUnity(vo);
 	}
 	
@@ -66,4 +66,11 @@ public class UnityServiceImpl implements UnityService {
 		
 		return result;
 	}
+
+	@Override
+	public UnityBoardVO getUnityBoardInfo(UnityBoardVO vo) {
+		return unitydao.selectUnityboardInfo(vo);
+	}
+	
+	
 }

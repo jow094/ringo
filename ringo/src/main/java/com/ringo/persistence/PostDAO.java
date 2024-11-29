@@ -18,8 +18,9 @@ public interface PostDAO {
 	
 	public Integer selectLastUnityPostCode();
 	public Integer insertUnityPost(PostVO vo);
-	public List<PostVO> selectUnityPost(PostVO vo);
-	public List<PostVO> selectUnityBoard(PostVO vo);
+	public UnityBoardVO selectUnityBoard(UnityBoardVO vo);
+	public List<PostVO> selectUnityPost(UnityBoardVO vo);
+	public List<PostVO> selectMoreUnityPost(UnityBoardVO vo);
 	
 	
 	

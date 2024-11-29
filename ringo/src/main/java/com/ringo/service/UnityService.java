@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ringo.domain.UnityVO;
 import com.ringo.domain.RepleVO;
+import com.ringo.domain.UnityBoardVO;
 import com.ringo.domain.UnityMemberVO;
 
 public interface UnityService {
@@ -15,6 +16,7 @@ public interface UnityService {
 	public List<UnityVO> getUnities(String user_code);
 	public UnityVO getUnityProfile(UnityVO vo);
 	public UnityVO getUnityMain(UnityVO vo);
+	public UnityBoardVO getUnityBoardInfo(UnityBoardVO vo);
 	
 	
 }

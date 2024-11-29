@@ -215,47 +215,40 @@ $(document).ready(function() {
 	    }
 	}
 	
-    const $unityPosts = $('.unity_cards');
-
-    $unityPosts.on("scroll", function () {
-    	$('.post_row').removeClass('looking');
-    	
-        const scrollTop = $unityPosts.scrollTop();
-        const scrollBottom = scrollTop + $unityPosts.outerHeight();
-
-        $unityPosts.find(".card").each(function () {
-            const $card = $(this);
-            const cardOffsetTop = $card.offset().top - $unityPosts.offset().top + scrollTop;
-            const cardOffsetBottom = cardOffsetTop + $card.outerHeight();
-
-            if (cardOffsetBottom > scrollTop && cardOffsetTop < scrollBottom) {
-                const postCode = $card.data("post_code");
-                console.log(postCode);
-
-                $('.post_row').each(function () {
-                    const $listItem = $(this);
-                    console.log($listItem.data("post_code"));
-                    if ($listItem.data("post_code") == postCode) {
-                        $listItem.addClass("looking");
-                    }
-                });
-            } else {
-                const postCode = $card.data("post_code");
-                $('.post_row').each(function () {
-                    const $listItem = $(this);
-                    if ($listItem.data("post_code") === postCode) {
-                        $listItem.removeClass("looking");
-                    }
-                });
-            }
-        });
-        
-        $('.post_row').css('margin', '0px');
-        $('.looking').first().css('margin-top', '5px');
-        $('.looking').last().css('margin-bottom', '5px');
-    });
+    $('.unity_cards').on("wheel", view_check);
     
+    let lastlocation = 0;
+    let readyToRoad = true;
 
+    $('.unity_cards').on('wheel', function (event) {
+    	if(!readyToRoad){
+    		return;
+    	}
+        const location = $(this).scrollTop();
+        const total = $(this)[0].scrollHeight;
+        const current = $(this).outerHeight();
+        const atTop = location === 0;
+        const atBottom = location + current >= total * 0.9;
+
+        const delta = event.originalEvent.deltaY;
+
+        if (delta < 0) {
+            if (atTop) {
+                get_unity_prev_post();
+            }
+        } else if (delta > 0) {
+            if (atBottom) {
+            	get_unity_next_post();
+            }
+        }
+        
+        readyToRoad = false;
+        setTimeout(() => {
+        	readyToRoad = true;
+        }, 3000);
+
+        lastlocation = location;
+    });
 
 
 });

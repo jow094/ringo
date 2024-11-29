@@ -87,10 +87,10 @@ public class MainController {
 		if(last_reple_code==null) {
 			last_reple_code = 0;
 		}
+		String writer = (String)session.getAttribute("user_code");
+		String reple_code = "cmt_"+(last_reple_code+1)+"-"+writer;
 		
-		String reple_code = "rp_"+(last_reple_code+1);
-		
-		vo.setReple_writer((String)session.getAttribute("user_code"));
+		vo.setReple_writer(writer);
 		vo.setReple_code(reple_code);
 		
 		return pService.uploadReple(vo);

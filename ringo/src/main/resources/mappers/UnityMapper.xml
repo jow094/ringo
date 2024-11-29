@@ -216,4 +216,27 @@
 	where u.user_code = #{user_code}
 	</select>
 	
+	<select id="selectUnityBoardInfo" resultType="UnityBoardVO">
+		<choose>
+	        <when test="unity_board_code != null">
+	        	select
+					unity_board_code,
+					unity_board_category,
+					unity_board_name,
+					concat('[', unity_board_category, '] - ', unity_board_name) as unity_board_fullname
+				from _ringo_unity_board
+				where unity_board_code = #{unity_board_code}
+	        </when>
+	        <when test="unity_post_code != null">
+	        	select
+					unity_board_code,
+					unity_board_category,
+					unity_board_name,
+					concat('[', unity_board_category, '] - ', unity_board_name) as unity_board_fullname
+				from _ringo_unity_board
+				where unity_board_code = (select upost_place from _ringo_unity_post where upost_code = #{unity_post_code})
+	        </when>
+	    </choose>
+	</select>
+	
 </mapper>  

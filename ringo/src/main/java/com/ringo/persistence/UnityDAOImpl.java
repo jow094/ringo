@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.ringo.domain.UnityVO;
 import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
+import com.ringo.domain.UnityBoardVO;
 import com.ringo.domain.UnityMemberVO;
 
 @Repository
@@ -75,31 +76,11 @@ public class UnityDAOImpl implements UnityDAO {
 		logger.debug("selectUnityBasicPost(UnityVO vo) - vo : "+vo);
 		return sqlSession.selectList(NAMESPACE + ".selectUnityBasicPost",vo);	
 	}
-
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	@Override
-	public List<PostVO> selectUnityPost(UnityVO vo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public List<RepleVO> selectReple(UnityVO vo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Integer insertUnityPost(UnityVO vo) {
-		// TODO Auto-generated method stub
-		return null;
+	public UnityBoardVO selectUnityboardInfo(UnityBoardVO vo) {
+		logger.debug("selectUnityboardInfo(UnityBoardVO vo) - vo : "+vo);
+		return sqlSession.selectOne(NAMESPACE + ".selectUnityBoardInfo",vo);	
 	}
 
 	

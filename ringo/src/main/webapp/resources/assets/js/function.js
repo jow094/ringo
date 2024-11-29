@@ -1259,6 +1259,7 @@ function enter_unity_main(e){
 }
 
 function enter_unity_board(method,e){
+	showingCard = [];
 	$('.unity_board_names').find('.rounding').removeClass('rounding');
 	
 	hide('.unity_create_container');
@@ -1276,29 +1277,31 @@ function enter_unity_board(method,e){
 	var post_place = "";
 	var unity_board_page = 0;
 	var post_code = "";
+	var unity_code = "";
 	
 	if(method=='return'){
 		post_place = e;
 	}
 	if(method=='board'){
 		post_place = $(e).attr('data-unity_board_code');
-		$('#unity_board_info').text(`[${$(e).attr('data-category')}] - ${$(e).text()}`);
-		$('#unity_board_info').attr('data-unity_board_code',post_place);
 	}
 	if(method=='post'){
 		post_place = $(e).attr('data-post_place');
 		post_code = $(e).attr('data-post_code');
 	}
 	
-	const unity_code = post_place.split('_').slice(0, 2).join('_');
+	unity_code = post_place.split('_').slice(0, 2).join('_');
 	
 	unity = unity_code;
 	
-	get_unity_post(unity_code,post_place,unity_board_page,post_code);
+	get_unity_board_info(post_place,post_code);
+	get_unity_board(post_place,unity_board_page);
+	get_unity_post(post_place,post_code,null);
 	
 	if(profile_target != unity_code){
 		get_unity_profile(unity_code);
 	}
+	
 	$('.unity_board_names').find(`[data-unity_board_code=${post_place}]`).addClass('rounding');
 	$('#unity_post_place').find(`option[value="${post_place}"]`).prop('selected', true);
 }
@@ -1819,5 +1822,86 @@ function inner_box_toggle(e){
 		$(e).find('i').text('expand_circle_up');
 		col_toggle($(e).next('.inner_content'));
 		$(e).closest('.inner_box').css('max-height','1000px');
+	}
+}
+
+var showingCard = [];
+let origin_page = "";
+function view_check() {
+	console.log('view check');
+	showingCard = [];
+	$('.post_row').removeClass('looking');
+	
+	const $unityPosts = $('.unity_cards');
+    const scrollTop = $unityPosts.scrollTop();
+    const scrollBottom = scrollTop + $unityPosts.outerHeight();
+    var new_page = "";
+    var current_page = "";
+    
+    $unityPosts.find(".card").each(function () {
+        const $card = $(this);
+        const cardOffsetTop = $card.offset().top - $unityPosts.offset().top + scrollTop;
+        const cardOffsetBottom = cardOffsetTop + $card.outerHeight();
+
+        if (cardOffsetBottom > scrollTop && cardOffsetTop < scrollBottom) {
+        	console.log(showingCard);
+        	
+            const postCode = $card.data("post_code");
+            showingCard.push($card.data("post_seq"));
+            	
+            if(showingCard.every(num => Math.ceil(num / 20) === Math.ceil(showingCard[0] / 20))){
+            	current_page = Math.ceil(showingCard[0] / 20);
+            }
+            
+            $('.post_row').each(function () {
+                const $listItem = $(this);
+                if ($listItem.data("post_code") == postCode) {
+                    $listItem.addClass("looking");
+                }
+            });
+        } else {
+            const postCode = $card.data("post_code");
+            $('.post_row').each(function () {
+                const $listItem = $(this);
+                if ($listItem.data("post_code") === postCode) {
+                    $listItem.removeClass("looking");
+                }
+            });
+        }
+    });
+    
+	$('.page').removeClass('pressed');
+	if(!$('.page').filter(`:contains('${current_page}')`).hasClass('pressed')){
+		$('.page').filter(`:contains('${current_page}')`).addClass('pressed');
+	}
+    
+    if(origin_page!=current_page){
+    	get_unity_board($('#unity_board_info').data('unity_board_code'),current_page);
+    	origin_page = current_page;
+    	console.log('page change to',current_page);
+    }
+    
+    $('.post_row').css('margin', '0px');
+    $('.looking').first().css('margin-top', '5px');
+    $('.looking').last().css('margin-bottom', '5px');
+    
+    if(!$('.page').filter(`:contains('${current_page}')`).hasClass('pressed')){
+    	$('.page').removeClass('pressed');
+    	$('.page').filter(`:contains('${current_page}')`).addClass('pressed');
+    }
+    
+}
+
+function get_unity_prev_post(){
+	var first_code = $('.unity_cards').find('.card').first().data('post_code');
+	add_unity_post(first_code,'up');
+}
+
+function get_unity_next_post(){
+	var last_code = $('.unity_cards').find('.card').last().data('post_code');
+	
+	if ($('.unity_cards .card').slice(-5).is(`[data-post_seq="${showingCard[0]}"]`)) {
+	    console.log('in last 5 cards');
+	    add_unity_post(last_code,'down');
 	}
 }

@@ -78,10 +78,6 @@ public class UnityController {
 	@ResponseBody
 	public Integer unityCreatePOST(HttpSession session, UnityVO vo) {
 
-		logger.debug("unityCreatePOST - vo : " + vo);
-		logger.debug("unityCreatePOST - thumbnailFile : " + vo.getUnity_thumbnail_file());
-		logger.debug("unityCreatePOST - banner : " + vo.getUnity_banner_file());
-
 		try {
 
 			Integer last_unity_code = unityService.getLastUnityCode();
@@ -189,33 +185,6 @@ public class UnityController {
 		return result;
 	}
 
-	@RequestMapping(value = "/post", method = RequestMethod.GET)
-	@ResponseBody
-	public Map<String,List<PostVO>> unityPostGET(HttpSession session, PostVO vo) {
-
-		logger.debug("unityPostGET(PostVO vo) - vo : " + vo);
-
-		if (vo.getPost_code()!=""){
-			vo.setUnity_board_page(0);
-		}else{
-			vo.setPost_code(null);
-			
-			if(vo.getUnity_board_page()!=0) {
-				vo.setUnity_board_page((vo.getUnity_board_page()-1)*10);
-			}
-		}
-		
-		Map<String,List<PostVO>> result = new HashMap<String,List<PostVO>>();
-			
-		logger.debug("post: " + pService.getUnityPost(vo));
-		logger.debug("board :" + pService.getUnityBoard(vo));
-		
-			result.put("posts",pService.getUnityPost(vo));
-			result.put("titles",pService.getUnityBoard(vo));
-			
-		return result;
-	}
-
 	@RequestMapping(value = "/post", method = RequestMethod.POST)
 	@ResponseBody
 	public Integer unityPostPOST(HttpSession session, PostVO vo) {
@@ -227,8 +196,10 @@ public class UnityController {
 			last_post_code = 0;
 		}
 		
-		String post_code = "up_"+(last_post_code+1);
+		String post_place = vo.getPost_place();
+		
 		String writer = (String)session.getAttribute("user_code");
+		String post_code = "up_"+(last_post_code+1)+ "-" + post_place + "-" + writer;
 		
 		vo.setPost_code(post_code);
 		vo.setPost_writer(writer);
@@ -248,7 +219,7 @@ public class UnityController {
 				            extension = originalFileName.substring(originalFileName.lastIndexOf("."));
 				        }
 		
-				        String fileName = post_code + "_" + i + extension;
+				        String fileName = post_code + "_img" + i + extension;
 		
 				        if (post_file_path.length() > 0) {
 				        	post_file_path.append(",");
@@ -275,4 +246,65 @@ public class UnityController {
 	    	return 0;
 	    }
 	}
+	
+	@RequestMapping(value = "/boardInfo", method = RequestMethod.GET)
+	@ResponseBody
+	public UnityBoardVO unityBoardInfoGET(HttpSession session, UnityBoardVO vo) {
+		
+		logger.debug("unityboardInfoGET(PostVO vo) - vo : " + vo);
+		
+		if(vo.getUnity_board_code() == null || vo.getUnity_board_code() == "") {
+			vo.setUnity_board_code(null);
+		}
+		if(vo.getUnity_post_code() == null || vo.getUnity_board_code() == "") {
+			vo.setUnity_post_code(null);
+		}
+		
+		return unityService.getUnityBoardInfo(vo);
+	}
+	
+	@RequestMapping(value = "/board", method = RequestMethod.GET)
+	@ResponseBody
+	public UnityBoardVO unityboardGET(HttpSession session, UnityBoardVO vo) {
+
+		logger.debug("unityboardGET(PostVO vo) - vo : " + vo);
+
+		if (vo.getUnity_board_page() == null){
+			vo.setUnity_board_page(0);
+		}
+			
+		if(vo.getUnity_board_page()!=0) {
+			vo.setUnity_board_page((vo.getUnity_board_page()-1)*20);
+		}
+		
+		return pService.getUnityBoard(vo);
+	}
+	
+	@RequestMapping(value = "/post", method = RequestMethod.GET)
+	@ResponseBody
+	public List<PostVO> unityPostGET(HttpSession session, UnityBoardVO vo) {
+		
+		logger.debug("unityPostGET(UnityBoardVO vo) - UnityBoardVO vo : " + vo);
+		
+		if (vo.getUnity_post_code() == null || vo.getUnity_post_code() == ""){
+			vo.setUnity_post_code(null);
+		}else {
+			vo.setUnity_board_page(0);
+		}
+		
+		if (vo.getUnity_board_page() == null){
+			vo.setUnity_board_page(0);
+		}
+		
+		return pService.getUnityPost(vo);
+	}
+	
+	@RequestMapping(value = "/addPost", method = RequestMethod.GET)
+	@ResponseBody
+	public List<PostVO> unityAddPostGET(HttpSession session, UnityBoardVO vo) {
+		logger.debug("unityAddPostGET(UnityBoardVO vo) - UnityPostVO vo : " + vo);
+		
+		return pService.getMoreUnityPost(vo);
+	}
+	
 }

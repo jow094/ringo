@@ -892,7 +892,7 @@ function get_unities(){
         	for (const unity of data){
         		if(unity.unity_type == 'favorite'){
         			$('.favorite_unities').prepend(`
-        				<div class="favorite_unity" data-unity_code="${unity.unity_code}" onclick="enter_unity_main($(this).attr('data-unity_code'))">
+        				<div class="favorite_unity" data-unity_code="${unity.unity_code}" onclick="enter_unity_main('${unity.unity_code}')">
 							<img src="/img/unity/thumbnail/${unity.unity_thumbnail_path}"></img>
 							<div>${unity.unity_name}</div>
 							<i class="fa-solid fa-circle-xmark pin"></i>
@@ -900,7 +900,7 @@ function get_unities(){
         			`);
         		}else{
         			var unity_card = `
-        				<div class="unity_card" data-unity_code="${unity.unity_code}" onclick="enter_unity_main($(this).attr('data-unity_code'))">
+        				<div class="unity_card" data-unity_code="${unity.unity_code}" onclick="enter_unity_main('${unity.unity_code}')">
 							<div class="unity_card_thumbnail">
 								<img class="small_img" src="/img/unity/thumbnail/${unity.unity_thumbnail_path}"></img>
 							</div>
@@ -970,8 +970,8 @@ function get_unity_profile(unity_code){
 			
         	$('.profile_container').addClass('hidden');
         	
-        	$('.unity_profile_container .profile_container_head_basic').attr('data-unity_code',unity_code);
         	$('.unity_profile_container .profile_container_head_basic').attr('onclick',`enter_unity_main('${unity_code}')`);
+        	$('.unity_profile_container .profile_container_head_basic').attr('data-unity_code',unity_code);
         	$('.unity_profile_container .profile_container_head_basic').html(`
         		<img class="black" src="/img/unity/thumbnail/${data.unity_thumbnail_path}"/>
 				<div class="profile_container_head_basic_unity_name">
@@ -1000,7 +1000,7 @@ function get_unity_profile(unity_code){
     			</div>
         	`);
         	$('.unity_profile_container .profile_container_head_tools').html(`
-    			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity_main($(this).attr('data-unity_code'))">
+    			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity_main('${unity_code}')">
 	    			<i class="material-symbols-outlined">other_houses</i>
 	    			<span>메인</span>
     			</div>
@@ -1174,156 +1174,43 @@ function get_unity_main(unity_code){
     });
 }
 
-function get_unity_post(unity_code,post_place,unity_board_page,post_code){
+function get_unity_board_info(unity_board_code,unity_post_code){
 	
 	$.ajax({
         type: "GET",
-        url: "/unity/post",
-        data: {unity_code:unity_code,post_place:post_place,unity_board_page:unity_board_page,post_code:post_code},
+        url: "/unity/boardInfo",
+        data: {unity_board_code:unity_board_code,unity_post_code:unity_post_code},
         dataType: "json",
         success: function(data) {
         	
-			unity = unity_code;
+        	console.log('bi',data);
+        	$('#unity_board_info').attr('onclick',`enter_unity_board('${unity_board_code}')`);
+    		$('#unity_board_info').text(data.unity_board_fullname);
+    		$('#unity_board_info').attr('data-unity_board_code',data.unity_board_code);
+        },
+        error: function(xhr, status, error) {
+        }
+    });
+}
+
+function get_unity_board(unity_board_code,unity_board_page){
+	console.log('board to',unity_board_page);
+	console.log('originpage',origin_page);
+	
+	$.ajax({
+        type: "GET",
+        url: "/unity/board",
+        data: {unity_board_code:unity_board_code,unity_board_page:unity_board_page},
+        dataType: "json",
+        success: function(data) {
         	
-        	if(data.titles.length>0 && data.titles[0].unity_board_name){
-        		$('#unity_board_info').text(data.titles[0].unity_board_name);
-        		$('#unity_board_info').attr('data-unity_board_code',post_place);
-        	}
+        	console.log('ub',data);
         	
-        	$('.unity_cards').empty();
         	$('.in_unity_post .post_list').empty();
-        	for (const postVO of data.posts){
-        		
-        		const post = `
-	        		<div class="card" data-post_code="${postVO.post_code}">
-						<div class="card_header">
-							<div class="card_header_image" onclick="visit(${postVO.post_writer},this)">
-								<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
-							</div>
-							<div class="card_header_nickname" onclick="visit(${postVO.post_writer},this)">
-								${postVO.writer_nickname}
-							</div>
-							<div class="card_header_tools">
-								<div class="card_header_tool">
-									<i class="material-symbols-outlined">favorite</i>
-									<span>${postVO.post_recomm_count}</span>
-								</div>
-								<div class="card_header_tool">
-									<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
-								</div>
-							</div>
-						</div>
-						<div class="card_body">
-							<div class="card_body_content">
-								<div class="scroll_box">
-									<div class="scroll_box_inner">${postVO.post_content}</div>
-								</div>
-							</div>
-							<div class="card_body_tags">
-								#태그
-							</div>
-						</div>
-						<div class="card_foot">
-							<div class="reple_button_section" onclick="col_toggle($(this).next('.reple_container'),$(this).find('.material-symbols-outlined'))">
-								<span class="cell">댓글 ${postVO.post_reple_count}개</span>
-								<i class="material-symbols-outlined">expand_circle_down</i>
-							</div>
-							<div class="reple_container col_shrinked">
-								<div class="card_foot_comment_input">
-									<textarea onkeydown="if(event.key === 'Enter'){event.preventDefault(); submit_reple(this)}"></textarea>
-									<button type="button" onclick="submit_reple($(this).prev())">
-										<i class="material-symbols-outlined">send</i>
-									</button>
-								</div>
-        					</div>
-						</div>
-					</div>
-	        	`;
-        		
-        		const $card = $(post);
-                $('.unity_cards').append($card);
-        		
-                if (postVO.post_tag != null && postVO.post_tag != '') {
-                    const tags = postVO.post_tag.split(',');
-                    for (const tag_value of tags) {
-                        $card.find('.card_body_tags').append(`
-                            <div class="tag_card" data-tag="${tag_value}" onclick="search_tag(this)">#${tag_value}</div>
-                        `);
-                    }
-                }
-                
-                if (postVO.post_file_path != null && postVO.post_file_path != '') {
-                	
-                    const files = postVO.post_file_path.split(',');
-                    var img_container = `
-            			<div class="image_container">
-							<div class="image_main">
-							</div>
-						</div>`;
-                    var $img = $(img_container);
-                    for (const file of files) {
-                    	if($img.find('.image_main').find('img').length==0){
-                    		$img.find('.image_main').append(`
-                				<img src="/img/unity/upload/${file}"/>
-                    		`);
-                    	}else if($img.find('.image_queue').length==0){
-                    		$img.append(`
-                				<div class="image_queue">
-									<div class="image_queue_belt">
-										<div class="image_waiting">
-											<img src="/img/unity/upload/${file}"/>
-										</div>
-									</div>
-								</div>
-                        	`);
-                    	}else{
-                    		$img.find('.image_queue_belt').append(`
-                				<div class="image_waiting">
-									<img src="/img/unity/upload/${file}"/>
-								</div>
-                    		`);
-                    	}
-                    }
-                    $card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
-                }
-                
-                if (postVO.reples != null && postVO.reples.length>0) {
-                	var reple_container= `
-                		<div class="card_foot_comment">
-	                		<div class="scroll_box">
-		                		<div class="scroll_box_inner">
-		                		</div>
-	                		</div>
-                		</div>
-                		`;
-                	var $comment = $(reple_container);
-                	for (const reple of postVO.reples) {
-                    	if(reple.reple_content!=null && reple.reple_content!=''){
-                    		
-                    		$comment.find('.scroll_box_inner').append(`
-                				<div class="card_comment" data-reple_code="${reple.reple_code}">
-	                				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
-		                				<img class="small_img" src="/img/user/profiles/${reple.writer_thumbnail_path}"/>
-	                				</div>
-	                				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.writer_nickname}</div>
-		                				<div class="card_comment_content">${reple.reple_content}</div>
-		                				<div class="card_comment_time">
-		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
-		                				<span>${auto_format_date(reple.reple_time)}</span>
-		                				</div>
-	                				</div>
-                				</div>
-                    		`);
-                    	}
-                    }
-                	$card.find('.reple_container').append($comment);
-                }
-        	}
         	
-        	for (const postVO of data.titles){
+        	for (const postVO of data.unity_post){
         		$('.in_unity_post .post_list').append(`
-    				<div class="post_row" data-post_code=${postVO.post_code}>
+    				<div class="post_row" data-post_seq=${postVO.post_seq} data-post_code=${postVO.post_code} onclick="get_unity_post(${postVO.post_code})">
 						<div>${postVO.post_title}</div>
 						<div><i class="fa-regular fa-comment-dots"></i><span>${postVO.post_reple_count}</span></div>
 						<div><i class="fa-regular fa-heart"></i><span>${postVO.post_recomm_count}</span></div>
@@ -1333,197 +1220,60 @@ function get_unity_post(unity_code,post_place,unity_board_page,post_code){
         		`);
         	}
         	
-        	$('.post_list').find('.post_row').first().addClass('looking');
-            $('.looking').first().css('margin-top', '5px');
-            $('.looking').last().css('margin-bottom', '5px');
-        	$('.unity_cards').scrollTop(0);
+            let totalPosts = data.unity_board_post_count;
+            let totalPages = Math.ceil(totalPosts / 20);
+
+            $('.added_page').empty();
+
+            for (let i = 2; i <= Math.min(totalPages, 10); i++) {
+                $('.added_page').append(`<div class="page">${i}</div>`);
+            }
+
+            $('.page').off('click').on('click', function() {
+                get_unity_board(unity_board_code, $(this).text());
+            });
+            
+            view_check();
+        	
+            if(unity_board_page != null && unity_board_page != undefined){
+            	origin_page = unity_board_page;
+            	$('.page').removeClass('pressed');
+            	if(!$('.page').filter(`:contains('${unity_board_page}')`).hasClass('pressed')){
+            		$('.page').filter(`:contains('${unity_board_page}')`).addClass('pressed');
+            	}
+            }
         },
         error: function(xhr, status, error) {
         }
     });
 }
 
-function get_unity_board(post_place,unity_board_page){
+function get_unity_post(unity_board_code,unity_post_code,unity_board_page){
 	
 	$.ajax({
         type: "GET",
         url: "/unity/post",
-        data: {post_place:post_place,unity_board_page:unity_board_page},
+        data: {unity_board_code:unity_board_code,
+	        	unity_post_code:unity_post_code,
+	        	unity_board_page:unity_board_page},
         dataType: "json",
         success: function(data) {
         	
-        	if(data.titles.length>0 && data.titles[0].unity_board_name){
-        		$('#unity_board_info').text(data.titles[0].unity_board_name);
-        		$('#unity_board_info').attr('data-unity_board_code',post_place);
+        	if(!data && data.length > 0){
+        		$('#unity_posts').addClass('shake');
+        		setTimeout(function() {
+        			$('#unity_posts').removeClass('shake');
+        	    }, 2000);
+        		return;
         	}
         	
+        	console.log('up',data);
         	$('.unity_cards').empty();
-        	$('.in_unity_post .post_list').empty();
-        	for (const postVO of data.posts){
-        		
-        		const post = `
-	        		<div class="card" data-post_code="${postVO.post_code}">
-						<div class="card_header">
-							<div class="card_header_image" onclick="visit(${postVO.post_writer},this)">
-								<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
-							</div>
-							<div class="card_header_nickname" onclick="visit(${postVO.post_writer},this)">
-								${postVO.writer_nickname}
-							</div>
-							<div class="card_header_tools">
-								<div class="card_header_tool">
-									<i class="material-symbols-outlined">favorite</i>
-									<span>${postVO.post_recomm_count}</span>
-								</div>
-								<div class="card_header_tool">
-									<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
-								</div>
-							</div>
-						</div>
-						<div class="card_body">
-							<div class="card_body_content">
-								<div class="scroll_box">
-									<div class="scroll_box_inner">${postVO.post_content}</div>
-								</div>
-							</div>
-							<div class="card_body_tags">
-								#태그
-							</div>
-						</div>
-						<div class="card_foot">
-							<div class="reple_button_section" onclick="col_toggle($(this).next('.reple_container'),$(this).find('.material-symbols-outlined'))">
-								<span class="cell">댓글 ${postVO.post_reple_count}개</span>
-								<i class="material-symbols-outlined">expand_circle_down</i>
-							</div>
-							<div class="reple_container col_shrinked">
-								<div class="card_foot_comment_input">
-									<textarea onkeydown="if(event.key === 'Enter'){event.preventDefault(); submit_reple(this)}"></textarea>
-									<button type="button" onclick="submit_reple($(this).prev())">
-										<i class="material-symbols-outlined">send</i>
-									</button>
-								</div>
-        					</div>
-						</div>
-					</div>
-	        	`;
-        		
-        		const $card = $(post);
-                $('.unity_cards').append($card);
-        		
-                if (postVO.post_tag != null && postVO.post_tag != '') {
-                    const tags = postVO.post_tag.split(',');
-                    for (const tag_value of tags) {
-                        $card.find('.card_body_tags').append(`
-                            <div class="tag_card" data-tag="${tag_value}" onclick="search_tag(this)">#${tag_value}</div>
-                        `);
-                    }
-                }
-                
-                if (postVO.post_file_path != null && postVO.post_file_path != '') {
-                	
-                    const files = postVO.post_file_path.split(',');
-                    var img_container = `
-            			<div class="image_container">
-							<div class="image_main">
-							</div>
-						</div>`;
-                    var $img = $(img_container);
-                    for (const file of files) {
-                    	if($img.find('.image_main').find('img').length==0){
-                    		$img.find('.image_main').append(`
-                				<img src="/img/unity/upload/${file}"/>
-                    		`);
-                    	}else if($img.find('.image_queue').length==0){
-                    		$img.append(`
-                				<div class="image_queue">
-									<div class="image_queue_belt">
-										<div class="image_waiting">
-											<img src="/img/unity/upload/${file}"/>
-										</div>
-									</div>
-								</div>
-                        	`);
-                    	}else{
-                    		$img.find('.image_queue_belt').append(`
-                				<div class="image_waiting">
-									<img src="/img/unity/upload/${file}"/>
-								</div>
-                    		`);
-                    	}
-                    }
-                    $card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
-                }
-                
-                if (postVO.reples != null && postVO.reples.length>0) {
-                	var reple_container= `
-                		<div class="card_foot_comment">
-	                		<div class="scroll_box">
-		                		<div class="scroll_box_inner">
-		                		</div>
-	                		</div>
-                		</div>
-                		`;
-                	var $comment = $(reple_container);
-                	for (const reple of postVO.reples) {
-                    	if(reple.reple_content!=null && reple.reple_content!=''){
-                    		
-                    		$comment.find('.scroll_box_inner').append(`
-                				<div class="card_comment" data-reple_code="${reple.reple_code}">
-	                				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
-		                				<img class="small_img" src="/img/user/profiles/${reple.writer_thumbnail_path}"/>
-	                				</div>
-	                				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.writer_nickname}</div>
-		                				<div class="card_comment_content">${reple.reple_content}</div>
-		                				<div class="card_comment_time">
-		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
-		                				<span>${auto_format_date(reple.reple_time)}</span>
-		                				</div>
-	                				</div>
-                				</div>
-                    		`);
-                    	}
-                    }
-                	$card.find('.reple_container').append($comment);
-                }
-        	}
         	
-        	for (const postVO of data.titles){
-        		$('.in_unity_post .post_list').append(`
-    				<div class="post_row" data-post_code=${postVO.post_code}>
-						<div>${postVO.post_title}</div>
-						<div><i class="fa-regular fa-comment-dots"></i><span>${postVO.post_reple_count}</span></div>
-						<div><i class="fa-regular fa-heart"></i><span>${postVO.post_recomm_count}</span></div>
-						<div><i class="material-symbols-outlined sf">counter_5</i><span>${postVO.writer_nickname}</span></div>
-						<div><span>${auto_format_date(postVO.post_time)}</span></div>
-					</div>
-        		`);
-        	}
-        	
-        	$('.post_list').find('.post_row').first().addClass('looking');
-            $('.looking').first().css('margin-top', '5px');
-            $('.looking').last().css('margin-bottom', '5px');
-        	$('.unity_cards').scrollTop(0);
-        },
-        error: function(xhr, status, error) {
-        }
-    });
-}
-
-function move_unity_post(post_place,post_code){
-	
-	$.ajax({
-        type: "GET",
-        url: "/unity/movePost",
-        data: {post_place:post_place,post_code:post_code},
-        dataType: "json",
-        success: function(data) {
-        	
-        	$('.unity_cards').empty();
         	for (const postVO of data){
         		
         		const post = `
-	        		<div class="card" data-post_code="${postVO.post_code}">
+	        		<div class="card" data-post_seq="${postVO.post_seq}" data-post_code="${postVO.post_code}">
 						<div class="card_header">
 							<div class="card_header_image" onclick="visit(${postVO.post_writer},this)">
 								<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
@@ -1569,7 +1319,8 @@ function move_unity_post(post_place,post_code){
 	        	`;
         		
         		const $card = $(post);
-                $('.unity_cards').append($card);
+        		
+        		$('.unity_cards').append($card);
         		
                 if (postVO.post_tag != null && postVO.post_tag != '') {
                     const tags = postVO.post_tag.split(',');
@@ -1648,11 +1399,167 @@ function move_unity_post(post_place,post_code){
                 	$card.find('.reple_container').append($comment);
                 }
         	}
+        	view_check();
+        },
+        error: function(xhr, status, error) {
+        }
+    });
+}
+
+
+function add_unity_post(unity_post_code,unity_add_direction){
+	
+	$.ajax({
+        type: "GET",
+        url: "/unity/addPost",
+        data: {unity_post_code:unity_post_code,unity_add_direction:unity_add_direction},
+        dataType: "json",
+        success: function(data) {
         	
-        	$('.post_list').find('.post_row').first().addClass('looking');
-            $('.looking').first().css('margin-top', '5px');
-            $('.looking').last().css('margin-bottom', '5px');
-        	$('.unity_cards').scrollTop(0);
+        	if(!data && data.length > 0){
+        		$('#unity_posts').addClass('shake');
+        		setTimeout(function() {
+        			$('#unity_posts').removeClass('shake');
+        	    }, 2000);
+        		return;
+        	}
+        	
+        	console.log('additional up',data);
+        	
+        	for (const postVO of data){
+        		
+        		const post = `
+	        		<div class="card" data-post_seq="${postVO.post_seq}" data-post_code="${postVO.post_code}">
+						<div class="card_header">
+							<div class="card_header_image" onclick="visit(${postVO.post_writer},this)">
+								<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
+							</div>
+							<div class="card_header_nickname" onclick="visit(${postVO.post_writer},this)">
+								${postVO.writer_nickname}
+							</div>
+							<div class="card_header_tools">
+								<div class="card_header_tool">
+									<i class="material-symbols-outlined">favorite</i>
+									<span>${postVO.post_recomm_count}</span>
+								</div>
+								<div class="card_header_tool">
+									<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
+								</div>
+							</div>
+						</div>
+						<div class="card_body">
+							<div class="card_body_content">
+								<div class="scroll_box">
+									<div class="scroll_box_inner">${postVO.post_content}</div>
+								</div>
+							</div>
+							<div class="card_body_tags">
+								#태그
+							</div>
+						</div>
+						<div class="card_foot">
+							<div class="reple_button_section" onclick="col_toggle($(this).next('.reple_container'),$(this).find('.material-symbols-outlined'))">
+								<span class="cell">댓글 ${postVO.post_reple_count}개</span>
+								<i class="material-symbols-outlined">expand_circle_down</i>
+							</div>
+							<div class="reple_container col_shrinked">
+								<div class="card_foot_comment_input">
+									<textarea onkeydown="if(event.key === 'Enter'){event.preventDefault(); submit_reple(this)}"></textarea>
+									<button type="button" onclick="submit_reple($(this).prev())">
+										<i class="material-symbols-outlined">send</i>
+									</button>
+								</div>
+        					</div>
+						</div>
+					</div>
+	        	`;
+        		
+        		const $card = $(post);
+        		
+        		if(unity_add_direction == 'up'){
+        			$('.unity_cards').prepend($card);
+        		}else{
+        			$('.unity_cards').append($card);
+        		}
+        		
+                if (postVO.post_tag != null && postVO.post_tag != '') {
+                    const tags = postVO.post_tag.split(',');
+                    for (const tag_value of tags) {
+                        $card.find('.card_body_tags').append(`
+                            <div class="tag_card" data-tag="${tag_value}" onclick="search_tag(this)">#${tag_value}</div>
+                        `);
+                    }
+                }
+                
+                if (postVO.post_file_path != null && postVO.post_file_path != '') {
+                	
+                    const files = postVO.post_file_path.split(',');
+                    var img_container = `
+            			<div class="image_container">
+							<div class="image_main">
+							</div>
+						</div>`;
+                    var $img = $(img_container);
+                    for (const file of files) {
+                    	if($img.find('.image_main').find('img').length==0){
+                    		$img.find('.image_main').append(`
+                				<img src="/img/unity/upload/${file}"/>
+                    		`);
+                    	}else if($img.find('.image_queue').length==0){
+                    		$img.append(`
+                				<div class="image_queue">
+									<div class="image_queue_belt">
+										<div class="image_waiting">
+											<img src="/img/unity/upload/${file}"/>
+										</div>
+									</div>
+								</div>
+                        	`);
+                    	}else{
+                    		$img.find('.image_queue_belt').append(`
+                				<div class="image_waiting">
+									<img src="/img/unity/upload/${file}"/>
+								</div>
+                    		`);
+                    	}
+                    }
+                    $card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
+                }
+                
+                if (postVO.reples != null && postVO.reples.length>0) {
+                	var reple_container= `
+                		<div class="card_foot_comment">
+	                		<div class="scroll_box">
+		                		<div class="scroll_box_inner">
+		                		</div>
+	                		</div>
+                		</div>
+                		`;
+                	var $comment = $(reple_container);
+                	for (const reple of postVO.reples) {
+                    	if(reple.reple_content!=null && reple.reple_content!=''){
+                    		
+                    		$comment.find('.scroll_box_inner').append(`
+                				<div class="card_comment" data-reple_code="${reple.reple_code}">
+	                				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
+		                				<img class="small_img" src="/img/user/profiles/${reple.writer_thumbnail_path}"/>
+	                				</div>
+	                				<div class="card_comment_body">
+		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.writer_nickname}</div>
+		                				<div class="card_comment_content">${reple.reple_content}</div>
+		                				<div class="card_comment_time">
+		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
+		                				<span>${auto_format_date(reple.reple_time)}</span>
+		                				</div>
+	                				</div>
+                				</div>
+                    		`);
+                    	}
+                    }
+                	$card.find('.reple_container').append($comment);
+                }
+        	}
+        	view_check();
         },
         error: function(xhr, status, error) {
         }

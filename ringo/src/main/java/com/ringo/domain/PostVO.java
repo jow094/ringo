@@ -27,9 +27,6 @@ public class PostVO {
 	private boolean post_ismodify;
 	private List<RepleVO> reples;
 	
+	private Integer post_seq;
 	private String post_type;
-	
-	private String unity_code;
-	private String unity_board_name;
-	private Integer unity_board_page;
 }

@@ -62,13 +62,18 @@ public class PostServiceImpl implements PostService {
 	}
 	
 	@Override
-	public List<PostVO> getUnityPost(PostVO vo) {
+	public UnityBoardVO getUnityBoard(UnityBoardVO vo) {
+		return pdao.selectUnityBoard(vo);
+	}
+	
+	@Override
+	public List<PostVO> getUnityPost(UnityBoardVO vo) {
 		return pdao.selectUnityPost(vo);
 	}
 
 	@Override
-	public List<PostVO> getUnityBoard(PostVO vo) {
-		return pdao.selectUnityBoard(vo);
+	public List<PostVO> getMoreUnityPost(UnityBoardVO vo) {
+		return pdao.selectMoreUnityPost(vo);
 	}
 	
 	

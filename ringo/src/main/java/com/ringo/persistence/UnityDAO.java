@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
+import com.ringo.domain.UnityBoardVO;
 import com.ringo.domain.UnityMemberVO;
 import com.ringo.domain.UnityVO;
 import com.ringo.domain.UserVO;
@@ -18,17 +19,5 @@ public interface UnityDAO {
 	public UnityVO selectUnity(UnityVO vo);
 	public UnityVO selectUnityMain(UnityVO vo);
 	public List<PostVO> selectUnityBasicPost(UnityVO vo);
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public List<PostVO> selectUnityPost(UnityVO vo);
-	public List<RepleVO> selectReple(UnityVO vo);
-	public Integer insertUnityPost(UnityVO vo);
+	public UnityBoardVO selectUnityboardInfo(UnityBoardVO vo);
 }

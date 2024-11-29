@@ -17,8 +17,9 @@ public interface PostService {
 	
 	public Integer getLastUnityPostCode();
 	public Integer uploadUnityPost(PostVO vo);
-	public List<PostVO> getUnityPost(PostVO vo);
-	public List<PostVO> getUnityBoard(PostVO vo);
+	public UnityBoardVO getUnityBoard(UnityBoardVO vo);
+	public List<PostVO> getUnityPost(UnityBoardVO vo);
+	public List<PostVO> getMoreUnityPost(UnityBoardVO vo);
 	
 	
 }

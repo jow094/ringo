@@ -69,8 +69,8 @@ public class CircleController {
 			last_post_code = 0;
 		}
 		
-		String post_code = "cp_"+(last_post_code+1);
 		String writer = (String)session.getAttribute("user_code");
+		String post_code = "cp_"+(last_post_code+1)+"-"+writer;
 		
 		vo.setPost_code(post_code);
 		vo.setPost_writer(writer);
@@ -90,7 +90,7 @@ public class CircleController {
 				            extension = originalFileName.substring(originalFileName.lastIndexOf("."));
 				        }
 		
-				        String fileName = post_code + "_" + i + extension;
+				        String fileName = post_code + "_img" + i + extension;
 		
 				        if (post_file_path.length() > 0) {
 				        	post_file_path.append(",");
