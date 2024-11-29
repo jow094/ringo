@@ -1292,6 +1292,8 @@ function enter_unity_board(method,e){
 	
 	const unity_code = post_place.split('_').slice(0, 2).join('_');
 	
+	unity = unity_code;
+	
 	get_unity_post(unity_code,post_place,unity_board_page,post_code);
 	
 	if(profile_target != unity_code){

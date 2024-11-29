@@ -174,7 +174,6 @@
 	</select>
 	
 	<select id="selectUnityBoard" resultType="PostVO">
-	
 	    <choose>
 	        <when test="post_code == null">
 	            select
@@ -194,7 +193,6 @@
 	            order by up.upost_time desc
 	            limit 20 offset #{unity_board_page}
 	        </when>
-	        
 	        <when test="post_code != null">
 	            with post_rank as (
 	                select

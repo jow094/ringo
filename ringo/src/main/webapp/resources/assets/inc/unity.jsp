@@ -384,25 +384,25 @@
 					<div class="unity_post_list_container expanded resizable">
 						<div class="max_div column" style="max-width:calc(100% - 20px);">
 							<div id="unity_board_info" class="inner_title h40 lf"></div>
-							<div class="inner_content">
+							<div class="inner_content ofyh gap5">
 								<div id="unity_post_list" class="post_list">
 								</div>
 								<div class="pagenation">
 									<div class="numbers">
-										<div class="page">=</div>
-										<div class="page">-</div>
+										<div class="page"><i class="material-symbols-outlined">first_page</i></div>
+										<div class="page"><i class="fa-solid fa-chevron-left"></i></div>
 										<div class="page">1</div>
 										<div class="page">2</div>
 										<div class="page">3</div>
-										<div class="page pressed">4</div>
+										<div class="page">4</div>
 										<div class="page">5</div>
 										<div class="page">6</div>
 										<div class="page">7</div>
 										<div class="page">8</div>
 										<div class="page">9</div>
 										<div class="page">10</div>
-										<div class="page">-</div>
-										<div class="page">=</div>
+										<div class="page"><i class="fa-solid fa-chevron-right"></i></div>
+										<div class="page"><i class="material-symbols-outlined">last_page</i></div>
 									</div>
 								</div>
 							</div>
