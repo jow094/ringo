@@ -195,6 +195,19 @@
             #{post_file_path}
         )
     </insert>
+    
+    <select id="selectUnityPage" resultType="Integer">
+    	with CTE_Posts as (
+		    select 
+		        upost_code,
+		        row_number() over (order by upost_time desc) as post_seq
+		    from _ringo_unity_post
+		    where upost_place = substring_index(substring_index(#{unity_post_code}, '-', 2), '-', -1)
+		)
+		select ceil(post_seq / 20) as page_num
+		from CTE_Posts
+		where upost_code = #{unity_post_code};
+    </select>
 	
 	<select id="selectUnityPost" resultMap="selectUnityPost_Map">
 		select up.*,
@@ -213,11 +226,6 @@
 	    left join _ringo_reple r on r.reple_target = up.upost_code
 	    left join _ringo_user u2 on r.reple_writer = u2.user_code
 	    where up.upost_place = #{unity_board_code}
-	    <if test="unity_post_code != null">
-	        and up.upost_time &gt; (
-	            select upost_time from _ringo_unity_post where upost_code = #{unity_post_code}
-	        )
-	    </if>
 	    order by up.upost_time desc limit 20 offset #{unity_board_page}
 	</select>
 	
@@ -236,13 +244,13 @@
         from _ringo_unity_post up
         left join _ringo_unity_member um on up.upost_writer = um.user_code and 
         um.unity_code = (
-	        select 
-	            substring(
-	                #{unity_code},
-	                locate('-', #{unity_code}) + 1,
-	                locate('-', #{unity_code}, locate('-', #{unity_code}) + 1) - locate('-', #{unity_code}) - 1
-	            )
-	    	)
+			    select 
+			        substring(
+			            #{unity_board_code}, 
+			            1, 
+			            locate('-', #{unity_board_code}, locate('-', #{unity_board_code}) + 1) - 1
+			        )
+			)
         left join _ringo_user u on up.upost_writer = u.user_code
         left join _ringo_unity_board ub on ub.unity_board_code = #{unity_board_code}
         where up.upost_place = #{unity_board_code}
@@ -251,35 +259,41 @@
 	</select>
 	
 	<select id="selectMoreUnityPost" resultMap="selectUnityPost_Map">
-		select up.*,
-           u1.user_thumbnail_path as writer_thumbnail_path, 
-           u1.user_nickname as writer_nickname,
-           r.reple_code, 
-           r.reple_writer, 
-           r.reple_content, 
-           r.reple_time,
-           r.reple_recomm_count,
-           u2.user_thumbnail_path as r_writer_thumbnail_path, 
-           u2.user_nickname as r_writer_nickname,
-           row_number() over (order by up.upost_time desc) as post_seq
-	    from _ringo_unity_post up
-	    join _ringo_user u1 on up.upost_writer = u1.user_code
-	    left join _ringo_reple r on r.reple_target = up.upost_code
-	    left join _ringo_user u2 on r.reple_writer = u2.user_code
-	    where up.upost_place = substring_index(substring_index(#{unity_post_code}, '-', 2), '-', -1)
-	    
-	    <if test="unity_add_direction == 'up'">
-	        and up.upost_time &lt; (
-	            select upost_time from _ringo_unity_post where upost_code = #{unity_post_code}
-	        )
-	    </if>
-	    <if test="unity_add_direction == 'down'">
-	        and up.upost_time &gt; (
-	            select upost_time from _ringo_unity_post where upost_code = #{unity_post_code}
-	        )
-	    </if>
-	    
-	    order by up.upost_time desc limit 20
+	    with CTE_Posts as (
+	        select 
+	            up.*,
+	            u1.user_thumbnail_path as writer_thumbnail_path, 
+	            u1.user_nickname as writer_nickname,
+	            r.reple_code, 
+	            r.reple_writer, 
+	            r.reple_content, 
+	            r.reple_time,
+	            r.reple_recomm_count,
+	            u2.user_thumbnail_path as r_writer_thumbnail_path, 
+	            u2.user_nickname as r_writer_nickname,
+	            row_number() over (order by up.upost_time desc) as post_seq
+	        from _ringo_unity_post up
+	        join _ringo_user u1 on up.upost_writer = u1.user_code
+	        left join _ringo_reple r on r.reple_target = up.upost_code
+	        left join _ringo_user u2 on r.reple_writer = u2.user_code
+	        where up.upost_place = substring_index(substring_index(#{unity_post_code}, '-', 2), '-', -1)
+	    )
+	    select *
+	    from CTE_Posts
+	    where 1 = 1
+	        <if test="unity_add_direction == 'up'">
+	            and post_seq between 
+		            (select post_seq from CTE_Posts where upost_code = #{unity_post_code}) - 20
+		            and 
+		            (select post_seq from CTE_Posts where upost_code = #{unity_post_code}) - 1
+	        </if>
+	        <if test="unity_add_direction == 'down'">
+	        	and post_seq between 
+        			(select post_seq from CTE_Posts where upost_code = #{unity_post_code}) + 1
+            		and 
+            		(select post_seq from CTE_Posts where upost_code = #{unity_post_code}) + 20
+	        </if>
+	    order by upost_time desc limit 20
 	</select>
 
 	

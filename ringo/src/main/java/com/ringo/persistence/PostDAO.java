@@ -1,6 +1,7 @@
 package com.ringo.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
@@ -20,6 +21,7 @@ public interface PostDAO {
 	public Integer insertUnityPost(PostVO vo);
 	public UnityBoardVO selectUnityBoard(UnityBoardVO vo);
 	public List<PostVO> selectUnityPost(UnityBoardVO vo);
+	public Map<String,Object> selectUnityBoardPost(UnityBoardVO vo);
 	public List<PostVO> selectMoreUnityPost(UnityBoardVO vo);
 	
 	

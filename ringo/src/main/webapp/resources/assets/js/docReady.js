@@ -221,25 +221,35 @@ $(document).ready(function() {
     let readyToRoad = true;
 
     $('.unity_cards').on('wheel', function (event) {
-    	if(!readyToRoad){
-    		return;
-    	}
+    	
         const location = $(this).scrollTop();
         const total = $(this)[0].scrollHeight;
         const current = $(this).outerHeight();
-        const atTop = location === 0;
-        const atBottom = location + current >= total * 0.9;
+        const maxTop = $(this).scrollTop() < 5 ? true : false;
+        const minBottom = Math.abs($(this).scrollTop() + $(this).innerHeight() - $(this)[0].scrollHeight) < 5 ? true : false;
+        
+        if(!readyToRoad){
+        	return;
+        }
 
         const delta = event.originalEvent.deltaY;
 
         if (delta < 0) {
-            if (atTop) {
-                get_unity_prev_post();
-            }
+        	if(!maxTop){
+        		console.log('call prev');
+        		get_unity_prev_post(false);
+        	}else{
+        		console.log('call prev');
+        		get_unity_prev_post(true);
+        	}
         } else if (delta > 0) {
-            if (atBottom) {
-            	get_unity_next_post();
-            }
+        	if(!minBottom){
+        		console.log('call ne');
+        		get_unity_next_post(false);
+        	}else{
+        		console.log('call newt');
+        		get_unity_next_post(true);
+        	}
         }
         
         readyToRoad = false;

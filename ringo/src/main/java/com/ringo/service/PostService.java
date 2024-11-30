@@ -1,6 +1,7 @@
 package com.ringo.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
@@ -19,6 +20,7 @@ public interface PostService {
 	public Integer uploadUnityPost(PostVO vo);
 	public UnityBoardVO getUnityBoard(UnityBoardVO vo);
 	public List<PostVO> getUnityPost(UnityBoardVO vo);
+	public Map<String,Object> getUnityBoardPost(UnityBoardVO vo);
 	public List<PostVO> getMoreUnityPost(UnityBoardVO vo);
 	
 	

@@ -179,10 +179,7 @@ public class UnityController {
 		vo.setUnity_code(unity_code);
 		vo.setUser_code((String) session.getAttribute("user_code"));
 
-		UnityVO result = unityService.getUnityMain(vo);
-
-		logger.debug("result : " + result);
-		return result;
+		return unityService.getUnityMain(vo);
 	}
 
 	@RequestMapping(value = "/post", method = RequestMethod.POST)
@@ -253,13 +250,6 @@ public class UnityController {
 		
 		logger.debug("unityboardInfoGET(PostVO vo) - vo : " + vo);
 		
-		if(vo.getUnity_board_code() == null || vo.getUnity_board_code() == "") {
-			vo.setUnity_board_code(null);
-		}
-		if(vo.getUnity_post_code() == null || vo.getUnity_board_code() == "") {
-			vo.setUnity_post_code(null);
-		}
-		
 		return unityService.getUnityBoardInfo(vo);
 	}
 	
@@ -276,8 +266,11 @@ public class UnityController {
 		if(vo.getUnity_board_page()!=0) {
 			vo.setUnity_board_page((vo.getUnity_board_page()-1)*20);
 		}
-		
-		return pService.getUnityBoard(vo);
+		UnityBoardVO result = pService.getUnityBoard(vo);
+		if (result==null) {
+			return new UnityBoardVO();
+		}
+		return result;
 	}
 	
 	@RequestMapping(value = "/post", method = RequestMethod.GET)
@@ -297,6 +290,15 @@ public class UnityController {
 		}
 		
 		return pService.getUnityPost(vo);
+	}
+	
+	@RequestMapping(value = "/boardPost", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String,Object> unityBoardPostGET(HttpSession session, UnityBoardVO vo) {
+		
+		logger.debug("unityBoardPostGET(UnityBoardVO vo) - UnityBoardVO vo : " + vo);
+		
+		return pService.getUnityBoardPost(vo);
 	}
 	
 	@RequestMapping(value = "/addPost", method = RequestMethod.GET)

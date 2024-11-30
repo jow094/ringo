@@ -389,9 +389,9 @@
 								</div>
 								<div class="pagenation">
 									<div class="numbers">
-										<div class="page"><i class="material-symbols-outlined">first_page</i></div>
+										<div class="page "><i class="material-symbols-outlined">first_page</i></div>
 										<div class="page"><i class="fa-solid fa-chevron-left"></i></div>
-											<div class="page">1</div>
+											<div class="page num">1</div>
 										<div class="added_page">
 										</div>
 											<div class="page"><i class="fa-solid fa-chevron-right"></i></div>

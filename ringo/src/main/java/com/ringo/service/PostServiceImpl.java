@@ -1,6 +1,7 @@
 package com.ringo.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -69,6 +70,11 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public List<PostVO> getUnityPost(UnityBoardVO vo) {
 		return pdao.selectUnityPost(vo);
+	}
+	
+	@Override
+	public Map<String,Object> getUnityBoardPost(UnityBoardVO vo) {
+		return pdao.selectUnityBoardPost(vo);
 	}
 
 	@Override

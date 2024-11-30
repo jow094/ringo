@@ -1258,54 +1258,6 @@ function enter_unity_main(e){
 	}
 }
 
-function enter_unity_board(method,e){
-	showingCard = [];
-	$('.unity_board_names').find('.rounding').removeClass('rounding');
-	
-	hide('.unity_create_container');
-	showing('.unity_main_container');
-	
-	hide('.unity_home');
-	showing('.in_unity');
-	
-	hide('.unity_home_title');
-	showing('.unity_main_title');
-	
-	hide('.in_unity_main');
-	showing('.in_unity_post');
-	
-	var post_place = "";
-	var unity_board_page = 0;
-	var post_code = "";
-	var unity_code = "";
-	
-	if(method=='return'){
-		post_place = e;
-	}
-	if(method=='board'){
-		post_place = $(e).attr('data-unity_board_code');
-	}
-	if(method=='post'){
-		post_place = $(e).attr('data-post_place');
-		post_code = $(e).attr('data-post_code');
-	}
-	
-	unity_code = post_place.split('_').slice(0, 2).join('_');
-	
-	unity = unity_code;
-	
-	get_unity_board_info(post_place,post_code);
-	get_unity_board(post_place,unity_board_page);
-	get_unity_post(post_place,post_code,null);
-	
-	if(profile_target != unity_code){
-		get_unity_profile(unity_code);
-	}
-	
-	$('.unity_board_names').find(`[data-unity_board_code=${post_place}]`).addClass('rounding');
-	$('#unity_post_place').find(`option[value="${post_place}"]`).prop('selected', true);
-}
-
 function enter_room(e){
 	hide('.out_of_room');
 	showing('.in_room');
@@ -1825,10 +1777,115 @@ function inner_box_toggle(e){
 	}
 }
 
+function enter_unity_board(method,e){
+	
+	origin_page = 1;
+	current_page = 1;
+	showingCard = [];
+	
+	$('.unity_board_names').find('.rounding').removeClass('rounding');
+	
+	hide('.unity_create_container');
+	showing('.unity_main_container');
+	
+	hide('.unity_home');
+	showing('.in_unity');
+	
+	hide('.unity_home_title');
+	showing('.unity_main_title');
+	
+	hide('.in_unity_main');
+	showing('.in_unity_post');
+	
+	var post_place = "";
+	var unity_code = "";
+	
+	if(method=='return'){
+		post_place = e;
+		ub_code = e;
+		$('#unity_board_info').attr('data-unity_board_code',e);
+		setTimeout(() => {
+			$('.unity_cards').animate({
+	            scrollTop: 0
+	        }, 500);
+		}, 100);
+	}
+	if(method=='board'){
+		post_place = $(e).attr('data-unity_board_code');
+		ub_code = $(e).attr('data-unity_board_code');
+		$('#unity_board_info').attr('data-unity_board_code',$(e).attr('data-unity_board_code'));
+	}
+	
+	unity_code = post_place.split('_').slice(0, 2).join('_');
+	
+	unity = unity_code;
+	
+	get_unity_board_info(post_place);
+	get_unity_board(post_place,1);
+	get_unity_post(post_place,null,null);
+	
+	setTimeout(() => {
+		view_check();
+	}, 1000);
+	
+	if(profile_target != unity_code){
+		get_unity_profile(unity_code);
+	}
+	
+	$('.unity_board_names').find(`[data-unity_board_code=${post_place}]`).addClass('rounding');
+	$('#unity_post_place').find(`option[value="${post_place}"]`).prop('selected', true);
+}
+
+function enter_unity_post(e){
+	showingCard = [];
+	
+	ub_code = $(e).attr('data-post_place');
+	$('#unity_board_info').attr('data-unity_board_code',$(e).attr('data-unity_board_code'));
+	$('.unity_board_names').find('.rounding').removeClass('rounding');
+	
+	hide('.unity_create_container');
+	showing('.unity_main_container');
+	
+	hide('.unity_home');
+	showing('.in_unity');
+	
+	hide('.unity_home_title');
+	showing('.unity_main_title');
+	
+	hide('.in_unity_main');
+	showing('.in_unity_post');
+	
+	var post_place = $(e).data('post_place');
+	var post_code = $(e).data('post_code');
+	var unity_code = post_place.split('_').slice(0, 2).join('_');
+	
+	unity = unity_code;
+	
+	get_unity_board_info(post_place);
+	get_unity_board_post(post_place,post_code);
+	
+	if(profile_target != unity_code){
+		get_unity_profile(unity_code);
+	}
+	
+	$('.unity_board_names').find(`[data-unity_board_code=${post_place}]`).addClass('rounding');
+	$('#unity_post_place').find(`option[value="${post_place}"]`).prop('selected', true);
+	
+	setTimeout(() => {
+		scrollToPost(e);
+	}, 100);
+}
+
+
+
+var ub_code = "";
 var showingCard = [];
-let origin_page = "";
+var origin_page = "";
+var current_page = "";
 function view_check() {
 	console.log('view check');
+	console.log('vcd origin_page : ',origin_page);
+	console.log('vcd current_page : ',current_page);
 	showingCard = [];
 	$('.post_row').removeClass('looking');
 	
@@ -1836,7 +1893,6 @@ function view_check() {
     const scrollTop = $unityPosts.scrollTop();
     const scrollBottom = scrollTop + $unityPosts.outerHeight();
     var new_page = "";
-    var current_page = "";
     
     $unityPosts.find(".card").each(function () {
         const $card = $(this);
@@ -1876,7 +1932,7 @@ function view_check() {
 	}
     
     if(origin_page!=current_page){
-    	get_unity_board($('#unity_board_info').data('unity_board_code'),current_page);
+    	get_unity_board(ub_code,current_page);
     	origin_page = current_page;
     	console.log('page change to',current_page);
     }
@@ -1892,16 +1948,56 @@ function view_check() {
     
 }
 
-function get_unity_prev_post(){
+function get_unity_prev_post(finish){
 	var first_code = $('.unity_cards').find('.card').first().data('post_code');
-	add_unity_post(first_code,'up');
+	
+	if ($('.unity_cards .card').slice(0,10).is(`[data-post_seq="${showingCard[2]}"]`)) {
+	    console.log('in first 5 cards');
+    	add_unity_post(first_code,'up',finish);
+	}
 }
 
-function get_unity_next_post(){
+function get_unity_next_post(finish){
 	var last_code = $('.unity_cards').find('.card').last().data('post_code');
 	
-	if ($('.unity_cards .card').slice(-5).is(`[data-post_seq="${showingCard[0]}"]`)) {
+	if ($('.unity_cards .card').slice(-10).is(`[data-post_seq="${showingCard[0]}"]`)) {
 	    console.log('in last 5 cards');
-	    add_unity_post(last_code,'down');
+    	add_unity_post(last_code,'down',finish);
 	}
+}
+
+function isEmpty(obj) {
+    if (obj == null) return true;
+    if (Array.isArray(obj) && obj.length == 0) return true;
+    for (let key in obj) {
+        if (obj.hasOwnProperty(key) && obj[key] != null && obj[key] !== "") {
+            return false;
+        }
+    }
+    return true;
+}
+
+function scrollToPost(e) {
+	const post_code = $(e).data('post_code');
+    const post = $('.unity_cards').find(`[data-post_code="${post_code}"]`);
+    
+    if (post.length) {
+        const currentScroll = $('.unity_cards').scrollTop();
+
+        const postTop = post.position().top;
+        
+        const postHeight = post.outerHeight();
+
+        const offset = postTop - post.outerHeight();
+
+        $('.unity_cards').animate({
+            scrollTop: currentScroll + offset
+        }, 500);
+        
+        setTimeout(function() {
+        	view_check();
+        }, 500);
+    }else{
+    	enter_unity_post(e);
+    }
 }
