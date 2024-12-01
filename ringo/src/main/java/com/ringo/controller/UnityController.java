@@ -258,14 +258,12 @@ public class UnityController {
 	public UnityBoardVO unityboardGET(HttpSession session, UnityBoardVO vo) {
 
 		logger.debug("unityboardGET(PostVO vo) - vo : " + vo);
+		vo.setUser_code((String)session.getAttribute("user_code"));
 
 		if (vo.getUnity_board_page() == null){
-			vo.setUnity_board_page(0);
+			vo.setUnity_board_page(1);
 		}
 			
-		if(vo.getUnity_board_page()!=0) {
-			vo.setUnity_board_page((vo.getUnity_board_page()-1)*20);
-		}
 		UnityBoardVO result = pService.getUnityBoard(vo);
 		if (result==null) {
 			return new UnityBoardVO();
@@ -278,15 +276,16 @@ public class UnityController {
 	public List<PostVO> unityPostGET(HttpSession session, UnityBoardVO vo) {
 		
 		logger.debug("unityPostGET(UnityBoardVO vo) - UnityBoardVO vo : " + vo);
+		vo.setUser_code((String)session.getAttribute("user_code"));
 		
 		if (vo.getUnity_post_code() == null || vo.getUnity_post_code() == ""){
 			vo.setUnity_post_code(null);
 		}else {
-			vo.setUnity_board_page(0);
+			vo.setUnity_board_page(1);
 		}
 		
 		if (vo.getUnity_board_page() == null){
-			vo.setUnity_board_page(0);
+			vo.setUnity_board_page(1);
 		}
 		
 		return pService.getUnityPost(vo);
@@ -297,6 +296,7 @@ public class UnityController {
 	public Map<String,Object> unityBoardPostGET(HttpSession session, UnityBoardVO vo) {
 		
 		logger.debug("unityBoardPostGET(UnityBoardVO vo) - UnityBoardVO vo : " + vo);
+		vo.setUser_code((String)session.getAttribute("user_code"));
 		
 		return pService.getUnityBoardPost(vo);
 	}

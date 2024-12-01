@@ -10,6 +10,8 @@ import lombok.Data;
 @Data
 public class UnityBoardVO {
 	
+	private String user_code;
+	
 	private String unity_code;
 	private String unity_board_code;
 	private String unity_board_category;

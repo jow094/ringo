@@ -1822,7 +1822,7 @@ function enter_unity_board(method,e){
 	
 	get_unity_board_info(post_place);
 	get_unity_board(post_place,1);
-	get_unity_post(post_place,null,null);
+	get_unity_post(post_place,null,1);
 	
 	setTimeout(() => {
 		view_check();
@@ -1870,10 +1870,6 @@ function enter_unity_post(e){
 	
 	$('.unity_board_names').find(`[data-unity_board_code=${post_place}]`).addClass('rounding');
 	$('#unity_post_place').find(`option[value="${post_place}"]`).prop('selected', true);
-	
-	setTimeout(() => {
-		scrollToPost(e);
-	}, 100);
 }
 
 
@@ -1884,8 +1880,8 @@ var origin_page = "";
 var current_page = "";
 function view_check() {
 	console.log('view check');
-	console.log('vcd origin_page : ',origin_page);
-	console.log('vcd current_page : ',current_page);
+	console.log('vc origin_page : ',origin_page);
+	console.log('vc current_page : ',current_page);
 	showingCard = [];
 	$('.post_row').removeClass('looking');
 	
@@ -1931,7 +1927,7 @@ function view_check() {
 		$('.page').filter(`:contains('${current_page}')`).addClass('pressed');
 	}
     
-    if(origin_page!=current_page){
+    if(origin_page!==current_page){
     	get_unity_board(ub_code,current_page);
     	origin_page = current_page;
     	console.log('page change to',current_page);

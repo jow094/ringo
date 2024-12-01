@@ -84,9 +84,11 @@ public class PostDAOImpl implements PostDAO {
 	@Override
 	public Map<String,Object> selectUnityBoardPost(UnityBoardVO vo) {
 		logger.debug("selectUnityBoardPost(UnityBoardVO vo) - vo : "+vo);
-		vo.setUnity_board_page(((Integer)sqlSession.selectOne(NAMESPACE + ".selectUnityPage",vo)-1)*20);
+		Integer page = sqlSession.selectOne(NAMESPACE + ".selectUnityPage",vo);
+		vo.setUnity_board_page(page);
 		
 		Map<String,Object> result = new HashMap<String,Object>();
+		result.put("page", page);
 		result.put("post", sqlSession.selectList(NAMESPACE + ".selectUnityPost",vo));
 		result.put("board", sqlSession.selectOne(NAMESPACE + ".selectUnityBoard",vo));
 		return result;	

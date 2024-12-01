@@ -157,42 +157,38 @@
 	
 	<select id="selectUnityBasicPost" resultType="PostVO">
     (select
-        up.upost_code as post_code,
-        up.upost_place as post_place,
-        up.upost_writer as post_writer,
-        up.upost_recomm_count as post_recomm_count,
-        up.upost_reple_count as post_reple_count,
-        up.upost_title as post_title,
-        up.upost_time as post_time,
-        ub.unity_board_name as post_place_name,
-        u.user_thumbnail_path as writer_thumbnail_path,
-        u.user_nickname as writer_nickname,
+        post_code,
+        post_place,
+        post_place_name,
+        post_writer,
+        post_recomm_count,
+        post_reple_count,
+        post_title,
+        post_time,
+        writer_thumbnail_path,
+        writer_nickname,
         'hot_post' as post_type
-    from _ringo_unity_post up
-    left join _ringo_unity_board ub on up.upost_place = ub.unity_board_code 
-    left join _ringo_user u on up.upost_writer = u.user_code
-    where substring_index(upost_place, '_', 2) = #{unity_code}
-      and up.upost_time >= now() - interval 3 day
+    from uPost
+    where substring_index(post_place, '_', 2) = #{unity_code}
+      and post_time >= now() - interval 3 day
     )
     
 	union all
 
     (select
-        up.upost_code as post_code,
-        up.upost_place as post_place,
-        up.upost_writer as post_writer,
-        up.upost_recomm_count as post_recomm_count,
-        up.upost_reple_count as post_reple_count,
-        up.upost_title as post_title,
-        up.upost_time as post_time,
-        ub.unity_board_name as post_place_name,
-        u.user_thumbnail_path as writer_thumbnail_path,
-        u.user_nickname as writer_nickname,
+        post_code,
+        post_place,
+        post_place_name,
+        post_writer,
+        post_recomm_count,
+        post_reple_count,
+        post_title,
+        post_time,
+        writer_thumbnail_path,
+        writer_nickname,
         'recent_post' as post_type
-    from _ringo_unity_post up
-    left join _ringo_unity_board ub on up.upost_place = ub.unity_board_code 
-    left join _ringo_user u on up.upost_writer = u.user_code
-    where substring_index(up.upost_place, '_', 2) = #{unity_code}
+    from uPost
+    where substring_index(post_place, '_', 2) = #{unity_code}
     )
     
     order by (post_reple_count + post_recomm_count) desc, post_time desc

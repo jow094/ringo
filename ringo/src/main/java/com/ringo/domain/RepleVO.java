@@ -9,12 +9,13 @@ import lombok.Data;
 
 @Data
 public class RepleVO {
-	private String writer_thumbnail_path;
-	private String writer_nickname;
+	private String r_writer_thumbnail_path;
+	private String r_writer_nickname;
 	private String reple_writer;
 	private String reple_code;
 	private String reple_target;
 	private String reple_content;
+	private Integer assemble_count;
 	private Timestamp reple_time;
 	private Integer reple_recomm_count;
 	private String reple_recomm_user;

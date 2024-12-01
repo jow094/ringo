@@ -24,9 +24,11 @@ public class PostVO {
 	private String post_file_path;
 	private Integer post_recomm_count;
 	private Integer post_reple_count;
+	private boolean post_didrecomm;
 	private boolean post_ismodify;
 	private List<RepleVO> reples;
 	
 	private Integer post_seq;
+	private Integer post_page;
 	private String post_type;
 }

@@ -543,9 +543,9 @@ function get_reple(e){
         data: {reple_target: $(e).closest('.card').attr('data-post_code')},
         dataType: "json",
         success: function(data) {
-        	console.log(data);
         	
         	if (data != null && data.length>0) {
+        		$(e).closest('.card').find('.reple_button_section').find('.cell').text(`댓글 ${data[0].assemble_count}개`);
         		
         		if($(e).closest('.card').find('.card_foot_comment').length==0){
         			var reple_container= `
@@ -564,10 +564,10 @@ function get_reple(e){
                     		$comment.find('.scroll_box_inner').prepend(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
                     				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
-    	                				<img class="small_img" src="/img/user/profiles/${reple.writer_thumbnail_path}"/>
+    	                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
                     				</div>
                     				<div class="card_comment_body">
-    	                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.writer_nickname}</div>
+    	                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.r_writer_nickname}</div>
     	                				<div class="card_comment_content">${reple.reple_content}</div>
     	                				<div class="card_comment_time">
     	                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
@@ -578,7 +578,7 @@ function get_reple(e){
                     		`);
                     	}
                     }
-        			$(e).closest('.card').find('.card_foot').append($comment);
+        			$(e).closest('.card').find('.card_foot_comment_input').after($comment);
         		}else{
         			$(e).closest('.card').find('.card_foot_comment').find('.scroll_box_inner').empty();
         			
@@ -588,10 +588,10 @@ function get_reple(e){
 		        			$(e).closest('.card').find('.card_foot_comment').find('.scroll_box_inner').append(`
 		            				<div class="card_comment" data-reple_code="${reple.reple_code}">
 		            				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
-		                				<img class="small_img" src="/img/user/profiles/${reple.writer_thumbnail_path}"/>
+		                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
 		            				</div>
 		            				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.writer_nickname}</div>
+		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.r_writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
 		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
@@ -738,10 +738,10 @@ function get_circle_post(user_code){
                     		$comment.find('.scroll_box_inner').append(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
 	                				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
-		                				<img class="small_img" src="/img/user/profiles/${reple.writer_thumbnail_path}"/>
+		                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.writer_nickname}</div>
+		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.r_writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
 		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
@@ -752,7 +752,7 @@ function get_circle_post(user_code){
                     		`);
                     	}
                     }
-                	$card.find('.reple_container').append($comment);
+                	$card.find('.card_foot_comment_input').after($comment);
                 }
         	}
         	target.scrollTop(0);
@@ -1219,6 +1219,8 @@ function get_unity_board(unity_board_code,unity_board_page){
         dataType: "json",
         success: function(data) {
         	
+        	console.log('board',data);
+        	
         	$('.in_unity_post .post_list').empty();
         	
         	if (isEmpty(data)) {
@@ -1228,7 +1230,7 @@ function get_unity_board(unity_board_code,unity_board_page){
         				</div>
         		`);
         		$('.added_page').empty();
-        		$('.num').removeClass('pressed');
+        		$('.num').addClass('pressed');
         		$('.num').off('click')
         		return;
         	}
@@ -1283,6 +1285,9 @@ function get_unity_post(unity_board_code,unity_post_code,unity_board_page){
 	        	unity_board_page:unity_board_page},
         dataType: "json",
         success: function(data) {
+        	
+        	console.log('post',data);
+        	
         	$('.unity_cards').empty();
         	
         	if (isEmpty(data)) {
@@ -1298,13 +1303,20 @@ function get_unity_post(unity_board_code,unity_post_code,unity_board_page){
         		
         		const post = `
 	        		<div class="card" data-post_seq="${postVO.post_seq}" data-post_place=${unity_board_code} data-post_code="${postVO.post_code}">
-						<div class="card_header">
-							<div class="card_header_image" onclick="visit(${postVO.post_writer},this)">
-								<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
-							</div>
-							<div class="card_header_nickname" onclick="visit(${postVO.post_writer},this)">
-								${postVO.writer_nickname}
-							</div>
+						<div class="unity_card_header">
+							<div class="uch_titles">
+			        			<div class="uch_board">${postVO.post_place_name}</div>
+			        			<div class="uch_title">${postVO.post_title}</div>
+        					</div>
+        					<div class="uch_writer onclick="visit(${postVO.post_writer},this)"">
+        						<div class="uch_writer_image">
+        							<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
+        						</div>
+        						<div class="uch_writer_infos">
+        							<div class="uch_writer_grade">${postVO.writer_unity_member_grade}</div>
+        							<div class="uch_writer_nickname">${postVO.writer_nickname}</div>
+        						</div>
+        					</div>
 							<div class="card_header_tools">
 								<div class="card_header_tool">
 									<i class="material-symbols-outlined">favorite</i>
@@ -1406,10 +1418,10 @@ function get_unity_post(unity_board_code,unity_post_code,unity_board_page){
                     		$comment.find('.scroll_box_inner').append(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
 	                				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
-		                				<img class="small_img" src="/img/user/profiles/${reple.writer_thumbnail_path}"/>
+		                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.writer_nickname}</div>
+		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.r_writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
 		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
@@ -1420,7 +1432,7 @@ function get_unity_post(unity_board_code,unity_post_code,unity_board_page){
                     		`);
                     	}
                     }
-                	$card.find('.reple_container').append($comment);
+                	$card.find('.card_foot_comment_input').after($comment);
                 }
         	}
         	view_check();
@@ -1439,7 +1451,8 @@ function get_unity_board_post(post_place,post_code){
         dataType: "json",
         success: function(data) {
         	
-        	console.log(data);
+        	console.log('gubp:',data);
+        	origin_page = data.page;
         	
         	$('.in_unity_post .post_list').empty();
         	
@@ -1454,7 +1467,7 @@ function get_unity_board_post(post_place,post_code){
         	
         	for (const postVO of data.board.unity_post){
         		$('.in_unity_post .post_list').append(`
-    				<div class="post_row" data-post_seq=${postVO.post_seq} data-post_place=${post_place} data-post_code=${postVO.post_code} onclick="scrollToPost(this)">
+    				<div class="post_row" data-post_seq=${postVO.post_seq} data-post_place=${postVO.post_place} data-post_code=${postVO.post_code} onclick="scrollToPost(this)">
 						<div>${postVO.post_title}</div>
 						<div><i class="fa-regular fa-comment-dots"></i><span>${postVO.post_reple_count}</span></div>
 						<div><i class="fa-regular fa-heart"></i><span>${postVO.post_recomm_count}</span></div>
@@ -1492,14 +1505,21 @@ function get_unity_board_post(post_place,post_code){
         	for (const postVO of data.post){
         		
         		const post = `
-	        		<div class="card" data-post_place=${post_place} data-post_seq="${postVO.post_seq}" data-post_code="${postVO.post_code}">
-						<div class="card_header">
-							<div class="card_header_image" onclick="visit(${postVO.post_writer},this)">
-								<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
-							</div>
-							<div class="card_header_nickname" onclick="visit(${postVO.post_writer},this)">
-								${postVO.writer_nickname}
-							</div>
+	        		<div class="card" data-post_seq="${postVO.post_seq}" data-post_place=${postVO.post_place} data-post_code="${postVO.post_code}">
+						<div class="unity_card_header">
+							<div class="uch_titles">
+			        			<div class="uch_board">${postVO.post_place_name}</div>
+			        			<div class="uch_title">${postVO.post_title}</div>
+        					</div>
+        					<div class="uch_writer onclick="visit(${postVO.post_writer},this)"">
+        						<div class="uch_writer_image">
+        							<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
+        						</div>
+        						<div class="uch_writer_infos">
+        							<div class="uch_writer_grade">${postVO.writer_unity_member_grade}</div>
+        							<div class="uch_writer_nickname">${postVO.writer_nickname}</div>
+        						</div>
+        					</div>
 							<div class="card_header_tools">
 								<div class="card_header_tool">
 									<i class="material-symbols-outlined">favorite</i>
@@ -1601,10 +1621,10 @@ function get_unity_board_post(post_place,post_code){
                     		$comment.find('.scroll_box_inner').append(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
 	                				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
-		                				<img class="small_img" src="/img/user/profiles/${reple.writer_thumbnail_path}"/>
+		                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.writer_nickname}</div>
+		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.r_writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
 		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
@@ -1615,10 +1635,27 @@ function get_unity_board_post(post_place,post_code){
                     		`);
                     	}
                     }
-                	$card.find('.reple_container').append($comment);
+                	$card.find('.card_foot_comment_input').after($comment);
                 }
         	}
-        	view_check();
+        	
+        	setTimeout(() => {
+        		
+        	    const post = $('.unity_cards').find(`[data-post_code="${post_code}"]`);
+        	    const currentScroll = $('.unity_cards').scrollTop();
+        	    const postTop = post.position().top;
+        	    const postHeight = post.outerHeight();
+        	    const offset = postTop - post.outerHeight();
+
+    	        $('.unity_cards').animate({
+    	            scrollTop: currentScroll + offset
+    	        }, 500);
+    	        
+    	        setTimeout(function() {
+    	        	view_check();
+    	        }, 500);
+        		
+        	}, 100);
         },
         error: function(xhr, status, error) {
         }
@@ -1652,13 +1689,20 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
         		
         		const post = `
 	        		<div class="card" data-post_seq="${postVO.post_seq}" data-post_place=${postVO.post_place} data-post_code="${postVO.post_code}">
-						<div class="card_header">
-							<div class="card_header_image" onclick="visit(${postVO.post_writer},this)">
-								<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
-							</div>
-							<div class="card_header_nickname" onclick="visit(${postVO.post_writer},this)">
-								${postVO.writer_nickname}
-							</div>
+						<div class="unity_card_header">
+							<div class="uch_titles">
+			        			<div class="uch_board">${postVO.post_place_name}</div>
+			        			<div class="uch_title">${postVO.post_title}</div>
+        					</div>
+        					<div class="uch_writer onclick="visit(${postVO.post_writer},this)"">
+        						<div class="uch_writer_image">
+        							<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
+        						</div>
+        						<div class="uch_writer_infos">
+        							<div class="uch_writer_grade">${postVO.writer_unity_member_grade}</div>
+        							<div class="uch_writer_nickname">${postVO.writer_nickname}</div>
+        						</div>
+        					</div>
 							<div class="card_header_tools">
 								<div class="card_header_tool">
 									<i class="material-symbols-outlined">favorite</i>
@@ -1766,10 +1810,10 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
                     		$comment.find('.scroll_box_inner').append(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
 	                				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
-		                				<img class="small_img" src="/img/user/profiles/${reple.writer_thumbnail_path}"/>
+		                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.writer_nickname}</div>
+		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.r_writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
 		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
@@ -1780,7 +1824,7 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
                     		`);
                     	}
                     }
-                	$card.find('.reple_container').append($comment);
+                	$card.find('.card_foot_comment_input').after($comment);
                 }
         	}
         	view_check();

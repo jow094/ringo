@@ -6,23 +6,23 @@
 <mapper namespace="com.ringo.mapper.PostMapper">
 	
 	<resultMap id="selectCirclePost_Map" type="PostVO">
-	    <result property="post_code" column="cpost_code"/>
-	    <result property="post_writer" column="cpost_writer"/>
-	    <result property="post_content" column="cpost_content"/>
-	    <result property="post_tag" column="cpost_tag"/>
-	    <result property="post_time" column="cpost_time"/>
-	    <result property="post_file_path" column="cpost_file_path"/>
-	    <result property="post_recomm_count" column="cpost_recomm_count"/>
-	    <result property="post_reple_count" column="cpost_reple_count"/>
-	    <result property="post_recomm_user" column="cpost_recomm_user"/>
-	    <result property="post_ismodify" column="cpost_ismodify"/>
+	    <result property="post_code" column="post_code"/>
+	    <result property="post_writer" column="post_writer"/>
+	    <result property="post_content" column="post_content"/>
+	    <result property="post_tag" column="post_tag"/>
+	    <result property="post_time" column="post_time"/>
+	    <result property="post_file_path" column="post_file_path"/>
+	    <result property="post_recomm_count" column="post_recomm_count"/>
+	    <result property="post_reple_count" column="post_reple_count"/>
+	    <result property="post_ismodify" column="post_ismodify"/>
+	    <result property="post_seq" column="post_seq"/>
 	    <result property="writer_thumbnail_path" column="writer_thumbnail_path"/>
 	    <result property="writer_nickname" column="writer_nickname"/>
 	    
 	    <collection property="reples" ofType="RepleVO">
 	        <result property="reple_code" column="reple_code"/>
-	        <result property="writer_nickname" column="r_writer_nickname"/>
-	        <result property="writer_thumbnail_path" column="r_writer_thumbnail_path"/>
+	        <result property="r_writer_nickname" column="r_writer_nickname"/>
+	        <result property="r_writer_thumbnail_path" column="r_writer_thumbnail_path"/>
 	        <result property="reple_writer" column="reple_writer"/>
 	        <result property="reple_content" column="reple_content"/>
 	        <result property="reple_time" column="reple_time"/>
@@ -31,26 +31,28 @@
 	</resultMap>
 	
 	<resultMap id="selectUnityPost_Map" type="PostVO">
-	    <result property="post_code" column="upost_code"/>
-	    <result property="post_place" column="upost_place"/>
-	    <result property="post_writer" column="upost_writer"/>
-	    <result property="post_title" column="upost_title"/>
-	    <result property="post_content" column="upost_content"/>
-	    <result property="post_tag" column="upost_tag"/>
-	    <result property="post_time" column="upost_time"/>
-	    <result property="post_file_path" column="upost_file_path"/>
-	    <result property="post_recomm_count" column="upost_recomm_count"/>
-	    <result property="post_reple_count" column="upost_reple_count"/>
-	    <result property="post_recomm_user" column="upost_recomm_user"/>
-	    <result property="post_ismodify" column="upost_ismodify"/>
+	    <result property="post_code" column="post_code"/>
+	    <result property="post_place" column="post_place"/>
+	    <result property="post_writer" column="post_writer"/>
+	    <result property="post_title" column="post_title"/>
+	    <result property="post_content" column="post_content"/>
+	    <result property="post_tag" column="post_tag"/>
+	    <result property="post_time" column="post_time"/>
+	    <result property="post_file_path" column="post_file_path"/>
+	    <result property="post_recomm_count" column="post_recomm_count"/>
+	    <result property="post_reple_count" column="post_reple_count"/>
+	    <result property="post_didrecomm" column="post_didrecomm"/>
+	    <result property="post_ismodify" column="post_ismodify"/>
+	    <result property="writer_unity_member_grade" column="writer_unity_member_grade"/>
 	    <result property="writer_thumbnail_path" column="writer_thumbnail_path"/>
 	    <result property="writer_nickname" column="writer_nickname"/>
 	    <result property="post_seq" column="post_seq"/>
+	    <result property="post_place_name" column="post_place_name"/>
 	    
 	    <collection property="reples" ofType="RepleVO">
 	        <result property="reple_code" column="reple_code"/>
-	        <result property="writer_nickname" column="r_writer_nickname"/>
-	        <result property="writer_thumbnail_path" column="r_writer_thumbnail_path"/>
+	        <result property="r_writer_nickname" column="r_writer_nickname"/>
+	        <result property="r_writer_thumbnail_path" column="r_writer_thumbnail_path"/>
 	        <result property="reple_writer" column="reple_writer"/>
 	        <result property="reple_content" column="reple_content"/>
 	        <result property="reple_time" column="reple_time"/>
@@ -104,11 +106,9 @@
     </insert>
     
 	<select id="selectReple" resultType="RepleVO">
-		select r.*, u.user_thumbnail_path as writer_thumbnail_path, u.user_nickname as writer_nickname
-   		 from _ringo_reple r
-    	 join _ringo_user u on r.reple_writer = u.user_code
-    	 where r.reple_target = #{reple_target}
-    	 order by r.reple_time desc
+		select * from comments
+    	 where reple_target = #{reple_target}
+    	 order by reple_time desc
 	</select>
 	
 	<select id="selectLastCirclePostCode" resultType="Integer">
@@ -142,24 +142,21 @@
     </insert>
 	
 	<select id="selectCirclePost" resultMap="selectCirclePost_Map">
-		select cp.*, 
-		 u1.user_thumbnail_path as writer_thumbnail_path, 
-		 u1.user_nickname as writer_nickname,
+		select c.*,
 		 r.reple_code, 
 		 r.reple_writer, 
 		 r.reple_content, 
 		 r.reple_time,
 		 r.reple_recomm_count,
-		 u2.user_thumbnail_path as r_writer_thumbnail_path, 
-		 u2.user_nickname as r_writer_nickname
+		 u.user_thumbnail_path as r_writer_thumbnail_path, 
+		 u.user_nickname as r_writer_nickname
 		 
-   		 from _ringo_circle_post cp
-    	 join _ringo_user u1 on cp.cpost_writer = u1.user_code
-    	 left join _ringo_reple r on r.reple_target = cp.cpost_code
-    	 left join _ringo_user u2 on r.reple_writer = u2.user_code
+   		 from cPost c
+    	 left join _ringo_reple r on r.reple_target = c.post_code
+    	 left join _ringo_user u on r.reple_writer = u.user_code
     	 
-    	 where cp.cpost_writer = #{post_writer}
-    	 order by cp.cpost_time desc, r.reple_time desc
+    	 where c.post_writer = #{user_code}
+    	 order by c.post_time desc, r.reple_time desc
 	</select>
 	
 	<select id="selectLastUnityPostCode" resultType="Integer">
@@ -210,90 +207,39 @@
     </select>
 	
 	<select id="selectUnityPost" resultMap="selectUnityPost_Map">
-		select up.*,
-           u1.user_thumbnail_path as writer_thumbnail_path, 
-           u1.user_nickname as writer_nickname,
-           r.reple_code, 
-           r.reple_writer, 
-           r.reple_content, 
-           r.reple_time,
-           r.reple_recomm_count,
-           u2.user_thumbnail_path as r_writer_thumbnail_path, 
-           u2.user_nickname as r_writer_nickname,
-           row_number() over (order by up.upost_time desc) as post_seq
-	    from _ringo_unity_post up
-	    join _ringo_user u1 on up.upost_writer = u1.user_code
-	    left join _ringo_reple r on r.reple_target = up.upost_code
-	    left join _ringo_user u2 on r.reple_writer = u2.user_code
-	    where up.upost_place = #{unity_board_code}
-	    order by up.upost_time desc limit 20 offset #{unity_board_page}
+		select up.*, 
+	        cmt.*
+		    from uPost up
+        	left join comments cmt on cmt.reple_target = up.post_code
+		    where up.post_place = #{unity_board_code} and up.post_page = #{unity_board_page}
+		    order by up.post_seq asc
 	</select>
 	
 	<select id="selectUnityBoard" resultMap="selectUnityBoard_Map">
-        select
-            up.upost_code as post_code,
-            up.upost_title as post_title,
-            up.upost_recomm_count as post_recomm_count,
-            up.upost_reple_count as post_reple_count,
-            up.upost_time as post_time,
-            u.user_nickname as writer_nickname,
-            um.unity_member_grade as writer_unity_member_grade,
-            concat('[', ub.unity_board_category, '] - ', ub.unity_board_name) as unity_board_fullname,
-            (select count(*) from _ringo_unity_post where upost_place = #{unity_board_code}) as unity_board_post_count,
-            row_number() over (order by up.upost_time desc) as post_seq
-        from _ringo_unity_post up
-        left join _ringo_unity_member um on up.upost_writer = um.user_code and 
-        um.unity_code = (
-			    select 
-			        substring(
-			            #{unity_board_code}, 
-			            1, 
-			            locate('-', #{unity_board_code}, locate('-', #{unity_board_code}) + 1) - 1
-			        )
-			)
-        left join _ringo_user u on up.upost_writer = u.user_code
-        left join _ringo_unity_board ub on ub.unity_board_code = #{unity_board_code}
-        where up.upost_place = #{unity_board_code}
-        order by up.upost_time desc
-        limit 20 offset #{unity_board_page}
+        select * from uBoard
+	        where unity_board_code = #{unity_board_code} and post_page = #{unity_board_page}
+	        order by post_seq asc
 	</select>
 	
 	<select id="selectMoreUnityPost" resultMap="selectUnityPost_Map">
-	    with CTE_Posts as (
-	        select 
-	            up.*,
-	            u1.user_thumbnail_path as writer_thumbnail_path, 
-	            u1.user_nickname as writer_nickname,
-	            r.reple_code, 
-	            r.reple_writer, 
-	            r.reple_content, 
-	            r.reple_time,
-	            r.reple_recomm_count,
-	            u2.user_thumbnail_path as r_writer_thumbnail_path, 
-	            u2.user_nickname as r_writer_nickname,
-	            row_number() over (order by up.upost_time desc) as post_seq
-	        from _ringo_unity_post up
-	        join _ringo_user u1 on up.upost_writer = u1.user_code
-	        left join _ringo_reple r on r.reple_target = up.upost_code
-	        left join _ringo_user u2 on r.reple_writer = u2.user_code
-	        where up.upost_place = substring_index(substring_index(#{unity_post_code}, '-', 2), '-', -1)
-	    )
-	    select *
-	    from CTE_Posts
-	    where 1 = 1
-	        <if test="unity_add_direction == 'up'">
-	            and post_seq between 
-		            (select post_seq from CTE_Posts where upost_code = #{unity_post_code}) - 20
-		            and 
-		            (select post_seq from CTE_Posts where upost_code = #{unity_post_code}) - 1
-	        </if>
-	        <if test="unity_add_direction == 'down'">
-	        	and post_seq between 
-        			(select post_seq from CTE_Posts where upost_code = #{unity_post_code}) + 1
-            		and 
-            		(select post_seq from CTE_Posts where upost_code = #{unity_post_code}) + 20
-	        </if>
-	    order by upost_time desc limit 20
+	    select up.*, 
+	        cmt.*
+		    from uPost up
+        	left join comments cmt on cmt.reple_target = up.post_code
+			where up.post_place = substring_index(substring_index(#{unity_post_code}, '-', 2), '-', -1)
+			<if test="unity_add_direction == 'up'">
+		        and up.post_page =
+		            case 
+		                when (select post_page from uPost where post_code = #{unity_post_code}) = 1 then 1
+		                else (select post_page from uPost where post_code = #{unity_post_code}) - 1
+		            end
+		        and up.post_time <![CDATA[ > ]]> (select post_time FROM uPost where post_code = #{unity_post_code})
+		    </if>
+		    <if test="unity_add_direction == 'down'">
+		        and up.post_page = (select post_page from uPost where post_code = #{unity_post_code}) + 1
+		        and up.post_time <![CDATA[ < ]]> (select post_time from uPost where post_code = #{unity_post_code})
+		    </if>
+			order by post_seq asc
 	</select>
 
 	

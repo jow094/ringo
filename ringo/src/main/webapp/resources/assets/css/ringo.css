@@ -7,6 +7,7 @@
   --inner: rgb(250,250,250);
   --gray: rgb(200,200,200);
   --basic: rgb(50,50,50);
+  --sub: rgb(100,100,100);
   --back: rgb(240,240,240);
   --navy: rgb(56, 72, 104);
 }
@@ -1755,6 +1756,81 @@ textarea{
 	font-size:12px;
 	padding-left:10px;
 	border:none;
+}
+.unity_card_header{
+	height:60px;
+	width:100%;
+	box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2);
+	display:flex;
+	justify-content: flex-start;
+	align-content: center;
+	padding:10px;
+}
+.uch_titles{
+	display:flex;
+	flex-direction:column;
+	flex:1;
+	height:100%;
+}
+.uch_board{
+	width:100%;
+	display:flex;
+	flex:1;
+	justify-content:flex-start;
+	align-items:center;	
+	color:var(--sub);
+	font-size:11px;
+}
+.uch_title{
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	display: inline-block;
+	width:100%;
+	max-width:100%;
+	flex:1;
+	line-height:20px;
+}
+.uch_writer{
+	display:flex;
+	height:100%;
+	width:120px;
+}
+.uch_writer_image{
+	height:100%;
+	width:40px;
+	display:flex;
+	justify-content: center;
+	align-content: center;
+}
+.uch_writer_infos{
+	display:flex;
+	flex-direction:column;
+	height:100%;
+	width:80px;
+	padding-left:5px;
+}
+.uch_writer_grade{
+	width:100%;
+	max-width:100%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	display: inline-block;
+	height:16px;
+	color:var(--sub);
+	line-height: 22px;
+	font-size:11px;
+}
+.uch_writer_nickname{
+	width:100%;
+	max-width:100%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	display: inline-block;
+	height : 24px;
+	line-height: 20px;
 }
 .card_header_image {
 	height:100%;
