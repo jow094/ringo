@@ -11,6 +11,9 @@
   --back: rgb(240,240,240);
   --navy: rgb(56, 72, 104);
 }
+div,i {
+    user-select: none;
+}
 [onclick],.resize_handle,.col_resize_handle {
     cursor: pointer !important;
 }

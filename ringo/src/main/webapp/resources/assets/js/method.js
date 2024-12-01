@@ -547,6 +547,11 @@ function get_reple(e){
         	if (data != null && data.length>0) {
         		$(e).closest('.card').find('.reple_button_section').find('.cell').text(`댓글 ${data[0].assemble_count}개`);
         		
+        		if($(e).closest('.unity_cards').length>0){
+        			$('.post_list').find(`[data-post_code=${data[0].reple_target}]`).find('.fa-comment-dots').next('span').text(data[0].assemble_count);
+        		}
+        		
+        		
         		if($(e).closest('.card').find('.card_foot_comment').length==0){
         			var reple_container= `
         				<div class="card_foot_comment">
@@ -1219,8 +1224,6 @@ function get_unity_board(unity_board_code,unity_board_page){
         dataType: "json",
         success: function(data) {
         	
-        	console.log('board',data);
-        	
         	$('.in_unity_post .post_list').empty();
         	
         	if (isEmpty(data)) {
@@ -1285,8 +1288,6 @@ function get_unity_post(unity_board_code,unity_post_code,unity_board_page){
 	        	unity_board_page:unity_board_page},
         dataType: "json",
         success: function(data) {
-        	
-        	console.log('post',data);
         	
         	$('.unity_cards').empty();
         	
@@ -1451,7 +1452,6 @@ function get_unity_board_post(post_place,post_code){
         dataType: "json",
         success: function(data) {
         	
-        	console.log('gubp:',data);
         	origin_page = data.page;
         	
         	$('.in_unity_post .post_list').empty();

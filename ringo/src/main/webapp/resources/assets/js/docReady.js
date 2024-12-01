@@ -236,18 +236,14 @@ $(document).ready(function() {
 
         if (delta < 0) {
         	if(!maxTop){
-        		console.log('call prev');
         		get_unity_prev_post(false);
         	}else{
-        		console.log('call prev');
         		get_unity_prev_post(true);
         	}
         } else if (delta > 0) {
         	if(!minBottom){
-        		console.log('call ne');
         		get_unity_next_post(false);
         	}else{
-        		console.log('call newt');
         		get_unity_next_post(true);
         	}
         }

@@ -1879,9 +1879,6 @@ var showingCard = [];
 var origin_page = "";
 var current_page = "";
 function view_check() {
-	console.log('view check');
-	console.log('vc origin_page : ',origin_page);
-	console.log('vc current_page : ',current_page);
 	showingCard = [];
 	$('.post_row').removeClass('looking');
 	
@@ -1896,7 +1893,6 @@ function view_check() {
         const cardOffsetBottom = cardOffsetTop + $card.outerHeight();
 
         if (cardOffsetBottom > scrollTop && cardOffsetTop < scrollBottom) {
-        	console.log(showingCard);
         	
             const postCode = $card.data("post_code");
             showingCard.push($card.data("post_seq"));
