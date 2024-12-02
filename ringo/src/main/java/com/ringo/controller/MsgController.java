@@ -15,6 +15,8 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ringo.domain.UserVO;
 import com.ringo.domain.MsgRoomVO;
+import com.ringo.domain.MsgVO;
 import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
 import com.ringo.domain.UserVO;
@@ -76,19 +79,86 @@ public class MsgController {
 		}else {
 			Map<String,Object> result = new HashMap<String,Object>();
 			result.put("room", msgService.getMsgRoomInfo(mr_code));
-			result.put("msg", msgService.getMsg(mr_code));
+			result.put("msg", msgService.getMsg((String)session.getAttribute("user_code"),mr_code));
 			return result;
 		}
 	}
 	
-	@RequestMapping(value = "/room", method = RequestMethod.GET)
+	@RequestMapping(value = "/inRoom", method = RequestMethod.GET)
 	@ResponseBody
-	public Map<String,Object> msgRoomGET(HttpSession session, String mr_code) {
-		logger.debug("msgRoomGET(String mr_code) - mr_code : "+mr_code);
+	public Map<String,Object> msgInRoomGET(HttpSession session, String mr_code) {
+		logger.debug("msgInRoomGET(String mr_code) - mr_code : "+mr_code);
 		
 		Map<String,Object> result = new HashMap<String,Object>();
 		result.put("room", msgService.getMsgRoomInfo(mr_code));
-		result.put("msg", msgService.getMsg(mr_code));
+		result.put("msg", msgService.getMsg((String)session.getAttribute("user_code"),mr_code));
 		return result;
 	}
+	
+	@RequestMapping(value = "/send", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer msgSendPost(HttpSession session, MsgVO vo) {
+		logger.debug("msgSendPost(MsgVO vo) - vo : "+vo);
+		
+		Integer last_msg_code = msgService.getLastMsgCode();
+		
+		if(last_msg_code==null) {
+			last_msg_code = 0;
+		}
+		
+		UserVO writer = new UserVO();
+		writer.setUser_code((String)session.getAttribute("user_code"));
+		String msg_code = "msg_"+(last_msg_code+1);
+		
+		vo.setMsg_code(msg_code);
+		vo.setMsg_sender(writer);
+        
+		try {
+			List<MultipartFile> files = vo.getMsg_file(); 
+			StringBuilder msg_file_path = new StringBuilder();
+			
+			if(files != null && !files.isEmpty()) {
+				int i = 1;
+				for (MultipartFile file : files) {
+				    if (!file.isEmpty()) {
+				        String originalFileName = file.getOriginalFilename();
+		
+				        String extension = "";
+				        if (originalFileName != null && originalFileName.contains(".")) {
+				            extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+				        }
+		
+				        String fileName = msg_code + "_img" + i + extension;
+		
+				        if (msg_file_path.length() > 0) {
+				        	msg_file_path.append(",");
+				        }
+				        msg_file_path.append(fileName);
+		
+				        File dest = new File(uploadPath_img + fileName);
+				        try {
+				            file.transferTo(dest);
+				        } catch (IOException e) {
+				            e.printStackTrace();
+				        }
+		
+				        i++;
+				    }
+				}
+			}
+			
+			vo.setMsg_file_path(msg_file_path.toString());
+			
+			return msgService.uploadMsg(vo);
+			
+		} catch (Exception e) {
+	    	return 0;
+	    }
+	}
+	
+    @MessageMapping("/msgPost/post")
+    @SendTo("/msgGet")
+    public String sendUpdate() {
+        return "Update triggered!";
+    }
 }

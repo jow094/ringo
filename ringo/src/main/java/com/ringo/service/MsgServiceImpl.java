@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.ringo.domain.UserVO;
@@ -25,24 +26,42 @@ public class MsgServiceImpl implements MsgService{
 	@Autowired
 	private MsgDAO msgdao;
 	
+	@Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
+    public void sendRoomUpdate(String roomId) {
+        // "/topic/rooms" 寃쎈줈濡� 硫붿떆吏� �쟾�넚
+        messagingTemplate.convertAndSend("/msgGet", roomId + " has been updated!");
+    }
+    
+	@Override
+	public Integer getLastMsgCode() {
+		return msgdao.selectLastMsgCode();
+	}
+	
+	@Override
+	public Integer uploadMsg(MsgVO vo) {
+		return msgdao.insertMsg(vo);
+	}
+
 	@Override
 	public String getPersonalMsgRoom(Map<String,Object> param) {
-		return msgdao.select_personal_msg_room(param);
+		return msgdao.selectPersonalMsgRoom(param);
 	}
 
 	@Override
 	public List<MsgRoomVO> getMsgRoomlist(String user_code) {
-		return msgdao.select_msg_room_list(user_code);
+		return msgdao.selectMsgRoomList(user_code);
 	}
 	
 	@Override
 	public MsgRoomVO getMsgRoomInfo(String mr_code) {
-		return msgdao.select_msg_room_info(mr_code);
+		return msgdao.selectMsgRoomInfo(mr_code);
 	}
 
 	@Override
-	public List<MsgVO> getMsg(String mr_code) {
-		return msgdao.select_msg(mr_code);
+	public List<MsgVO> getMsg(String user_code,String mr_code) {
+		return msgdao.selectMsg(user_code,mr_code);
 	}
 	
 	

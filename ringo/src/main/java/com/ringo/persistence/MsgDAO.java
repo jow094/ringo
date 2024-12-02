@@ -10,9 +10,10 @@ import com.ringo.domain.SettingVO;
 import com.ringo.domain.UserVO;
 
 public interface MsgDAO {
-	
-	public String select_personal_msg_room(Map<String,Object> param);
-	public List<MsgRoomVO> select_msg_room_list(String user_code);
-	public MsgRoomVO select_msg_room_info(String mr_code);
-	public List<MsgVO> select_msg(String mr_code);
+	public Integer selectLastMsgCode();
+	public Integer insertMsg(MsgVO vo);
+	public String selectPersonalMsgRoom(Map<String,Object> param);
+	public List<MsgRoomVO> selectMsgRoomList(String user_code);
+	public MsgRoomVO selectMsgRoomInfo(String mr_code);
+	public List<MsgVO> selectMsg(String user_code,String mr_code);
 }

@@ -29,26 +29,42 @@ public class MsgDAOImpl implements MsgDAO {
 	private static final Logger logger = LoggerFactory.getLogger(MsgDAOImpl.class);
 
 	@Override
-	public String select_personal_msg_room(Map<String,Object> param) {
+	public Integer selectLastMsgCode() {
+		return sqlSession.selectOne(NAMESPACE + ".selectLastMsgCode");
+	}
+
+	@Override
+	public Integer insertMsg(MsgVO vo) {
+		return sqlSession.insert(NAMESPACE + ".insertMsg",vo);
+	}
+
+	@Override
+	public String selectPersonalMsgRoom(Map<String,Object> param) {
 		logger.debug("result:"+sqlSession.selectOne(NAMESPACE + ".selectPersonalMsgRoom",param));
 		return sqlSession.selectOne(NAMESPACE + ".selectPersonalMsgRoom",param);	
 	}
 
 	@Override
-	public List<MsgRoomVO> select_msg_room_list(String user_code) {
+	public List<MsgRoomVO> selectMsgRoomList(String user_code) {
 		logger.debug("result:"+sqlSession.selectList(NAMESPACE + ".selectMsgRoomList",user_code));
 		return sqlSession.selectList(NAMESPACE + ".selectMsgRoomList",user_code);	
 	}
 
 	@Override
-	public MsgRoomVO select_msg_room_info(String mr_code) {
+	public MsgRoomVO selectMsgRoomInfo(String mr_code) {
 		logger.debug("result:"+sqlSession.selectOne(NAMESPACE + ".selectMsgRoomInfo",mr_code));
 		return sqlSession.selectOne(NAMESPACE + ".selectMsgRoomInfo",mr_code);	
 	}
 
 	@Override
-	public List<MsgVO> select_msg(String mr_code) {
-		logger.debug("result:"+sqlSession.selectList(NAMESPACE + ".selectMsg",mr_code));
+	public List<MsgVO> selectMsg(String user_code,String mr_code) {
+		logger.debug("selectMsg result:"+sqlSession.selectList(NAMESPACE + ".selectMsg",mr_code));
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("mr_code", mr_code);
+		param.put("user_code", user_code);
+		
+		sqlSession.update(NAMESPACE + ".updateMsgUnreader",param);
 		return sqlSession.selectList(NAMESPACE + ".selectMsg",mr_code);	
 	}
 

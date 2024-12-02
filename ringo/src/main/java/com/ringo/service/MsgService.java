@@ -10,9 +10,11 @@ import com.ringo.domain.SettingVO;
 
 public interface MsgService {
 	
+	public Integer getLastMsgCode();
+	public Integer uploadMsg(MsgVO vo);
 	public String getPersonalMsgRoom(Map<String,Object> param);
 	public List<MsgRoomVO> getMsgRoomlist(String user_code);
 	public MsgRoomVO getMsgRoomInfo(String mr_code);
-	public List<MsgVO> getMsg(String mr_code);
+	public List<MsgVO> getMsg(String user_code,String mr_code);
 	
 }

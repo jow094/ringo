@@ -1261,6 +1261,7 @@ function enter_unity_main(e){
 function enter_room(e){
 	hide('.out_of_room');
 	showing('.in_room');
+	get_msg(e);
 }
 
 function exit_room(e){

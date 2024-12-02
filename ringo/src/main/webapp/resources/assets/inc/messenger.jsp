@@ -39,28 +39,6 @@
 				<i class="fas fa-chevron-circle-up"></i>
 			</div>
 			<div class="messenger_rooms favorite expanded">
-				<div class="messenger_room" onclick="enter_room()">
-					<div class="room_thumbnail">
-						<img class="small_img" src="/img/user/profiles/${user_thumbnail_path}"/>
-					</div>
-					<div class="room_body">
-						<div class="room_name">조우영</div>
-						<div class="room_message">
-							<div class="room_message_content">asdasdasdsadasdsadsasdasdasdsadasdsadsasdasdasdsadasdsadsasdasㅁㄴㅇㅁㄴㅇㄴdasdsadasdsadsa</div>
-							<div class="room_message_time">11:20</div>
-						</div>
-					</div>
-					<div class="room_unreadcount">
-						<div class="badge">1123</div>
-					</div>
-				
-				</div>
-				<div class="messenger_room">
-				
-				</div>
-				<div class="messenger_room">
-				
-				</div>
 			</div>
 			<div class="menu_tag" onclick="col_toggle($(this).next('.messenger_rooms'),this)">
 				<span>팔로워</span>
@@ -92,38 +70,12 @@
 				<i class="fa-solid fa-bars"></i>
 			</div>
 		</div>
+		
 		<div class="messenger_content">
-			<div class="message_box_received">
-				<div class="message_sender_thumbnail">
-					<img class="small_img"
-					src="/img/user/profiles/${user_thumbnail_path}"
-					/>
-				</div>
-				<div class="message_info">	
-					<div class="message_sender_nickname">
-					sender_nickname
-					</div>
-					<div class="message_body">
-						<div class="message_content">본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문본문마지막</div>
-						<div class="message_time">
-						20:00
-						</div>
-					</div>
-				</div>
-				<span class="message_unread_count">1</span>
-			</div>
-			<div class="message_box_send">
-				<span class="message_unread_count">1</span>
-				<div class="message_body">
-					<div class="message_content">본문</div>
-					<div class="message_time">
-					20:00
-					</div>
-				</div>
-			</div>
 		</div>
-		<div class="messenger_input">
-			<textarea></textarea>
+		
+		<div class="messenger_input" data-mr_code="mr_1">
+			<textarea id="input_msg_content"></textarea>
 			<div class="messenger_input_tools">
 				<ul>
 					<li>
@@ -131,9 +83,10 @@
 					</li>
 					<li>
 						<i class="fa-solid fa-paperclip"></i>
+						<input id="input_msg_file" class="hidden_input" type="file"></input>
 					</li>
 					<li>
-						<button type="button">
+						<button type="button" onclick="submit_msg()">
 							<i class="fa-solid fa-paper-plane"></i>
 						</button>
 					</li>

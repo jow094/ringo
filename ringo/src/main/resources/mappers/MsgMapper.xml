@@ -26,7 +26,7 @@
 	    <result property="mr_admin" column="mr_admin"/>
 		    		
 		<collection property="mr_member" ofType="UserVO">
-			<result property="user_nickname " column="user_nickname"/>
+			<result property="user_nickname" column="user_nickname"/>
 		    <result property="user_thumbnail_path" column="user_thumbnail_path"/>
 		</collection>
 	</resultMap>
@@ -36,15 +36,20 @@
 	    <result property="msg_content" column="msg_content"/>
 	    <result property="msg_time" column="msg_time"/>
 	    <result property="msg_unreader" column="msg_unreader"/>
-	    <result property="msg_unread_count" column="msg_unread_count"/>
+	    <result property="msg_unreader_count" column="msg_unreader_count"/>
 	    <result property="msg_place" column="msg_place"/>
 
 		<association property="msg_sender" javaType="UserVO">
+			<result property="user_code" column="msg_sender"/>
 			<result property="user_nickname" column="user_nickname"/>
 			<result property="user_thumbnail_path" column="user_thumbnail_path"/>
 		</association>
 	</resultMap>
 
+	<select id="selectLastMsgCode" resultType="Integer">
+		select max(cast(substring_index(msg_code, '_', -1) as unsigned)) from _ringo_msg where msg_code like 'msg_%';
+	</select>
+	
 	<select id="selectPersonalMsgRoom" resultType="String">
 		select mr_code
 			from _ringo_msg_member
@@ -74,5 +79,31 @@
 			from msg
 			where msg_place = #{mr_code}
 	</select>
+	
+	<insert id="insertMsg">
+		insert into _ringo_msg (
+	        msg_code,
+	        msg_sender,
+	        msg_content,
+	        msg_unreader,
+	        msg_place,
+	        msg_file_path
+	    )
+	    select
+	        #{msg_code},
+	        #{msg_sender.user_code},
+	        #{msg_content},
+	        (select group_concat(user_code order by user_code separator '')
+	         from _ringo_msg_member
+	         where mr_code = #{msg_place}),
+	        #{msg_place},
+	        #{msg_file_path}
+	</insert>
+	
+	<update id="updateMsgUnreader">
+		update _ringo_msg 
+		set msg_unreader = replace(msg_unreader, #{user_code}, '')
+		where msg_place = #{mr_code}
+	</update>
 
 </mapper>
