@@ -1834,3 +1834,17 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
     });
 }
 
+function get_msg_room_list(){
+	
+	$.ajax({
+        type: "GET",
+        url: "/msg/roomList",
+        dataType: "json",
+        success: function(data) {
+        	console.log('roomList:',data);
+        },
+        error: function(xhr, status, error) {
+        	console.log('roomList failed');
+        }
+	});
+}

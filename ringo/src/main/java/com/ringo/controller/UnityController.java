@@ -32,7 +32,7 @@ import com.ringo.domain.UnityMemberVO;
 import com.ringo.domain.UnityVO;
 import com.ringo.domain.UserVO;
 import com.ringo.service.UserService;
-import com.ringo.service.MessageService;
+import com.ringo.service.MsgService;
 import com.ringo.service.PostService;
 import com.ringo.service.TwilloService;
 import com.ringo.service.UnityService;
@@ -50,7 +50,7 @@ public class UnityController {
 	@Inject
 	private UnityService unityService;
 	@Inject
-	private MessageService msgService;
+	private MsgService msgService;
 	@Inject
 	private TwilloService tService;
 	@Inject

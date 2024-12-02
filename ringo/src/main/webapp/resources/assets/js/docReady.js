@@ -2,6 +2,7 @@ $(document).ready(function() {
 	login_check();
 	main_show('around');
 	get_coordinates();
+	get_msg_room_list();
 	
 	window.onclick = function(e) {
 		if ($('.join_modal:not(.none)').length > 0) {

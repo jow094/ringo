@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.ringo.mapper.MsgMapper">
+
+	<resultMap id="selectMsgRoomList_Map" type="MsgRoomVO">
+	    <result property="mr_code" column="mr_code"/>
+	    <result property="mr_name" column="mr_name"/>
+	    <result property="mr_admin" column="mr_admin"/>
+	    <result property="mr_alarm_count" column="mr_alarm_count"/>
+		    		
+		<association property="mr_last_message" javaType="MsgVO">
+		    <result property="msg_content" column="msg_content"/>
+		    <result property="msg_time" column="msg_time"/>
+			<association property="msg_sender" javaType="UserVO">
+				<result property="user_nickname" column="user_nickname"/>
+			</association>
+		</association>
+	</resultMap>
+	
+	<resultMap id="selectMsgRoomInfo_Map" type="MsgRoomVO">
+	    <result property="mr_code" column="mr_code"/>
+	    <result property="mr_name" column="mr_name"/>
+	    <result property="mr_admin" column="mr_admin"/>
+		    		
+		<collection property="mr_member" ofType="UserVO">
+			<result property="user_nickname " column="user_nickname"/>
+		    <result property="user_thumbnail_path" column="user_thumbnail_path"/>
+		</collection>
+	</resultMap>
+	
+	<resultMap id="msg_Map" type="MsgVO">
+	    <result property="msg_code" column="msg_code"/>
+	    <result property="msg_content" column="msg_content"/>
+	    <result property="msg_time" column="msg_time"/>
+	    <result property="msg_unreader" column="msg_unreader"/>
+	    <result property="msg_unread_count" column="msg_unread_count"/>
+	    <result property="msg_place" column="msg_place"/>
+
+		<association property="msg_sender" javaType="UserVO">
+			<result property="user_nickname" column="user_nickname"/>
+			<result property="user_thumbnail_path" column="user_thumbnail_path"/>
+		</association>
+	</resultMap>
+
+	<select id="selectPersonalMsgRoom" resultType="String">
+		select mr_code
+			from _ringo_msg_member
+			where user_code in (#{user_code_1}, #{user_code_2})
+			groub by mr_code
+			having count(distinct user_code) = 2;
+	</select>
+	
+	<select id="selectMsgRoomList" resultMap="selectMsgRoomList_Map">
+		select msgr.*,
+			(select count(*) from _ringo_msg where msg_place = mm.mr_code and msg_unreader like concat('%', #{user_code}, '%')) as mr_alarm_count
+			from msgr
+            left join _ringo_msg_member mm on mm.user_code = #{user_code}
+			where msgr.mr_code = mm.mr_code;
+	</select>
+	
+	<select id="selectMsgRoomInfo" resultMap="selectMsgRoomInfo_Map">
+		select msgr.mr_code, msgr.mr_name, msgr.mr_admin, u.user_thumbnail_path, u.user_nickname 
+			from msgr
+			left join _ringo_msg_member mm on mm.mr_code = #{mr_code} 
+			left join _ringo_user u on mm.user_code = u.user_code
+			where msgr.mr_code = #{mr_code}
+	</select>
+	
+	<select id="selectMsg" resultMap="msg_Map">
+		select *
+			from msg
+			where msg_place = #{mr_code}
+	</select>
+
+</mapper>

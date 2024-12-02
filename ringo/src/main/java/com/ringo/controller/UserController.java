@@ -28,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ringo.domain.UserVO;
 import com.ringo.domain.UserVO;
 import com.ringo.service.UserService;
-import com.ringo.service.MessageService;
+import com.ringo.service.MsgService;
 import com.ringo.service.TwilloService;
 import com.ringo.service.UnityService;
 import com.ringo.service.UserService;
@@ -54,7 +54,7 @@ public class UserController {
 	@Inject
 	private UnityService unityService;
 	@Inject
-	private MessageService msgService;
+	private MsgService msgService;
 	@Inject
     private TwilloService smsService;
 	@Inject

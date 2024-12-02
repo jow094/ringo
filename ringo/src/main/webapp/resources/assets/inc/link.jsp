@@ -10,40 +10,48 @@
         			<i class="fa-solid fa-chevron-left"></i>
    		 		</div>
    		 		
+   		 			
+   		 		
    		 		
    		 		
    		 			<div class="card link_card">
 						<div class="card_body">
 							<div class="card_body_content">
-								<div class="image_container">
-									<div class="image_main">
-										<img src="/img/user/profiles/${user_thumbnail_path}"/>
-									</div>
-									<div class="image_queue">
-										<div class="image_queue_belt">
-											<div class="image_waiting">
-												<img src="/img/user/profiles/${user_thumbnail_path}"/>
-											</div>
-											<div class="image_waiting">
-												<img src="/img/user/profiles/${user_thumbnail_path}"/>
-											</div>
-											<div class="image_waiting">
-												<img src="/img/user/profiles/${user_thumbnail_path}"/>
-											</div>
-											<div class="image_waiting">
-												<img src="/img/user/profiles/${user_thumbnail_path}"/>
-											</div>
-											<div class="image_waiting">
-												<img src="/img/user/profiles/${user_thumbnail_path}"/>
-											</div>
-											<div class="image_waiting">
-												<img src="/img/user/profiles/${user_thumbnail_path}"/>
+								<div class="link_image">
+									<div class="image_container">
+										<div class="image_main">
+										<div class="image_button"><i class="fa-solid fa-chevron-left"></i></div>
+											<img src="/img/user/profiles/${user_thumbnail_path}"/>
+										<div class="image_button"><i class="fa-solid fa-chevron-right"></i></div>
+										</div>
+										<div class="image_queue">
+											<div class="image_queue_belt">
+												<div class="image_waiting">
+													<img src="/img/user/profiles/${user_thumbnail_path}"/>
+												</div>
+												<div class="image_waiting">
+													<img src="/img/user/profiles/${user_thumbnail_path}"/>
+												</div>
+												<div class="image_waiting">
+													<img src="/img/user/profiles/${user_thumbnail_path}"/>
+												</div>
+												<div class="image_waiting">
+													<img src="/img/user/profiles/${user_thumbnail_path}"/>
+												</div>
+												<div class="image_waiting">
+													<img src="/img/user/profiles/${user_thumbnail_path}"/>
+												</div>
+												<div class="image_waiting">
+													<img src="/img/user/profiles/${user_thumbnail_path}"/>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 								<div class="link_info">
 									<div class="scroll_x">
+										<div class="inner_box max_div inset inner">
+										</div>
 									</div>
 								</div>
 							</div>

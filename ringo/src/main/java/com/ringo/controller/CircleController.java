@@ -28,7 +28,7 @@ import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
 import com.ringo.domain.UserVO;
 import com.ringo.service.UserService;
-import com.ringo.service.MessageService;
+import com.ringo.service.MsgService;
 import com.ringo.service.PostService;
 import com.ringo.service.TwilloService;
 import com.ringo.service.UserService;
