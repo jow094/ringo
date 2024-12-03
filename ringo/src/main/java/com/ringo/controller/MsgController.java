@@ -126,6 +126,14 @@ public class MsgController {
 		return result;
 	}
 	
+	@RequestMapping(value = "/msg", method = RequestMethod.GET)
+	@ResponseBody
+	public MsgVO msgGET(HttpSession session, String mr_code, String msg_code) {
+		logger.debug("msgGET(String mr_code, String msg_code) - mr_code, msg_code : "+mr_code + "," + msg_code);
+		
+		return msgService.getOneMsg((String)session.getAttribute("user_code"),mr_code,msg_code);
+	}
+	
 	@RequestMapping(value = "/send", method = RequestMethod.POST)
 	@ResponseBody
 	public Integer msgSendPost(HttpSession session, MsgVO vo) {

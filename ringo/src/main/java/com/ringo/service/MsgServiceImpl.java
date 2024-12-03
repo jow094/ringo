@@ -1,5 +1,6 @@
 package com.ringo.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,10 +29,6 @@ public class MsgServiceImpl implements MsgService{
 	
 	@Autowired
     private SimpMessagingTemplate messagingTemplate;
-
-    public void sendRoomUpdate(String roomId) {
-        messagingTemplate.convertAndSend("/msgGet", roomId + " has been updated!");
-    }
     
 	@Override
 	public Integer getLastMsgCode() {
@@ -53,10 +50,11 @@ public class MsgServiceImpl implements MsgService{
 		Integer result = msgdao.insertMsg(vo);
 		
 		if (result > 0) {
-            // 채팅방 ID를 구하기 (예시로 vo.getRoomId()가 있다고 가정)
             String mr_code = vo.getMsg_place();
-            // WebSocket 메시지를 해당 방에 전송
-            messagingTemplate.convertAndSend("/msgGet/room/" + mr_code, msgdao.selectOneMsg(vo.getMsg_code()));
+            Map<String,Object> param = new HashMap<String,Object>();
+    		param.put("mr_code", mr_code);
+    		param.put("msg_code", vo.getMsg_code());
+            messagingTemplate.convertAndSend("/msgGet/getMsg/" + mr_code, param);
         }
 		return result;
 	}
@@ -83,8 +81,17 @@ public class MsgServiceImpl implements MsgService{
 
 	@Override
 	public List<MsgVO> getMsg(String user_code,String mr_code) {
+		
 		List<MsgVO> result = msgdao.selectMsg(user_code,mr_code);
-		messagingTemplate.convertAndSend("/msgUpdate/" + mr_code, msgdao.selectUnreaderCount(mr_code));
+		messagingTemplate.convertAndSend("/msgGet/updateMUC/" + mr_code, msgdao.selectUnreaderCount(mr_code));
+		return result;
+	}
+	
+	@Override
+	public MsgVO getOneMsg(String user_code,String mr_code,String msg_code) {
+		
+		MsgVO result = msgdao.selectOneMsg(user_code,msg_code);
+		messagingTemplate.convertAndSend("/msgGet/updateMUC/" + mr_code, msgdao.selectUnreaderCount(mr_code));
 		return result;
 	}
 	

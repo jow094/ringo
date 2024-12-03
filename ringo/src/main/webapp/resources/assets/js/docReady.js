@@ -256,6 +256,12 @@ $(document).ready(function() {
 
         lastlocation = location;
     });
+    
+    $('.messenger_content').on('click', '.message_body', function (event) {
+    	console.log('trs start');
+        translate(this); // 클릭한 .message_body 요소를 참조
+    });
+    
 
 
 });

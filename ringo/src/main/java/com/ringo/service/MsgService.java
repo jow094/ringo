@@ -19,5 +19,6 @@ public interface MsgService {
 	public List<MsgRoomVO> getMsgRoomlist(String user_code);
 	public MsgRoomVO getMsgRoomInfo(String user_code, String mr_code);
 	public List<MsgVO> getMsg(String user_code,String mr_code);
+	public MsgVO getOneMsg(String user_code,String mr_code,String msg_code);
 	
 }

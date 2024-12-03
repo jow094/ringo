@@ -6,8 +6,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<script src="${pageContext.request.contextPath }/resources/assets/js/messenger.js"></script>
 <script src="${pageContext.request.contextPath }/resources/assets/js/webSocket.js"></script>
+<script src="${pageContext.request.contextPath }/resources/assets/js/messenger.js"></script>
+<script src="${pageContext.request.contextPath }/resources/assets/js/translation.js"></script>
 <script src="${pageContext.request.contextPath }/resources/assets/js/method.js"></script>
 <script src="${pageContext.request.contextPath }/resources/assets/js/function.js"></script>
 <script src="${pageContext.request.contextPath }/resources/assets/js/docReady.js"></script>

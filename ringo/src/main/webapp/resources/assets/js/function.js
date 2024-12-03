@@ -1268,6 +1268,7 @@ function enter_room(data){
 	get_msg(data);
 	$('#input_msg_content').val();
 	msg_posting_files = [];
+	connect_in_msg_room(data);
 }
 
 function exit_room(e){
@@ -1279,6 +1280,7 @@ function exit_room(e){
 	get_msg_room_list();
 	$('#input_msg_content').val();
 	msg_posting_files = [];
+	disconnect_in_msg_room();
 }
 
 function check_profile_button(){

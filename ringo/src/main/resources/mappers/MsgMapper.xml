@@ -133,7 +133,7 @@
 			where msg_code = #{msg_code}
 	</select>
 	
-	<select id="selectUnreaderCount" resultType="MsgVO">
+	<select id="selectUnreaderCount" resultType="Map">
 		select msg_code,msg_unreader_count
 			from msg
 			where msg_place = #{mr_code}
@@ -154,15 +154,21 @@
 	        #{msg_content},
 	        (select group_concat(user_code order by user_code separator '')
 	         from _ringo_msg_member
-	         where mr_code = #{msg_place}),
+	         where mr_code = #{msg_place} and user_code != #{msg_sender.user_code}),
 	        #{msg_place},
 	        #{msg_file_path}
 	</insert>
 	
-	<update id="updateMsgUnreader">
+	<update id="updateRoomUnreader">
 		update _ringo_msg 
 		set msg_unreader = replace(msg_unreader, #{user_code}, '')
 		where msg_place = #{mr_code}
+	</update>
+	
+	<update id="updateMsgUnreader">
+		update _ringo_msg 
+		set msg_unreader = replace(msg_unreader, #{user_code}, '')
+		where msg_code = #{msg_code}
 	</update>
 	
 	<insert id="insertMsgMember">

@@ -25,7 +25,7 @@ function get_msg_room_list(){
 		    				</div>
 		    			</div>
 		    			<div class="room_unreadcount">
-		    				<div class="badge">${room.mr_alarm_count}</div>
+		    				${room.mr_alarm_count != 0 ? '<div class="badge">' + room.mr_alarm_count + '</div>' : ""}
 	    				</div>
     				</div>
         		`);
@@ -94,46 +94,60 @@ function get_msg(mr_code){
 	});
 }
 
-function update_msg(msg){
+function get_new_msg(mr_code,msg_code){
 	
-	var isAtBottom = $('.messenger_content').scrollTop() + $('.messenger_content').innerHeight() >= $('.messenger_content')[0].scrollHeight - 5;
+	$.ajax({
+        type: "GET",
+        url: "/msg/msg",
+        data: {mr_code:mr_code, msg_code : msg_code} ,
+        dataType: "json",
+        success: function(msg) {
+        	
+        	var isAtBottom = $('.messenger_content').scrollTop() + $('.messenger_content').innerHeight() >= $('.messenger_content')[0].scrollHeight - 5;
+        	
+        	if(msg.msg_sender.user_code == current_user){
+        		$('.messenger_content').append(`
+        				<div class="message_box_send" data-msg_code = ${msg.msg_code}>
+        				<span class="message_unread_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
+        				<div class="message_body">
+        				<div class="message_content">${msg.msg_content}</div>
+        				<div class="message_time">
+        				${auto_format_date(msg.msg_time)}
+        				</div>
+        				</div>
+        				</div>
+        		`);
+        	}else{
+        		$('.messenger_content').append(`
+        				<div class="message_box_received" data-msg_code = ${msg.msg_code}>
+        				<div class="message_sender_thumbnail" onclick="visit('${msg.msg_sender.user_code}',this)">
+        				<img class="small_img" src="/img/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
+        				</div>
+        				<div class="message_info">	
+        				<div class="message_sender_nickname" onclick="visit('${msg.msg_sender.user_code}',this)">
+        				${msg.msg_sender.user_nickname}
+        				</div>
+        				<div class="message_body">
+        				<div class="message_content">${msg.msg_content}</div>
+        				<div class="message_time">
+        				${auto_format_date(msg.msg_time)}
+        				</div>
+        				</div>
+        				</div>
+        				<span class="message_unreader_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
+        				</div>
+        		`);
+        	}
+        	
+        	if(isAtBottom){
+        		$('.messenger_content').scrollTop($('.messenger_content')[0].scrollHeight);
+        	}
+        	
+        },
+		error: function(error) {
+		}
+	});
 	
-	if(msg.msg_sender.user_code == current_user){
-		$('.messenger_content').append(`
-			<div class="message_box_send" data-msg_code = ${msg.msg_code}>
-				<span class="message_unread_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
-				<div class="message_body">
-					<div class="message_content">${msg.msg_content}</div>
-					<div class="message_time">
-						${auto_format_date(msg.msg_time)}
-					</div>
-				</div>
-			</div>
-		`);
-	}else{
-		$('.messenger_content').append(`
-			<div class="message_box_received" data-msg_code = ${msg.msg_code}>
-				<div class="message_sender_thumbnail" onclick="visit('${msg.msg_sender.user_code}',this)">
-					<img class="small_img" src="/img/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
-				</div>
-				<div class="message_info">	
-					<div class="message_sender_nickname" onclick="visit('${msg.msg_sender.user_code}',this)">
-						${msg.msg_sender.user_nickname}
-					</div>
-					<div class="message_body">
-						<div class="message_content">${msg.msg_content}</div>
-						<div class="message_time">
-						${auto_format_date(msg.msg_time)}
-						</div>
-					</div>
-				</div>
-				<span class="message_unreader_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
-			</div>
-		`);
-	}
-	if(isAtBottom){
-		$('.messenger_content').scrollTop($('.messenger_content')[0].scrollHeight);
-	}
 }
 
 function submit_msg(){
@@ -234,6 +248,7 @@ function open_personal_msg_room(user_code,formData){
     					msg_posting_files = [];
     					$('#input_msg_content').val('');
     					msg_target="";
+    					connect_in_msg_room(mr_code);
     				}
     			},
     			error: function(error) {

@@ -30,6 +30,7 @@ import com.ringo.domain.UserVO;
 import com.ringo.service.UserService;
 import com.ringo.service.MsgService;
 import com.ringo.service.PostService;
+import com.ringo.service.TranslationService;
 import com.ringo.service.TwilloService;
 import com.ringo.service.UserService;
 import com.ringo.service.AuthenticationService;
@@ -50,6 +51,8 @@ public class MainController {
 	private AuthenticationService emailService;
 	@Inject
 	private PostService pService;
+	@Inject
+    private TranslationService trService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
@@ -102,6 +105,12 @@ public class MainController {
 		logger.debug("repleGET(RepleVO vo) - vo : "+vo);
 		
 		return pService.getReple(vo);
+	}
+	
+	@RequestMapping(value = "/trs", method = RequestMethod.GET)
+	@ResponseBody
+	public String translation(String text, String targetLang) {
+		return trService.translate(text,targetLang);
 	}
 	
 }
