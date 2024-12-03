@@ -12,6 +12,7 @@ import com.ringo.domain.SettingVO;
 public interface UserDAO {
 
 	public UserVO selectUser(UserVO vo);
+	public String selectUserNickname(String user_code);
 	public Integer insertUser(UserVO vo);
 	public Integer selectLastCode();
 	public Integer selectDuplication(String target, String data);

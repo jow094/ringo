@@ -1258,15 +1258,27 @@ function enter_unity_main(e){
 	}
 }
 
-function enter_room(e){
+function enter_room(data){
 	hide('.out_of_room');
 	showing('.in_room');
-	get_msg(e);
+	$('.messenger_navbar_nickname').text('');
+	$('.messenger_navbar_nickname').removeAttr('data-user_code');
+	mr_code = data;
+	msg_target = "";
+	get_msg(data);
+	$('#input_msg_content').val();
+	msg_posting_files = [];
 }
 
 function exit_room(e){
 	hide('.in_room');
 	showing('.out_of_room');
+	$('.messenger_navbar_nickname').text('');
+	$('.messenger_navbar_nickname').removeAttr('data-user_code');
+	mr_code = "";
+	get_msg_room_list();
+	$('#input_msg_content').val();
+	msg_posting_files = [];
 }
 
 function check_profile_button(){
@@ -1668,7 +1680,7 @@ function invalidate_write_container(target){
 
 function visit(user_code,e){
 	
-	if(user_code == self_code){
+	if(user_code == current_user){
 		main_show('circle');
 		return;
 	}
@@ -1688,13 +1700,17 @@ function visit(user_code,e){
 		const container = $(e).closest('.person_card');
 		thumbnail = container.find('img').attr('src');
 		nickname = container.find('span').text();
+	}else if($(e).closest('.message_box_received').length>0){
+		const container = $(e).closest('.message_box_received');
+		thumbnail = container.find('img').attr('src');
+		nickname = container.find('.message_sender_nickname').text();
 	}
 	
 	$('.added_menu_inner').find('.person_card.active').removeClass('active');
 	
 	if($('.added_menu_inner').find(`[data-user_code="${user_code}"]`).length == 0){
 		$('.added_menu_inner').prepend(`
-			<div class="person_card shrinked active" data-user_code="${user_code}" onclick="visit(${user_code},this);">
+			<div class="person_card shrinked active" data-user_code="${user_code}" onclick="visit('${user_code}',this);">
 				<img src="${thumbnail}"/>
 				<span>${nickname}</span>
 				<i class="fa-solid fa-circle-xmark" onclick="delete_person_card(event)"></i>
@@ -1703,7 +1719,7 @@ function visit(user_code,e){
 	}else if(!$(`.added_menu_inner > [data-user_code="${user_code}"]`).is(':first-child')){
 		$('.added_menu_inner > [data-user_code="${user_code}"]').remove();
 		$('.added_menu_inner').prepend(`
-			<div class="person_card shrinked active" data-user_code="${user_code}" onclick="visit(${user_code},this);">
+			<div class="person_card shrinked active" data-user_code="${user_code}" onclick="visit('${user_code}',this);">
 				<img src="${thumbnail}"/>
 				<span>${nickname}</span>
 				<i class="fa-solid fa-circle-xmark" onclick="delete_person_card(event)"></i>

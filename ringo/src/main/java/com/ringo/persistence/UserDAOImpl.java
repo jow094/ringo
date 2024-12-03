@@ -36,6 +36,16 @@ public class UserDAOImpl implements UserDAO {
 		return sqlSession.selectOne(NAMESPACE + ".selectUser",vo);		
 	}
 	
+	
+	
+	@Override
+	public String selectUserNickname(String user_code) {
+		logger.debug("selectUserNickname(String user_code) - user_code : "+user_code);
+		return sqlSession.selectOne(NAMESPACE + ".selectUserNickname",user_code);		
+	}
+
+
+
 	@Override
 	public Integer selectLastCode() {
 		logger.debug("selectLastCode");

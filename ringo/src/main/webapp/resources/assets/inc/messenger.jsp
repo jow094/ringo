@@ -65,7 +65,7 @@
 			<div class="messenger_navbar_back" onclick="exit_room()">
 				<i class="fa-solid fa-arrow-left"></i>
 			</div>
-			<div class="messenger_navbar_nickname">nickname</div>
+			<div class="messenger_navbar_nickname"></div>
 			<div class="messenger_navbar_menu">
 				<i class="fa-solid fa-bars"></i>
 			</div>
@@ -75,7 +75,7 @@
 		</div>
 		
 		<div class="messenger_input" data-mr_code="mr_1">
-			<textarea id="input_msg_content"></textarea>
+			<textarea id="input_msg_content" onkeydown="if(event.key === 'Enter'){submit_msg();}"></textarea>
 			<div class="messenger_input_tools">
 				<ul>
 					<li>

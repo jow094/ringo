@@ -52,6 +52,11 @@
 	    where user_id=#{user_id} and user_pw=#{user_pw}
 	</select>
 	
+	<select id="selectUserNickname" resultType="String">
+	   select user_nickname from _ringo_user
+	    where user_code=#{user_code}
+	</select>
+	
 	<insert id="insertUser" parameterType="UserVO">
 	   insert into _ringo_user (
         user_fcode, user_code, user_id, user_pw, user_name, user_nickname, user_birth,

@@ -568,11 +568,11 @@ function get_reple(e){
                     		
                     		$comment.find('.scroll_box_inner').prepend(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
-                    				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
+                    				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
     	                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
                     				</div>
                     				<div class="card_comment_body">
-    	                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.r_writer_nickname}</div>
+    	                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
     	                				<div class="card_comment_content">${reple.reple_content}</div>
     	                				<div class="card_comment_time">
     	                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
@@ -592,11 +592,11 @@ function get_reple(e){
                     		
 		        			$(e).closest('.card').find('.card_foot_comment').find('.scroll_box_inner').append(`
 		            				<div class="card_comment" data-reple_code="${reple.reple_code}">
-		            				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
+		            				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
 		                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
 		            				</div>
 		            				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.r_writer_nickname}</div>
+		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
 		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
@@ -637,10 +637,10 @@ function get_circle_post(user_code){
         		const post = `
 	        		<div class="card" data-post_code="${postVO.post_code}">
 						<div class="card_header">
-							<div class="card_header_image" onclick="visit(${postVO.post_writer},this)">
+							<div class="card_header_image" onclick="visit('${postVO.post_writer}',this)">
 								<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
 							</div>
-							<div class="card_header_nickname" onclick="visit(${postVO.post_writer},this)">
+							<div class="card_header_nickname" onclick="visit('${postVO.post_writer}',this)">
 								${postVO.writer_nickname}
 							</div>
 							<div class="card_header_tools">
@@ -742,11 +742,11 @@ function get_circle_post(user_code){
                     		
                     		$comment.find('.scroll_box_inner').append(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
-	                				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
+	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
 		                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.r_writer_nickname}</div>
+		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
 		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
@@ -812,7 +812,7 @@ function get_user_profile(user_code){
 				</div>
         	`);
         	$('.user_profile_container .profile_container_head_tools').html(`
-        		<div class="profile_container_head_tool">
+        		<div class="profile_container_head_tool" onclick="get_personal_msg_room('${user_code}')">
 					<i class="material-symbols-outlined">sms</i>
 					<span>메세지</span>
 				</div>
@@ -1309,7 +1309,7 @@ function get_unity_post(unity_board_code,unity_post_code,unity_board_page){
 			        			<div class="uch_board">${postVO.post_place_name}</div>
 			        			<div class="uch_title">${postVO.post_title}</div>
         					</div>
-        					<div class="uch_writer onclick="visit(${postVO.post_writer},this)"">
+        					<div class="uch_writer onclick="visit('${postVO.post_writer}',this)"">
         						<div class="uch_writer_image">
         							<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
         						</div>
@@ -1418,11 +1418,11 @@ function get_unity_post(unity_board_code,unity_post_code,unity_board_page){
                     		
                     		$comment.find('.scroll_box_inner').append(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
-	                				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
+	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
 		                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.r_writer_nickname}</div>
+		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
 		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
@@ -1511,7 +1511,7 @@ function get_unity_board_post(post_place,post_code){
 			        			<div class="uch_board">${postVO.post_place_name}</div>
 			        			<div class="uch_title">${postVO.post_title}</div>
         					</div>
-        					<div class="uch_writer onclick="visit(${postVO.post_writer},this)"">
+        					<div class="uch_writer onclick="visit('${postVO.post_writer}',this)"">
         						<div class="uch_writer_image">
         							<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
         						</div>
@@ -1620,11 +1620,11 @@ function get_unity_board_post(post_place,post_code){
                     		
                     		$comment.find('.scroll_box_inner').append(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
-	                				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
+	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
 		                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.r_writer_nickname}</div>
+		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
 		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
@@ -1694,7 +1694,7 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
 			        			<div class="uch_board">${postVO.post_place_name}</div>
 			        			<div class="uch_title">${postVO.post_title}</div>
         					</div>
-        					<div class="uch_writer onclick="visit(${postVO.post_writer},this)"">
+        					<div class="uch_writer onclick="visit('${postVO.post_writer}',this)"">
         						<div class="uch_writer_image">
         							<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
         						</div>
@@ -1809,11 +1809,11 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
                     		
                     		$comment.find('.scroll_box_inner').append(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
-	                				<div class="card_comment_thumbnail" onclick="visit(${reple.reple_writer},this)">
+	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
 		                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit(${reple.reple_writer},this)">${reple.r_writer_nickname}</div>
+		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
 		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}

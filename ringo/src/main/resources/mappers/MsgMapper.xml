@@ -38,6 +38,8 @@
 	    <result property="msg_unreader" column="msg_unreader"/>
 	    <result property="msg_unreader_count" column="msg_unreader_count"/>
 	    <result property="msg_place" column="msg_place"/>
+	    <result property="msg_transfer_user_code" column="msg_transfer_user_code"/>
+	    <result property="msg_correction" column="msg_correction"/>
 
 		<association property="msg_sender" javaType="UserVO">
 			<result property="user_code" column="msg_sender"/>
@@ -50,27 +52,72 @@
 		select max(cast(substring_index(msg_code, '_', -1) as unsigned)) from _ringo_msg where msg_code like 'msg_%';
 	</select>
 	
+	<select id="selectLastMsgRoomCode" resultType="Integer">
+		select max(cast(substring_index(mr_code, '_', -1) as unsigned)) from _ringo_msg_room where mr_code like 'mr_%';
+	</select>
+	
+	<select id="selectUserMsgRoomList" resultType="String">
+		select mr_code from _ringo_msg_member where user_code = #{user_code}
+	</select>
+	
 	<select id="selectPersonalMsgRoom" resultType="String">
 		select mr_code
 			from _ringo_msg_member
-			where user_code in (#{user_code_1}, #{user_code_2})
-			groub by mr_code
-			having count(distinct user_code) = 2;
+			group by mr_code
+			having count(distinct user_code) = 2 
+			and sum(user_code = #{user_code_1}) = 1
+			and sum(user_code = #{user_code_2}) = 1
 	</select>
 	
+	<insert id="insertPersonalMsgRoom">
+		insert into _ringo_msg_room values
+			(
+				#{mr_code},
+				(
+			        select group_concat(user_nickname order by field(user_code, #{mr_inviter}, #{mr_guest}))
+			        from _ringo_user
+			        where user_code in (#{mr_inviter}, #{mr_guest})
+			    ),
+				#{mr_admin},
+				now()
+			);
+	</insert>
+	<insert id="insertPersonalMsgMember_1">
+		insert into _ringo_msg_member values(#{mr_code},#{mr_inviter},now());
+	</insert>
+	<insert id="insertPersonalMsgMember_2">
+		insert into _ringo_msg_member values(#{mr_code},#{mr_guest},now());
+	</insert>
+	
 	<select id="selectMsgRoomList" resultMap="selectMsgRoomList_Map">
-		select msgr.*,
+		select msgr.mr_code,
+			msgr.mr_admin,
+			msgr.user_nickname,
+			msgr.msg_content,
+			msgr.msg_time,
+			trim(both ',' from 
+			        replace(
+			        	replace(msgr.mr_name, concat(u.user_nickname, ','), ''), 
+			            concat(',', u.user_nickname),'')
+			    ) as mr_name,
 			(select count(*) from _ringo_msg where msg_place = mm.mr_code and msg_unreader like concat('%', #{user_code}, '%')) as mr_alarm_count
 			from msgr
             left join _ringo_msg_member mm on mm.user_code = #{user_code}
-			where msgr.mr_code = mm.mr_code;
+            left join _ringo_user u on u.user_code = #{user_code}
+			where msgr.mr_code = mm.mr_code
+			order by msgr.msg_time desc
 	</select>
 	
 	<select id="selectMsgRoomInfo" resultMap="selectMsgRoomInfo_Map">
-		select msgr.mr_code, msgr.mr_name, msgr.mr_admin, u.user_thumbnail_path, u.user_nickname 
+		select msgr.mr_code, msgr.mr_admin, u.user_thumbnail_path, u.user_nickname,
+			(trim(both ',' from 
+			        replace(
+			        	replace(msgr.mr_name, concat(u.user_nickname, ','), ''), 
+			            concat(',', u.user_nickname),'')
+			    )) as mr_name
 			from msgr
 			left join _ringo_msg_member mm on mm.mr_code = #{mr_code} 
-			left join _ringo_user u on mm.user_code = u.user_code
+			left join _ringo_user u on u.user_code = #{user_code}
 			where msgr.mr_code = #{mr_code}
 	</select>
 	
@@ -80,6 +127,18 @@
 			where msg_place = #{mr_code}
 	</select>
 	
+	<select id="selectOneMsg" resultMap="msg_Map">
+		select *
+			from msg
+			where msg_code = #{msg_code}
+	</select>
+	
+	<select id="selectUnreaderCount" resultType="MsgVO">
+		select msg_code,msg_unreader_count
+			from msg
+			where msg_place = #{mr_code}
+	</select>
+
 	<insert id="insertMsg">
 		insert into _ringo_msg (
 	        msg_code,
@@ -105,5 +164,9 @@
 		set msg_unreader = replace(msg_unreader, #{user_code}, '')
 		where msg_place = #{mr_code}
 	</update>
+	
+	<insert id="insertMsgMember">
+		insert into _ringo_msg_member values(#{mr_code},#{mr_guest},now());
+	</insert>
 
 </mapper>

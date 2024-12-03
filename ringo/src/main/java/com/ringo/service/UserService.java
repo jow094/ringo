@@ -14,6 +14,7 @@ public interface UserService {
 	public Integer getLastUserCode();
 	public Integer checkDuplication(String target, String data);
 	public UserVO getUserProfile(String user_code);
+	public String getUserNickname(String user_code);
 	
 	
 	/*

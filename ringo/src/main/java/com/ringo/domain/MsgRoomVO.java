@@ -17,4 +17,7 @@ public class MsgRoomVO {
 	private MsgVO mr_last_message;
 	private List<MsgVO> mr_msgs;
 	private List<UserVO> mr_member;
+	
+	private String mr_inviter;
+	private String mr_guest;
 }

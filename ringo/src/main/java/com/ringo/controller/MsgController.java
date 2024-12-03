@@ -64,6 +64,13 @@ public class MsgController {
 		return msgService.getMsgRoomlist((String)session.getAttribute("user_code"));
 	}
 	
+	@RequestMapping(value = "/connect", method = RequestMethod.GET)
+	@ResponseBody
+	public List<String> connectGET(HttpSession session) {
+		
+		return msgService.getUserMsgRoomList((String)session.getAttribute("user_code"));
+	}
+	
 	@RequestMapping(value = "/personal", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String,Object> msgPersonalGET(HttpSession session, String user_code) {
@@ -75,13 +82,37 @@ public class MsgController {
 		String mr_code = msgService.getPersonalMsgRoom(param);
 		
 		if(mr_code == null) {
-			return null;
+			Map<String,Object> result = new HashMap<String,Object>();
+			result.put("user_nickname", uService.getUserNickname(user_code));
+			return result;
 		}else {
 			Map<String,Object> result = new HashMap<String,Object>();
-			result.put("room", msgService.getMsgRoomInfo(mr_code));
-			result.put("msg", msgService.getMsg((String)session.getAttribute("user_code"),mr_code));
+			result.put("mr_code", mr_code);
 			return result;
 		}
+	}
+	
+	@RequestMapping(value = "/personal", method = RequestMethod.POST)
+	@ResponseBody
+	public MsgRoomVO msgPersonalPost(HttpSession session, String user_code) {
+		logger.debug("msgPersonalPOST(String user_code) - user_code : "+user_code);
+		
+		MsgRoomVO vo = new MsgRoomVO();
+		
+		Integer last_msg_room_code = msgService.getLastMsgRoomCode();
+		Integer mr_code;
+		if(last_msg_room_code == null) {
+			mr_code = 1;
+		}else {
+			mr_code = last_msg_room_code+1;
+		}
+		
+		vo.setMr_code("mr_"+mr_code);
+		vo.setMr_inviter((String)session.getAttribute("user_code"));
+		vo.setMr_admin((String)session.getAttribute("user_code"));
+		vo.setMr_guest(user_code);
+		
+		return msgService.createMsgRoom(vo);
 	}
 	
 	@RequestMapping(value = "/inRoom", method = RequestMethod.GET)
@@ -90,7 +121,7 @@ public class MsgController {
 		logger.debug("msgInRoomGET(String mr_code) - mr_code : "+mr_code);
 		
 		Map<String,Object> result = new HashMap<String,Object>();
-		result.put("room", msgService.getMsgRoomInfo(mr_code));
+		result.put("room", msgService.getMsgRoomInfo((String)session.getAttribute("user_code"),mr_code));
 		result.put("msg", msgService.getMsg((String)session.getAttribute("user_code"),mr_code));
 		return result;
 	}

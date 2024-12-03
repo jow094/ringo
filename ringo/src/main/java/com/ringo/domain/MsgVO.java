@@ -18,4 +18,8 @@ public class MsgVO {
 	private String msg_place;
 	private List<MultipartFile> msg_file;
 	private String msg_file_path;
+	private String msg_transfer_user_code;
+	private String msg_correction;
+	
+	private String msg_target;
 }

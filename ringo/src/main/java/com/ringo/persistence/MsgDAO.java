@@ -11,9 +11,15 @@ import com.ringo.domain.UserVO;
 
 public interface MsgDAO {
 	public Integer selectLastMsgCode();
+	public Integer selectLastMsgRoomCode();
+	public List<String> selectUserMsgRoomList(String user_code);
 	public Integer insertMsg(MsgVO vo);
+	public MsgRoomVO insertMsgRoom(MsgRoomVO vo);
 	public String selectPersonalMsgRoom(Map<String,Object> param);
 	public List<MsgRoomVO> selectMsgRoomList(String user_code);
-	public MsgRoomVO selectMsgRoomInfo(String mr_code);
+	public MsgRoomVO selectMsgRoomInfo(String user_code,String mr_code);
 	public List<MsgVO> selectMsg(String user_code,String mr_code);
+	public MsgVO selectOneMsg(String msg_code);
+	public Integer insertMsgMember(MsgRoomVO vo);
+	public List<MsgVO> selectUnreaderCount(String mr_code);
 }

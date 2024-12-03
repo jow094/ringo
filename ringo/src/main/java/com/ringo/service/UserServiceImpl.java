@@ -51,5 +51,10 @@ public class UserServiceImpl implements UserService{
 		return udao.selectUserProfile(user_code);
 	}
 
+	@Override
+	public String getUserNickname(String user_code) {
+		return udao.selectUserNickname(user_code);
+	}
+
 	
 }

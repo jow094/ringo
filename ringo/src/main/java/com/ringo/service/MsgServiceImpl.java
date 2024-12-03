@@ -30,7 +30,6 @@ public class MsgServiceImpl implements MsgService{
     private SimpMessagingTemplate messagingTemplate;
 
     public void sendRoomUpdate(String roomId) {
-        // "/topic/rooms" 寃쎈줈濡� 硫붿떆吏� �쟾�넚
         messagingTemplate.convertAndSend("/msgGet", roomId + " has been updated!");
     }
     
@@ -40,8 +39,31 @@ public class MsgServiceImpl implements MsgService{
 	}
 	
 	@Override
+	public Integer getLastMsgRoomCode() {
+		return msgdao.selectLastMsgRoomCode();
+	}
+	
+	@Override
+	public List<String> getUserMsgRoomList(String user_code) {
+		return msgdao.selectUserMsgRoomList(user_code);
+	}
+
+	@Override
 	public Integer uploadMsg(MsgVO vo) {
-		return msgdao.insertMsg(vo);
+		Integer result = msgdao.insertMsg(vo);
+		
+		if (result > 0) {
+            // 채팅방 ID를 구하기 (예시로 vo.getRoomId()가 있다고 가정)
+            String mr_code = vo.getMsg_place();
+            // WebSocket 메시지를 해당 방에 전송
+            messagingTemplate.convertAndSend("/msgGet/room/" + mr_code, msgdao.selectOneMsg(vo.getMsg_code()));
+        }
+		return result;
+	}
+	
+	@Override
+	public MsgRoomVO createMsgRoom(MsgRoomVO vo) {
+		return msgdao.insertMsgRoom(vo);
 	}
 
 	@Override
@@ -55,13 +77,15 @@ public class MsgServiceImpl implements MsgService{
 	}
 	
 	@Override
-	public MsgRoomVO getMsgRoomInfo(String mr_code) {
-		return msgdao.selectMsgRoomInfo(mr_code);
+	public MsgRoomVO getMsgRoomInfo(String user_code,String mr_code) {
+		return msgdao.selectMsgRoomInfo(user_code,mr_code);
 	}
 
 	@Override
 	public List<MsgVO> getMsg(String user_code,String mr_code) {
-		return msgdao.selectMsg(user_code,mr_code);
+		List<MsgVO> result = msgdao.selectMsg(user_code,mr_code);
+		messagingTemplate.convertAndSend("/msgUpdate/" + mr_code, msgdao.selectUnreaderCount(mr_code));
+		return result;
 	}
 	
 	
