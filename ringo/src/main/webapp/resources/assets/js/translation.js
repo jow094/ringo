@@ -1,7 +1,7 @@
 function translate(e){
 	
 	const text = $(e).find('.message_content').text();
-	const targetLang = 'ko';
+	const targetLang = 'en';
 	
 	$.ajax({
 		url: '/main/trs',
@@ -10,10 +10,10 @@ function translate(e){
 			text: text,
 			targetLang: targetLang
 		},
-		dataType: 'text',
-		success: function(response) {
-			console.log(response);
-			$(e).find('.message_content').append(response);
+		dataType: 'json',
+		success: function(data) {
+		    console.log(data.text);
+		    $(e).find('.message_content').append(data.text);
 		},
 		error: function() {
 			console.log('trs failed');

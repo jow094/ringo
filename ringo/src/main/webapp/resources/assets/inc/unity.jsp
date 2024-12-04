@@ -424,7 +424,7 @@
 			<div class="unity_menu">
 				<div class="menu_tag" onclick="col_toggle('.favorite_unities',$(this).find('i'))">
 					<span>즐겨찾기</span>
-					<i class="material-symbols-outlined xlf">expand_circle_up</i>
+					<i class="material-symbols-outlined xlf">arrow_drop_up</i>
 				</div>
 				<div class="favorite_unities expanded">
 				</div>

@@ -257,11 +257,13 @@ $(document).ready(function() {
         lastlocation = location;
     });
     
-    $('.messenger_content').on('click', '.message_body', function (event) {
-    	console.log('trs start');
-        translate(this); // 클릭한 .message_body 요소를 참조
+    $(document).on('click', function (event) {
+        const target = $(event.target);
+        console.log('target is',target.attr('class'));
+        
+        if (target.closest('.message_body').length==0 && target.closest('.message_body_menu').length==0) {
+            console.log('close mbm');
+        	$('.message_body_menu').remove();
+        }
     });
-    
-
-
 });

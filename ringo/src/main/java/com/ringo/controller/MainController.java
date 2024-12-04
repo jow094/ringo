@@ -2,9 +2,12 @@ package com.ringo.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -113,12 +116,11 @@ public class MainController {
 	
 	@RequestMapping(value = "/trs", method = RequestMethod.GET)
 	@ResponseBody
-	public String translation(String text, String targetLang) {
-		
-		String result = trService.translate(text,targetLang);
-		HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity(result, headers, HttpStatus.OK);
+	public Map<String,Object> translation(String text, String targetLang) {
+		String resultText = trService.translate(text,targetLang);
+		logger.debug("result Text: "+resultText);
+		Map<String,Object> result = new HashMap<String,Object>();
+		result.put("text",resultText);
+        return result;
 	}
-	
 }

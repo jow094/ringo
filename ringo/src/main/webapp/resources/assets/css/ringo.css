@@ -87,7 +87,12 @@ div,i {
 	height:100%;
 	max-height:100%;
 }
+.h20{
+	min-height:20px !important;
+	height:20px !important;
+}
 .h30{
+	min-height:30px !important;
 	height:30px !important;
 }
 .h40{
@@ -631,7 +636,7 @@ input[type="submit"]{
 	text-decoration: underline;
 }
 .inner_box {
-	padding: 0px 10px 10px 10px;
+	padding: 5px;
 	display: flex;
 	flex-direction:column;
 	justify-content:flex-start;
@@ -1636,6 +1641,8 @@ button:not(.custom_button){
 	border-radius:5px;
 	box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.1);
 	background-color: white;
+	position:relative;
+	padding:5px;
 }
 .message_box_send .message_body{
 	background-color: var(--back);
@@ -1649,7 +1656,7 @@ button:not(.custom_button){
 	min-height:30px;
 	max-width:280px;
 	max-height:800px;
-	padding:10px;
+	padding:5px;
 	font-size:13px;
 	white-space: pre-wrap;
 }
@@ -1661,6 +1668,62 @@ button:not(.custom_button){
 	height:20px;
 	padding:10px;
 	font-size:10px;
+	position:relative;
+}
+.message_unread_count{
+	display:flex;
+	flex-direction:column;
+	height:100%;
+	padding:5px;
+	justify-content: flex-end;
+}
+.message_body_button{
+	position:absolute;
+	width:100%;
+	height:20px;
+	left:0;
+	top:0;
+}
+.message_body_button:hover{
+	animation: background_flashBlack 1s infinite !important;
+}
+.message_additional_container{
+	padding:5px;
+	border-radius:5px;
+	background-color:var(--inner);
+	display:flex;
+	flex-direction:column;
+	max-height:1000px;
+	width:100%;
+	justify-content:flex-start;
+	align-items:center;
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
+	gap:5px;
+}
+.message_body_menu{
+	width:100%;
+	height:30px;
+	padding-left:10px;
+	display:flex;
+	justify-content: flex-start;
+	align-items: center;
+	background-color:var(--back);
+	border-radius:5px;
+	box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
+	font-size:10px;
+}
+.message_body_menu i{
+	font-size:14px !important;
+	color:var(--basic);
+	margin-right:10px;
+	width:18px;
+	height:18px;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+	border-radius:5px;
+	box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
+	background-color: var(--inner)
 }
 .message_unreader_count{
 	height:100%;

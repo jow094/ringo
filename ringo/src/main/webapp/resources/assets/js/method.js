@@ -666,7 +666,7 @@ function get_circle_post(user_code){
 						<div class="card_foot">
 							<div class="reple_button_section" onclick="col_toggle($(this).next('.reple_container'),$(this).find('.material-symbols-outlined'))">
 								<span class="cell">댓글 ${postVO.post_reple_count}개</span>
-								<i class="material-symbols-outlined">expand_circle_down</i>
+								<i class="material-symbols-outlined">arrow_drop_down</i>
 							</div>
 							<div class="reple_container col_shrinked">
 								<div class="card_foot_comment_input">
@@ -1051,12 +1051,12 @@ function get_unity_profile(unity_code){
         			
         			if ($categoryContainer.length === 0) {
         				
-        				$categoryContainer = $('<div class="inner_box mw p5 mgb"></div>')
+        				$categoryContainer = $('<div class="inner_box mw mgb"></div>')
         				.attr('data-category', untCodeCategory)
         				.append(`
-        						<div class="inner_title h30" onclick="inner_box_toggle(this)">
+        						<div class="inner_title h20" onclick="inner_box_toggle(this)">
         						${boardData.unity_board_category}
-        						<i class="material-symbols-outlined col_tgb">expand_circle_up</i>
+        						<i class="material-symbols-outlined col_tgb">arrow_drop_up</i>
         						</div>
         						<div class="inner_content expanded gap5">
         						</div>
@@ -1341,7 +1341,7 @@ function get_unity_post(unity_board_code,unity_post_code,unity_board_page){
 						<div class="card_foot">
 							<div class="reple_button_section" onclick="col_toggle($(this).next('.reple_container'),$(this).find('.material-symbols-outlined'))">
 								<span class="cell">댓글 ${postVO.post_reple_count}개</span>
-								<i class="material-symbols-outlined">expand_circle_down</i>
+								<i class="material-symbols-outlined">arrow_drop_down</i>
 							</div>
 							<div class="reple_container col_shrinked">
 								<div class="card_foot_comment_input">
@@ -1543,7 +1543,7 @@ function get_unity_board_post(post_place,post_code){
 						<div class="card_foot">
 							<div class="reple_button_section" onclick="col_toggle($(this).next('.reple_container'),$(this).find('.material-symbols-outlined'))">
 								<span class="cell">댓글 ${postVO.post_reple_count}개</span>
-								<i class="material-symbols-outlined">expand_circle_down</i>
+								<i class="material-symbols-outlined">arrow_drop_down</i>
 							</div>
 							<div class="reple_container col_shrinked">
 								<div class="card_foot_comment_input">
@@ -1726,7 +1726,7 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
 						<div class="card_foot">
 							<div class="reple_button_section" onclick="col_toggle($(this).next('.reple_container'),$(this).find('.material-symbols-outlined'))">
 								<span class="cell">댓글 ${postVO.post_reple_count}개</span>
-								<i class="material-symbols-outlined">expand_circle_down</i>
+								<i class="material-symbols-outlined">arrow_drop_down</i>
 							</div>
 							<div class="reple_container col_shrinked">
 								<div class="card_foot_comment_input">

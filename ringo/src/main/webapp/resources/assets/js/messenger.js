@@ -58,8 +58,17 @@ function get_msg(mr_code){
         					<span class="message_unread_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
         					<div class="message_body">
 	        					<div class="message_content">${msg.msg_content}</div>
-	        					<div class="message_time">
+	        					<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
+	        						<div class="message_body_button">
+	        							<i class="material-symbols-outlined">arrow_drop_down</i>
+	        						</div>
 	        						${auto_format_date(msg.msg_time)}
+	        					</div>
+	        					<div class="message_additional_container col_shrinked">
+	        						<div class="message_body_menu"><i class="material-symbols-outlined">contract_edit</i>수정</div>
+		        					<div class="message_body_menu"><i class="material-symbols-outlined">translate</i>번역</div>
+		        					<div class="message_body_menu"><i class="material-symbols-outlined">headphones</i>음성</div>
+		        					<div class="message_body_menu"><i class="material-symbols-outlined">reply</i>답장</div>
 	        					</div>
         					</div>
     					</div>
@@ -76,9 +85,18 @@ function get_msg(mr_code){
 	        					</div>
 	        					<div class="message_body">
 	        						<div class="message_content">${msg.msg_content}</div>
-	        						<div class="message_time">
-	        						${auto_format_date(msg.msg_time)}
+	        						<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
+		        						<div class="message_body_button">
+		        							<i class="material-symbols-outlined">arrow_drop_down</i>
+		        						</div>
+		        						${auto_format_date(msg.msg_time)}
 	        						</div>
+		        					<div class="message_additional_container col_shrinked">
+		        						<div class="message_body_menu"><i class="material-symbols-outlined">contract_edit</i>수정</div>
+			        					<div class="message_body_menu"><i class="material-symbols-outlined">translate</i>번역</div>
+			        					<div class="message_body_menu"><i class="material-symbols-outlined">headphones</i>음성</div>
+			        					<div class="message_body_menu"><i class="material-symbols-outlined">reply</i>답장</div>
+		        					</div>
 	        					</div>
         					</div>
         					<span class="message_unreader_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
@@ -107,35 +125,54 @@ function get_new_msg(mr_code,msg_code){
         	
         	if(msg.msg_sender.user_code == current_user){
         		$('.messenger_content').append(`
-        				<div class="message_box_send" data-msg_code = ${msg.msg_code}>
+    				<div class="message_box_send" data-msg_code = ${msg.msg_code}>
         				<span class="message_unread_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
         				<div class="message_body">
-        				<div class="message_content">${msg.msg_content}</div>
-        				<div class="message_time">
-        				${auto_format_date(msg.msg_time)}
+        					<div class="message_content">${msg.msg_content}</div>
+	        				<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
+	        					<div class="message_body_button">
+	    							<i class="material-symbols-outlined">arrow_drop_down</i>
+	    						</div>
+	        				${auto_format_date(msg.msg_time)}
+	        				</div>
+        					<div class="message_additional_container col_shrinked">
+        						<div class="message_body_menu"><i class="material-symbols-outlined">contract_edit</i>수정</div>
+	        					<div class="message_body_menu"><i class="material-symbols-outlined">translate</i>번역</div>
+	        					<div class="message_body_menu"><i class="material-symbols-outlined">headphones</i>음성</div>
+	        					<div class="message_body_menu"><i class="material-symbols-outlined">reply</i>답장</div>
+        					</div>
         				</div>
-        				</div>
-        				</div>
+    				</div>
         		`);
         	}else{
         		$('.messenger_content').append(`
-        				<div class="message_box_received" data-msg_code = ${msg.msg_code}>
+    				<div class="message_box_received" data-msg_code = ${msg.msg_code}>
         				<div class="message_sender_thumbnail" onclick="visit('${msg.msg_sender.user_code}',this)">
-        				<img class="small_img" src="/img/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
+        					<img class="small_img" src="/img/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
         				</div>
         				<div class="message_info">	
-        				<div class="message_sender_nickname" onclick="visit('${msg.msg_sender.user_code}',this)">
-        				${msg.msg_sender.user_nickname}
-        				</div>
-        				<div class="message_body">
-        				<div class="message_content">${msg.msg_content}</div>
-        				<div class="message_time">
-        				${auto_format_date(msg.msg_time)}
-        				</div>
-        				</div>
+	        				<div class="message_sender_nickname" onclick="visit('${msg.msg_sender.user_code}',this)">
+	        					${msg.msg_sender.user_nickname}
+	        				</div>
+	        				<div class="message_body">
+	        					<div class="message_content">${msg.msg_content}</div>
+		        				<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
+		        					<div class="message_body_button">
+		    							<i class="material-symbols-outlined">arrow_drop_down</i>
+        				
+		    						</div>
+		        					${auto_format_date(msg.msg_time)}
+		        				</div>
+		        				<div class="message_additional_container col_shrinked">
+	        						<div class="message_body_menu"><i class="material-symbols-outlined">contract_edit</i>수정</div>
+		        					<div class="message_body_menu"><i class="material-symbols-outlined">translate</i>번역</div>
+		        					<div class="message_body_menu"><i class="material-symbols-outlined">headphones</i>음성</div>
+		        					<div class="message_body_menu"><i class="material-symbols-outlined">reply</i>답장</div>
+	        					</div>
+	        				</div>
         				</div>
         				<span class="message_unreader_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
-        				</div>
+    				</div>
         		`);
         	}
         	
@@ -258,5 +295,4 @@ function open_personal_msg_room(user_code,formData){
 	    error: function(error) {
 	    }
     });
-	
 }

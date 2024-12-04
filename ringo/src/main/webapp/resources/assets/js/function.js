@@ -109,10 +109,10 @@ function col_toggle(target,e) {
 	}
 	
 	if($(e).hasClass('material-symbols-outlined')){
-		if($(e).text()=='expand_circle_down'){
-			$(e).text('expand_circle_up');
-		}else if($(e).text()=='expand_circle_up'){
-			$(e).text('expand_circle_down');
+		if($(e).text()=='arrow_drop_down'){
+			$(e).text('arrow_drop_up');
+		}else if($(e).text()=='arrow_drop_up'){
+			$(e).text('arrow_drop_down');
 		}
 	}else if(e){
 		const icon = $(e).find('i');
@@ -1786,11 +1786,11 @@ function expand_create_unity(){
 
 function inner_box_toggle(e){
 	if($(e).next('.inner_content').hasClass('expanded')){
-		$(e).find('i').text('expand_circle_down');
+		$(e).find('i').text('arrow_drop_down');
 		col_toggle($(e).next('.inner_content'));
-		$(e).closest('.inner_box').css('max-height','20px');
+		$(e).closest('.inner_box').css('max-height','30px');
 	}else {
-		$(e).find('i').text('expand_circle_up');
+		$(e).find('i').text('arrow_drop_up');
 		col_toggle($(e).next('.inner_content'));
 		$(e).closest('.inner_box').css('max-height','1000px');
 	}
