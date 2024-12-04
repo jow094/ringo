@@ -10,11 +10,10 @@ function translate(e){
 			text: text,
 			targetLang: targetLang
 		},
+		dataType: 'text',
 		success: function(response) {
 			console.log(response);
-			const data = decodeURIComponent(response);
-			console.log(data);
-			$(e).find('.message_content').append(data);
+			$(e).find('.message_content').append(response);
 		},
 		error: function() {
 			console.log('trs failed');

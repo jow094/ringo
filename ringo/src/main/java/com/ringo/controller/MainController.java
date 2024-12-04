@@ -14,6 +14,10 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -110,7 +114,11 @@ public class MainController {
 	@RequestMapping(value = "/trs", method = RequestMethod.GET)
 	@ResponseBody
 	public String translation(String text, String targetLang) {
-		return trService.translate(text,targetLang);
+		
+		String result = trService.translate(text,targetLang);
+		HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity(result, headers, HttpStatus.OK);
 	}
 	
 }
