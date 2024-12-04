@@ -110,6 +110,9 @@ div,i {
 .p10{
 	padding:0px 10px 10px 10px !important;
 }
+.colmg5{
+	margin:5px 0px !important;
+}
 .ap5{
 	padding:5px !important;
 }
@@ -1605,6 +1608,9 @@ button:not(.custom_button){
 	padding:5px 10px;
 	flex-shrink: 0;
 }
+.message_box_received .inner_box{
+	background-color: var(--back) !important;
+}
 .message_box_send{
 	width:100%;
 	display:flex;
@@ -1620,7 +1626,7 @@ button:not(.custom_button){
 	display:flex;
 	flex-direction: column;
 	justify-content: flex-start;
-	padding-top:20px;
+	padding-top:10px;
 }
 .message_sender_nickname{
 	display:flex;
@@ -1657,7 +1663,7 @@ button:not(.custom_button){
 	max-width:280px;
 	max-height:800px;
 	padding:5px;
-	font-size:13px;
+	font-size:12px;
 	white-space: pre-wrap;
 }
 .message_time{
@@ -1700,10 +1706,27 @@ button:not(.custom_button){
 	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
 	gap:5px;
 }
+.additional_message{
+	display:flex;
+	width:100%;
+	justify-content:flex-start;
+	align-items:flex-start;
+	overflow-y:auto;
+	min-width:120px;
+	min-height:30px;
+	max-width:280px;
+	max-height:800px;
+	padding:5px;
+	font-size:12px;
+	white-space: pre-wrap;
+	border-radius:5px;
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
+	background-color: var(--inner);
+}
 .message_body_menu{
 	width:100%;
-	height:30px;
-	padding-left:10px;
+	height:25px;
+	padding:0px 2px 0px 5px;
 	display:flex;
 	justify-content: flex-start;
 	align-items: center;
@@ -1712,6 +1735,22 @@ button:not(.custom_button){
 	box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
 	font-size:10px;
 }
+.message_body_menu span{
+	height:100%;
+	flex:1;
+	display:flex;
+	justify-content: flex-start;
+	align-items: center;
+	font-size:10px;
+}	
+.message_body_menu select{
+	height:21px;
+	width:50%;
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
+	background-color: white;
+	border-radius: 5px;
+	margin-left:auto;
+}	
 .message_body_menu i{
 	font-size:14px !important;
 	color:var(--basic);

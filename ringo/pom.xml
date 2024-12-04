@@ -394,7 +394,25 @@
 		    <version>5.0.6.RELEASE</version>
 		</dependency>
 		
-
+		<dependency>
+	        <groupId>com.google.cloud</groupId>
+	        <artifactId>google-cloud-texttospeech</artifactId>
+	        <version>2.1.0</version>
+	    </dependency>
+	
+	    <!-- Google Cloud Speech-to-Text 의존성 추가 -->
+	    <dependency>
+	        <groupId>com.google.cloud</groupId>
+	        <artifactId>google-cloud-speech</artifactId>
+	        <version>2.5.0</version>
+	    </dependency>
+	    
+	    <!-- Google API 인증을 위한 라이브러리 -->
+	    <dependency>
+	        <groupId>com.google.auth</groupId>
+	        <artifactId>google-auth-library-oauth2-http</artifactId>
+	        <version>1.12.0</version>
+	    </dependency>
 		
 		
 		<!-- 외부 라이브러리 추가 -->

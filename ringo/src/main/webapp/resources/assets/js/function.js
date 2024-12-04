@@ -71,6 +71,12 @@ function hide(e) {
 	}
 }
 
+function remove_element(e){
+	setTimeout(function() {
+        $(e).remove();
+    }, 1);
+}
+
 function row_toggle(target,e) {
 	
 	if($(target).hasClass('expanded')){

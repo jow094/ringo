@@ -256,14 +256,4 @@ $(document).ready(function() {
 
         lastlocation = location;
     });
-    
-    $(document).on('click', function (event) {
-        const target = $(event.target);
-        console.log('target is',target.attr('class'));
-        
-        if (target.closest('.message_body').length==0 && target.closest('.message_body_menu').length==0) {
-            console.log('close mbm');
-        	$('.message_body_menu').remove();
-        }
-    });
 });

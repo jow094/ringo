@@ -54,7 +54,7 @@ function get_msg(mr_code){
         	for (const msg of data.msg) {
         		if(msg.msg_sender.user_code == current_user){
         			$('.messenger_content').append(`
-    					<div class="message_box_send" data-msg_code = ${msg.msg_code}>
+    					<div class="msg message_box_send" data-msg_code = ${msg.msg_code}>
         					<span class="message_unread_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
         					<div class="message_body">
 	        					<div class="message_content">${msg.msg_content}</div>
@@ -65,17 +65,51 @@ function get_msg(mr_code){
 	        						${auto_format_date(msg.msg_time)}
 	        					</div>
 	        					<div class="message_additional_container col_shrinked">
-	        						<div class="message_body_menu"><i class="material-symbols-outlined">contract_edit</i>수정</div>
-		        					<div class="message_body_menu"><i class="material-symbols-outlined">translate</i>번역</div>
-		        					<div class="message_body_menu"><i class="material-symbols-outlined">headphones</i>음성</div>
-		        					<div class="message_body_menu"><i class="material-symbols-outlined">reply</i>답장</div>
+		        					<div class="message_body_menu">
+		        						<i class="material-symbols-outlined" onclick="translation(this)">translate</i>
+		        						<span onclick="translation(this)">번역</span>
+		        						<select id="target_lang" class="annotation_message">
+	        								<optgroup label="학습중인 언어">
+												<option value="en" selected>영어</option>
+											</optgroup>
+				        					<optgroup label="사용자 언어">
+				        						<option value="ko">한국어</option>
+				        					</optgroup>
+				        					<optgroup label="기타 언어">
+				        						<option value="fr">프랑스어</option>
+				        					</optgroup>
+										</select>
+		        					</div>
+		        					<div class="message_body_menu">
+	        							<i class="material-symbols-outlined">headphones</i>
+		        						음성
+	        							<select class="annotation_message">
+	        								<optgroup label="학습중인 언어">
+												<option value="en" selected>영어</option>
+											</optgroup>
+				        					<optgroup label="사용자 언어">
+				        						<option value="ko">한국어</option>
+				        					</optgroup>
+				        					<optgroup label="기타 언어">
+				        						<option value="fr">프랑스어</option>
+				        					</optgroup>
+										</select>
+	        						</div>
+		        					<div class="message_body_menu">
+		        						<i class="material-symbols-outlined">contract_edit</i>
+	        							수정
+		        					</div>
+		        					<div class="message_body_menu">
+		        						<i class="material-symbols-outlined">reply</i>
+		        						답장
+		        					</div>
 	        					</div>
         					</div>
     					</div>
         			`);
         		}else{
         			$('.messenger_content').append(`
-    					<div class="message_box_received" data-msg_code = ${msg.msg_code}>
+    					<div class="msg message_box_received" data-msg_code = ${msg.msg_code}>
         					<div class="message_sender_thumbnail" onclick="visit('${msg.msg_sender.user_code}',this)">
 	        					<img class="small_img" src="/img/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
         					</div>
@@ -125,7 +159,7 @@ function get_new_msg(mr_code,msg_code){
         	
         	if(msg.msg_sender.user_code == current_user){
         		$('.messenger_content').append(`
-    				<div class="message_box_send" data-msg_code = ${msg.msg_code}>
+    				<div class="msg message_box_send" data-msg_code = ${msg.msg_code}>
         				<span class="message_unread_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
         				<div class="message_body">
         					<div class="message_content">${msg.msg_content}</div>
@@ -146,7 +180,7 @@ function get_new_msg(mr_code,msg_code){
         		`);
         	}else{
         		$('.messenger_content').append(`
-    				<div class="message_box_received" data-msg_code = ${msg.msg_code}>
+    				<div class="msg message_box_received" data-msg_code = ${msg.msg_code}>
         				<div class="message_sender_thumbnail" onclick="visit('${msg.msg_sender.user_code}',this)">
         					<img class="small_img" src="/img/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
         				</div>
@@ -295,4 +329,40 @@ function open_personal_msg_room(user_code,formData){
 	    error: function(error) {
 	    }
     });
+}
+
+function translation(e){
+	
+	const msg = $(e).closest('.msg');
+	
+	const text = msg.find('.message_content').text();
+	const targetLang = msg.find('#target_lang option:selected').val();
+	const targetLangName = msg.find('#target_lang option:selected').text();
+	
+	$.ajax({
+		url: '/main/trs',
+		method: 'GET',
+		data: {
+			text: text,
+			targetLang: targetLang
+		},
+		dataType: 'json',
+		success: function(data) {
+		    console.log(data.text);
+		    msg.find('.translated_msg').remove();
+		    
+		    msg.find('.message_content').after(`
+		    <div class="translated_msg inner_box inset colmg5">
+		    	<div class="inner_title h20" onclick="inner_box_toggle(this)">
+					${targetLangName} 번역결과
+					<i class="material-symbols-outlined col_tgb">arrow_drop_up</i>
+				</div>
+				<div class="inner_content expanded additional_message">${data.text}</div>
+			</div>
+			`);
+		},
+		error: function() {
+			console.log('trs failed');
+		}
+	});
 }

@@ -33,6 +33,7 @@ public class TranslationServiceImpl implements TranslationService{
     private final RestTemplate restTemplate;
 
     private final String API_URL = "https://api-free.deepl.com/v2/translate";
+    private final String DETECT_API_URL = "https://api-free.deepl.com/v2/detect";
     
     public TranslationServiceImpl(RestTemplate restTemplate) {
     	this.restTemplate = restTemplate;
@@ -68,6 +69,35 @@ public class TranslationServiceImpl implements TranslationService{
             }
         } else {
             return "Translation failed";
+        }
+    }
+    
+    public String detectLanguage(String text) {
+    	String encodedText = URLEncoder.encode(text, StandardCharsets.UTF_8);
+    	
+    	URI uri = UriComponentsBuilder.fromUriString(DETECT_API_URL)
+                .queryParam("auth_key", apiKey)
+                .queryParam("text", encodedText)
+                .build(true).toUri();
+
+    	logger.debug("Language detection URI: " + uri);
+    	
+        ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, null, String.class);
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            try {
+            	logger.debug("Response Body: " + response.getBody());
+                JsonNode jsonResponse = new ObjectMapper().readTree(response.getBody());
+                String detectedLanguage = jsonResponse.get("language").asText();
+                logger.debug("Detected Language: " + detectedLanguage);
+                
+                return detectedLanguage;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "Error parsing response from DeepL API";
+            }
+        } else {
+            return "Language detection failed";
         }
     }
 }
