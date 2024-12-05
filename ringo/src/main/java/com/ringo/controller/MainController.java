@@ -116,33 +116,4 @@ public class MainController {
 		
 		return pService.getReple(vo);
 	}
-	
-	@RequestMapping(value = "/trs", method = RequestMethod.GET)
-	@ResponseBody
-	public Map<String,Object> translation(String text, String targetLang) {
-		String resultText = trService.translate(text,targetLang);
-		Map<String,Object> result = new HashMap<String,Object>();
-		result.put("text",resultText);
-        return result;
-	}
-	
-	@RequestMapping(value = "/tts", method = RequestMethod.GET)
-	@ResponseBody
-	public String textToSpeech(String text,String msg_code) throws IOException {
-		logger.debug("text to speech "+text);
-		String target_lang = audioService.detectLang(text);
-		String result = audioService.tts(text,msg_code,target_lang);
-		logger.debug("text to speech detected lang is "+target_lang);
-		logger.debug("text to speech result "+result);
-		return null;
-	}
-	
-	@RequestMapping(value = "/stt", method = RequestMethod.GET)
-	@ResponseBody
-	public String speechToText(String msg_code) throws IOException{
-		logger.debug("speech to text "+msg_code);
-		String result = audioService.stt(msg_code);
-		logger.debug("speech to text result "+result);
-		return null;
-	}
 }

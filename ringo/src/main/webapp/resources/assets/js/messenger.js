@@ -15,7 +15,7 @@ function get_msg_room_list(){
         		$('.messenger_rooms.favorite').append(`
     				<div class="messenger_room" data-mr_code="${room.mr_code}" onclick="enter_room('${room.mr_code}')">
 	    				<div class="room_thumbnail">
-	    					<img class="small_img" src="/img/user/profiles/${room.mr_thumbnail_path}"/>
+	    					<img class="small_img" src="/files/user/profiles/${room.mr_thumbnail_path}"/>
 	    				</div>
 	    				<div class="room_body">
 		    				<div class="room_name">${room.mr_name}</div>
@@ -88,7 +88,7 @@ function input_send_msg(msg){
 				<span class="message_unread_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
 				<div class="message_body">
 					<div class="message_content">
-						<img src="/img/messenger/img/${msg.msg_image_path}"/>
+						<img src="/files/messenger/img/${msg.msg_image_path}"/>
 					</div>
 					<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
 						<div class="message_body_button">
@@ -111,28 +111,30 @@ function input_send_msg(msg){
 				<span class="message_unread_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
 				<div class="message_body">
 					<div class="message_content">
+					
 						<div class="msg_audio_section">
-							<audio src="/img/messenger/audio/${msg.msg_audio_path}" class="message_audio"></audio>
+							<audio src="/files/messenger/audio/${msg.msg_audio_path}" class="message_audio"></audio>
 							<div class="audio_bar">
 								<input type="range" id="audio_bar" value="0" min="0" max="100" step="1"/>
 								<div class="record_time">
 									<span class="playing_time"></span>
 									<span>/</span>
-									<span class="recording_time"></span>
+									<span class="recording_time">${msg.msg_audio_path.split('_')[3].replace('.mp3', '')}</span>
 								</div>
 							</div>
 							<div class="audio_buttons">
-								<div id="msg_audio_play" class="audio_button">
+								<div id="audio_play" class="audio_button">
 									<i class="fa-solid fa-play"></i>
 								</div>
-								<div id="msg_audio_pause" class="audio_button">
+								<div id="audio_pause" class="audio_button">
 									<i class="fa-solid fa-pause"></i>
 								</div>
-								<div id="msg_audio_stop" class="audio_button">
+								<div id="audio_stop" class="audio_button">
 									<i class="fa-solid fa-stop"></i>
 								</div>
 							</div>
 						</div>
+						
 					</div>
 					<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
 						<div class="message_body_button">
@@ -160,7 +162,7 @@ function input_received_msg(msg){
 		$('.messenger_content').append(`
 			<div class="msg message_box_received" data-msg_code = ${msg.msg_code}>
 				<div class="message_sender_thumbnail" onclick="visit('${msg.msg_sender.user_code}',this)">
-					<img class="small_img" src="/img/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
+					<img class="small_img" src="/files/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
 				</div>
 				<div class="message_info">	
 					<div class="message_sender_nickname" onclick="visit('${msg.msg_sender.user_code}',this)">
@@ -212,7 +214,7 @@ function input_received_msg(msg){
 		$('.messenger_content').append(`
 			<div class="msg message_box_received" data-msg_code = ${msg.msg_code}>
 				<div class="message_sender_thumbnail" onclick="visit('${msg.msg_sender.user_code}',this)">
-					<img class="small_img" src="/img/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
+					<img class="small_img" src="/files/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
 				</div>
 				<div class="message_info">	
 					<div class="message_sender_nickname" onclick="visit('${msg.msg_sender.user_code}',this)">
@@ -220,7 +222,7 @@ function input_received_msg(msg){
 					</div>
 					<div class="message_body">
 						<div class="message_content">
-							<img src="/img/messenger/img/${msg.msg_image_path}"/>
+							<img src="/files/messenger/img/${msg.msg_image_path}"/>
 						</div>
 						<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
 							<div class="message_body_button">
@@ -243,7 +245,7 @@ function input_received_msg(msg){
 		$('.messenger_content').append(`
 			<div class="msg message_box_received" data-msg_code = ${msg.msg_code}>
 				<div class="message_sender_thumbnail" onclick="visit('${msg.msg_sender.user_code}',this)">
-					<img class="small_img" src="/img/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
+					<img class="small_img" src="/files/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
 				</div>
 				<div class="message_info">	
 					<div class="message_sender_nickname" onclick="visit('${msg.msg_sender.user_code}',this)">
@@ -251,8 +253,9 @@ function input_received_msg(msg){
 					</div>
 					<div class="message_body">
 						<div class="message_content">
+						
 							<div class="msg_audio_section">
-								<audio src="/img/messenger/audio/${msg.msg_audio_path}" class="message_audio"></audio>
+								<audio src="/files/messenger/audio/${msg.msg_audio_path}" class="message_audio"></audio>
 								<div class="audio_bar">
 									<input type="range" id="audio_bar" value="0" min="0" max="100" step="1"/>
 									<div class="record_time">
@@ -262,17 +265,18 @@ function input_received_msg(msg){
 									</div>
 								</div>
 								<div class="audio_buttons">
-									<div id="msg_audio_play" class="audio_button">
+									<div id="audio_play" class="audio_button">
 										<i class="fa-solid fa-play"></i>
 									</div>
-									<div id="msg_audio_pause" class="audio_button">
+									<div id="audio_pause" class="audio_button">
 										<i class="fa-solid fa-pause"></i>
 									</div>
-									<div id="msg_audio_stop" class="audio_button">
+									<div id="audio_stop" class="audio_button">
 										<i class="fa-solid fa-stop"></i>
 									</div>
 								</div>
 							</div>
+							
 						</div>
 						<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
 							<div class="message_body_button">
@@ -299,6 +303,10 @@ function input_received_msg(msg){
 }
 
 function get_msg(mr_code){
+	
+	if(mr_code==null || mr_code==""){
+		return;
+	}
 	
 	$.ajax({
         type: "GET",
@@ -337,13 +345,11 @@ function get_new_msg(mr_code,msg_code){
         	
         	var isAtBottom = $('.messenger_content').scrollTop() + $('.messenger_content').innerHeight() >= $('.messenger_content')[0].scrollHeight - 5;
         	
-        	for (const msg of data.msg) {
-				if(msg.msg_sender.user_code == current_user){
-					input_send_msg(msg);
-				}else{
-					input_received_msg(msg);
-				}
-        	}
+			if(msg.msg_sender.user_code == current_user){
+				input_send_msg(msg);
+			}else{
+				input_received_msg(msg);
+			}
         	
         	if(isAtBottom){
         		$('.messenger_content').scrollTop($('.messenger_content')[0].scrollHeight);
@@ -452,7 +458,7 @@ function get_personal_msg_room(user_code){
         data: {user_code : user_code},
         dataType: "json",
         success: function (data) {
-        	console.log(data);
+        	console.log('psn room is ',data);
         	
         	if($('.main_messenger').hasClass('shrinked')){
         		main_messenger();
@@ -521,7 +527,7 @@ function translation(e){
 	const targetLangName = msg.find('#trs_target_lang option:selected').text();
 	
 	$.ajax({
-		url: '/main/trs',
+		url: '/msg/trs',
 		method: 'GET',
 		data: {
 			text: text,
@@ -554,13 +560,13 @@ const msg = $(e).closest('.msg');
 	const text = msg.find('.message_content').text();
 	
 	$.ajax({
-		url: '/main/tts',
+		url: '/msg/tts',
 		method: 'GET',
 		data: {
 			text: text,
 			msg_code: msg.data('msg_code')
 		},
-		dataType: 'json',
+		dataType: 'text',
 		success: function(data) {
 		    console.log(data);
 		    msg.find('.tts_msg').remove();
@@ -568,10 +574,35 @@ const msg = $(e).closest('.msg');
 		    msg.find('.message_time').before(`
 		    <div class="tts_msg inner_box inset colmg5">
 		    	<div class="inner_title h20" onclick="inner_box_toggle(this)">
-					${data} 음성전환
+		    		음성 전환
 					<i class="material-symbols-outlined col_tgb">arrow_drop_up</i>
 				</div>
-				<div class="inner_content expanded additional_message">${data}</div>
+				<div class="inner_content expanded additional_message">
+				
+		    		<div class="msg_audio_section">
+						<audio src="/files/messenger/audio/${data}" class="message_audio"></audio>
+						<div class="audio_bar">
+							<input type="range" id="audio_bar" value="0" min="0" max="100" step="1"/>
+							<div class="record_time">
+								<span class="playing_time"></span>
+								<span>/</span>
+								<span class="recording_time">${data.split('_')[3].replace('.mp3', '')}</span>
+							</div>
+						</div>
+						<div class="audio_buttons">
+							<div id="audio_play" class="audio_button">
+								<i class="fa-solid fa-play"></i>
+							</div>
+							<div id="audio_pause" class="audio_button">
+								<i class="fa-solid fa-pause"></i>
+							</div>
+							<div id="audio_stop" class="audio_button">
+								<i class="fa-solid fa-stop"></i>
+							</div>
+						</div>
+					</div>
+					
+				</div>
 			</div>
 			`);
 		},

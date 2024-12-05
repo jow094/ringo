@@ -36,8 +36,10 @@ import com.ringo.domain.UserVO;
 import com.ringo.service.UserService;
 import com.ringo.service.MsgService;
 import com.ringo.service.PostService;
+import com.ringo.service.TranslationService;
 import com.ringo.service.TwilloService;
 import com.ringo.service.UserService;
+import com.ringo.service.AudioService;
 import com.ringo.service.AuthenticationService;
 
 import io.swagger.annotations.Api;
@@ -50,6 +52,10 @@ public class MsgController {
 	private UserService uService;
 	@Inject
 	private MsgService msgService;
+	@Inject
+    private TranslationService trService;
+	@Inject
+	private AudioService audioService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(MsgController.class);
 	
@@ -212,7 +218,7 @@ public class MsgController {
 	
 	@RequestMapping(value = "/audio", method = RequestMethod.POST)
 	@ResponseBody
-	public Integer msgAudioPOST(HttpSession session, MultipartFile audioFile, String mr_code) throws IOException {
+	public Integer msgAudioPOST(HttpSession session, MultipartFile audioFile, String mr_code, String recordingTime) throws IOException {
 	    
 	    Integer last_msg_code = msgService.getLastMsgCode();
 		
@@ -225,7 +231,7 @@ public class MsgController {
 		writer.setUser_code((String)session.getAttribute("user_code"));
 		String msg_code = "msg_"+(last_msg_code+1);
 		
-		String fileName = msg_code + "_img.mp3";
+		String fileName = msg_code + "_audio[" + recordingTime + "].mp3";
 		String filePath = uploadPath_audio + fileName;
 		audioFile.transferTo(new File(filePath));
 		
@@ -235,5 +241,34 @@ public class MsgController {
 		vo.setMsg_place(mr_code);
 		
 	    return msgService.uploadMsg(vo);
+	}
+	
+	@RequestMapping(value = "/trs", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String,Object> msgTRSGET(String text, String targetLang) {
+		String resultText = trService.translate(text,targetLang);
+		Map<String,Object> result = new HashMap<String,Object>();
+		result.put("text",resultText);
+        return result;
+	}
+	
+	@RequestMapping(value = "/tts", method = RequestMethod.GET)
+	@ResponseBody
+	public String msgTTSGET(String text,String msg_code) throws IOException {
+		logger.debug("text to speech "+text);
+		String target_lang = audioService.detectLang(text);
+		String result = audioService.tts(text,msg_code,target_lang);
+		logger.debug("text to speech detected lang is "+target_lang);
+		logger.debug("text to speech result "+result);
+		return result;
+	}
+	
+	@RequestMapping(value = "/stt", method = RequestMethod.GET)
+	@ResponseBody
+	public String msgSTTGET(String msg_code) throws IOException{
+		logger.debug("speech to text "+msg_code);
+		String result = audioService.stt(msg_code);
+		logger.debug("speech to text result "+result);
+		return result;
 	}
 }

@@ -81,13 +81,13 @@ public class AudioServiceImpl implements AudioService {
 
 	        // 결과를 MP3 파일로 저장
 	        ByteString audioContents = response.getAudioContent();
-	        String outputPath = ttsPath + msg_code + ".mp3";
+	        String fileName = msg_code + "_tts.mp3";
+	        String outputPath = ttsPath + msg_code + "_tts[12.34].mp3";
 	        try (OutputStream out = new FileOutputStream(outputPath)) {
 	            out.write(audioContents.toByteArray());
 	        }
 
-	        System.out.println("Audio content written to file 'output.mp3'");
-	        return outputPath;  // 생성된 오디오 파일 경로를 리턴
+	        return fileName;  // 생성된 오디오 파일 경로를 리턴
 	    }
 	}
 

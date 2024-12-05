@@ -158,6 +158,7 @@ $(document).ready(function () {
 		const formData = new FormData();
 		formData.append('audioFile', audioBlob, 'recording.mp3');
 		formData.append('mr_code', mr_code);
+		formData.append('recordingTime', recordingTime.toFixed(1));
 
 		$.ajax({
 			url: '/msg/audio', // Spring 서버의 업로드 API
