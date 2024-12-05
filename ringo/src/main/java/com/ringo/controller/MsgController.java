@@ -231,7 +231,7 @@ public class MsgController {
 		writer.setUser_code((String)session.getAttribute("user_code"));
 		String msg_code = "msg_"+(last_msg_code+1);
 		
-		String fileName = msg_code + "_audio[" + recordingTime + "].mp3";
+		String fileName = msg_code + "_" + recordingTime + "_audio.mp3";
 		String filePath = uploadPath_audio + fileName;
 		audioFile.transferTo(new File(filePath));
 		

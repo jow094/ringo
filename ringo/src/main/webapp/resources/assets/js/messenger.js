@@ -83,28 +83,83 @@ function input_send_msg(msg){
 			</div>
 		`);
 	}else if(msg.msg_image_path != null){
-		$('.messenger_content').append(`
-			<div class="msg message_box_send" data-msg_code = ${msg.msg_code}>
-				<span class="message_unread_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
-				<div class="message_body">
-					<div class="message_content">
-						<img src="/files/messenger/img/${msg.msg_image_path}"/>
-					</div>
-					<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
-						<div class="message_body_button">
+		if(msg.msg_image_path.includes(',')){
+			const message = `
+				<div class="msg message_box_send" data-msg_code = ${msg.msg_code}>
+					<span class="message_unread_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
+					<div class="message_body">
+						<div class="message_content"></div>
+						<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
+							<div class="message_body_button">
 							<i class="material-symbols-outlined">arrow_drop_down</i>
+							</div>
+							${auto_format_date(msg.msg_time)}
 						</div>
-						${auto_format_date(msg.msg_time)}
-					</div>
-					<div class="message_additional_container col_shrinked">
-						<div class="message_body_menu">
+						<div class="message_additional_container col_shrinked">
+							<div class="message_body_menu">
 							<i class="material-symbols-outlined">reply</i>
 							<span>답장</span>
+							</div>
+						</div>
+					</div>
+				</div>`;
+			const $message = $(message);
+			const files = msg.msg_image_path.split(',');
+			var img_container = `
+				<div class="image_container">
+					<div class="image_main">
+					</div>
+				</div>`;
+			var $img = $(img_container);
+			for (const file of files) {
+				if($img.find('.image_main').find('img').length==0){
+					$img.find('.image_main').append(`
+						<img src="/files/messenger/img/${file}"/>
+					`);
+				}else if($img.find('.image_queue').length==0){
+					$img.append(`
+						<div class="image_queue">
+							<div class="image_queue_belt">
+								<div class="image_waiting">
+								<img src="/files/messenger/img/${file}"/>
+								</div>
+							</div>
+						</div>
+					`);
+				}else{
+					$img.find('.image_queue_belt').append(`
+						<div class="image_waiting">
+							<img src="/files/messenger/img/${file}"/>
+						</div>
+					`);
+				}
+			}
+			$message.find('.message_content').append($img);
+			$('.messenger_content').append($message);
+		}else{
+			$('.messenger_content').append(`
+				<div class="msg message_box_send" data-msg_code = ${msg.msg_code}>
+					<span class="message_unread_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
+					<div class="message_body">
+						<div class="message_content">
+							<img src="/files/messenger/img/${msg.msg_image_path}"/>
+						</div>
+						<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
+							<div class="message_body_button">
+								<i class="material-symbols-outlined">arrow_drop_down</i>
+							</div>
+							${auto_format_date(msg.msg_time)}
+						</div>
+						<div class="message_additional_container col_shrinked">
+							<div class="message_body_menu">
+								<i class="material-symbols-outlined">reply</i>
+								<span>답장</span>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		`);
+			`);
+		}
 	}else if(msg.msg_audio_path != null){
 		$('.messenger_content').append(`
 			<div class="msg message_box_send" data-msg_code = ${msg.msg_code}>
@@ -119,7 +174,7 @@ function input_send_msg(msg){
 								<div class="record_time">
 									<span class="playing_time"></span>
 									<span>/</span>
-									<span class="recording_time">${msg.msg_audio_path.split('_')[3].replace('.mp3', '')}</span>
+									<span class="recording_time">${msg.msg_audio_path}</span>
 								</div>
 							</div>
 							<div class="audio_buttons">
@@ -211,36 +266,99 @@ function input_received_msg(msg){
 			</div>
 		`);
 	}else if(msg.msg_image_path != null){
-		$('.messenger_content').append(`
-			<div class="msg message_box_received" data-msg_code = ${msg.msg_code}>
-				<div class="message_sender_thumbnail" onclick="visit('${msg.msg_sender.user_code}',this)">
-					<img class="small_img" src="/files/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
-				</div>
-				<div class="message_info">	
-					<div class="message_sender_nickname" onclick="visit('${msg.msg_sender.user_code}',this)">
-						${msg.msg_sender.user_nickname}
+		if(msg.msg_image_path.includes(',')){
+			const message = `
+				<div class="msg message_box_received" data-msg_code = ${msg.msg_code}>
+					<div class="message_sender_thumbnail" onclick="visit('${msg.msg_sender.user_code}',this)">
+						<img class="small_img" src="/files/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
 					</div>
-					<div class="message_body">
-						<div class="message_content">
-							<img src="/files/messenger/img/${msg.msg_image_path}"/>
+					<div class="message_info">	
+						<div class="message_sender_nickname" onclick="visit('${msg.msg_sender.user_code}',this)">
+							${msg.msg_sender.user_nickname}
 						</div>
-						<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
-							<div class="message_body_button">
-								<i class="material-symbols-outlined">arrow_drop_down</i>
+						<div class="message_body">
+							<div class="message_content"></div>
+							<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
+								<div class="message_body_button">
+									<i class="material-symbols-outlined">arrow_drop_down</i>
+								</div>
+								${auto_format_date(msg.msg_time)}
 							</div>
-							${auto_format_date(msg.msg_time)}
-						</div>
-						<div class="message_additional_container col_shrinked">
-							<div class="message_body_menu">
-								<i class="material-symbols-outlined">reply</i>
-								<span>답장</span>
+							<div class="message_additional_container col_shrinked">
+								<div class="message_body_menu">
+									<i class="material-symbols-outlined">reply</i>
+									<span>답장</span>
+								</div>
 							</div>
 						</div>
 					</div>
+					<span class="message_unreader_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
+				</div>`;
+			const $message = $(message);
+			const files = msg.msg_image_path.split(',');
+			var img_container = `
+				<div class="image_container">
+					<div class="image_main">
+					</div>
+				</div>`;
+			var $img = $(img_container);
+			for (const file of files) {
+				if($img.find('.image_main').find('img').length==0){
+					$img.find('.image_main').append(`
+						<img src="/files/messenger/img/${file}"/>
+					`);
+				}else if($img.find('.image_queue').length==0){
+					$img.append(`
+						<div class="image_queue">
+							<div class="image_queue_belt">
+								<div class="image_waiting">
+								<img src="/files/messenger/img/${file}"/>
+								</div>
+							</div>
+						</div>
+					`);
+				}else{
+					$img.find('.image_queue_belt').append(`
+						<div class="image_waiting">
+							<img src="/files/messenger/img/${file}"/>
+						</div>
+					`);
+				}
+			}
+			$message.find('.message_content').append($img);
+			$('.messenger_content').append($message);
+		}else{
+			$('.messenger_content').append(`
+				<div class="msg message_box_received" data-msg_code = ${msg.msg_code}>
+					<div class="message_sender_thumbnail" onclick="visit('${msg.msg_sender.user_code}',this)">
+						<img class="small_img" src="/files/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
+					</div>
+					<div class="message_info">	
+						<div class="message_sender_nickname" onclick="visit('${msg.msg_sender.user_code}',this)">
+							${msg.msg_sender.user_nickname}
+						</div>
+						<div class="message_body">
+							<div class="message_content">
+								<img src="/files/messenger/img/${msg.msg_image_path}"/>
+							</div>
+							<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
+								<div class="message_body_button">
+									<i class="material-symbols-outlined">arrow_drop_down</i>
+								</div>
+								${auto_format_date(msg.msg_time)}
+							</div>
+							<div class="message_additional_container col_shrinked">
+								<div class="message_body_menu">
+									<i class="material-symbols-outlined">reply</i>
+									<span>답장</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<span class="message_unreader_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
 				</div>
-				<span class="message_unreader_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
-			</div>
-		`);
+			`);
+		}
 	}else if(msg.msg_audio_path != null){
 		$('.messenger_content').append(`
 			<div class="msg message_box_received" data-msg_code = ${msg.msg_code}>
@@ -440,7 +558,7 @@ function submit_img_msg(){
 				msg_posting_files = [];
 				$('.messenger_input').find('.upload_files').empty();
 				if($('.messenger_input').find('.upload_files').hasClass('expanded')){
-					col_toggle();
+					col_toggle($('.messenger_input').find('.upload_files'));
 				}
 			}
 			$('.messenger_content').scrollTop($('.messenger_content')[0].scrollHeight);

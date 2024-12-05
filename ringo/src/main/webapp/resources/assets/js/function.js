@@ -1460,12 +1460,12 @@ function toggle_link_card(e){
 			<div class="card_body_content">
 				<div class="image_container">
 					<div class="image_main">
-						<img src="/img/profiles/"/>
+						<img src="/files/profiles/"/>
 					</div>
 					<div class="image_queue">
 						<div class="image_queue_belt">
 							<div class="image_waiting">
-								<img src="/img/profiles/"/>
+								<img src="/files/profiles/"/>
 							</div>
 						</div>
 					</div>

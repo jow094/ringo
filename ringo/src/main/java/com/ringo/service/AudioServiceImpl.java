@@ -82,7 +82,7 @@ public class AudioServiceImpl implements AudioService {
 	        // 결과를 MP3 파일로 저장
 	        ByteString audioContents = response.getAudioContent();
 	        String fileName = msg_code + "_tts.mp3";
-	        String outputPath = ttsPath + msg_code + "_tts[12.34].mp3";
+	        String outputPath = ttsPath + msg_code + "_12.34_tts.mp3";
 	        try (OutputStream out = new FileOutputStream(outputPath)) {
 	            out.write(audioContents.toByteArray());
 	        }

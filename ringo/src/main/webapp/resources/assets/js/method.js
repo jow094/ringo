@@ -569,7 +569,7 @@ function get_reple(e){
                     		$comment.find('.scroll_box_inner').prepend(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
                     				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
-    	                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
+    	                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
                     				</div>
                     				<div class="card_comment_body">
     	                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
@@ -593,7 +593,7 @@ function get_reple(e){
 		        			$(e).closest('.card').find('.card_foot_comment').find('.scroll_box_inner').append(`
 		            				<div class="card_comment" data-reple_code="${reple.reple_code}">
 		            				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
-		                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
+		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
 		            				</div>
 		            				<div class="card_comment_body">
 		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
@@ -638,7 +638,7 @@ function get_circle_post(user_code){
 	        		<div class="card" data-post_code="${postVO.post_code}">
 						<div class="card_header">
 							<div class="card_header_image" onclick="visit('${postVO.post_writer}',this)">
-								<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
+								<img class="small_img" src="/files/user/profiles/${postVO.writer_thumbnail_path}"/>
 							</div>
 							<div class="card_header_nickname" onclick="visit('${postVO.post_writer}',this)">
 								${postVO.writer_nickname}
@@ -704,14 +704,14 @@ function get_circle_post(user_code){
                     for (const file of files) {
                     	if($img.find('.image_main').find('img').length==0){
                     		$img.find('.image_main').append(`
-                				<img src="/img/circle/upload/${file}"/>
+                				<img src="/files/circle/upload/${file}"/>
                     		`);
                     	}else if($img.find('.image_queue').length==0){
                     		$img.append(`
                 				<div class="image_queue">
 									<div class="image_queue_belt">
 										<div class="image_waiting">
-											<img src="/img/circle/upload/${file}"/>
+											<img src="/files/circle/upload/${file}"/>
 										</div>
 									</div>
 								</div>
@@ -719,7 +719,7 @@ function get_circle_post(user_code){
                     	}else{
                     		$img.find('.image_queue_belt').append(`
                 				<div class="image_waiting">
-									<img src="/img/circle/upload/${file}"/>
+									<img src="/files/circle/upload/${file}"/>
 								</div>
                     		`);
                     	}
@@ -743,7 +743,7 @@ function get_circle_post(user_code){
                     		$comment.find('.scroll_box_inner').append(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
 	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
-		                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
+		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
 		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
@@ -794,7 +794,7 @@ function get_user_profile(user_code){
         	$('.profile_container').addClass('hidden');
         	
         	$('.user_profile_container .profile_container_head_basic').html(`
-        		<img class="black" src="/img/user/profiles/${data.user_thumbnail_path}"/>
+        		<img class="black" src="/files/user/profiles/${data.user_thumbnail_path}"/>
 				<div class="profile_container_head_basic_nickname">
 					${data.user_nickname}
 				</div>
@@ -898,7 +898,7 @@ function get_unities(){
         		if(unity.unity_type == 'favorite'){
         			$('.favorite_unities').prepend(`
         				<div class="favorite_unity" data-unity_code="${unity.unity_code}" onclick="enter_unity_main('${unity.unity_code}')">
-							<img src="/img/unity/thumbnail/${unity.unity_thumbnail_path}"></img>
+							<img src="/files/unity/thumbnail/${unity.unity_thumbnail_path}"></img>
 							<div>${unity.unity_name}</div>
 							<i class="fa-solid fa-circle-xmark pin"></i>
 						</div>
@@ -907,7 +907,7 @@ function get_unities(){
         			var unity_card = `
         				<div class="unity_card" data-unity_code="${unity.unity_code}" onclick="enter_unity_main('${unity.unity_code}')">
 							<div class="unity_card_thumbnail">
-								<img class="small_img" src="/img/unity/thumbnail/${unity.unity_thumbnail_path}"></img>
+								<img class="small_img" src="/files/unity/thumbnail/${unity.unity_thumbnail_path}"></img>
 							</div>
 							<div class="unity_card_body">
 								<div class="unity_card_name">${unity.unity_name}</div>
@@ -978,7 +978,7 @@ function get_unity_profile(unity_code){
         	$('.unity_profile_container .profile_container_head_basic').attr('onclick',`enter_unity_main('${unity_code}')`);
         	$('.unity_profile_container .profile_container_head_basic').attr('data-unity_code',unity_code);
         	$('.unity_profile_container .profile_container_head_basic').html(`
-        		<img class="black" src="/img/unity/thumbnail/${data.unity_thumbnail_path}"/>
+        		<img class="black" src="/files/unity/thumbnail/${data.unity_thumbnail_path}"/>
 				<div class="profile_container_head_basic_unity_name">
 					${data.unity_name}
 				</div>
@@ -1121,7 +1121,7 @@ function get_unity_main(unity_code){
 			unity = unity_code;
 			
         	$('.in_unity_banner').html(`
-        		<img src="/img/unity/banner/${data.unity_banner_path}" style="${data.unity_banner_set}"/>
+        		<img src="/files/unity/banner/${data.unity_banner_path}" style="${data.unity_banner_set}"/>
         	`);
         	
         	$('.in_unity_main .recent_post').empty();
@@ -1131,7 +1131,7 @@ function get_unity_main(unity_code){
         	    $(`.${post.post_type}`).append(`
         	    	<div class="post_card" data-post_place="${post.post_place}" data-post_code="${post.post_code}" onclick="enter_unity_post(this)">
 						<div class="post_card_thumbnail">
-							<img class="small_img" src="/img/user/profiles/${post.writer_thumbnail_path}"/>
+							<img class="small_img" src="/files/user/profiles/${post.writer_thumbnail_path}"/>
 						</div>
 						<div class="post_card_body">
 							<div class="post_card_title">${post.writer_nickname} 님의 게시물</div>
@@ -1311,7 +1311,7 @@ function get_unity_post(unity_board_code,unity_post_code,unity_board_page){
         					</div>
         					<div class="uch_writer onclick="visit('${postVO.post_writer}',this)"">
         						<div class="uch_writer_image">
-        							<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
+        							<img class="small_img" src="/files/user/profiles/${postVO.writer_thumbnail_path}"/>
         						</div>
         						<div class="uch_writer_infos">
         							<div class="uch_writer_grade">${postVO.writer_unity_member_grade}</div>
@@ -1380,14 +1380,14 @@ function get_unity_post(unity_board_code,unity_post_code,unity_board_page){
                     for (const file of files) {
                     	if($img.find('.image_main').find('img').length==0){
                     		$img.find('.image_main').append(`
-                				<img src="/img/unity/upload/${file}"/>
+                				<img src="/files/unity/upload/${file}"/>
                     		`);
                     	}else if($img.find('.image_queue').length==0){
                     		$img.append(`
                 				<div class="image_queue">
 									<div class="image_queue_belt">
 										<div class="image_waiting">
-											<img src="/img/unity/upload/${file}"/>
+											<img src="/files/unity/upload/${file}"/>
 										</div>
 									</div>
 								</div>
@@ -1395,7 +1395,7 @@ function get_unity_post(unity_board_code,unity_post_code,unity_board_page){
                     	}else{
                     		$img.find('.image_queue_belt').append(`
                 				<div class="image_waiting">
-									<img src="/img/unity/upload/${file}"/>
+									<img src="/files/unity/upload/${file}"/>
 								</div>
                     		`);
                     	}
@@ -1419,7 +1419,7 @@ function get_unity_post(unity_board_code,unity_post_code,unity_board_page){
                     		$comment.find('.scroll_box_inner').append(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
 	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
-		                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
+		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
 		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
@@ -1513,7 +1513,7 @@ function get_unity_board_post(post_place,post_code){
         					</div>
         					<div class="uch_writer onclick="visit('${postVO.post_writer}',this)"">
         						<div class="uch_writer_image">
-        							<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
+        							<img class="small_img" src="/files/user/profiles/${postVO.writer_thumbnail_path}"/>
         						</div>
         						<div class="uch_writer_infos">
         							<div class="uch_writer_grade">${postVO.writer_unity_member_grade}</div>
@@ -1582,14 +1582,14 @@ function get_unity_board_post(post_place,post_code){
                     for (const file of files) {
                     	if($img.find('.image_main').find('img').length==0){
                     		$img.find('.image_main').append(`
-                				<img src="/img/unity/upload/${file}"/>
+                				<img src="/files/unity/upload/${file}"/>
                     		`);
                     	}else if($img.find('.image_queue').length==0){
                     		$img.append(`
                 				<div class="image_queue">
 									<div class="image_queue_belt">
 										<div class="image_waiting">
-											<img src="/img/unity/upload/${file}"/>
+											<img src="/files/unity/upload/${file}"/>
 										</div>
 									</div>
 								</div>
@@ -1597,7 +1597,7 @@ function get_unity_board_post(post_place,post_code){
                     	}else{
                     		$img.find('.image_queue_belt').append(`
                 				<div class="image_waiting">
-									<img src="/img/unity/upload/${file}"/>
+									<img src="/files/unity/upload/${file}"/>
 								</div>
                     		`);
                     	}
@@ -1621,7 +1621,7 @@ function get_unity_board_post(post_place,post_code){
                     		$comment.find('.scroll_box_inner').append(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
 	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
-		                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
+		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
 		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
@@ -1696,7 +1696,7 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
         					</div>
         					<div class="uch_writer onclick="visit('${postVO.post_writer}',this)"">
         						<div class="uch_writer_image">
-        							<img class="small_img" src="/img/user/profiles/${postVO.writer_thumbnail_path}"/>
+        							<img class="small_img" src="/files/user/profiles/${postVO.writer_thumbnail_path}"/>
         						</div>
         						<div class="uch_writer_infos">
         							<div class="uch_writer_grade">${postVO.writer_unity_member_grade}</div>
@@ -1771,14 +1771,14 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
                     for (const file of files) {
                     	if($img.find('.image_main').find('img').length==0){
                     		$img.find('.image_main').append(`
-                				<img src="/img/unity/upload/${file}"/>
+                				<img src="/files/unity/upload/${file}"/>
                     		`);
                     	}else if($img.find('.image_queue').length==0){
                     		$img.append(`
                 				<div class="image_queue">
 									<div class="image_queue_belt">
 										<div class="image_waiting">
-											<img src="/img/unity/upload/${file}"/>
+											<img src="/files/unity/upload/${file}"/>
 										</div>
 									</div>
 								</div>
@@ -1786,7 +1786,7 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
                     	}else{
                     		$img.find('.image_queue_belt').append(`
                 				<div class="image_waiting">
-									<img src="/img/unity/upload/${file}"/>
+									<img src="/files/unity/upload/${file}"/>
 								</div>
                     		`);
                     	}
@@ -1810,7 +1810,7 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
                     		$comment.find('.scroll_box_inner').append(`
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
 	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
-		                				<img class="small_img" src="/img/user/profiles/${reple.r_writer_thumbnail_path}"/>
+		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
 		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
