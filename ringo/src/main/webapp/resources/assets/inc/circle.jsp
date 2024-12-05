@@ -25,7 +25,7 @@
 					</div>
 					<div class="card_body_buttons">
 						<div class="button">
-							<i class="fa-solid fa-link" onclick="open_itf(this);">
+							<i class="material-symbols-outlined" onclick="open_itf(this);">attach_file
 								<input type="file" name="" class="none" accept="image/*" onchange="upload_file(this)" multiple>
 							</i>
 						</div>

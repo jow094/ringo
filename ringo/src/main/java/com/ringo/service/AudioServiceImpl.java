@@ -5,23 +5,62 @@ import com.google.protobuf.ByteString;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
+import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import com.google.api.gax.core.FixedCredentialsProvider;
+import com.google.auth.oauth2.ServiceAccountCredentials;
+import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.TranslateOptions;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import com.google.cloud.translate.Detection;
+import com.google.cloud.translate.Translation;
 import com.google.cloud.speech.v1.*;
 import com.google.protobuf.ByteString;
-import com.google.cloud.speech.v1.RecognitionConfig.AudioEncoding; // Google Speech-to-Text의 AudioEncoding
+import com.google.cloud.speech.v1.RecognitionConfig.AudioEncoding;
 import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
 
 @Service
 public class AudioServiceImpl implements AudioService {
 	
+	private final String detect_URL = "https://translation.googleapis.com/language/translate/v2/detect";
+    
 	private String ttsPath = "C:/ringo_files/audio/tts/";
 	private String sttPath = "C:/ringo_files/audio/stt/";
-    
+	
+	private final RestTemplate restTemplate;
+	private final Translate translate;
+	
+	public AudioServiceImpl(RestTemplate restTemplate,Translate translate) {
+        this.restTemplate = restTemplate;
+        this.translate = translate;
+    }
+	
 	public String tts(String text,String msg_code,String target_lang) throws IOException {
+		
+		TextToSpeechSettings textToSpeechSettings = TextToSpeechSettings.newBuilder()
+			    .setCredentialsProvider(FixedCredentialsProvider.create(
+			        ServiceAccountCredentials.fromStream(new FileInputStream("C:/ringo_files/bold-origin-440901-h0-f50595916e4e.json"))))
+			    .build();
 	    // 클라이언트 생성
-	    try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
+	    try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create(textToSpeechSettings)) {
 
 	        // 텍스트 입력 생성
 	        SynthesisInput input = SynthesisInput.newBuilder().setText(text).build();
@@ -42,7 +81,7 @@ public class AudioServiceImpl implements AudioService {
 
 	        // 결과를 MP3 파일로 저장
 	        ByteString audioContents = response.getAudioContent();
-	        String outputPath = msg_code + "output.mp3"; // 파일 경로
+	        String outputPath = ttsPath + msg_code + ".mp3";
 	        try (OutputStream out = new FileOutputStream(outputPath)) {
 	            out.write(audioContents.toByteArray());
 	        }
@@ -52,10 +91,14 @@ public class AudioServiceImpl implements AudioService {
 	    }
 	}
 
-    
 	public String stt(String msg_code) throws IOException {
+		
+		SpeechSettings speechSettings = SpeechSettings.newBuilder()
+			    .setCredentialsProvider(FixedCredentialsProvider.create(
+			        ServiceAccountCredentials.fromStream(new FileInputStream("C:/ringo_files/bold-origin-440901-h0-f50595916e4e.json"))))
+			    .build();
 	    // 클라이언트 생성
-	    try (SpeechClient speechClient = SpeechClient.create()) {
+	    try (SpeechClient speechClient = SpeechClient.create(speechSettings)) {
 	    	String audioFilePath = sttPath + msg_code;
 	        // 오디오 파일 읽기
 	        ByteString audioBytes = ByteString.readFrom(new FileInputStream(audioFilePath));
@@ -90,4 +133,14 @@ public class AudioServiceImpl implements AudioService {
 	    }
 	}
 
+	@Override
+	public String detectLang(String text) {
+		try {
+	        Detection detection = translate.detect(text);
+	        return detection.getLanguage();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return "unknown"; // 예외 발생 시 기본값 반환
+	    }
+    }
 }

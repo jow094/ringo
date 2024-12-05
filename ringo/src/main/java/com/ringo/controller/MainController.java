@@ -130,8 +130,9 @@ public class MainController {
 	@ResponseBody
 	public String textToSpeech(String text,String msg_code) throws IOException {
 		logger.debug("text to speech "+text);
-		String target_lang = trService.detectLanguage(text);
+		String target_lang = audioService.detectLang(text);
 		String result = audioService.tts(text,msg_code,target_lang);
+		logger.debug("text to speech detected lang is "+target_lang);
 		logger.debug("text to speech result "+result);
 		return null;
 	}

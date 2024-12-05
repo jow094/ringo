@@ -1275,6 +1275,7 @@ function enter_room(data){
 	$('#input_msg_content').val();
 	msg_posting_files = [];
 	connect_in_msg_room(data);
+	init_recorder();
 }
 
 function exit_room(e){
@@ -1287,6 +1288,7 @@ function exit_room(e){
 	$('#input_msg_content').val();
 	msg_posting_files = [];
 	disconnect_in_msg_room();
+	init_recorder();
 }
 
 function check_profile_button(){
@@ -1509,7 +1511,13 @@ function open_itf(e){
 function upload_file(e) {
 	
     const files = e.files;
-    const container = $(e).closest('.card').find('.upload_files');
+    var container;
+    
+    if($(e).closest('.messenger_input').length>0){
+    	container = $(e).closest('.messenger_input').find('.upload_files');
+    }else{
+    	container = $(e).closest('.card').find('.upload_files');
+    }
     
     if($(e).closest('.circle_write').length>0){
     	
@@ -1559,7 +1567,30 @@ function upload_file(e) {
             });
         }
     }
+    
+    if($(e).closest('.messenger_input').length>0){
+    	if (files.length > 0) {
+            Array.from(files).forEach((file) => {
+                const reader = new FileReader();
 
+                reader.onload = function (event) {
+                    container.append(`
+                    	<div class="upload_file" data-file_index="${msg_posting_files.length}" onclick="delete_file(this)" onmouseleave="mouse_leave(this)" onmouseover="mouse_over(this)">
+    						<div class="preview_image">
+    							<img src="${event.target.result}"/>
+    						</div>
+    						<div class="preview_file_name">
+    							${file.name}
+    						</div>
+    					</div>
+                    `);
+                    msg_posting_files.push(file);
+                };
+                
+                reader.readAsDataURL(file);
+            });
+        }
+    }
     
 	if(container.hasClass('col_shrinked')){
 		col_toggle(container);
@@ -1570,7 +1601,13 @@ function delete_file(e) {
 	
 	const index = $(e).attr('data-file_index');
 	
-	const container = $(e).closest('.card').find('.upload_files');
+	var container;
+    
+    if($(e).closest('.messenger_input').length>0){
+    	container = $(e).closest('.messenger_input').find('.upload_files');
+    }else{
+    	container = $(e).closest('.card').find('.upload_files');
+    }
 	
 	if($(e).closest('.circle_write').length>0){
 		
@@ -1610,6 +1647,23 @@ function delete_file(e) {
 		
 	}
 	
+	if($(e).closest('.messenger_input').length>0){
+		
+		msg_posting_files.splice(index, 1);
+		
+		setTimeout(function() {
+			$(e).remove();
+			
+			const files = container.find('.upload_file');
+			files.each(function(new_index) {
+				$(this).attr('data-file_index', new_index);
+			});
+			
+			if(msg_posting_files.length == 0 && container.hasClass('expanded')){
+				col_toggle(container);
+			}
+		}, 1);
+	}
 }
 
 function add_tag(e){

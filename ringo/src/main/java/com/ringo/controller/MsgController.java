@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -151,53 +152,88 @@ public class MsgController {
 		
 		vo.setMsg_code(msg_code);
 		vo.setMsg_sender(writer);
-        
-		try {
-			List<MultipartFile> files = vo.getMsg_file(); 
+			
+		return msgService.uploadMsg(vo);
+	}
+	
+	@RequestMapping(value = "/image", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer msgImagePOST(HttpSession session, List<MultipartFile> img, String mr_code) throws IOException {
+		
+		Integer last_msg_code = msgService.getLastMsgCode();
+		
+		if(last_msg_code==null) {
+			last_msg_code = 0;
+		}
+		MsgVO vo = new MsgVO();
+		UserVO writer = new UserVO();
+		writer.setUser_code((String)session.getAttribute("user_code"));
+		String msg_code = "msg_"+(last_msg_code+1);
+		
 			StringBuilder msg_file_path = new StringBuilder();
 			
-			if(files != null && !files.isEmpty()) {
+			if(img != null && !img.isEmpty()) {
 				int i = 1;
-				for (MultipartFile file : files) {
-				    if (!file.isEmpty()) {
-				        String originalFileName = file.getOriginalFilename();
-		
-				        String extension = "";
-				        if (originalFileName != null && originalFileName.contains(".")) {
-				            extension = originalFileName.substring(originalFileName.lastIndexOf("."));
-				        }
-		
-				        String fileName = msg_code + "_img" + i + extension;
-		
-				        if (msg_file_path.length() > 0) {
-				        	msg_file_path.append(",");
-				        }
-				        msg_file_path.append(fileName);
-		
-				        File dest = new File(uploadPath_img + fileName);
-				        try {
-				            file.transferTo(dest);
-				        } catch (IOException e) {
-				            e.printStackTrace();
-				        }
-		
-				        i++;
-				    }
+				for (MultipartFile file : img) {
+					if (!file.isEmpty()) {
+						String originalFileName = file.getOriginalFilename();
+						
+						String extension = "";
+						if (originalFileName != null && originalFileName.contains(".")) {
+							extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+						}
+						
+						String fileName = msg_code + "_img" + i + extension;
+						
+						if (msg_file_path.length() > 0) {
+							msg_file_path.append(",");
+						}
+						msg_file_path.append(fileName);
+						
+						File dest = new File(uploadPath_img + fileName);
+						try {
+							file.transferTo(dest);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						
+						i++;
+					}
 				}
 			}
 			
-			vo.setMsg_file_path(msg_file_path.toString());
+			vo.setMsg_code(msg_code);
+			vo.setMsg_sender(writer);
+			vo.setMsg_place(mr_code);
+			vo.setMsg_image_path(msg_file_path.toString());
 			
 			return msgService.uploadMsg(vo);
-			
-		} catch (Exception e) {
-	    	return 0;
-	    }
 	}
 	
-    @MessageMapping("/msgPost/post")
-    @SendTo("/msgGet")
-    public String sendUpdate() {
-        return "Update triggered!";
-    }
+	@RequestMapping(value = "/audio", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer msgAudioPOST(HttpSession session, MultipartFile audioFile, String mr_code) throws IOException {
+	    
+	    Integer last_msg_code = msgService.getLastMsgCode();
+		
+		if(last_msg_code==null) {
+			last_msg_code = 0;
+		}
+		
+		MsgVO vo = new MsgVO();
+		UserVO writer = new UserVO();
+		writer.setUser_code((String)session.getAttribute("user_code"));
+		String msg_code = "msg_"+(last_msg_code+1);
+		
+		String fileName = msg_code + "_img.mp3";
+		String filePath = uploadPath_audio + fileName;
+		audioFile.transferTo(new File(filePath));
+		
+		vo.setMsg_code(msg_code);
+		vo.setMsg_sender(writer);
+		vo.setMsg_audio_path(fileName);
+		vo.setMsg_place(mr_code);
+		
+	    return msgService.uploadMsg(vo);
+	}
 }

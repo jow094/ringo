@@ -9,24 +9,8 @@ stompClient.connect({}, function () {
 		url: '/msg/connect/',
 		dataType: "json",
 		success: function (data) {
-			for (const connect_code of data) {
-				stompClient.subscribe(`/msgGet/getMsg/${connect_code}`, function (message) {
-			        if (message.body) {
-			        	console.log(message.body);
-			            const param = JSON.parse(message.body);
-			            
-			            console.log('param:',param);
-			            
-			            if(mr_code == param.mr_code){
-			            	get_new_msg(param.mr_code,param.msg_code);
-			            	console.log('update msg in '+param.mr_code+' new message is '+param.msg_code);
-			            }else{
-			            	get_msg_room_list();
-			            	console.log('out of room. just update msg room list');
-			            }
-			        }
-			    });
-				console.log('connect for',connect_code);
+			for (const mr_code of data) {
+				connect_msg_room(mr_code);
 			}
 		},
 		error: function(error) {
@@ -34,7 +18,25 @@ stompClient.connect({}, function () {
 	});
 });
 
-
+function connect_msg_room(mr_code) {
+	stompClient.subscribe(`/msgGet/getMsg/${mr_code}`, function (message) {
+        if (message.body) {
+        	console.log(message.body);
+            const param = JSON.parse(message.body);
+            
+            console.log('param:',param);
+            
+            if(mr_code == param.mr_code){
+            	get_new_msg(param.mr_code,param.msg_code);
+            	console.log('update msg in '+param.mr_code+' new message is '+param.msg_code);
+            }else{
+            	get_msg_room_list();
+            	console.log('out of room. just update msg room list');
+            }
+        }
+    });
+	console.log('connect for',mr_code);
+}
 function connect_in_msg_room(mr_code) {
     
     if (conn_inMsgRoom) {

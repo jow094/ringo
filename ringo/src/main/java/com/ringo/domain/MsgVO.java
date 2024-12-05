@@ -17,7 +17,8 @@ public class MsgVO {
 	private Integer msg_unreader_count;
 	private String msg_place;
 	private List<MultipartFile> msg_file;
-	private String msg_file_path;
+	private String msg_image_path;
+	private String msg_audio_path;
 	private String msg_transfer_user_code;
 	private String msg_correction;
 	

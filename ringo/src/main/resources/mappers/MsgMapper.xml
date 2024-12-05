@@ -40,6 +40,8 @@
 	    <result property="msg_place" column="msg_place"/>
 	    <result property="msg_transfer_user_code" column="msg_transfer_user_code"/>
 	    <result property="msg_correction" column="msg_correction"/>
+	    <result property="msg_image_path" column="msg_image_path"/>
+	    <result property="msg_audio_path" column="msg_audio_path"/>
 
 		<association property="msg_sender" javaType="UserVO">
 			<result property="user_code" column="msg_sender"/>
@@ -146,7 +148,8 @@
 	        msg_content,
 	        msg_unreader,
 	        msg_place,
-	        msg_file_path
+	        msg_image_path,
+	        msg_audio_path
 	    )
 	    select
 	        #{msg_code},
@@ -156,7 +159,8 @@
 	         from _ringo_msg_member
 	         where mr_code = #{msg_place} and user_code != #{msg_sender.user_code}),
 	        #{msg_place},
-	        #{msg_file_path}
+	        #{msg_image_path},
+	        #{msg_audio_path}
 	</insert>
 	
 	<update id="updateRoomUnreader">
