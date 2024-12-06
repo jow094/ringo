@@ -158,7 +158,7 @@ $(document).ready(function () {
 	$('#audio_upload').on('click', function () {
 		console.log('record upload');
 		const formData = new FormData();
-		formData.append('audioFile', audioBlob, 'recording.mp3');
+		formData.append('audioFile', audioBlob);
 		formData.append('mr_code', mr_code);
 		formData.append('recordingTime', recordingTime.toFixed(1));
 
@@ -169,7 +169,6 @@ $(document).ready(function () {
 			processData: false,
 			contentType: false,
 			success: function () {
-				alert('녹음 파일이 성공적으로 전송되었습니다!');
 				init_recorder();
 				if($('.messenger_audio').hasClass('expanded')){
 					col_toggle('.messenger_audio');
@@ -269,7 +268,6 @@ $(document).ready(function () {
 	});
 	
 	$(document).on('click', '.msg_audio_bar', function (e) {
-		/*$(e.target)*/
 	    let range = $('#msg_audio_bar'); // 현재 range 요소
 	    let offsetX = e.pageX - range.offset().left; // 클릭한 위치가 range 시작점에서 얼마나 떨어져 있는지
 	    let width = range.width(); // range 요소의 너비

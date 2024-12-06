@@ -4,9 +4,12 @@ import com.google.cloud.texttospeech.v1.*;
 import com.google.protobuf.ByteString;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -14,12 +17,16 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import com.mpatric.mp3agic.*;
+import com.ringo.persistence.MsgDAO;
+
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -48,13 +55,16 @@ import java.io.File;
 @Service
 public class AudioServiceImpl implements AudioService {
 	
-	private final String detect_URL = "https://translation.googleapis.com/language/translate/v2/detect";
+	private final String stt_key = "8203a5fbbe104e6a96187facb535223f";
     
 	private String uploadPath_audio = "C:/ringo_files/messenger/audio/";
 	private String ttsPath = "C:/ringo_files/audio/tts/";
 	
 	private final RestTemplate restTemplate;
 	private final Translate translate;
+	
+	@Autowired
+	private MsgDAO msgdao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(AudioServiceImpl.class);
 	
@@ -83,7 +93,7 @@ public class AudioServiceImpl implements AudioService {
 
 	        // 오디오 설정
 	        AudioConfig audioConfig = AudioConfig.newBuilder()
-	                .setAudioEncoding(com.google.cloud.texttospeech.v1.AudioEncoding.MP3) // Text-to-Speech의 MP3 형식
+	        		.setAudioEncoding(com.google.cloud.texttospeech.v1.AudioEncoding.OGG_OPUS)
 	                .build();
 
 	        // 요청 실행
@@ -119,13 +129,12 @@ public class AudioServiceImpl implements AudioService {
 		
 	    // 클라이언트 생성
 	    try (SpeechClient speechClient = SpeechClient.create(speechSettings)) {
-	    	String audioFilePath = uploadPath_audio + file_name;
+	    	String audioFilePath = (uploadPath_audio + file_name).replace(".mp3", ".wav");
 	    	
-	    	 String wavFilePath = transferToWav(audioFilePath);
-	    	 
-	    	 logger.debug("wfp : "+wavFilePath);
+	    	logger.debug("sst file path :"+audioFilePath);
+	    	
 	        // 오디오 파일 읽기
-	    	 ByteString audioBytes = ByteString.readFrom(new FileInputStream(wavFilePath));
+	    	 ByteString audioBytes = ByteString.readFrom(new FileInputStream(audioFilePath));
 
 	        // 오디오 설정
 	        RecognitionAudio audio = RecognitionAudio.newBuilder()
@@ -133,9 +142,12 @@ public class AudioServiceImpl implements AudioService {
 	                .build();
 	        // 음성 인식 설정
 	        RecognitionConfig config = RecognitionConfig.newBuilder()
-	                .setEncoding(com.google.cloud.speech.v1.RecognitionConfig.AudioEncoding.LINEAR16) // Speech-to-Text의 LINEAR16 형식
-	                .setLanguageCode("en-US") // 기본 언어 설정
-	                .build();
+	        	    .setEncoding(RecognitionConfig.AudioEncoding.LINEAR16) // Speech-to-Text의 LINEAR16 형식
+	        	    .setLanguageCode("en-US") // 기본 언어 설정
+	        	    .setAudioChannelCount(1) // 모노 채널로 설정
+	        	    .addAlternativeLanguageCodes("ko-kr") // 보조 언어
+	        	    .build();
+
 
 	        // 음성 인식 요청 실행
 	        RecognizeRequest request = RecognizeRequest.newBuilder()
@@ -145,6 +157,16 @@ public class AudioServiceImpl implements AudioService {
 
 	        // 결과를 받아오기
 	        RecognizeResponse response = speechClient.recognize(request);
+	        
+	        if (response.getResultsList().isEmpty()) {
+	            logger.error("No speech recognition results found.");
+	        } else {
+	            logger.debug("Speech recognition response: " + response);
+	        }
+
+	        for (SpeechRecognitionResult result : response.getResultsList()) {
+	            logger.debug("Transcript: " + result.getAlternativesList().get(0).getTranscript());
+	        }
 	        
 	        // 변환된 텍스트 생성
 	        StringBuilder transcript = new StringBuilder();
@@ -171,7 +193,7 @@ public class AudioServiceImpl implements AudioService {
 	@Override
 	public double getMp3Duration(ByteString audioContents) throws IOException, UnsupportedTagException, InvalidDataException {
 	    // ByteArrayInputStream을 파일로 변환
-	    File tempFile = File.createTempFile("tempAudio", ".mp3");
+	    File tempFile = File.createTempFile("tempAudio", ".wav");
 	    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
 	        fos.write(audioContents.toByteArray());
 	    }
@@ -188,36 +210,24 @@ public class AudioServiceImpl implements AudioService {
 	}
 	
 	public String transferToWav(String mp3FilePath) {
-        String outputFilePath = mp3FilePath.replace(".mp3", ".wav");  // 출력 파일 경로 (MP3 파일 경로에 .wav 확장자를 사용)
+        String outputFilePath = mp3FilePath.replace(".mp3", ".wav");
 
         try {
         	
         	String ffmpegPath = "C:/ringo_files/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe";
             // FFmpeg 명령어 구성 (입력 파일과 출력 파일 경로를 매개변수로 전달)
-            String ffmpegCommand = ffmpegPath + " -i " + mp3FilePath + " " + outputFilePath;
+        	String ffmpegCommand = ffmpegPath + " -i \"" + mp3FilePath + "\" -ac 1 -ar 16000 -f wav \"" + outputFilePath + "\"";
 
             // ProcessBuilder로 FFmpeg 명령어 실행
-            Process process = new ProcessBuilder(ffmpegCommand.split(" ")).start();
+            new ProcessBuilder(ffmpegCommand.split(" ")).start();
             
-            // FFmpeg 실행 로그를 출력할 수 있음
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);  // FFmpeg 로그 출력
-            }
+            Files.delete(Paths.get(mp3FilePath));
+            
+            String[] parts = outputFilePath.split("/");
+            String outputFileName = parts[parts.length - 1];
+            return outputFileName;
 
-            // 명령어 실행 후 종료 코드 확인
-            int exitCode = process.waitFor();
-            if (exitCode == 0) {
-                System.out.println("MP3 파일을 WAV로 성공적으로 변환했습니다.");
-                
-                return outputFilePath;
-            } else {
-                System.out.println("변환 실패.");
-                return "변환 실패";
-            }
-
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return "변환 중 에러 발생: " + e.getMessage();
         }

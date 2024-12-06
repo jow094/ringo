@@ -218,7 +218,7 @@ public class MsgController {
 	
 	@RequestMapping(value = "/audio", method = RequestMethod.POST)
 	@ResponseBody
-	public Integer msgAudioPOST(HttpSession session, MultipartFile audioFile, String mr_code, String recordingTime) throws IOException {
+	public Integer msgAudioPOST(HttpSession session, MultipartFile audioFile, String mr_code, double recordingTime) throws IOException {
 	    
 	    Integer last_msg_code = msgService.getLastMsgCode();
 		
@@ -231,15 +231,15 @@ public class MsgController {
 		writer.setUser_code((String)session.getAttribute("user_code"));
 		String msg_code = "msg_"+(last_msg_code+1);
 		
-		Integer duration = Integer.parseInt(recordingTime)*10;
+		Integer duration = (int)(recordingTime*10);
 		
 		String fileName = msg_code + "_" + duration + "_audio.mp3";
 		String filePath = uploadPath_audio + fileName;
 		audioFile.transferTo(new File(filePath));
-		
+		String wavfileName = audioService.transferToWav(filePath);
 		vo.setMsg_code(msg_code);
 		vo.setMsg_sender(writer);
-		vo.setMsg_audio_path(fileName);
+		vo.setMsg_audio_path(wavfileName);
 		vo.setMsg_place(mr_code);
 		
 	    return msgService.uploadMsg(vo);

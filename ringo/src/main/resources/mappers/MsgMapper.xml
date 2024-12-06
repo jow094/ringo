@@ -178,5 +178,5 @@
 	<insert id="insertMsgMember">
 		insert into _ringo_msg_member values(#{mr_code},#{mr_guest},now());
 	</insert>
-
+	
 </mapper>

@@ -750,9 +750,7 @@ function msg_speechToText(e){
 						대본 전환
 						<i class="material-symbols-outlined col_tgb">arrow_drop_up</i>
 					</div>
-					<div class="inner_content expanded additional_message">
-						${data.text}
-					</div>
+					<div class="inner_content expanded additional_message">${data.text}</div>
 				</div>
 			`);
 		},

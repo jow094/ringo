@@ -108,7 +108,6 @@ public class MsgDAOImpl implements MsgDAO {
 
 	@Override
 	public List<MsgVO> selectUnreaderCount(String mr_code) {
-		logger.debug("MUC for "+mr_code);
 		return sqlSession.selectList(NAMESPACE + ".selectUnreaderCount",mr_code);
 	}
 	
