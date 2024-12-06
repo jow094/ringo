@@ -231,7 +231,9 @@ public class MsgController {
 		writer.setUser_code((String)session.getAttribute("user_code"));
 		String msg_code = "msg_"+(last_msg_code+1);
 		
-		String fileName = msg_code + "_" + recordingTime + "_audio.mp3";
+		Integer duration = Integer.parseInt(recordingTime)*10;
+		
+		String fileName = msg_code + "_" + duration + "_audio.mp3";
 		String filePath = uploadPath_audio + fileName;
 		audioFile.transferTo(new File(filePath));
 		
@@ -246,9 +248,8 @@ public class MsgController {
 	@RequestMapping(value = "/trs", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String,Object> msgTRSGET(String text, String targetLang) {
-		String resultText = trService.translate(text,targetLang);
 		Map<String,Object> result = new HashMap<String,Object>();
-		result.put("text",resultText);
+		result.put("text",trService.translate(text,targetLang));
         return result;
 	}
 	
@@ -265,10 +266,10 @@ public class MsgController {
 	
 	@RequestMapping(value = "/stt", method = RequestMethod.GET)
 	@ResponseBody
-	public String msgSTTGET(String msg_code) throws IOException{
-		logger.debug("speech to text "+msg_code);
-		String result = audioService.stt(msg_code);
-		logger.debug("speech to text result "+result);
+	public Map<String,Object> msgSTTGET(String file_name) throws IOException{
+		logger.debug("speech to text "+file_name);
+		Map<String,Object> result = new HashMap<String,Object>();
+		result.put("text",audioService.stt(file_name));
 		return result;
 	}
 }

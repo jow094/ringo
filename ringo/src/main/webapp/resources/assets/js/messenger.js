@@ -52,7 +52,7 @@ function input_send_msg(msg){
 					</div>
 					<div class="message_additional_container col_shrinked">
 						<div class="message_body_menu">
-							<i class="material-symbols-outlined" onclick="translation(this)">translate</i>
+							<i class="material-symbols-outlined" onclick="msg_translation(this)">translate</i>
 							<span onclick="translation(this)">번역</span>
 							<select id="trs_target_lang" class="annotation_message">
 	    						<optgroup label="학습중인 언어">
@@ -66,15 +66,15 @@ function input_send_msg(msg){
 	    						</optgroup>
 							</select>
 						</div>
-						<div class="message_body_menu" onclick="tts(this)">
+						<div class="message_body_menu" onclick="msg_textToSpeech(this)">
 							<i class="material-symbols-outlined">headphones</i>
 							<span>음성</span>
 						</div>
-						<div class="message_body_menu">
+						<div class="message_body_menu" onclick="msg_correct(this)">
 							<i class="material-symbols-outlined">contract_edit</i>
 							<span>수정</span>
 						</div>
-						<div class="message_body_menu">
+						<div class="message_body_menu" onclick="msg_reply(this)">
 							<i class="material-symbols-outlined">reply</i>
 							<span>답장</span>
 						</div>
@@ -96,7 +96,7 @@ function input_send_msg(msg){
 							${auto_format_date(msg.msg_time)}
 						</div>
 						<div class="message_additional_container col_shrinked">
-							<div class="message_body_menu">
+							<div class="message_body_menu" onclick="msg_reply(this)">
 							<i class="material-symbols-outlined">reply</i>
 							<span>답장</span>
 							</div>
@@ -151,7 +151,7 @@ function input_send_msg(msg){
 							${auto_format_date(msg.msg_time)}
 						</div>
 						<div class="message_additional_container col_shrinked">
-							<div class="message_body_menu">
+							<div class="message_body_menu" onclick="msg_reply(this)">
 								<i class="material-symbols-outlined">reply</i>
 								<span>답장</span>
 							</div>
@@ -169,22 +169,22 @@ function input_send_msg(msg){
 					
 						<div class="msg_audio_section">
 							<audio src="/files/messenger/audio/${msg.msg_audio_path}" class="message_audio"></audio>
-							<div class="audio_bar">
-								<input type="range" id="audio_bar" value="0" min="0" max="100" step="1"/>
+							<div class="msg_audio_bar">
+								<input type="range" id="msg_audio_bar" value="0" min="0" max="100" step="1"/>
 								<div class="record_time">
-									<span class="playing_time"></span>
+									<span class="msg_playing_time"></span>
 									<span>/</span>
-									<span class="recording_time">${msg.msg_audio_path}</span>
+									<span class="msg_recording_time">${parseInt((msg.msg_audio_path.split("_")[2]),10)/10}</span>
 								</div>
 							</div>
 							<div class="audio_buttons">
-								<div id="audio_play" class="audio_button">
+								<div class="audio_button msg_audio_play">
 									<i class="fa-solid fa-play"></i>
 								</div>
-								<div id="audio_pause" class="audio_button">
+								<div class="audio_button msg_audio_pause">
 									<i class="fa-solid fa-pause"></i>
 								</div>
-								<div id="audio_stop" class="audio_button">
+								<div class="audio_button msg_audio_stop">
 									<i class="fa-solid fa-stop"></i>
 								</div>
 							</div>
@@ -198,11 +198,11 @@ function input_send_msg(msg){
 						${auto_format_date(msg.msg_time)}
 					</div>
 					<div class="message_additional_container col_shrinked">
-						<div class="message_body_menu">
+						<div class="message_body_menu" onclick="msg_speechToText(this)">
 							<i class="material-symbols-outlined">notes</i>
 							<span>대본</span>
 						</div>
-						<div class="message_body_menu">
+						<div class="message_body_menu" onclick="msg_reply(this)">
 							<i class="material-symbols-outlined">reply</i>
 							<span>답장</span>
 						</div>
@@ -233,7 +233,7 @@ function input_received_msg(msg){
 						</div>
 						<div class="message_additional_container col_shrinked">
 							<div class="message_body_menu">
-								<i class="material-symbols-outlined" onclick="translation(this)">translate</i>
+								<i class="material-symbols-outlined" onclick="msg_translation(this)">translate</i>
 								<span onclick="translation(this)">번역</span>
 								<select id="trs_target_lang" class="annotation_message">
 		    						<optgroup label="학습중인 언어">
@@ -247,15 +247,15 @@ function input_received_msg(msg){
 		    						</optgroup>
 								</select>
 							</div>
-							<div class="message_body_menu" onclick="tts(this)">
+							<div class="message_body_menu" onclick="msg_textToSpeech(this)">
 								<i class="material-symbols-outlined">headphones</i>
 								<span>음성</span>
 							</div>
-							<div class="message_body_menu">
+							<div class="message_body_menu" onclick="msg_correct(this)">
 								<i class="material-symbols-outlined">contract_edit</i>
 								<span>수정</span>
 							</div>
-							<div class="message_body_menu">
+							<div class="message_body_menu" onclick="msg_reply(this)">
 								<i class="material-symbols-outlined">reply</i>
 								<span>답장</span>
 							</div>
@@ -285,7 +285,7 @@ function input_received_msg(msg){
 								${auto_format_date(msg.msg_time)}
 							</div>
 							<div class="message_additional_container col_shrinked">
-								<div class="message_body_menu">
+								<div class="message_body_menu" onclick="msg_reply(this)">
 									<i class="material-symbols-outlined">reply</i>
 									<span>답장</span>
 								</div>
@@ -348,7 +348,7 @@ function input_received_msg(msg){
 								${auto_format_date(msg.msg_time)}
 							</div>
 							<div class="message_additional_container col_shrinked">
-								<div class="message_body_menu">
+								<div class="message_body_menu" onclick="msg_reply(this)">
 									<i class="material-symbols-outlined">reply</i>
 									<span>답장</span>
 								</div>
@@ -379,7 +379,7 @@ function input_received_msg(msg){
 									<div class="record_time">
 										<span class="playing_time"></span>
 										<span>/</span>
-										<span class="recording_time"></span>
+										<span class="recording_time">${parseInt((msg.msg_audio_path.split("_")[2]),10)/10}</span>
 									</div>
 								</div>
 								<div class="audio_buttons">
@@ -403,11 +403,11 @@ function input_received_msg(msg){
 							${auto_format_date(msg.msg_time)}
 						</div>
 						<div class="message_additional_container col_shrinked">
-						<div class="message_body_menu">
+						<div class="message_body_menu" onclick="msg_speechToText(this)">
 							<i class="material-symbols-outlined">notes</i>
 							<span>대본</span>
 						</div>
-						<div class="message_body_menu">
+						<div class="message_body_menu" onclick="msg_reply(this)">
 							<i class="material-symbols-outlined">reply</i>
 							<span>답장</span>
 						</div>
@@ -636,7 +636,7 @@ function open_personal_msg_room(user_code,formData){
     });
 }
 
-function translation(e){
+function msg_translation(e){
 	
 	const msg = $(e).closest('.msg');
 	
@@ -671,9 +671,9 @@ function translation(e){
 		}
 	});
 }
-function tts(e){
+function msg_textToSpeech(e){
 	
-const msg = $(e).closest('.msg');
+	const msg = $(e).closest('.msg');
 	
 	const text = msg.find('.message_content').text();
 	
@@ -696,36 +696,68 @@ const msg = $(e).closest('.msg');
 					<i class="material-symbols-outlined col_tgb">arrow_drop_up</i>
 				</div>
 				<div class="inner_content expanded additional_message">
-				
 		    		<div class="msg_audio_section">
-						<audio src="/files/messenger/audio/${data}" class="message_audio"></audio>
-						<div class="audio_bar">
-							<input type="range" id="audio_bar" value="0" min="0" max="100" step="1"/>
+						<audio src="/files/audio/tts/${data}" class="message_audio"></audio>
+						<div class="msg_audio_bar">
+							<input type="range" id="msg_audio_bar" value="0" min="0" max="100" step="1"/>
 							<div class="record_time">
-								<span class="playing_time"></span>
+								<span class="msg_playing_time"></span>
 								<span>/</span>
-								<span class="recording_time">${data.split('_')[3].replace('.mp3', '')}</span>
+								<span class="msg_recording_time">${parseInt((data.split("_")[2]),10)/10}</span>
 							</div>
 						</div>
 						<div class="audio_buttons">
-							<div id="audio_play" class="audio_button">
+							<div class="audio_button msg_audio_play">
 								<i class="fa-solid fa-play"></i>
 							</div>
-							<div id="audio_pause" class="audio_button">
+							<div class="audio_button msg_audio_pause">
 								<i class="fa-solid fa-pause"></i>
 							</div>
-							<div id="audio_stop" class="audio_button">
+							<div class="audio_button msg_audio_stop">
 								<i class="fa-solid fa-stop"></i>
 							</div>
 						</div>
 					</div>
-					
 				</div>
 			</div>
 			`);
 		},
 		error: function() {
 			console.log('tts failed');
+		}
+	});
+}
+
+function msg_speechToText(e){
+	
+	const msg = $(e).closest('.msg');
+	const file_name = $(e).closest('.msg').find('audio').attr('src').split('/').pop();
+	
+	$.ajax({
+		url: '/msg/stt',
+		method: 'GET',
+		data: {
+			file_name: file_name
+		},
+		dataType: 'json',
+		success: function(data) {
+			console.log('stt data:',data);
+			console.log('stt data.text:',data.text);
+			msg.find('.stt_msg').remove();
+			msg.find('.message_time').before(`
+				<div class="stt_msg inner_box inset colmg5">
+					<div class="inner_title h20" onclick="inner_box_toggle(this)">
+						대본 전환
+						<i class="material-symbols-outlined col_tgb">arrow_drop_up</i>
+					</div>
+					<div class="inner_content expanded additional_message">
+						${data.text}
+					</div>
+				</div>
+			`);
+		},
+		error: function() {
+			console.log('stt failed');
 		}
 	});
 }

@@ -7,6 +7,8 @@ let playingTime = 0;
 let playingTimer;
 let inRecording = false;
 let inPlaying = false;
+let pauseMsgCode = [];
+let playingMsgTimer = new Map;
 $(document).ready(function () {
 
   // 녹음 시작
@@ -133,7 +135,7 @@ $(document).ready(function () {
 		
 		playingTimer = setInterval(function () {
 			playingTime+=0.1;
-			if(playingTime==recordingTime){
+			if(playingTime==recordingTime || playingTime>recordingTime){
 				return;
 			}
 			$('.playing_time').text(playingTime.toFixed(1));
@@ -169,11 +171,115 @@ $(document).ready(function () {
 			success: function () {
 				alert('녹음 파일이 성공적으로 전송되었습니다!');
 				init_recorder();
+				if($('.messenger_audio').hasClass('expanded')){
+					col_toggle('.messenger_audio');
+				}
 			},
 			error: function () {
 				alert('녹음 파일 전송 중 오류가 발생했습니다.');
 			},
 		});
+	});
+	
+	$(document).on('click', '.msg_audio_play', function (e) {
+		let container = $(e.target).closest('.msg');
+		let msg_code = container.data('msg_code');
+		let msg_audio = container.find('audio')[0];
+		
+		if(!pauseMsgCode.includes(msg_code)){
+			container.find('#msg_audio_bar').val(0);
+			clearInterval(playingMsgTimer.get(msg_code));
+			msg_audio.currentTime = 0;
+			container.find('.msg_playing_time').text(0);
+			if(playingMsgTimer.get(msg_code) != null){
+				playingMsgTimer.delete(msg_code);
+			}
+		}else{
+			let index = pauseMsgCode.indexOf(msg_code);
+			if (index !== -1) {
+				pauseMsgCode.splice(index, 1);
+			}
+		}
+		
+		msg_audio.addEventListener('ended', function() {
+			clearInterval(playingMsgTimer.get(msg_code));
+			container.find('.msg_playing_time').text(container.find('.msg_recording_time').text());
+			container.find('.msg_audio_bar').css('background',`linear-gradient(to right, var(--basic) 100%, white 100%)`);
+			let index = pauseMsgCode.indexOf(msg_code);
+			if (index !== -1) {
+				pauseMsgCode.splice(index, 1);
+			}
+			playingMsgTimer.delete(msg_code);
+		});
+		
+		msg_audio.addEventListener('timeupdate', function () {
+			
+			let currentTime = msg_audio.currentTime; // 현재 오디오 재생 시간
+			let duration = parseFloat(container.find('.msg_recording_time').text());       // 오디오 총 길이
+			
+			if(currentTime==0){
+				container.find('.msg_audio_bar').css('background','white');
+				return;
+			}
+			
+			let value = (currentTime / duration) * 100;
+			console.log('current time :',currentTime);
+			console.log('duration :',duration);
+			console.log('vlaue :',value);
+			container.find('.msg_audio_bar').css('background',`linear-gradient(to right, var(--basic) ${value}%, white ${value}%)`);
+		});
+	  
+		msg_audio.play();
+		
+		let timer = setInterval(function () {
+			let time = parseFloat(container.find('.msg_playing_time').text());
+			if(time==parseFloat(container.find('.msg_recording_time').text())-0.1){
+				return;
+			}
+			time+=0.1;
+			container.find('.msg_playing_time').text(time.toFixed(1));
+		}, 100);
+			
+		playingMsgTimer.set(msg_code, timer);
+	});
+	
+	$(document).on('click', '.msg_audio_pause', function (e) {
+		let container = $(e.target).closest('.msg');
+		let msg_code = container.data('msg_code');
+		let msg_audio = container.find('audio')[0];
+		
+		pauseMsgCode.push(msg_code);
+		msg_audio.pause();
+		clearInterval(playingMsgTimer.get(msg_code));
+	});
+	
+	$(document).on('click', '.msg_audio_stop', function (e) {
+		let container = $(e.target).closest('.msg');
+		let msg_code = container.data('msg_code');
+		let msg_audio = container.find('audio')[0];
+		clearInterval(playingMsgTimer.get(msg_code));
+		container.find('.msg_playing_time').text('');
+		let index = pauseMsgCode.indexOf(msg_code);
+		if (index !== -1) {
+			pauseMsgCode.splice(index, 1);
+		}
+		playingMsgTimer.delete(msg_code);
+		msg_audio.pause();
+		msg_audio.currentTime = 0;
+	});
+	
+	$(document).on('click', '.msg_audio_bar', function (e) {
+		/*$(e.target)*/
+	    let range = $('#msg_audio_bar'); // 현재 range 요소
+	    let offsetX = e.pageX - range.offset().left; // 클릭한 위치가 range 시작점에서 얼마나 떨어져 있는지
+	    let width = range.width(); // range 요소의 너비
+	    let newValue = (offsetX / width) * 100; // 클릭한 위치에 해당하는 value 계산
+	    
+	    console.log('nv : ',newValue);
+	    
+	    range.val(newValue); // range value 업데이트
+	    $('#audio_preview')[0].currentTime = (recordingTime * newValue) / 100; // 오디오 재생 시간 업데이트
+	    playingTime = (recordingTime * newValue) / 100;
 	});
 	
 });

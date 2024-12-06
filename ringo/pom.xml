@@ -427,6 +427,11 @@
 		    <version>1.30.0</version>
 		</dependency>
 		
+		<dependency>
+		    <groupId>com.mpatric</groupId>
+		    <artifactId>mp3agic</artifactId>
+		    <version>0.9.1</version>
+		</dependency>
 		
 		<!-- 외부 라이브러리 추가 -->
 		
