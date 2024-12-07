@@ -67,24 +67,29 @@
 			</div>
 			<div class="messenger_navbar_nickname"></div>
 			<div class="messenger_navbar_menu">
-				<i class="fa-solid fa-bars"></i>
+				<i class="fa-solid fa-bars" onclick="rr_toggle('.messenger_option')"></i>
+			</div>
+		</div>
+		<div class="messenger_content">
+			<div class="messenger_option rr_shrinked">
 			</div>
 		</div>
 		
-		<div class="messenger_content">
-		</div>
+		<div class="messenger_input_roof"></div>
 		
 		<audio id="audio_preview" style="display:none"></audio>
 		
 		<div class="messenger_audio col_shrinked">
-			<div class="audio_toggle_button" onclick="col_toggle('.messenger_audio');"><i class="material-symbols-outlined">arrow_drop_down</i></div>
+			<div class="audio_toggle_button" onclick="col_toggle('.messenger_audio'); init_recorder()"><i class="material-symbols-outlined">arrow_drop_down</i></div>
 			<div class="audio_section">
 				<div class="audio_bar">
 					<input type="range" id="audio_bar" value="0" min="0" max="100" step="1"/>
 					<div class="record_time">
-						<span class="playing_time"></span>
+						<div class="playing_time">0</div>
+						<span>초</span>
 						<span>/</span>
-						<span class="recording_time"></span>
+						<div class="recording_time">0</div>
+						<span>초</span>
 					</div>
 				</div>
 				<div class="audio_buttons">
@@ -112,25 +117,23 @@
 				</div>
 			</div>
 		</div>		
+		<div class="about_comment col_shrinked">
+		</div>
 		<div class="messenger_input">
 			<textarea id="input_msg_content" onkeydown="if(event.key === 'Enter'){check_submit_msg();}"></textarea>
 			<div class="upload_files col_shrinked"></div>
 			<div class="messenger_input_tools">
-				<ul>
-					<li>
-						<i class="material-symbols-outlined" onclick="col_toggle('.messenger_audio')">mic</i>
-					</li>
-					<li>
-						<i class="material-symbols-outlined" onclick="open_itf(this);">attach_file
-							<input type="file" name="" class="none" accept="image/*" onchange="upload_file(this)" multiple>
-						</i>
-					</li>
-					<li>
-						<button type="button" onclick="check_submit_msg()">
-							<i class="fa-solid fa-paper-plane"></i>
-						</button>
-					</li>
-				</ul>
+				<div onclick="col_toggle('.messenger_audio'); init_recorder(); cancle_commentary()">
+					<i class="material-symbols-outlined na">mic</i>
+				</div>
+				<div onclick="open_itf(this);">
+					<i class="material-symbols-outlined na">attach_file
+						<input type="file" name="" class="none" accept="image/*" onchange="upload_file(this)" multiple>
+					</i>
+				</div>
+				<div onclick="check_submit_msg()">
+					<i class="fa-solid fa-paper-plane na"></i>
+				</div>
 			</div>
 		</div>
 	</div>

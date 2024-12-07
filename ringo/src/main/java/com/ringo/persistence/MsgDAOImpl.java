@@ -47,6 +47,7 @@ public class MsgDAOImpl implements MsgDAO {
 
 	@Override
 	public Integer insertMsg(MsgVO vo) {
+		logger.debug("@@@@@@vo :"+vo);
 		return sqlSession.insert(NAMESPACE + ".insertMsg",vo);
 	}
 	
@@ -83,21 +84,25 @@ public class MsgDAOImpl implements MsgDAO {
 
 	@Override
 	public List<MsgVO> selectMsg(String user_code,String mr_code) {
-		Map<String,Object> param = new HashMap<String,Object>();
-		param.put("user_code", user_code);
-		param.put("mr_code", mr_code);
-		
-		sqlSession.update(NAMESPACE + ".updateRoomUnreader",param);
+		if(user_code != null && user_code != "") {
+			Map<String,Object> param = new HashMap<String,Object>();
+			param.put("user_code", user_code);
+			param.put("mr_code", mr_code);
+			
+			sqlSession.update(NAMESPACE + ".updateRoomUnreader",param);
+		}
 		return sqlSession.selectList(NAMESPACE + ".selectMsg",mr_code);	
 	}
 	
 	@Override
 	public MsgVO selectOneMsg(String user_code,String msg_code) {
-		Map<String,Object> param = new HashMap<String,Object>();
-		param.put("user_code", user_code);
-		param.put("msg_code", msg_code);
-		
-		sqlSession.update(NAMESPACE + ".updateMsgUnreader",param);
+		if(user_code != null && user_code != "") {
+			Map<String,Object> param = new HashMap<String,Object>();
+			param.put("user_code", user_code);
+			param.put("msg_code", msg_code);
+			
+			sqlSession.update(NAMESPACE + ".updateMsgUnreader",param);
+		}
 		return sqlSession.selectOne(NAMESPACE + ".selectOneMsg",msg_code);	
 	}
 

@@ -45,6 +45,21 @@ function auto_format_date(stringDate) {
     }
 }
 
+const spinner = `<div class="spinner"></div>
+				<div class="overlay"></div>`;
+
+function spin_start(e) {
+    $(e).addClass('loading');
+    $(e).append(spinner);
+}
+
+function spin_end(e) {
+    $(e).removeClass('loading');
+    $(e).find('.spinner').remove();
+    $(e).find('.overlay').remove();
+}
+
+
 function showing(e) {
 	$(e).css('opacity','0');
 	$(e).removeClass('none');
@@ -96,6 +111,21 @@ function row_toggle(target,e) {
 			icon.attr('class','fas fa-chevron-circle-right');
 		}else if(icon.attr('class') == 'fas fa-chevron-circle-right'){
 			icon.attr('class','fas fa-chevron-circle-left');
+		}
+	}
+}
+
+function rr_toggle(target,e) {
+	
+	if($(target).hasClass('expanded')){
+		$(target).removeClass('expanded');
+		if(!$(target).hasClass('rr_shrinked')){
+			$(target).addClass('rr_shrinked');
+		}
+	}else if($(target).hasClass('rr_shrinked')){
+		$(target).removeClass('rr_shrinked');
+		if(!$(target).hasClass('expanded')){
+			$(target).addClass('expanded');
 		}
 	}
 }
@@ -1276,6 +1306,11 @@ function enter_room(data){
 	msg_posting_files = [];
 	connect_in_msg_room(data);
 	init_recorder();
+	pauseMsgCode = [];
+	playingMsgTimer = new Map;
+	if($('.messenger_option').hasClass('expanded')){
+		rr_toggle('.messenger_option');
+	}
 }
 
 function exit_room(e){
@@ -1289,6 +1324,11 @@ function exit_room(e){
 	msg_posting_files = [];
 	disconnect_in_msg_room();
 	init_recorder();
+	pauseMsgCode = [];
+	playingMsgTimer = new Map;
+	if($('.messenger_option').hasClass('expanded')){
+		rr_toggle('.messenger_option');
+	}
 }
 
 function check_profile_button(){
@@ -1846,11 +1886,11 @@ function expand_create_unity(){
 
 function inner_box_toggle(e){
 	if($(e).next('.inner_content').hasClass('expanded')){
-		$(e).find('i').text('arrow_drop_down');
+		$(e).find('i').last().text('arrow_drop_down');
 		col_toggle($(e).next('.inner_content'));
 		$(e).closest('.inner_box').css('max-height','30px');
 	}else {
-		$(e).find('i').text('arrow_drop_up');
+		$(e).find('i').last().text('arrow_drop_up');
 		col_toggle($(e).next('.inner_content'));
 		$(e).closest('.inner_box').css('max-height','1000px');
 	}

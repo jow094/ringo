@@ -86,7 +86,7 @@ $(document).ready(function () {
 		
 		$('.playing_time').text(currentTime.toFixed(1));
 		let value = (currentTime / duration) * 100;
-		$('.audio_bar').css('background',`linear-gradient(to right, var(--basic) ${value}%, white ${value}%)`);
+		$('.audio_bar').css('background',`linear-gradient(to right, var(--sub2) ${value}%, white ${value}%)`);
 		
 		console.log('currentTime is',currentTime);
 		console.log('duration is',duration);
@@ -156,7 +156,8 @@ $(document).ready(function () {
 
   // 녹음 전송
 	$('#audio_upload').on('click', function () {
-		console.log('record upload');
+		spin_start('.main_messenger_body.in_room');
+		
 		const formData = new FormData();
 		formData.append('audioFile', audioBlob);
 		formData.append('mr_code', mr_code);
@@ -169,12 +170,14 @@ $(document).ready(function () {
 			processData: false,
 			contentType: false,
 			success: function () {
+				spin_end('.main_messenger_body.in_room');
 				init_recorder();
 				if($('.messenger_audio').hasClass('expanded')){
 					col_toggle('.messenger_audio');
 				}
 			},
 			error: function () {
+				spin_end('.main_messenger_body.in_room');
 				alert('녹음 파일 전송 중 오류가 발생했습니다.');
 			},
 		});
@@ -203,7 +206,7 @@ $(document).ready(function () {
 		msg_audio.addEventListener('ended', function() {
 			clearInterval(playingMsgTimer.get(msg_code));
 			container.find('.msg_playing_time').text(container.find('.msg_recording_time').text());
-			container.find('.msg_audio_bar').css('background',`linear-gradient(to right, var(--basic) 100%, white 100%)`);
+			container.find('.msg_audio_bar').css('background',`linear-gradient(to right, var(--sub) 100%, white 100%)`);
 			let index = pauseMsgCode.indexOf(msg_code);
 			if (index !== -1) {
 				pauseMsgCode.splice(index, 1);
@@ -225,7 +228,7 @@ $(document).ready(function () {
 			console.log('current time :',currentTime);
 			console.log('duration :',duration);
 			console.log('vlaue :',value);
-			container.find('.msg_audio_bar').css('background',`linear-gradient(to right, var(--basic) ${value}%, white ${value}%)`);
+			container.find('.msg_audio_bar').css('background',`linear-gradient(to right, var(--sub) ${value}%, white ${value}%)`);
 		});
 	  
 		msg_audio.play();
@@ -246,8 +249,10 @@ $(document).ready(function () {
 		let container = $(e.target).closest('.msg');
 		let msg_code = container.data('msg_code');
 		let msg_audio = container.find('audio')[0];
+		if(pauseMsgCode.indexOf(msg_code) == -1){
+			pauseMsgCode.push(msg_code);
+		}
 		
-		pauseMsgCode.push(msg_code);
 		msg_audio.pause();
 		clearInterval(playingMsgTimer.get(msg_code));
 	});
@@ -257,7 +262,7 @@ $(document).ready(function () {
 		let msg_code = container.data('msg_code');
 		let msg_audio = container.find('audio')[0];
 		clearInterval(playingMsgTimer.get(msg_code));
-		container.find('.msg_playing_time').text('');
+		container.find('.msg_playing_time').text('0');
 		let index = pauseMsgCode.indexOf(msg_code);
 		if (index !== -1) {
 			pauseMsgCode.splice(index, 1);
@@ -299,8 +304,8 @@ function init_recorder(){
 	showing('#record_pause');
 	showing('#record_stop');
 	$('#audio_bar').val(0);
-	$('.playing_time').text('');
-	$('.recording_time').text('');
+	$('.playing_time').text(0);
+	$('.recording_time').text(0);
 	$('#audio_preview')[0].currentTime = 0;
 	$('#audio_preview')[0].duration = 0;
 	let inRecording = false;

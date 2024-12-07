@@ -94,6 +94,7 @@ public class AudioServiceImpl implements AudioService {
 	        // 오디오 설정
 	        AudioConfig audioConfig = AudioConfig.newBuilder()
 	        		.setAudioEncoding(com.google.cloud.texttospeech.v1.AudioEncoding.OGG_OPUS)
+	        		.setSpeakingRate(0.8)
 	                .build();
 
 	        // 요청 실행
@@ -101,16 +102,10 @@ public class AudioServiceImpl implements AudioService {
 
 	        // 결과를 MP3 파일로 저장
 	        ByteString audioContents = response.getAudioContent();
-	        double duration = 0.0;
-	        try {
-	        	duration = getMp3Duration(audioContents);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 	        
-	        Integer value = (int)duration*10;
+	        String duration = getMp3Duration(audioContents).toString();
 	        
-	        String fileName = msg_code + "_"+ value +"_tts.mp3";
+	        String fileName = msg_code + "_"+ duration +"_tts.mp3";
 	        String outputPath = ttsPath + fileName;
 	        try (OutputStream out = new FileOutputStream(outputPath)) {
 	            out.write(audioContents.toByteArray());
@@ -186,50 +181,108 @@ public class AudioServiceImpl implements AudioService {
 	        return detection.getLanguage();
 	    } catch (Exception e) {
 	        e.printStackTrace();
-	        return "unknown"; // 예외 발생 시 기본값 반환
+	        return "unknown";
 	    }
     }
 	
 	@Override
-	public double getMp3Duration(ByteString audioContents) throws IOException, UnsupportedTagException, InvalidDataException {
-	    // ByteArrayInputStream을 파일로 변환
-	    File tempFile = File.createTempFile("tempAudio", ".wav");
+	public Integer getMp3Duration(ByteString audioContents) throws IOException {
+	    // 임시 MP3 파일 생성
+	    File tempFile = File.createTempFile("tempAudio", ".mp3");
 	    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
 	        fos.write(audioContents.toByteArray());
 	    }
 
-	    // Mp3agic로 파일 길이 계산
-	    Mp3File mp3File = new Mp3File(tempFile.getAbsolutePath());
-	    long durationMillis = mp3File.getLengthInMilliseconds();
+	    double durationInSeconds = 0.0;
 
-	    // 임시 파일 삭제
-	    tempFile.delete();
+	    try {
+	        // FFmpeg 명령어로 파일 길이 계산
+	        String ffmpegPath = "C:/ringo_files/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe";
+	        ProcessBuilder processBuilder = new ProcessBuilder(
+	            ffmpegPath,
+	            "-i", tempFile.getAbsolutePath(),
+	            "-hide_banner"
+	        );
+	        processBuilder.redirectErrorStream(true);
+	        Process process = processBuilder.start();
 
-	    double durationInSeconds = durationMillis / 1000.0;
-	    return Math.round(durationInSeconds * 10.0) / 10.0;
+	        // FFmpeg 출력 읽기
+	        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+	            String line;
+	            while ((line = reader.readLine()) != null) {
+	                // "Duration: 00:01:23.45" 형식의 출력에서 길이 추출
+	                if (line.contains("Duration:")) {
+	                    String duration = line.split(",")[0].split(": ")[1].trim();
+	                    String[] hms = duration.split(":");
+	                    durationInSeconds = Integer.parseInt(hms[0]) * 3600 +
+	                                        Integer.parseInt(hms[1]) * 60 +
+	                                        Double.parseDouble(hms[2]);
+	                    break;
+	                }
+	            }
+	        }
+	        try {
+				process.waitFor();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+	    } finally {
+	        // 임시 파일 삭제
+	        if (!tempFile.delete()) {
+	            tempFile.deleteOnExit();
+	        }
+	    }
+
+	    // 소수점 첫째 자리까지 반올림
+	    return (int)Math.round(durationInSeconds * 10.0);
 	}
+
 	
 	public String transferToWav(String mp3FilePath) {
-        String outputFilePath = mp3FilePath.replace(".mp3", ".wav");
+	    // .mp3 확장자를 .wav로 변경
+	    String outputFilePath = mp3FilePath.replace(".mp3", ".wav");
 
-        try {
-        	
-        	String ffmpegPath = "C:/ringo_files/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe";
-            // FFmpeg 명령어 구성 (입력 파일과 출력 파일 경로를 매개변수로 전달)
-        	String ffmpegCommand = ffmpegPath + " -i \"" + mp3FilePath + "\" -ac 1 -ar 16000 -f wav \"" + outputFilePath + "\"";
+	    try {
+	        logger.debug("mp3FilePath result: " + mp3FilePath);
+	        logger.debug("outputFilePath result: " + outputFilePath);
 
-            // ProcessBuilder로 FFmpeg 명령어 실행
-            new ProcessBuilder(ffmpegCommand.split(" ")).start();
-            
-            Files.delete(Paths.get(mp3FilePath));
-            
-            String[] parts = outputFilePath.split("/");
-            String outputFileName = parts[parts.length - 1];
-            return outputFileName;
+	        // FFmpeg 실행 파일 경로
+	        String ffmpegPath = "C:/ringo_files/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe";
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "변환 중 에러 발생: " + e.getMessage();
-        }
-    }
+	        // FFmpeg 명령어 구성
+	        String ffmpegCommand = ffmpegPath + " -i \"" + mp3FilePath + "\" -ac 1 -ar 16000 -f wav \"" + outputFilePath + "\"";
+	        logger.debug("Executing FFmpeg command: " + ffmpegCommand);
+
+	        // ProcessBuilder로 FFmpeg 명령어 실행
+	        ProcessBuilder builder = new ProcessBuilder(ffmpegCommand.split(" "));
+	        builder.redirectErrorStream(true); // 오류 출력도 포함
+	        Process process = builder.start();
+
+	        // FFmpeg 명령어의 실행 로그를 출력
+	        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+	            String line;
+	            while ((line = reader.readLine()) != null) {
+	                logger.debug(line); // FFmpeg 출력 로그
+	            }
+	        }
+
+	        // FFmpeg 프로세스 완료 대기
+	        int exitCode = process.waitFor();
+	        if (exitCode != 0) {
+	            throw new RuntimeException("FFmpeg 변환 실패. Exit code: " + exitCode);
+	        }
+
+	        // 변환 완료 후 원본 MP3 파일 삭제
+	        Files.delete(Paths.get(mp3FilePath));
+	        logger.debug("Original MP3 file deleted: " + mp3FilePath);
+
+	        // 출력 파일 이름 반환
+	        return Paths.get(outputFilePath).getFileName().toString();
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return "변환 중 에러 발생: " + e.getMessage();
+	    }
+	}
+
 }

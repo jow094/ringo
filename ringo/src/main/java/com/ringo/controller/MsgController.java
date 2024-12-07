@@ -2,6 +2,8 @@ package com.ringo.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -164,23 +166,23 @@ public class MsgController {
 	
 	@RequestMapping(value = "/image", method = RequestMethod.POST)
 	@ResponseBody
-	public Integer msgImagePOST(HttpSession session, List<MultipartFile> img, String mr_code) throws IOException {
+	public Integer msgImagePOST(HttpSession session, MsgVO vo) throws IOException {
 		
 		Integer last_msg_code = msgService.getLastMsgCode();
 		
 		if(last_msg_code==null) {
 			last_msg_code = 0;
 		}
-		MsgVO vo = new MsgVO();
 		UserVO writer = new UserVO();
 		writer.setUser_code((String)session.getAttribute("user_code"));
 		String msg_code = "msg_"+(last_msg_code+1);
+		List<MultipartFile> files = vo.getMsg_file(); 
 		
 			StringBuilder msg_file_path = new StringBuilder();
 			
-			if(img != null && !img.isEmpty()) {
+			if(files != null && !files.isEmpty()) {
 				int i = 1;
-				for (MultipartFile file : img) {
+				for (MultipartFile file : files) {
 					if (!file.isEmpty()) {
 						String originalFileName = file.getOriginalFilename();
 						
@@ -210,7 +212,7 @@ public class MsgController {
 			
 			vo.setMsg_code(msg_code);
 			vo.setMsg_sender(writer);
-			vo.setMsg_place(mr_code);
+			vo.setMsg_place(vo.getMsg_place());
 			vo.setMsg_image_path(msg_file_path.toString());
 			
 			return msgService.uploadMsg(vo);
@@ -241,7 +243,6 @@ public class MsgController {
 		vo.setMsg_sender(writer);
 		vo.setMsg_audio_path(wavfileName);
 		vo.setMsg_place(mr_code);
-		
 	    return msgService.uploadMsg(vo);
 	}
 	

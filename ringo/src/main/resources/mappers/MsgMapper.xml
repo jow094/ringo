@@ -42,6 +42,9 @@
 	    <result property="msg_correction" column="msg_correction"/>
 	    <result property="msg_image_path" column="msg_image_path"/>
 	    <result property="msg_audio_path" column="msg_audio_path"/>
+	    <result property="msg_comment_target" column="msg_comment_target"/>
+		<result property="msg_origin_content" column="msg_origin_content"/>
+		<result property="msg_origin_sender_nickname" column="msg_origin_sender_nickname"/>
 
 		<association property="msg_sender" javaType="UserVO">
 			<result property="user_code" column="msg_sender"/>
@@ -149,7 +152,8 @@
 	        msg_unreader,
 	        msg_place,
 	        msg_image_path,
-	        msg_audio_path
+	        msg_audio_path,
+	        msg_comment_target
 	    )
 	    select
 	        #{msg_code},
@@ -160,7 +164,8 @@
 	         where mr_code = #{msg_place} and user_code != #{msg_sender.user_code}),
 	        #{msg_place},
 	        #{msg_image_path},
-	        #{msg_audio_path}
+	        #{msg_audio_path},
+	        #{msg_comment_target}
 	</insert>
 	
 	<update id="updateRoomUnreader">

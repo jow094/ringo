@@ -8,11 +8,15 @@
   --gray: rgb(200,200,200);
   --basic: rgb(50,50,50);
   --sub: rgb(100,100,100);
+  --sub2: rgb(150,150,150);
   --back: rgb(240,240,240);
   --navy: rgb(56, 72, 104);
 }
 div,i {
     user-select: none;
+}
+.selectable {
+    user-select: text !important;
 }
 .hidden_input{
 	display:none;
@@ -20,10 +24,10 @@ div,i {
 [onclick],.resize_handle,.col_resize_handle {
     cursor: pointer !important;
 }
-[onclick]:hover i:not(.pin),.resize_handle:hover i,.col_resize_handle:hover i {
+[onclick]:hover i:not(.pin,.na),.resize_handle:hover i,.col_resize_handle:hover i {
     color: var(--basic) !important;
 }
-[onclick]:hover span {
+[onclick]:hover span:not(.na) {
     color: var(--basic) !important;
 }
 .inner{
@@ -231,6 +235,42 @@ div,i {
     background-color: inherit;
   }
 }
+@keyframes spin {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+.spinner {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    border: 3px solid #ccc;
+    border-top: 3px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.3);
+    z-index: 5;
+}
+.loading {
+    position: relative;
+    overflow:hidden;
+}
+
 i.ringo {
 	display: inline-block; /* 인라인 요소로 유지 */
 	width: 15px;         /* 원하는 너비 */
@@ -297,9 +337,19 @@ i.link {
     margin-left: 0 !important;
     margin-right: 0 !important;
     flex-shrink : 1 !important;
-	gap : 0 important;
-	transition: all 0.3s ease-in-out !important;
+	gap : 0px important;
 	animation: fadeOut 0.3s ease-in-out forwards;
+	box-shadow: none !important;
+	opacity:0 !important;
+}
+.rr_shrinked{
+	width: 0px !important;
+	overflow: hidden !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+	box-shadow: none !important;
 }
 .col_shrinked {
 	min-height: 0px !important;
@@ -310,12 +360,14 @@ i.link {
     margin-top: 0 !important;
     margin-bottom: 0 !important;
     flex-shrink : 1 !important;
-	gap : 0 important;
-	transition: all 0.3s ease-in-out !important;
+	gap : 0px important;
 	animation: fadeOut 0.3s ease-in-out forwards;
+	box-shadow: none !important;
+	opacity:0 !important;
 }
 .col_shrinked *{
 	opacity:0 !important;
+	height: 0px !important;
 }
 .annotation_message{
 	color:rgba(0,0,0,0.5) !important;
@@ -466,9 +518,6 @@ input[type="radio"]:checked + label i,input[type="checkbox"]:checked + label i{
 }
 i {
 	color: var(--gray);
-}
-i:hover {
-	color: var(--basic);
 }
 a {
     color: inherit;
@@ -1427,7 +1476,11 @@ button:not(.custom_button){
 	flex-direction: column;
 	justify-content:flex-start;
 	overflow: hidden;
-	background-color: var(--back);
+	background-color: var(--inner);
+}
+
+.main_messenger_body.in_room{
+	background-color: var(--sub);
 }
 .messenger_navbar{
 	width:100%;
@@ -1512,7 +1565,7 @@ button:not(.custom_button){
 }
 .messenger_room .room_body .room_name{
 	height:20px;
-	width:220px;
+	width:100%;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -1528,7 +1581,8 @@ button:not(.custom_button){
 }
 .messenger_room .room_body .room_message .room_message_content{
 	height:100%;
-	width:220px;
+	max-width:calc(100% - 60px);
+	flex:1;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -1537,15 +1591,16 @@ button:not(.custom_button){
 	font-size:10px;
 }
 .messenger_room .room_body .room_message .room_message_time{
-	width:30px;
+	width:60px;
 	height:100%;
 	display:flex;
 	justify-content: flex-end;
 	align-items: center;
 	font-size:10px;	
+	padding-right:5px;
 }
 .messenger_room .room_unreadcount{
-	margin:0px 10px;
+	margin-left: 5px;
 	width:30px;
 	height:100%;
 	display:flex;
@@ -1554,20 +1609,18 @@ button:not(.custom_button){
 }
 	
 .badge{
-	width: auto;
-	padding:0px 5px;
-    height: 20px;
+	padding:0px 6px;
+	height:23px;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--basic);
-    color: white;
-    border-radius: 5px;
+    background-color: var(--sub);
+    color: var(--inner);
+    border-radius: 8px;
     line-height: 1;
-    box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
     font-size:10px;
 }
-
 
 .messenger_navbar_back{
 	height:100%;
@@ -1593,12 +1646,26 @@ button:not(.custom_button){
 	width:100%;
 	flex-grow:1;
 	overflow-y:auto;
+	overflow-x:hidden;
 	display:flex;
 	flex-direction:column;
 	align-content:center;
 	justify-content: flex-start;
 	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
 	background-color: var(--inner);
+	position:relative;
+}
+.messenger_option{
+	position: sticky;
+	left:370px;
+	top:0;
+	width:200px;
+	height:100%;
+	background-color: var(--inner);
+	box-shadow: -1px 1px 1px 1px rgba(0, 0, 0, 0.2);
+	flex-shrink: 0;
+	z-index:100;
+	margin-bottom:-538px;
 }
 .msg:last-child{
 	margin-bottom:5px;
@@ -1653,6 +1720,7 @@ button:not(.custom_button){
 	background-color: white;
 	position:relative;
 	padding:5px;
+	max-width:280px;
 }
 .message_box_send .message_body{
 	background-color: var(--back);
@@ -1669,6 +1737,7 @@ button:not(.custom_button){
 	padding:5px;
 	font-size:12px;
 	white-space: pre-wrap;
+	width:100%;
 }
 .message_time{
 	width:100%;
@@ -1727,6 +1796,27 @@ button:not(.custom_button){
 	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
 	background-color: var(--inner);
 }
+.extra_msg{
+	min-width:250px;
+	width:100%;
+	margin-bottom:5px;
+}
+.extra_msg .inner_title{
+	gap:5px;
+	padding-left:5px;
+}
+.extra_msg .inner_title *{
+	color:var(--sub);
+}
+.extra_msg .inner_title i{
+	color:var(--gray);
+	font-size:14px !important;
+}
+
+
+.message_box_received .message_body_menu{
+	background-color:white;
+}
 .message_body_menu{
 	width:100%;
 	height:25px;
@@ -1780,13 +1870,18 @@ button:not(.custom_button){
 	width:100%;
 	min-height:150px;
 	flex-shrink: 0;
-	padding:5px 10px 10px 10px;
+	padding:5px 10px 5px 10px;
 	display:flex;
 	flex-direction: column;
-	background-color: var(--back);
+	background-color: var(--sub);
+}
+.messenger_input_roof{
+	width:100%;
+	height: 5px;
+	background-color: var(--sub);
 }
 .messenger_input .upload_files{
-	margin-top:5px;
+	margin: 5px 0px 0px 0px;
 }
 #input_msg_content{
 	min-height: 100px;
@@ -1807,14 +1902,18 @@ textarea{
 	align-items:center;
 	width:100%;
 	box-shadow: none;
-	min-height:50px;
+	min-height:45px;
 	max-height:300px;
+	border:none;
+	overflow:hidden !important;
+	background-color: var(--sub);
+	gap:5px;
 }
 .audio_toggle_button{
 	width:100%;
 	left:0;
 	top:0;
-	min-height:15px;
+	height: 10px;
 }
 .audio_toggle_button:hover{
 	animation: background_flashBlack 1s infinite !important;
@@ -1826,27 +1925,22 @@ textarea{
 	display:flex;
 	width:100%;
 	height:30px;
-	min-height:30px;
 	padding:0px 10px;
 	gap:5px;
 }
 .msg_audio_section{
 	display:flex;
+	flex-direction:row !important;
 	width:250px;
-	height:30px;
 	min-height:30px;
+	max-height:30px;
+	padding:0px !important;
 	gap:5px;
-}
-.audio_bar{
-	height:100%;
-	width:calc(100% - 20px);
-	border-radius:5px;
-	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
-	position:relative;
-	background: white;
+	box-shadow: none !important;
+	background-color: inherit !important;
 }
 .audio_bar,.msg_audio_bar{
-	height:100%;
+	height:30px;
 	width:calc(100% - 20px);
 	border-radius:5px;
 	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
@@ -1871,7 +1965,7 @@ textarea{
 .record_time{
 	position:absolute;
 	height:70%;
-	width:100px;
+	width:120px;
 	font-size:11px;
 	display:flex;
 	justify-content: center;
@@ -1879,22 +1973,30 @@ textarea{
 	border-radius: 5px;
 	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
 	padding:0px 10px;
+	color:var(--sub);
 }
 .record_time span{
 	height:100%;
-	flex:0.5;
+	width:10px;
 	display:flex;
 	justify-content: center;
 	align-items: center;
 	font-size:11px;
+	color:var(--gray);
 }
-.record_time span:first-child,.record_time span:last-child{
-	flex:1.5;
+.record_time div{
+	height:100%;
+	flex:1;
+	display:flex;
+	justify-content: flex-end;
+	align-items: center;
+	font-size:11px;
+	color:var(--gray);
 }
 .audio_buttons{
 	left:0px;
 	gap:5px;
-	height:100%;
+	height:30px;
 	padding:0px 5px;
 	display:flex;
 	justify-content: flex-start;
@@ -1923,21 +2025,31 @@ textarea{
 	font-size:11px !important;
 }
 .messenger_input_tools{
-	flex-grow:0.2;
+	height:30px;
 	display:flex;
-	flex-direction: row;
-	width:100%;
-	margin-top:5px;
-}
-.messenger_input_tools ul{
-	display:flex;
-	flex-direction: row;
 	width:100%;
 	justify-content: flex-start;
-	margin:0;
-	padding:0;
-	list-style: none; 
+	align-items: center;
+	margin-top:5px;
+	gap:10px;
+}
+.messenger_input_tools div{
+	width:25px;
+	height:25px;
+	display:flex;
+	justify-content: center;
 	align-content: center;
+	border-radius: 5px;
+}
+.messenger_input_tools div:hover{
+	box-shadow: inset 2px 2px 2px rgba(0,0,0,0.1);
+	background-color: var(--sub2);
+}
+.messenger_input_tools div:hover i{
+	color: var(--sub);
+}
+.messenger_input_tools div:last-child{
+	margin-left:auto;
 }
 .messenger_input_tools li:not(:last-child) {
 	margin:0px 15px;
@@ -1945,6 +2057,117 @@ textarea{
 .messenger_input_tools li:last-child {
 	margin-left: auto;
 	margin-right: 15px;
+}
+.about_comment{
+	width:100%;
+	height: 55px;
+	min-height: 55px;
+	max-height: 55px;
+	padding:5px 10px 0px 10px;
+	display:flex;
+	background-color: var(--sub);
+}
+.commentary{
+	width:100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	height:100%;
+	padding:0px 5px 5px 5px;
+	background-color:white;
+	border-radius:5px;
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+.comment_to{
+	height: 25px;
+	display:flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap:5px;
+	width:100%;
+	padding:0px 5px;
+}
+.comment_to *{
+	display:flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+}
+.comment_to i:last-child{
+	margin-left:auto;
+}
+.comment_to span{
+	font-size: 11px;
+	color:var(--sub);
+}
+.comment_origin{
+	height: 20px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	display: inline-block;
+	width:100%;
+	max-width:100%;
+	line-height:20px;
+	background-color: var(--inner);
+	border-radius:5px;
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
+	font-size:10px;
+	color:var(--sub);
+	padding-left:10px;
+}
+.message_comment_section{
+	width:100%;
+	display:flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 30px;
+	padding:0px 5px;
+	gap:5px;
+	min-width:200px;
+	max-width:100%;
+}
+.message_comment_section div:first-child{
+	width:60px;
+	height: 100%;
+	gap:5px;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+	align-content: center;
+	line-height: 30px;
+	color: var(--sub);
+	font-size:11px;
+}	
+.message_comment_section div:nth-child(2){
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	display: inline-block;
+	flex:1;
+	height: 100%;
+	max-width:100px;
+	line-height: 30px;
+	color: var(--sub);
+	font-size:11px;
+}
+.to_origin{
+	width:45px;
+	height: 20px;
+	color: var(--sub);
+	border-radius:5px;
+	box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+	font-size:10px;
+	background-color: var(--inner);
+}
+.message_comment_section:hover .to_origin{
+	color:var(--basic);
+	box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+}
+.deg180 {
+    display: inline-block; /* 회전하려면 display 속성을 inline-block이나 block으로 설정해야 함 */
+    transform: rotate(180deg); /* 45도 회전 */
 }
 
 /* messneger end */
@@ -2615,6 +2838,13 @@ textarea{
 	min-width:300px;
 	overflow-x:auto;
 }
+.unity_member_profile{
+	height:110px;
+}
+.unity_recent_post{
+	flex:1;
+	max-height: calc(100% - 110px);
+}
 .in_unity_home_right_container{
 	display:flex;
 	flex-direction: row;
@@ -3203,7 +3433,6 @@ textarea.scroll {
 	overflow-x:auto;
 	gap:10px;
 }
-
 .upload_file{
 	height: 100%;
 	width:80px;

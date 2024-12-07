@@ -24,9 +24,7 @@ function get_msg_room_list(){
 			    				<div class="room_message_time">${auto_format_date(room.mr_last_message.msg_time)}</div>
 		    				</div>
 		    			</div>
-		    			<div class="room_unreadcount">
-		    				${room.mr_alarm_count != 0 ? '<div class="badge">' + room.mr_alarm_count + '</div>' : ""}
-	    				</div>
+	    				${room.mr_alarm_count != 0 ? '<div class="room_unreadcount"><div class="badge">' + room.mr_alarm_count + '</div></div>' : ""}
     				</div>
         		`);
         	}
@@ -37,13 +35,18 @@ function get_msg_room_list(){
 	});
 }
 
-function input_send_msg(msg){
-	if(msg.msg_content != null){
-		$('.messenger_content').append(`
-			<div class="msg message_box_send" data-msg_code = ${msg.msg_code}>
+function input_msg(msg,type){
+	
+	const body = $('.messenger_content');
+	
+	var box;
+	if(type == 'send'){
+		box = 
+			`<div class="msg message_box_send" data-msg_code = ${msg.msg_code}>
 				<span class="message_unread_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
 				<div class="message_body">
-					<div class="message_content">${msg.msg_content}</div>
+					<div class="message_content selectable">
+					</div>
 					<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
 						<div class="message_body_button">
 							<i class="material-symbols-outlined">arrow_drop_down</i>
@@ -51,99 +54,25 @@ function input_send_msg(msg){
 						${auto_format_date(msg.msg_time)}
 					</div>
 					<div class="message_additional_container col_shrinked">
-						<div class="message_body_menu">
-							<i class="material-symbols-outlined" onclick="msg_translation(this)">translate</i>
-							<span onclick="translation(this)">번역</span>
-							<select id="trs_target_lang" class="annotation_message">
-	    						<optgroup label="학습중인 언어">
-	    							<option value="en" selected>영어</option>
-	    						</optgroup>
-	    						<optgroup label="사용자 언어">
-	    							<option value="ko">한국어</option>
-	    						</optgroup>
-	    						<optgroup label="기타 언어">
-	    							<option value="fr">프랑스어</option>
-	    						</optgroup>
-							</select>
-						</div>
-						<div class="message_body_menu" onclick="msg_textToSpeech(this)">
-							<i class="material-symbols-outlined">headphones</i>
-							<span>음성</span>
-						</div>
-						<div class="message_body_menu" onclick="msg_correct(this)">
-							<i class="material-symbols-outlined">contract_edit</i>
-							<span>수정</span>
-						</div>
-						<div class="message_body_menu" onclick="msg_reply(this)">
+						<div class="message_body_menu" onclick="msg_comment(this)">
 							<i class="material-symbols-outlined">reply</i>
 							<span>답장</span>
 						</div>
 					</div>
 				</div>
-			</div>
-		`);
-	}else if(msg.msg_image_path != null){
-		if(msg.msg_image_path.includes(',')){
-			const message = `
-				<div class="msg message_box_send" data-msg_code = ${msg.msg_code}>
-					<span class="message_unread_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
-					<div class="message_body">
-						<div class="message_content"></div>
-						<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
-							<div class="message_body_button">
-							<i class="material-symbols-outlined">arrow_drop_down</i>
-							</div>
-							${auto_format_date(msg.msg_time)}
-						</div>
-						<div class="message_additional_container col_shrinked">
-							<div class="message_body_menu" onclick="msg_reply(this)">
-							<i class="material-symbols-outlined">reply</i>
-							<span>답장</span>
-							</div>
-						</div>
+			</div>`;
+	}else if(type == 'received'){
+		box =
+			`<div class="msg message_box_received" data-msg_code = ${msg.msg_code}>
+				<div class="message_sender_thumbnail" onclick="visit('${msg.msg_sender.user_code}',this)">
+					<img class="small_img" src="/files/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
+				</div>
+				<div class="message_info">	
+					<div class="message_sender_nickname" onclick="visit('${msg.msg_sender.user_code}',this)">
+						${msg.msg_sender.user_nickname}
 					</div>
-				</div>`;
-			const $message = $(message);
-			const files = msg.msg_image_path.split(',');
-			var img_container = `
-				<div class="image_container">
-					<div class="image_main">
-					</div>
-				</div>`;
-			var $img = $(img_container);
-			for (const file of files) {
-				if($img.find('.image_main').find('img').length==0){
-					$img.find('.image_main').append(`
-						<img src="/files/messenger/img/${file}"/>
-					`);
-				}else if($img.find('.image_queue').length==0){
-					$img.append(`
-						<div class="image_queue">
-							<div class="image_queue_belt">
-								<div class="image_waiting">
-								<img src="/files/messenger/img/${file}"/>
-								</div>
-							</div>
-						</div>
-					`);
-				}else{
-					$img.find('.image_queue_belt').append(`
-						<div class="image_waiting">
-							<img src="/files/messenger/img/${file}"/>
-						</div>
-					`);
-				}
-			}
-			$message.find('.message_content').append($img);
-			$('.messenger_content').append($message);
-		}else{
-			$('.messenger_content').append(`
-				<div class="msg message_box_send" data-msg_code = ${msg.msg_code}>
-					<span class="message_unread_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
 					<div class="message_body">
-						<div class="message_content">
-							<img src="/files/messenger/img/${msg.msg_image_path}"/>
-						</div>
+						<div class="message_content selectable"></div>
 						<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
 							<div class="message_body_button">
 								<i class="material-symbols-outlined">arrow_drop_down</i>
@@ -151,150 +80,78 @@ function input_send_msg(msg){
 							${auto_format_date(msg.msg_time)}
 						</div>
 						<div class="message_additional_container col_shrinked">
-							<div class="message_body_menu" onclick="msg_reply(this)">
+							<div class="message_body_menu" onclick="msg_comment(this)">
 								<i class="material-symbols-outlined">reply</i>
 								<span>답장</span>
 							</div>
 						</div>
 					</div>
 				</div>
-			`);
-		}
-	}else if(msg.msg_audio_path != null){
-		$('.messenger_content').append(`
-			<div class="msg message_box_send" data-msg_code = ${msg.msg_code}>
-				<span class="message_unread_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
-				<div class="message_body">
-					<div class="message_content">
-					
-						<div class="msg_audio_section">
-							<audio src="/files/messenger/audio/${msg.msg_audio_path}" class="message_audio"></audio>
-							<div class="msg_audio_bar">
-								<input type="range" id="msg_audio_bar" value="0" min="0" max="100" step="1"/>
-								<div class="record_time">
-									<span class="msg_playing_time"></span>
-									<span>/</span>
-									<span class="msg_recording_time">${parseInt((msg.msg_audio_path.split("_")[2]),10)/10}</span>
-								</div>
-							</div>
-							<div class="audio_buttons">
-								<div class="audio_button msg_audio_play">
-									<i class="fa-solid fa-play"></i>
-								</div>
-								<div class="audio_button msg_audio_pause">
-									<i class="fa-solid fa-pause"></i>
-								</div>
-								<div class="audio_button msg_audio_stop">
-									<i class="fa-solid fa-stop"></i>
-								</div>
-							</div>
-						</div>
-						
-					</div>
-					<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
-						<div class="message_body_button">
-							<i class="material-symbols-outlined">arrow_drop_down</i>
-						</div>
-						${auto_format_date(msg.msg_time)}
-					</div>
-					<div class="message_additional_container col_shrinked">
-						<div class="message_body_menu" onclick="msg_speechToText(this)">
-							<i class="material-symbols-outlined">notes</i>
-							<span>대본</span>
-						</div>
-						<div class="message_body_menu" onclick="msg_reply(this)">
-							<i class="material-symbols-outlined">reply</i>
-							<span>답장</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		`);
+				<span class="message_unreader_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
+			</div>`;
 	}
-}
-function input_received_msg(msg){
+		
+	const $box = $(box);
+	
+	const comment_section = `
+		<div class="message_comment_section" onclick="scrollToMsg('${msg.msg_comment_target}')">
+			<div><i class="material-symbols-outlined deg180 na">reply</i>${msg.msg_origin_sender_nickname} :</div>
+			<div>${msg.msg_origin_content}</div>
+			<div class="to_origin">원문 보기</div>
+		</div>`;
+	const $comment_section = $(comment_section);
+	
+	const trs = `
+		<div class="message_body_menu">
+			<i class="material-symbols-outlined" onclick="msg_translation(this)">translate</i>
+			<span onclick="msg_translation(this)">번역</span>
+			<select id="trs_target_lang" class="annotation_message">
+				<optgroup label="학습중인 언어">
+					<option value="en" selected>영어</option>
+				</optgroup>
+				<optgroup label="사용자 언어">
+					<option value="ko">한국어</option>
+				</optgroup>
+				<optgroup label="기타 언어">
+					<option value="fr">프랑스어</option>
+				</optgroup>
+			</select>
+		</div>`;
+	const $trs = $(trs);
+	
+	const tts = `
+		<div class="message_body_menu" onclick="msg_textToSpeech(this)">
+			<i class="material-symbols-outlined">headphones</i>
+			<span>음성</span>
+		</div>`;
+	const $tts = $(tts);
+	
+	const stt = `
+		<div class="message_body_menu" onclick="msg_speechToText(this)">
+			<i class="material-symbols-outlined">notes</i>
+			<span>대본</span>
+		</div>`;
+	const $stt = $(stt);
+	
+	const crt = `
+		<div class="message_body_menu" onclick="msg_correct(this)">
+			<i class="material-symbols-outlined">edit_note</i>
+			<span>수정</span>
+		</div>`;
+	const $crt = $(crt);
+	
+	if(msg.msg_comment_target != null){
+		$box.find('.message_body').prepend($comment_section);
+	}
+	
 	if(msg.msg_content != null){
-		$('.messenger_content').append(`
-			<div class="msg message_box_received" data-msg_code = ${msg.msg_code}>
-				<div class="message_sender_thumbnail" onclick="visit('${msg.msg_sender.user_code}',this)">
-					<img class="small_img" src="/files/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
-				</div>
-				<div class="message_info">	
-					<div class="message_sender_nickname" onclick="visit('${msg.msg_sender.user_code}',this)">
-						${msg.msg_sender.user_nickname}
-					</div>
-					<div class="message_body">
-						<div class="message_content">${msg.msg_content}</div>
-						<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
-							<div class="message_body_button">
-								<i class="material-symbols-outlined">arrow_drop_down</i>
-							</div>
-							${auto_format_date(msg.msg_time)}
-						</div>
-						<div class="message_additional_container col_shrinked">
-							<div class="message_body_menu">
-								<i class="material-symbols-outlined" onclick="msg_translation(this)">translate</i>
-								<span onclick="translation(this)">번역</span>
-								<select id="trs_target_lang" class="annotation_message">
-		    						<optgroup label="학습중인 언어">
-		    							<option value="en" selected>영어</option>
-		    						</optgroup>
-		    						<optgroup label="사용자 언어">
-		    							<option value="ko">한국어</option>
-		    						</optgroup>
-		    						<optgroup label="기타 언어">
-		    							<option value="fr">프랑스어</option>
-		    						</optgroup>
-								</select>
-							</div>
-							<div class="message_body_menu" onclick="msg_textToSpeech(this)">
-								<i class="material-symbols-outlined">headphones</i>
-								<span>음성</span>
-							</div>
-							<div class="message_body_menu" onclick="msg_correct(this)">
-								<i class="material-symbols-outlined">contract_edit</i>
-								<span>수정</span>
-							</div>
-							<div class="message_body_menu" onclick="msg_reply(this)">
-								<i class="material-symbols-outlined">reply</i>
-								<span>답장</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<span class="message_unreader_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
-			</div>
-		`);
+		$box.find('.message_content').append(msg.msg_content);
+		$box.find('.message_additional_container').prepend($crt);
+		$box.find('.message_additional_container').prepend($tts);
+		$box.find('.message_additional_container').prepend($trs);
+		body.append($box);
 	}else if(msg.msg_image_path != null){
 		if(msg.msg_image_path.includes(',')){
-			const message = `
-				<div class="msg message_box_received" data-msg_code = ${msg.msg_code}>
-					<div class="message_sender_thumbnail" onclick="visit('${msg.msg_sender.user_code}',this)">
-						<img class="small_img" src="/files/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
-					</div>
-					<div class="message_info">	
-						<div class="message_sender_nickname" onclick="visit('${msg.msg_sender.user_code}',this)">
-							${msg.msg_sender.user_nickname}
-						</div>
-						<div class="message_body">
-							<div class="message_content"></div>
-							<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
-								<div class="message_body_button">
-									<i class="material-symbols-outlined">arrow_drop_down</i>
-								</div>
-								${auto_format_date(msg.msg_time)}
-							</div>
-							<div class="message_additional_container col_shrinked">
-								<div class="message_body_menu" onclick="msg_reply(this)">
-									<i class="material-symbols-outlined">reply</i>
-									<span>답장</span>
-								</div>
-							</div>
-						</div>
-					</div>
-					<span class="message_unreader_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
-				</div>`;
-			const $message = $(message);
 			const files = msg.msg_image_path.split(',');
 			var img_container = `
 				<div class="image_container">
@@ -325,98 +182,42 @@ function input_received_msg(msg){
 					`);
 				}
 			}
-			$message.find('.message_content').append($img);
-			$('.messenger_content').append($message);
+			$box.find('.message_content').append($img);
+			body.append($box);
 		}else{
-			$('.messenger_content').append(`
-				<div class="msg message_box_received" data-msg_code = ${msg.msg_code}>
-					<div class="message_sender_thumbnail" onclick="visit('${msg.msg_sender.user_code}',this)">
-						<img class="small_img" src="/files/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
-					</div>
-					<div class="message_info">	
-						<div class="message_sender_nickname" onclick="visit('${msg.msg_sender.user_code}',this)">
-							${msg.msg_sender.user_nickname}
-						</div>
-						<div class="message_body">
-							<div class="message_content">
-								<img src="/files/messenger/img/${msg.msg_image_path}"/>
-							</div>
-							<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
-								<div class="message_body_button">
-									<i class="material-symbols-outlined">arrow_drop_down</i>
-								</div>
-								${auto_format_date(msg.msg_time)}
-							</div>
-							<div class="message_additional_container col_shrinked">
-								<div class="message_body_menu" onclick="msg_reply(this)">
-									<i class="material-symbols-outlined">reply</i>
-									<span>답장</span>
-								</div>
-							</div>
-						</div>
-					</div>
-					<span class="message_unreader_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
-				</div>
-			`);
+			$box.find('.message_content').append(`<img src="/files/messenger/img/${msg.msg_image_path}"/>`);
+			body.append($box);
 		}
 	}else if(msg.msg_audio_path != null){
-		$('.messenger_content').append(`
-			<div class="msg message_box_received" data-msg_code = ${msg.msg_code}>
-				<div class="message_sender_thumbnail" onclick="visit('${msg.msg_sender.user_code}',this)">
-					<img class="small_img" src="/files/user/profiles/${msg.msg_sender.user_thumbnail_path}"/>
-				</div>
-				<div class="message_info">	
-					<div class="message_sender_nickname" onclick="visit('${msg.msg_sender.user_code}',this)">
-						${msg.msg_sender.user_nickname}
-					</div>
-					<div class="message_body">
-						<div class="message_content">
-						
-							<div class="msg_audio_section">
-								<audio src="/files/messenger/audio/${msg.msg_audio_path}" class="message_audio"></audio>
-								<div class="audio_bar">
-									<input type="range" id="audio_bar" value="0" min="0" max="100" step="1"/>
-									<div class="record_time">
-										<span class="playing_time"></span>
-										<span>/</span>
-										<span class="recording_time">${parseInt((msg.msg_audio_path.split("_")[2]),10)/10}</span>
-									</div>
-								</div>
-								<div class="audio_buttons">
-									<div id="audio_play" class="audio_button">
-										<i class="fa-solid fa-play"></i>
-									</div>
-									<div id="audio_pause" class="audio_button">
-										<i class="fa-solid fa-pause"></i>
-									</div>
-									<div id="audio_stop" class="audio_button">
-										<i class="fa-solid fa-stop"></i>
-									</div>
-								</div>
-							</div>
-							
-						</div>
-						<div class="message_time" onclick="col_toggle($(this).next('.message_additional_container'),$(this).find('i'))">
-							<div class="message_body_button">
-								<i class="material-symbols-outlined">arrow_drop_down</i>
-							</div>
-							${auto_format_date(msg.msg_time)}
-						</div>
-						<div class="message_additional_container col_shrinked">
-						<div class="message_body_menu" onclick="msg_speechToText(this)">
-							<i class="material-symbols-outlined">notes</i>
-							<span>대본</span>
-						</div>
-						<div class="message_body_menu" onclick="msg_reply(this)">
-							<i class="material-symbols-outlined">reply</i>
-							<span>답장</span>
-						</div>
-					</div>
+		const audio = `
+			<div class="msg_audio_section">
+				<audio src="/files/messenger/audio/${msg.msg_audio_path}" class="message_audio"></audio>
+				<div class="msg_audio_bar">
+					<input type="range" id="msg_audio_bar" value="0" min="0" max="100" step="1"/>
+					<div class="record_time">
+						<div class="msg_playing_time">0</div>
+						<span>초</span>
+						<span>/</span>
+						<div class="msg_recording_time">${parseInt((msg.msg_audio_path.split("_")[2]),10)/10}</div>
+						<span>초</span>
 					</div>
 				</div>
-				<span class="message_unreader_count">${msg.msg_unreader_count == 0 ? "" : msg.msg_unreader_count}</span>
-			</div>
-		`);
+				<div class="audio_buttons">
+					<div class="audio_button msg_audio_play">
+						<i class="fa-solid fa-play"></i>
+					</div>
+					<div class="audio_button msg_audio_pause">
+						<i class="fa-solid fa-pause"></i>
+					</div>
+					<div class="audio_button msg_audio_stop">
+						<i class="fa-solid fa-stop"></i>
+					</div>
+				</div>
+			</div>`;
+		const $audio = $(audio);
+		$box.find('.message_content').append($audio);
+		$box.find('.message_additional_container').prepend($stt);
+		body.append($box);	
 	}
 }
 
@@ -435,13 +236,13 @@ function get_msg(mr_code){
         	console.log('inRoom:',data);
         	console.log('cu :',current_user);
         	$('.messenger_navbar_nickname').text(data.room.mr_name);
-        	$('.messenger_content').empty();
+        	$('.messenger_content').find('.msg').remove();
         	
         	for (const msg of data.msg) {
 				if(msg.msg_sender.user_code == current_user){
-					input_send_msg(msg);
+					input_msg(msg,'send');
 				}else{
-					input_received_msg(msg);
+					input_msg(msg,'received');
 				}
         	}
     		$('.messenger_content').scrollTop($('.messenger_content')[0].scrollHeight);
@@ -464,9 +265,9 @@ function get_new_msg(mr_code,msg_code){
         	var isAtBottom = $('.messenger_content').scrollTop() + $('.messenger_content').innerHeight() >= $('.messenger_content')[0].scrollHeight - 5;
         	
 			if(msg.msg_sender.user_code == current_user){
-				input_send_msg(msg);
+				input_msg(msg,'send');
 			}else{
-				input_received_msg(msg);
+				input_msg(msg,'received');
 			}
         	
         	if(isAtBottom){
@@ -506,6 +307,12 @@ function submit_msg(){
 	}else{
 		formData.append('msg_place',mr_code);
 		
+		
+	const comment_target = $('.main_messenger_body.in_room').find('#msg_comment_target');
+	if(comment_target.length>0 && comment_target.data('msg_comment_target') != "" && comment_target.data('msg_comment_target') != null){
+		formData.append('msg_comment_target',comment_target.data('msg_comment_target'));
+	}
+		
 		$.ajax({
 			type: 'POST',
 			url: '/msg/send/',
@@ -516,8 +323,8 @@ function submit_msg(){
 			success: function (response) {
 				if(response==1){
 					console.log('일반 메세지 전송성공');
-					msg_posting_files = [];
 					$('#input_msg_content').val('');
+					cancle_commentary();
 				}
 				$('.messenger_content').scrollTop($('.messenger_content')[0].scrollHeight);
 			},
@@ -528,8 +335,6 @@ function submit_msg(){
 }
 
 function submit_img_msg(){
-	console.log("mr_code:",mr_code);
-	
 	var formData = new FormData();
 	
 	if(msg_posting_files.length == 0){
@@ -539,11 +344,16 @@ function submit_img_msg(){
 	
 	if(msg_posting_files.length > 0 && msg_posting_files[0] !== ''){
 		msg_posting_files.forEach(function(file) {
-			formData.append('img', file);
+			formData.append('msg_file', file);
 		});
 	}
 	
-	formData.append('mr_code',mr_code);
+	formData.append('msg_place',mr_code);
+	
+	const comment_target = $('.main_messenger_body.in_room').find('#msg_comment_target');
+	if(comment_target.length>0 && comment_target.data('msg_comment_target') != "" && comment_target.data('msg_comment_target') != null){
+		formData.append('msg_comment_target',comment_target.data('msg_comment_target'));
+	}
 	
 	$.ajax({
 		type: 'POST',
@@ -560,6 +370,7 @@ function submit_img_msg(){
 				if($('.messenger_input').find('.upload_files').hasClass('expanded')){
 					col_toggle($('.messenger_input').find('.upload_files'));
 				}
+				cancle_commentary();
 			}
 			$('.messenger_content').scrollTop($('.messenger_content')[0].scrollHeight);
 		},
@@ -639,8 +450,9 @@ function open_personal_msg_room(user_code,formData){
 function msg_translation(e){
 	
 	const msg = $(e).closest('.msg');
+	spin_start(msg.find('.message_body'));
 	
-	const text = msg.find('.message_content').text();
+	const text = msg.find('.message_content').text().trim();
 	const targetLang = msg.find('#trs_target_lang option:selected').val();
 	const targetLangName = msg.find('#trs_target_lang option:selected').text();
 	
@@ -653,20 +465,21 @@ function msg_translation(e){
 		},
 		dataType: 'json',
 		success: function(data) {
-		    console.log(data.text);
-		    msg.find('.translated_msg').remove();
+			spin_end(msg.find('.message_body'));
+			msg.find('.trs_msg').remove();
 		    
 		    msg.find('.message_time').before(`
-		    <div class="translated_msg inner_box inset colmg5 mw">
+		    <div class="extra_msg trs_msg inner_box inset">
 		    	<div class="inner_title h20" onclick="inner_box_toggle(this)">
-					${targetLangName} 번역결과
+					<i class="material-symbols-outlined na">translate</i> ${targetLangName} 번역결과
 					<i class="material-symbols-outlined col_tgb">arrow_drop_up</i>
 				</div>
-				<div class="inner_content expanded additional_message">${data.text}</div>
+				<div class="inner_content expanded additional_message selectable">${data.text}</div>
 			</div>
 			`);
 		},
 		error: function() {
+			spin_end(msg.find('.message_body'));
 			console.log('trs failed');
 		}
 	});
@@ -674,7 +487,7 @@ function msg_translation(e){
 function msg_textToSpeech(e){
 	
 	const msg = $(e).closest('.msg');
-	
+	spin_start(msg.find('.message_body'));
 	const text = msg.find('.message_content').text();
 	
 	$.ajax({
@@ -686,36 +499,37 @@ function msg_textToSpeech(e){
 		},
 		dataType: 'text',
 		success: function(data) {
-		    console.log(data);
+			spin_end(msg.find('.message_body'));
 		    msg.find('.tts_msg').remove();
 		    
 		    msg.find('.message_time').before(`
-		    <div class="tts_msg inner_box inset colmg5">
+		    <div class="extra_msg tts_msg inner_box inset">
 		    	<div class="inner_title h20" onclick="inner_box_toggle(this)">
+		    		<i class="material-symbols-outlined na">headphones</i>
 		    		음성 전환
 					<i class="material-symbols-outlined col_tgb">arrow_drop_up</i>
 				</div>
-				<div class="inner_content expanded additional_message">
-		    		<div class="msg_audio_section">
-						<audio src="/files/audio/tts/${data}" class="message_audio"></audio>
-						<div class="msg_audio_bar">
-							<input type="range" id="msg_audio_bar" value="0" min="0" max="100" step="1"/>
-							<div class="record_time">
-								<span class="msg_playing_time"></span>
-								<span>/</span>
-								<span class="msg_recording_time">${parseInt((data.split("_")[2]),10)/10}</span>
-							</div>
+				<div class="inner_content expanded msg_audio_section">
+					<audio src="/files/audio/tts/${data}" class="message_audio"></audio>
+					<div class="msg_audio_bar">
+						<input type="range" id="msg_audio_bar" value="0" min="0" max="100" step="1"/>
+						<div class="record_time">
+							<div class="msg_playing_time">0</div>
+							<span>초</span>
+							<span>/</span>
+							<div class="msg_recording_time">${parseInt((data.split("_")[2]),10)/10}</div>
+						<span>초</span>
+					</div>
+					</div>
+					<div class="audio_buttons">
+						<div class="audio_button msg_audio_play">
+							<i class="fa-solid fa-play"></i>
 						</div>
-						<div class="audio_buttons">
-							<div class="audio_button msg_audio_play">
-								<i class="fa-solid fa-play"></i>
-							</div>
-							<div class="audio_button msg_audio_pause">
-								<i class="fa-solid fa-pause"></i>
-							</div>
-							<div class="audio_button msg_audio_stop">
-								<i class="fa-solid fa-stop"></i>
-							</div>
+						<div class="audio_button msg_audio_pause">
+							<i class="fa-solid fa-pause"></i>
+						</div>
+						<div class="audio_button msg_audio_stop">
+							<i class="fa-solid fa-stop"></i>
 						</div>
 					</div>
 				</div>
@@ -723,6 +537,7 @@ function msg_textToSpeech(e){
 			`);
 		},
 		error: function() {
+			spin_end(msg.find('.message_body'));
 			console.log('tts failed');
 		}
 	});
@@ -731,6 +546,7 @@ function msg_textToSpeech(e){
 function msg_speechToText(e){
 	
 	const msg = $(e).closest('.msg');
+	spin_start(msg.find('.message_body'));
 	const file_name = $(e).closest('.msg').find('audio').attr('src').split('/').pop();
 	
 	$.ajax({
@@ -741,21 +557,97 @@ function msg_speechToText(e){
 		},
 		dataType: 'json',
 		success: function(data) {
-			console.log('stt data:',data);
-			console.log('stt data.text:',data.text);
+			spin_end(msg.find('.message_body'));
 			msg.find('.stt_msg').remove();
 			msg.find('.message_time').before(`
-				<div class="stt_msg inner_box inset colmg5">
+				<div class="extra_msg stt_msg inner_box inset">
 					<div class="inner_title h20" onclick="inner_box_toggle(this)">
+						<i class="material-symbols-outlined na">note</i>
 						대본 전환
 						<i class="material-symbols-outlined col_tgb">arrow_drop_up</i>
 					</div>
-					<div class="inner_content expanded additional_message">${data.text}</div>
+					<div class="inner_content expanded additional_message selectable">${data.text}</div>
 				</div>
 			`);
 		},
 		error: function() {
+			spin_end(msg.find('.message_body'));
 			console.log('stt failed');
 		}
 	});
+}
+
+function msg_comment(e){
+	
+	if($('.messenger_audio').hasClass('expanded')){
+		col_toggle('.messenger_audio');
+	}
+	
+	const msg = $(e).closest('.msg');
+	const msg_sender_nickname = msg.find('.message_sender_nickname').text();
+	const msg_code = msg.data('msg_code');
+	const container = $('.about_comment');
+	var msg_content = msg.find('.message_content');
+	
+	if(msg_content.find('img').length==0 && msg_content.find('audio').length==0){
+		msg_content = msg_content.text();
+	}else{
+		msg_content = "[첨부 파일]";
+	}
+	
+	if(!container.hasClass('expanded')){
+		col_toggle(container);
+	}
+	container.empty();
+	container.append(`
+		<div id="msg_comment_target" data-msg_comment_target=${msg_code} class="commentary" onclick="cancle_commentary()">
+			<div class="comment_to">
+				<i class="material-symbols-outlined deg180 na">reply</i>
+				${msg_sender_nickname != "" ? '<span>' + msg_sender_nickname + '님에게 답장 중</span>' : '<span>나의 메세지에 답장 중</span>'}
+				<i class="material-symbols-outlined">close</i>
+			</div>
+			<div class="comment_origin">
+				${msg_content}
+			</div>
+		</div>
+	`);
+}
+
+function cancle_commentary(){
+	
+	$('.about_comment').empty();
+	if($('.about_comment').hasClass('expanded')){
+		col_toggle($('.about_comment'));
+	}
+}
+
+function scrollToMsg(e) {
+	const msg_code = e;
+    const msg = $('.messenger_content').find(`[data-msg_code="${e}"]`);
+    
+    if (msg.length) {
+        const currentScroll = $('.messenger_content').scrollTop();
+
+        const msgTop = msg.position().top;
+        
+        const msgHeight = msg.outerHeight();
+
+        const offset = msgTop - msg.outerHeight();
+
+        $('.messenger_content').animate({
+            scrollTop: currentScroll + offset
+        }, 500);
+        
+        setTimeout(function() {
+        	msg.addClass('shake');
+        	
+        	setTimeout(function() {
+        		msg.removeClass('shake');
+        	}, 1000);
+        	
+	    }, 500);
+        
+    }else{
+    	console.log('get more msg');
+    }
 }

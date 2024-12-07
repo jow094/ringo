@@ -1663,6 +1663,7 @@ function get_unity_board_post(post_place,post_code){
 }
 
 function add_unity_post(unity_post_code,unity_add_direction,is_finished){
+	spin_start('#unity_posts');
 	
 	$.ajax({
         type: "GET",
@@ -1670,6 +1671,7 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
         data: {unity_post_code:unity_post_code,unity_add_direction:unity_add_direction},
         dataType: "json",
         success: function(data) {
+        	spin_end('#unity_posts');
         	
         	if(data.length == 0 && is_finished){
         		$('#unity_posts').addClass('shake');
@@ -1830,6 +1832,7 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
         	view_check();
         },
         error: function(xhr, status, error) {
+        	spin_end('#unity_posts');
         }
     });
 }

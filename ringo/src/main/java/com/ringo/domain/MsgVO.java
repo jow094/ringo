@@ -21,6 +21,9 @@ public class MsgVO {
 	private String msg_audio_path;
 	private String msg_transfer_user_code;
 	private String msg_correction;
-	
+
 	private String msg_target;
+	private String msg_comment_target;
+	private String msg_origin_content;
+	private String msg_origin_sender_nickname;
 }
