@@ -8,7 +8,6 @@ let playingTimer;
 let inRecording = false;
 let inPlaying = false;
 let pauseMsgCode = [];
-let playingMsgTimer = new Map;
 $(document).ready(function () {
 
   // 녹음 시작
@@ -190,12 +189,8 @@ $(document).ready(function () {
 		
 		if(!pauseMsgCode.includes(msg_code)){
 			container.find('#msg_audio_bar').val(0);
-			clearInterval(playingMsgTimer.get(msg_code));
 			msg_audio.currentTime = 0;
 			container.find('.msg_playing_time').text(0);
-			if(playingMsgTimer.get(msg_code) != null){
-				playingMsgTimer.delete(msg_code);
-			}
 		}else{
 			let index = pauseMsgCode.indexOf(msg_code);
 			if (index !== -1) {
@@ -204,20 +199,18 @@ $(document).ready(function () {
 		}
 		
 		msg_audio.addEventListener('ended', function() {
-			clearInterval(playingMsgTimer.get(msg_code));
 			container.find('.msg_playing_time').text(container.find('.msg_recording_time').text());
 			container.find('.msg_audio_bar').css('background',`linear-gradient(to right, var(--sub) 100%, white 100%)`);
 			let index = pauseMsgCode.indexOf(msg_code);
 			if (index !== -1) {
 				pauseMsgCode.splice(index, 1);
 			}
-			playingMsgTimer.delete(msg_code);
 		});
 		
 		msg_audio.addEventListener('timeupdate', function () {
 			
-			let currentTime = msg_audio.currentTime; // 현재 오디오 재생 시간
-			let duration = parseFloat(container.find('.msg_recording_time').text());       // 오디오 총 길이
+			let currentTime = msg_audio.currentTime;
+			let duration = parseFloat(container.find('.msg_recording_time').text());
 			
 			if(currentTime==0){
 				container.find('.msg_audio_bar').css('background','white');
@@ -225,24 +218,11 @@ $(document).ready(function () {
 			}
 			
 			let value = (currentTime / duration) * 100;
-			console.log('current time :',currentTime);
-			console.log('duration :',duration);
-			console.log('vlaue :',value);
 			container.find('.msg_audio_bar').css('background',`linear-gradient(to right, var(--sub) ${value}%, white ${value}%)`);
+			container.find('.msg_playing_time').text(currentTime.toFixed(1));
 		});
 	  
 		msg_audio.play();
-		
-		let timer = setInterval(function () {
-			let time = parseFloat(container.find('.msg_playing_time').text());
-			if(time==parseFloat(container.find('.msg_recording_time').text())-0.1){
-				return;
-			}
-			time+=0.1;
-			container.find('.msg_playing_time').text(time.toFixed(1));
-		}, 100);
-			
-		playingMsgTimer.set(msg_code, timer);
 	});
 	
 	$(document).on('click', '.msg_audio_pause', function (e) {
@@ -254,35 +234,39 @@ $(document).ready(function () {
 		}
 		
 		msg_audio.pause();
-		clearInterval(playingMsgTimer.get(msg_code));
 	});
 	
 	$(document).on('click', '.msg_audio_stop', function (e) {
 		let container = $(e.target).closest('.msg');
 		let msg_code = container.data('msg_code');
 		let msg_audio = container.find('audio')[0];
-		clearInterval(playingMsgTimer.get(msg_code));
 		container.find('.msg_playing_time').text('0');
 		let index = pauseMsgCode.indexOf(msg_code);
 		if (index !== -1) {
 			pauseMsgCode.splice(index, 1);
 		}
-		playingMsgTimer.delete(msg_code);
 		msg_audio.pause();
 		msg_audio.currentTime = 0;
 	});
 	
 	$(document).on('click', '.msg_audio_bar', function (e) {
-	    let range = $('#msg_audio_bar'); // 현재 range 요소
-	    let offsetX = e.pageX - range.offset().left; // 클릭한 위치가 range 시작점에서 얼마나 떨어져 있는지
-	    let width = range.width(); // range 요소의 너비
-	    let newValue = (offsetX / width) * 100; // 클릭한 위치에 해당하는 value 계산
+	    let range = $('#msg_audio_bar');
+	    let offsetX = e.pageX - range.offset().left;
+	    let width = range.width();
+	    let newValue = (offsetX / width) * 100;
+	    let container = $(e.target).closest('.msg');
+	    let msg_code = container.data('msg_code');
+	    let msg_audio = container.find('audio')[0];
+	    let currentTime = msg_audio.currentTime;
+		let duration = parseFloat(container.find('.msg_recording_time').text());
+		let value = (currentTime / duration) * 100;
 	    
-	    console.log('nv : ',newValue);
+	    range.val(newValue);
+	    msg_audio.currentTime = (duration * newValue) / 100;
 	    
-	    range.val(newValue); // range value 업데이트
-	    $('#audio_preview')[0].currentTime = (recordingTime * newValue) / 100; // 오디오 재생 시간 업데이트
-	    playingTime = (recordingTime * newValue) / 100;
+	    if(pauseMsgCode.indexOf(msg_code) == -1){
+			pauseMsgCode.push(msg_code);
+		}
 	});
 	
 });

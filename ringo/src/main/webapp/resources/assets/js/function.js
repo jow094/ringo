@@ -113,6 +113,14 @@ function row_toggle(target,e) {
 			icon.attr('class','fas fa-chevron-circle-left');
 		}
 	}
+	if(e){
+		const icon = $(e).find('i');
+		if(icon.text() == 'arrow_right'){
+			icon.text('arrow_left');
+		}else if(icon.text() == 'arrow_left'){
+			icon.text('arrow_right');
+		}
+	}
 }
 
 function rr_toggle(target,e) {
@@ -206,21 +214,20 @@ function main_messenger() {
 }
 function main_messenger_menu(e){
 	var icon = $(e).find('i');
-
-    if (icon.hasClass('fa-chevron-circle-left')) {
+    if (icon.text() == ('arrow_left')) {
     	$('.main_messenger').css('width','650px');
     	row_toggle('.main_messenger_menu');
     	
     	setTimeout(function() {
-    		icon.removeClass('fa-chevron-circle-left').addClass('fa-chevron-circle-right');
+    		icon.text('arrow_right');
     	}, 300);
     }
-    else if (icon.hasClass('fa-chevron-circle-right')) {
+    else if (icon.text() == ('arrow_right')) {
     	$('.main_messenger').css('width','400px');
     	row_toggle('.main_messenger_menu');
         
         setTimeout(function() {
-        	icon.removeClass('fa-chevron-circle-right').addClass('fa-chevron-circle-left');
+        	icon.text('arrow_left');
         }, 300);
     }
 }
@@ -1307,7 +1314,6 @@ function enter_room(data){
 	connect_in_msg_room(data);
 	init_recorder();
 	pauseMsgCode = [];
-	playingMsgTimer = new Map;
 	if($('.messenger_option').hasClass('expanded')){
 		rr_toggle('.messenger_option');
 	}
@@ -1325,7 +1331,6 @@ function exit_room(e){
 	disconnect_in_msg_room();
 	init_recorder();
 	pauseMsgCode = [];
-	playingMsgTimer = new Map;
 	if($('.messenger_option').hasClass('expanded')){
 		rr_toggle('.messenger_option');
 	}
@@ -2089,26 +2094,63 @@ function isEmpty(obj) {
 }
 
 function scrollToPost(e) {
-	const post_code = $(e).data('post_code');
-    const post = $('.unity_cards').find(`[data-post_code="${post_code}"]`);
+    
+    const post_code = $(e).data('post_code');
+	const container = $('.unity_cards');
+    const post = container.find(`[data-post_code="${post_code}"]`);
     
     if (post.length) {
-        const currentScroll = $('.unity_cards').scrollTop();
+        const postOffsetTop = post.offset().top; 
+        const containerOffsetTop = container.offset().top; 
+        const scrollOffset = postOffsetTop - containerOffsetTop + container.scrollTop();
 
-        const postTop = post.position().top;
-        
-        const postHeight = post.outerHeight();
-
-        const offset = postTop - post.outerHeight();
-
-        $('.unity_cards').animate({
-            scrollTop: currentScroll + offset
+        container.animate({
+            scrollTop: scrollOffset
         }, 500);
-        
+
         setTimeout(function() {
-        	view_check();
+        	post.addClass('shake');
+
+            setTimeout(function() {
+            	post.removeClass('shake');
+            }, 1000);
+
         }, 500);
-    }else{
+    } else {
     	enter_unity_post(e);
     }
+}
+
+function select_img(e){
+	const main = $(e).closest('.image_container').find('.image_main').find('img');
+	const subs = $(e).closest('.image_container').find('.image_queue_belt');
+	const current = subs.find('.active');
+	const target = $(e);
+	current.removeClass('active');
+	target.addClass('active');
+	main.attr('src',target.find('img').attr('src'));
+}
+function prev_img(e){
+	const main = $(e).closest('.image_container').find('.image_main').find('img');
+	const subs = $(e).closest('.image_container').find('.image_queue_belt');
+	const current = subs.find('.active');
+	var prev = current.prev('.image_waiting');
+	if(prev.length == 0){
+		prev = subs.find('.image_waiting').last();
+	}
+	current.removeClass('active');
+	prev.addClass('active');
+	main.attr('src',prev.find('img').attr('src'));
+}
+function next_img(e){
+	const main = $(e).closest('.image_container').find('.image_main').find('img');
+	const subs = $(e).closest('.image_container').find('.image_queue_belt');
+	const current = subs.find('.active');
+	var next = current.next('.image_waiting');
+	if(next.length == 0){
+		next = subs.find('.image_waiting').first();
+	}
+	current.removeClass('active');
+	next.addClass('active');
+	main.attr('src',next.find('img').attr('src'));
 }

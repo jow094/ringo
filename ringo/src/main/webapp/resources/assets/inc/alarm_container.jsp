@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
     
 <div class="container_side_button_section alarm_button" onclick="row_toggle('.alarm_container',this)">
-	<i class="fas fa-chevron-circle-left"></i>
+	<i class="material-symbols-outlined">arrow_left</i>
 </div>
 
 <div class="alarm_container shrinked">

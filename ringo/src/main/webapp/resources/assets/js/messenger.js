@@ -150,44 +150,51 @@ function input_msg(msg,type){
 		$box.find('.message_additional_container').prepend($tts);
 		$box.find('.message_additional_container').prepend($trs);
 		body.append($box);
+		
 	}else if(msg.msg_image_path != null){
+		
+		var img_container = `
+			<div class="image_container">
+				<div class="image_main">
+				</div>
+			</div>`;
+		var $img = $(img_container);
+		
 		if(msg.msg_image_path.includes(',')){
 			const files = msg.msg_image_path.split(',');
-			var img_container = `
-				<div class="image_container">
-					<div class="image_main">
-					</div>
-				</div>`;
-			var $img = $(img_container);
+			var main_src ;
+			
+			$img.find('.image_main').append(`
+				<div class="image_button" onclick="prev_img(this)"><i class="material-symbols-outlined">arrow_left</i></div>
+				<div class="image_button" onclick="next_img(this)"><i class="material-symbols-outlined">arrow_right</i></div>`);
+			
+			$img.append(`
+					<div class="image_queue">
+						<div class="image_queue_belt">
+						</div>
+					</div>`);
+			
 			for (const file of files) {
 				if($img.find('.image_main').find('img').length==0){
-					$img.find('.image_main').append(`
-						<img src="/files/messenger/img/${file}"/>
-					`);
-				}else if($img.find('.image_queue').length==0){
-					$img.append(`
-						<div class="image_queue">
-							<div class="image_queue_belt">
-								<div class="image_waiting">
-								<img src="/files/messenger/img/${file}"/>
-								</div>
-							</div>
-						</div>
-					`);
-				}else{
-					$img.find('.image_queue_belt').append(`
-						<div class="image_waiting">
-							<img src="/files/messenger/img/${file}"/>
-						</div>
-					`);
+					$img.find('.image_main').find('.image_button').first().after(`
+					<img src="/files/messenger/img/${file}"/>`);
+					main_src = file;
 				}
+				$img.find('.image_queue_belt').append(`
+					<div class="image_waiting" onclick="select_img(this)">
+						<img src="/files/messenger/img/${file}"/>
+					</div>`);
 			}
+			$img.find(`.image_waiting`).has(`img[src="/files/messenger/img/${main_src}"]`).addClass('active');
+			
 			$box.find('.message_content').append($img);
 			body.append($box);
 		}else{
-			$box.find('.message_content').append(`<img src="/files/messenger/img/${msg.msg_image_path}"/>`);
+			$img.find('.image_main').append(`<img src="/files/messenger/img/${msg.msg_image_path}"/>`);
+			$box.find('.message_content').append($img);
 			body.append($box);
 		}
+		
 	}else if(msg.msg_audio_path != null){
 		const audio = `
 			<div class="msg_audio_section">
@@ -202,14 +209,14 @@ function input_msg(msg,type){
 						<span>초</span>
 					</div>
 				</div>
-				<div class="audio_buttons">
-					<div class="audio_button msg_audio_play">
+				<div class="buttons">
+					<div class="sm_button msg_audio_play">
 						<i class="fa-solid fa-play"></i>
 					</div>
-					<div class="audio_button msg_audio_pause">
+					<div class="sm_button msg_audio_pause">
 						<i class="fa-solid fa-pause"></i>
 					</div>
-					<div class="audio_button msg_audio_stop">
+					<div class="sm_button msg_audio_stop">
 						<i class="fa-solid fa-stop"></i>
 					</div>
 				</div>
@@ -237,6 +244,37 @@ function get_msg(mr_code){
         	console.log('cu :',current_user);
         	$('.messenger_navbar_nickname').text(data.room.mr_name);
         	$('.messenger_content').find('.msg').remove();
+        	$('.messenger_option').find('.inner_content').empty();
+        	
+        	for (const member of data.room.mr_member) {
+				if(member.user_code == data.room.mr_admin){
+					$('.messenger_option').find('.inner_content').prepend(`
+	        			<div class="person_card" onclick="visit('${member.user_code}',this)">
+	        				<img src="/files/user/profiles/${member.user_thumbnail_path}"/>
+	        				<span>${member.user_nickname}</span>
+	        				<div class="card_button">
+								<i class="material-symbols-outlined">shield_person</i>
+							</div>
+	        			</div>`);
+				}else if(current_user == data.room.mr_admin){
+					$('.messenger_option').find('.inner_content').append(`
+						<div class="person_card">
+	        				<img src="/files/user/profiles/${member.user_thumbnail_path}" onclick="visit('${member.user_code}',this)"/>
+	        				<span onclick="visit('${member.user_code}',this)">${member.user_nickname}</span>
+	        				<div class="card_button" onclick="deport('${data.room.mr_code}','${member.user_code}')">
+								<i class="material-symbols-outlined">person_remove</i>
+							</div>
+	        			</div>`);
+				}else{
+					$('.messenger_option').find('.inner_content').append(`
+						<div class="person_card" onclick="visit('${member.user_code}',this)">
+	        				<img src="/files/user/profiles/${member.user_thumbnail_path}"/>
+	        				<span>${member.user_nickname}</span>
+	        			</div>`);
+	        			
+				}
+				
+        	}
         	
         	for (const msg of data.msg) {
 				if(msg.msg_sender.user_code == current_user){
@@ -521,14 +559,14 @@ function msg_textToSpeech(e){
 						<span>초</span>
 					</div>
 					</div>
-					<div class="audio_buttons">
-						<div class="audio_button msg_audio_play">
+					<div class="buttons">
+						<div class="sm_button msg_audio_play">
 							<i class="fa-solid fa-play"></i>
 						</div>
-						<div class="audio_button msg_audio_pause">
+						<div class="sm_button msg_audio_pause">
 							<i class="fa-solid fa-pause"></i>
 						</div>
-						<div class="audio_button msg_audio_stop">
+						<div class="sm_button msg_audio_stop">
 							<i class="fa-solid fa-stop"></i>
 						</div>
 					</div>
@@ -623,31 +661,27 @@ function cancle_commentary(){
 
 function scrollToMsg(e) {
 	const msg_code = e;
-    const msg = $('.messenger_content').find(`[data-msg_code="${e}"]`);
+	const container = $('.messenger_content');
+    const msg = container.find(`[data-msg_code="${e}"]`);
     
     if (msg.length) {
-        const currentScroll = $('.messenger_content').scrollTop();
+        const msgOffsetTop = msg.offset().top; 
+        const containerOffsetTop = container.offset().top; 
+        const scrollOffset = msgOffsetTop - containerOffsetTop + container.scrollTop();
 
-        const msgTop = msg.position().top;
-        
-        const msgHeight = msg.outerHeight();
-
-        const offset = msgTop - msg.outerHeight();
-
-        $('.messenger_content').animate({
-            scrollTop: currentScroll + offset
+        container.animate({
+            scrollTop: scrollOffset
         }, 500);
-        
+
         setTimeout(function() {
-        	msg.addClass('shake');
-        	
-        	setTimeout(function() {
-        		msg.removeClass('shake');
-        	}, 1000);
-        	
-	    }, 500);
-        
-    }else{
-    	console.log('get more msg');
+            msg.addClass('shake');
+
+            setTimeout(function() {
+                msg.removeClass('shake');
+            }, 1000);
+
+        }, 500);
+    } else {
+        console.log('Message not found, load more messages if needed.');
     }
 }

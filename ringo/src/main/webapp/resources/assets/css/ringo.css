@@ -62,6 +62,9 @@ div,i {
 .material-symbols-outlined.gray{
 	color:var(--gray);
 }
+.mla{
+	margin-left:auto;
+}
 .ofyh{
 	overflow-y:hidden !important;
 }
@@ -79,6 +82,15 @@ div,i {
 }
 .mgb{
 	margin-bottom:10px;
+}
+.mgr5{
+	margin-right:5px;
+}
+.mgl5{
+	margin-left:5px;
+}
+.mgb5{
+	margin-bottom:5px;
 }
 .ff{
 	flex:1 !important;
@@ -171,37 +183,68 @@ div,i {
   0% {
     transform: translateX(0);
   }
+  5% {
+    transform: translateX(-1px);
+  }
   10% {
-    transform: translateX(-3px);  /* 왼쪽으로 약간 이동 */
+    transform: translateX(1px);
+  }
+  15% {
+    transform: translateX(-1px);
   }
   20% {
-    transform: translateX(3px);   /* 오른쪽으로 약간 이동 */
+    transform: translateX(1px);
+  }
+  25% {
+    transform: translateX(-1px);
   }
   30% {
-    transform: translateX(-3px);  /* 왼쪽으로 약간 이동 */
+    transform: translateX(1px);
+  }
+  35% {
+    transform: translateX(-1px);
   }
   40% {
-    transform: translateX(3px);   /* 오른쪽으로 약간 이동 */
+    transform: translateX(1px);
+  }
+  45% {
+    transform: translateX(-1px);
   }
   50% {
-    transform: translateX(-3px);  /* 왼쪽으로 약간 이동 */
+    transform: translateX(1px);
+  }
+  55% {
+    transform: translateX(-1px);
   }
   60% {
-    transform: translateX(3px);   /* 오른쪽으로 약간 이동 */
+    transform: translateX(1px);
+  }
+  65% {
+    transform: translateX(-1px);
   }
   70% {
-    transform: translateX(-3px);  /* 왼쪽으로 약간 이동 */
+    transform: translateX(1px);
+  }
+  75% {
+    transform: translateX(-1px);
   }
   80% {
-    transform: translateX(3px);   /* 오른쪽으로 약간 이동 */
+    transform: translateX(1px);
+  }
+  85% {
+    transform: translateX(-1px);
   }
   90% {
-    transform: translateX(-3px);  /* 왼쪽으로 약간 이동 */
+    transform: translateX(1px);
+  }
+  95% {
+    transform: translateX(-1px);
   }
   100% {
-    transform: translateX(0);     /* 원래 위치로 돌아옴 */
+    transform: translateX(0); /* 원래 위치로 돌아옴 */
   }
 }
+
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -320,7 +363,7 @@ i.link {
 	background-image: url(../icon/link.png); 
 }
 .shake {
-	animation: shake 1s ease-in-out;  /* 1초 동안 애니메이션 실행 */
+	animation: shake 0.5s ease-in-out;  /* 1초 동안 애니메이션 실행 */
 }
 .active:not(.small_link_card):not(.person_card) {
 	box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.8) !important;
@@ -337,10 +380,9 @@ i.link {
     margin-left: 0 !important;
     margin-right: 0 !important;
     flex-shrink : 1 !important;
-	gap : 0px important;
+	gap : 0px !important;
 	animation: fadeOut 0.3s ease-in-out forwards;
 	box-shadow: none !important;
-	opacity:0 !important;
 }
 .rr_shrinked{
 	width: 0px !important;
@@ -350,6 +392,9 @@ i.link {
     margin-left: 0 !important;
     margin-right: 0 !important;
 	box-shadow: none !important;
+}
+.rr_shrinked *{
+	opacity:0 !important;	
 }
 .col_shrinked {
 	min-height: 0px !important;
@@ -1330,23 +1375,31 @@ button:not(.custom_button){
 .person_card{
 	flex: 1;
     max-width: 150px;
-	height:30px;
+	max-height:30px;
 	border-radius: 5px;
 	background-color: white;
 	min-width:100px;
-    box-shadow: 3px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 4px 4px -2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 1px 1px 1px rgba(0,0,0,0.1);
     display:flex;
     justify-content: space-between;
 	background: linear-gradient(to right, var(--waiting) 5px, white 5px);
 	padding-left: 5px;
 }
+.person_card span{
+	font-size:11px;
+	color:var(--sub);
+}
 .person_card.active{
 	background: linear-gradient(to right, var(--basic) 5px, var(--inner) 5px) !important;
 	box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.8) !important;
 }
+.person_card:not(.active):hover{
+	background: linear-gradient(to right, var(--basic) 5px, white 5px) !important;
+	box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2) !important;
+}
 
 .person_card img{
-	margin-left:10px;
+	margin:0px 5px 0px 10px;
 	width:20px;
 	height:20px;
 	border-radius: 5px;
@@ -1480,7 +1533,7 @@ button:not(.custom_button){
 }
 
 .main_messenger_body.in_room{
-	background-color: var(--sub);
+	background-color: var(--basic);
 }
 .messenger_navbar{
 	width:100%;
@@ -1644,7 +1697,7 @@ button:not(.custom_button){
 }
 .messenger_content{
 	width:100%;
-	flex-grow:1;
+	max-height:100%;
 	overflow-y:auto;
 	overflow-x:hidden;
 	display:flex;
@@ -1653,20 +1706,60 @@ button:not(.custom_button){
 	justify-content: flex-start;
 	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
 	background-color: var(--inner);
+	flex-grow: 1; 
+}
+.messenger_content_container{
+	display:flex;
+	overflow:hidden;
+	width:100%;
+	flex:1;
 	position:relative;
+	/* max-height: calc(100% - 205px); */
 }
 .messenger_option{
-	position: sticky;
-	left:370px;
+	position: absolute;
+	right:0;
 	top:0;
-	width:200px;
+	width:210px;
 	height:100%;
 	background-color: var(--inner);
 	box-shadow: -1px 1px 1px 1px rgba(0, 0, 0, 0.2);
-	flex-shrink: 0;
 	z-index:100;
-	margin-bottom:-538px;
+	display:flex;
+	flex-direction: row;
 }
+.messenger_option_toggle_button{
+	width:20px;
+	height: 100%;
+}
+.messenger_option_toggle_button:hover{
+	animation: background_flashBlack 1s infinite !important;
+}
+.messenger_option_body{
+	flex:1;
+	height:100%;
+	display:flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	padding:10px 10px 10px 0px;
+	gap:5px;
+}
+
+.messenger_option .person_card{
+	max-width: 100%;
+	width: 100%;
+}
+.messenger_option .inner_box{
+	height: calc(100% - 35px);
+	width: 100%;
+}
+.messenger_option .buttons{
+	width:100%;
+	min-height: 30px;
+	padding:5px;
+}
+
 .msg:last-child{
 	margin-bottom:5px;
 }
@@ -1873,12 +1966,12 @@ button:not(.custom_button){
 	padding:5px 10px 5px 10px;
 	display:flex;
 	flex-direction: column;
-	background-color: var(--sub);
+	background-color: var(--basic);
 }
 .messenger_input_roof{
 	width:100%;
 	height: 5px;
-	background-color: var(--sub);
+	background-color: var(--basic);
 }
 .messenger_input .upload_files{
 	margin: 5px 0px 0px 0px;
@@ -1906,7 +1999,7 @@ textarea{
 	max-height:300px;
 	border:none;
 	overflow:hidden !important;
-	background-color: var(--sub);
+	background-color: var(--basic);
 	gap:5px;
 }
 .audio_toggle_button{
@@ -1993,7 +2086,7 @@ textarea{
 	font-size:11px;
 	color:var(--gray);
 }
-.audio_buttons{
+.buttons{
 	left:0px;
 	gap:5px;
 	height:30px;
@@ -2005,7 +2098,7 @@ textarea{
 	border-radius:5px;
 	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
 }
-.audio_button{
+.sm_button{
 	min-height:20px;
 	background-color: var(--back);
 	border-radius:3px;
@@ -2065,7 +2158,7 @@ textarea{
 	max-height: 55px;
 	padding:5px 10px 0px 10px;
 	display:flex;
-	background-color: var(--sub);
+	background-color: var(--basic);
 }
 .commentary{
 	width:100%;
@@ -2415,7 +2508,8 @@ textarea{
 }
 .card_foot_comment_input textarea{
 	flex-grow:1;
-	height:100%;
+	min-height:100%;
+	max-height:100%;
 	box-sizing: border-box;
 	border-radius:5px;
 	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
@@ -3369,6 +3463,9 @@ textarea.scroll {
 	box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.3);
 	min-height:300px;
 	margin-bottom: 10px;
+}
+.msg .image_container{
+	width:260px;
 }
 .link_image{
 	padding:0px 10px 10px 10px;

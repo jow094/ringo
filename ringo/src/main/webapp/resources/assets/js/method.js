@@ -693,38 +693,43 @@ function get_circle_post(user_code){
                 }
                 
                 if (postVO.post_file_path != null && postVO.post_file_path != '') {
-                	
-                    const files = postVO.post_file_path.split(',');
-                    var img_container = `
+                	var img_container = `
             			<div class="image_container">
-							<div class="image_main">
-							</div>
-						</div>`;
-                    var $img = $(img_container);
-                    for (const file of files) {
-                    	if($img.find('.image_main').find('img').length==0){
-                    		$img.find('.image_main').append(`
-                				<img src="/files/circle/upload/${file}"/>
-                    		`);
-                    	}else if($img.find('.image_queue').length==0){
-                    		$img.append(`
-                				<div class="image_queue">
-									<div class="image_queue_belt">
-										<div class="image_waiting">
-											<img src="/files/circle/upload/${file}"/>
-										</div>
-									</div>
-								</div>
-                        	`);
-                    	}else{
-                    		$img.find('.image_queue_belt').append(`
-                				<div class="image_waiting">
-									<img src="/files/circle/upload/${file}"/>
-								</div>
-                    		`);
-                    	}
-                    }
-                    $card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
+            				<div class="image_main">
+            				</div>
+            			</div>`;
+            		var $img = $(img_container);
+            		
+            		if(postVO.post_file_path.includes(',')){
+            			const files = postVO.post_file_path.split(',');
+            			var main_src ;
+            			
+            			$img.find('.image_main').append(`
+            				<div class="image_button" onclick="prev_img(this)"><i class="material-symbols-outlined">arrow_left</i></div>
+            				<div class="image_button" onclick="next_img(this)"><i class="material-symbols-outlined">arrow_right</i></div>`);
+            			
+            			$img.append(`
+            					<div class="image_queue">
+            						<div class="image_queue_belt">
+            						</div>
+            					</div>`);
+            			
+            			for (const file of files) {
+            				if($img.find('.image_main').find('img').length==0){
+            					$img.find('.image_main').find('.image_button').first().after(`
+            					<img src="/files/circle/upload/${file}"/>`);
+            					main_src = file;
+            				}
+            				$img.find('.image_queue_belt').append(`
+            					<div class="image_waiting" onclick="select_img(this)">
+            						<img src="/files/circle/upload/${file}"/>
+            					</div>`);
+            			}
+            			$img.find(`.image_waiting`).has(`img[src="/files/circle/upload/${main_src}"]`).addClass('active');
+            		}else{
+            			$img.find('.image_main').append(`<img src="/files/circle/upload/${postVO.post_file_path}"/>`);
+            		}
+            		$card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
                 }
                 
                 if (postVO.reples != null && postVO.reples.length>0) {
@@ -1369,38 +1374,43 @@ function get_unity_post(unity_board_code,unity_post_code,unity_board_page){
                 }
                 
                 if (postVO.post_file_path != null && postVO.post_file_path != '') {
-                	
-                    const files = postVO.post_file_path.split(',');
-                    var img_container = `
+                	var img_container = `
             			<div class="image_container">
-							<div class="image_main">
-							</div>
-						</div>`;
-                    var $img = $(img_container);
-                    for (const file of files) {
-                    	if($img.find('.image_main').find('img').length==0){
-                    		$img.find('.image_main').append(`
-                				<img src="/files/unity/upload/${file}"/>
-                    		`);
-                    	}else if($img.find('.image_queue').length==0){
-                    		$img.append(`
-                				<div class="image_queue">
-									<div class="image_queue_belt">
-										<div class="image_waiting">
-											<img src="/files/unity/upload/${file}"/>
-										</div>
-									</div>
-								</div>
-                        	`);
-                    	}else{
-                    		$img.find('.image_queue_belt').append(`
-                				<div class="image_waiting">
-									<img src="/files/unity/upload/${file}"/>
-								</div>
-                    		`);
-                    	}
-                    }
-                    $card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
+            				<div class="image_main">
+            				</div>
+            			</div>`;
+            		var $img = $(img_container);
+            		
+            		if(postVO.post_file_path.includes(',')){
+            			const files = postVO.post_file_path.split(',');
+            			var main_src ;
+            			
+            			$img.find('.image_main').append(`
+            				<div class="image_button" onclick="prev_img(this)"><i class="material-symbols-outlined">arrow_left</i></div>
+            				<div class="image_button" onclick="next_img(this)"><i class="material-symbols-outlined">arrow_right</i></div>`);
+            			
+            			$img.append(`
+            					<div class="image_queue">
+            						<div class="image_queue_belt">
+            						</div>
+            					</div>`);
+            			
+            			for (const file of files) {
+            				if($img.find('.image_main').find('img').length==0){
+            					$img.find('.image_main').find('.image_button').first().after(`
+            					<img src="/files/unity/upload/${file}"/>`);
+            					main_src = file;
+            				}
+            				$img.find('.image_queue_belt').append(`
+            					<div class="image_waiting" onclick="select_img(this)">
+            						<img src="/files/unity/upload/${file}"/>
+            					</div>`);
+            			}
+            			$img.find(`.image_waiting`).has(`img[src="/files/unity/upload/${main_src}"]`).addClass('active');
+            		}else{
+            			$img.find('.image_main').append(`<img src="/files/unity/upload/${postVO.post_file_path}"/>`);
+            		}
+            		$card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
                 }
                 
                 if (postVO.reples != null && postVO.reples.length>0) {

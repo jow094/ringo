@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div class="main_messenger shrinked">
 	<div class="container_side_button_section messenger_button" onclick="main_messenger_menu(this)">
-		<i class="fas fa-chevron-circle-left"></i>
+		<i class="material-symbols-outlined">arrow_left</i>
 	</div>
 	<div class="main_messenger_menu scroll_box shrinked">
 		<div class="scroll_box_inner">
@@ -70,8 +70,36 @@
 				<i class="fa-solid fa-bars" onclick="rr_toggle('.messenger_option')"></i>
 			</div>
 		</div>
-		<div class="messenger_content">
+		
+		<div class="messenger_content_container">
+			<div class="messenger_content">
+			</div>
 			<div class="messenger_option rr_shrinked">
+				<div class="messenger_option_toggle_button" onclick="rr_toggle('.messenger_option')"><i class="material-symbols-outlined">arrow_right</i></div>
+				<div class="messenger_option_body">
+					<div class="buttons">
+						<div class="sm_button">
+							<i class="material-symbols-outlined">bookmark_add</i>
+						</div>
+						<div class="sm_button">
+							<i class="material-symbols-outlined">bookmark_remove</i>
+						</div>
+						<div class="sm_button">
+							<i class="material-symbols-outlined">notifications_off</i>
+						</div>
+						<div class="sm_button">
+							<i class="material-symbols-outlined">person_add</i>
+						</div>
+						<div class="sm_button mla">
+							<i class="material-symbols-outlined">move_item</i>
+						</div>
+					</div>
+					<div class="inner_box inset">
+						<div class="inner_title"><i class="material-symbols-outlined mgr5">group</i>참가자</div>
+						<div class="inner_content gap5">
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		
@@ -92,26 +120,26 @@
 						<span>초</span>
 					</div>
 				</div>
-				<div class="audio_buttons">
-					<div id="record_start" class="audio_button">
+				<div class="buttons">
+					<div id="record_start" class="sm_button">
 						<i class="fa-solid fa-record-vinyl"></i>
 					</div>
-					<div id="audio_play" class="audio_button none">
+					<div id="audio_play" class="sm_button none">
 						<i class="fa-solid fa-play"></i>
 					</div>
-					<div id="record_pause" class="audio_button">
+					<div id="record_pause" class="sm_button">
 						<i class="fa-solid fa-pause"></i>
 					</div>
-					<div id="audio_pause" class="audio_button none">
+					<div id="audio_pause" class="sm_button none">
 						<i class="fa-solid fa-pause"></i>
 					</div>
-					<div id="record_stop" class="audio_button">
+					<div id="record_stop" class="sm_button">
 						<i class="fa-solid fa-stop"></i>
 					</div>
-					<div id="audio_delete" class="audio_button none">
+					<div id="audio_delete" class="sm_button none">
 						<i class="fa-solid fa-trash"></i>
 					</div>
-					<div id="audio_upload" class="audio_button none">
+					<div id="audio_upload" class="sm_button none">
 						<i class="fa-solid fa-paper-plane"></i>
 					</div>
 				</div>

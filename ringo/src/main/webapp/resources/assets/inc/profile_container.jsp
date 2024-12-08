@@ -89,15 +89,15 @@
 </div>
 <div class="profile_button_container">
 	<div class="container_side_button_section top" onclick="expand_profile()">
-		<i class="fas fa-chevron-circle-right"></i>
+		<i class="material-symbols-outlined">arrow_right</i>
 	</div>
 	<div class="container_side_button_section bottom" onclick="shrink_profile()">
-		<i class="fas fa-chevron-circle-left"></i>
+		<i class="material-symbols-outlined">arrow_left</i>
 	</div>
 	<div class="container_side_button_section left none" onclick="shrink_profile()">
-		<i class="fas fa-chevron-circle-left"></i>
+		<i class="material-symbols-outlined">arrow_left</i>
 	</div>
 	<div class="container_side_button_section right none" onclick="expand_profile()">
-		<i class="fas fa-chevron-circle-right"></i>
+		<i class="material-symbols-outlined">arrow_right</i>
 	</div>
 </div>

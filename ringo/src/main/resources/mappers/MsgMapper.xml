@@ -26,6 +26,7 @@
 	    <result property="mr_admin" column="mr_admin"/>
 		    		
 		<collection property="mr_member" ofType="UserVO">
+			<result property="user_code" column="user_code"/>
 			<result property="user_nickname" column="user_nickname"/>
 		    <result property="user_thumbnail_path" column="user_thumbnail_path"/>
 		</collection>
@@ -114,15 +115,16 @@
 	</select>
 	
 	<select id="selectMsgRoomInfo" resultMap="selectMsgRoomInfo_Map">
-		select msgr.mr_code, msgr.mr_admin, u.user_thumbnail_path, u.user_nickname,
+		select msgr.mr_code, msgr.mr_admin, u.user_thumbnail_path, u.user_nickname, u.user_code,
 			(trim(both ',' from 
 			        replace(
-			        	replace(msgr.mr_name, concat(u.user_nickname, ','), ''), 
-			            concat(',', u.user_nickname),'')
+			        	replace(msgr.mr_name, concat(u2.user_nickname, ','), ''), 
+			            concat(',', u2.user_nickname),'')
 			    )) as mr_name
 			from msgr
 			left join _ringo_msg_member mm on mm.mr_code = #{mr_code} 
-			left join _ringo_user u on u.user_code = #{user_code}
+			left join _ringo_user u on u.user_code = mm.user_code
+			left join _ringo_user u2 on u2.user_code = #{user_code}
 			where msgr.mr_code = #{mr_code}
 	</select>
 	
