@@ -222,4 +222,10 @@
 		where unity_board_code = #{unity_board_code}
 	</select>
 	
+	<select id="selectUnityModifyInfo" resultType="UnityVO">
+	</select>
+	
+	<update id="updateUnityInfo" parameterType="UnityVO">
+	</update>
+	
 </mapper>  

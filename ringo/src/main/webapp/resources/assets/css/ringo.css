@@ -30,6 +30,16 @@ div,i {
 [onclick]:hover span:not(.na) {
     color: var(--basic) !important;
 }
+.modify{
+	border:none;
+	background-color: var(--inner);
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
+	color:var(--sub);
+	border-radius: 3px;
+	padding-left:5px;
+	font-size:11px;
+	height:18px;
+}
 .inner{
 	background-color: var(--inner) !important;
 }
@@ -68,6 +78,9 @@ div,i {
 .ofyh{
 	overflow-y:hidden !important;
 }
+.ofya{
+	overflow-y:auto !important;
+}
 .pd0{
 	padding:0px !important;	
 }
@@ -92,6 +105,9 @@ div,i {
 .mgb5{
 	margin-bottom:5px;
 }
+.mta{
+	margin-top:auto;
+}
 .ff{
 	flex:1 !important;
 }
@@ -103,9 +119,16 @@ div,i {
 	height:100%;
 	max-height:100%;
 }
+.mh200{
+	max-height:200px !important;
+}
 .h20{
 	min-height:20px !important;
 	height:20px !important;
+}
+.h25{
+	min-height:25px !important;
+	height:25px !important;
 }
 .h30{
 	min-height:30px !important;
@@ -309,18 +332,24 @@ div,i {
     background-color: rgba(0,0,0,0.3);
     z-index: 5;
 }
+.overlay:hover .restore{
+	color:var(--basic);
+}
 .loading {
     position: relative;
     overflow:hidden;
 }
-
+.deleted{
+	position: relative;
+    overflow:hidden;
+}
 i.ringo {
-	display: inline-block; /* 인라인 요소로 유지 */
-	width: 15px;         /* 원하는 너비 */
-	height: 15px;        /* 원하는 높이 */
-	background-size: cover; /* 이미지 크기를 컨테이너에 맞춤 */
-	background-position: center; /* 이미지를 가운데에 맞춤 */
-	background-repeat: no-repeat; /* 이미지 반복 안 함 */
+	display: inline-block;
+	width: 15px;       
+	height: 15px;       
+	background-size: cover; 
+	background-position: center;
+	background-repeat: no-repeat;
 	border:none;
 }
 
@@ -745,6 +774,7 @@ input[type="submit"]{
 	border-radius: 5px;
 	box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.1);
 	max-height:100%;
+	flex-grow:1;
 }
 .inner_title{
     width:100%;
@@ -779,6 +809,7 @@ input[type="submit"]{
 	flex-shrink:1;
 	padding:5px;
 	overflow-y:auto;
+	overflow-x:hidden;
 }
 
 .scroll_box{
@@ -2887,7 +2918,7 @@ textarea{
 	width:100%;
 	height:100%;
 }
-.in_unity_main{
+.in_unity_main,.in_unity_modify{
 	height:100%;
 	width:100%;
 	display:flex;
@@ -2916,9 +2947,29 @@ textarea{
 }
 .in_unity_home_container{
 	display:flex;
-	flex-direction: row;
-	flex:1;
+	flex-grow:1;
 	width:100%;
+	overflow:hidden;
+}
+.in_unity_modify_container{
+	display:flex;
+	flex-direction:column;
+	flex-grow:1;
+	width:100%;
+	overflow:hidden;
+}
+.in_unity_modify_container>div{
+	display:flex;
+	width:100%;
+	height: calc(100% - 40px);
+}
+.unity_modify_container_buttons{
+	display:flex;
+	justify-content:flex-end;
+	width:100%;
+	height:30px;
+	gap:5px;
+	padding:0px 10px 10px 0px;
 }
 .in_unity_home_left_container{
 	display:flex;
@@ -2985,17 +3036,56 @@ textarea{
 }
 .unity_board{
 	width:100%;
+	display: flex;
+	padding:3px 3px 3px 15px;
+	background:white;
+	box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
+	border-radius: 2px;
+	background: linear-gradient(to right, var(--waiting) 6px, white 6px);
+	min-height: 25px;
+	justify-content: flex-start;
+}
+.unity_board span{
+	max-width:100%;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	display: inline-block;
 	text-align: left;
 	font-size:11px;
-	padding:3px 3px 3px 15px;
-	background:white;
-	box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
+	line-height: 25px;
+}
+.modify_board .unity_board span{
+	max-width:50%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	display: inline-block;
+	text-align: left;
+	font-size:11px;
+	line-height: 20px;
+}
+.tiny_button_section{
+	margin-left: auto;
+	dispaly: flex;
+	width: 50%;
+	height: 100%;
+	justify-content: flex-end;
+	gap:5px;
+	margin-right: 10px;
+}
+.tiny_button_section i{
+	width: 16px;
+	height: 16px;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+	font-size:14px !important;
 	border-radius: 2px;
-	background: linear-gradient(to right, var(--waiting) 6px, white 6px);
+}
+.tiny_button_section i:hover{
+	color:var(--basic);
+	box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
 }
 .unity_board:hover{
 	background: linear-gradient(to right, var(--basic) 6px, white 6px);
@@ -3587,6 +3677,71 @@ textarea.scroll {
 	flex:1;
 	overflow-y:auto;
 }
+.unity_modify_container{
+	width:100%;
+	max-width:100%;
+	display:flex;
+	flex-direction:column;
+	justify-content: flex-start;
+	align-items: center;
+	border-radius:5px;
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
+	background-color: var(--back);
+	padding:10px;
+	flex:1;
+	overflow-x:hidden;
+	overflow-y:auto;
+}
+.new_category{
+	width:100%;
+	height: auto !important;
+	max-height: 200px;
+	flex-grow:0;
+}
+.modify_board{
+	width:100%;
+	height: auto !important;
+	max-height: 200px;
+	flex-grow:0;
+	padding:0px 5px 5px 5px;
+}
+.unity_image_modify{
+	width:100%;
+	max-width:100%;
+	display:flex;
+	gap:10px;
+	margin-bottom:10px;
+}
+.unity_image_modify .unity_thumbnail,.unity_image_modify .unity_banner{
+	padding:0px;
+}
+.unity_banner_modify{
+	display:flex;
+	width:100%;
+	height: 100%;
+	gap:10px;
+}
+.unity_banner_modify .select_color{
+	width:60px;
+}
+.unity_banner_modify .select_justify{
+	flex:1;
+}
+.unity_banner_modify .select_justify .justify_set{
+	width:100%;
+}
+.unity_image_modify .unity_thumbnail{
+	max-width:40%;
+}
+.unity_image_modify .unity_thumbnail *{
+	max-width:100%;
+}
+.unity_image_modify .unity_banner{
+	max-width:60%;
+}
+.unity_image_modify .unity_banner *{
+	max-width:100%;
+}
 .unity_essential_info{
 	width:100%;
 	display:flex;
@@ -3653,11 +3808,14 @@ input[type="color"] {
 	width:100%;
 	max-width:700px;
 	height:70px;
-	padding:10px;
+	padding:10px 0px;
 	gap:20px;
 	display:flex;
 	justify-content: center;
 	align-items: center;
+}
+.select_color{
+	width:60px;
 }
 .select_style{
 	display:flex;
@@ -3674,7 +3832,8 @@ input[type="color"] {
 	font-size:10px;
 }
 .justify_set{
-	padding:10px;
+	flex:1;
+	padding:5px;
 	gap:10px;
 	display:flex;
 	justify-content: flex-start;
@@ -3684,6 +3843,13 @@ input[type="color"] {
 	background-color: var(--inner);
 	flex-shrink:1;
 	box-sizing: border-box !important;
+}
+.justify_set .select_style{
+	width:100%;
+	display:flex;
+}
+.justify_set .select_style input{
+	width:100%;
 }
 .unity_banner .picture_name{
 	max-width:700px;
@@ -3725,6 +3891,21 @@ input[type="color"] {
 	justify-content: flex-end;
 	align-items: center;
 	gap:5px;
+}
+.unity_modify_container_button{
+	width:100%;
+	min-height:35px;
+	display:flex;
+	justify-content: flex-end;
+	align-items: center;
+	gap:5px;
+}
+.unity_modify_container_button .cards_footer_button{
+	width:25%;
+}
+.modify_board_container{
+	overflow-y:auto;
+	gap:10px;
 }
 .input_box{
 	display:flex;

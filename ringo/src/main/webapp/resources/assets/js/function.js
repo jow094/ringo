@@ -979,7 +979,7 @@ function add_image(input) {
     	$(input).closest('.picture_content').after(`
 			<div class="picture_content">
 			    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this)" multiple>
-				<i class="fa-solid fa-plus"></i>
+				<i class="material-symbols-outlined">add</i>
 			</div>
     	`);
     }
@@ -1005,7 +1005,7 @@ function delete_image(e) {
 			thumbnail.html(`
 					<div class="picture_content">
 						<input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);" multiple>
-						<i class="fa-solid fa-plus"></i>
+						<i class="material-symbols-outlined">add</i>
 					</div>
 					<div class="picture_name">
 						대표 프로필 사진
@@ -1035,7 +1035,7 @@ function delete_image(e) {
 			unity_thumbnail.html(`
 				<div class="picture_content unity_thumbnail_preview">
 				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);">
-					<i class="fa-solid fa-plus"></i>
+					<i class="material-symbols-outlined">add</i>
 				</div>
 				<div class="picture_name">유니티 썸네일</div>
 			`);
@@ -1048,7 +1048,7 @@ function delete_image(e) {
 			unity_banner.prepend(`
 				<div class="picture_content unity_banner_preview">
 				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);">
-					<i class="fa-solid fa-plus"></i>
+					<i class="material-symbols-outlined">add</i>
 				</div>
 			`);
 		}
@@ -1275,13 +1275,24 @@ function unity_home(){
 	
 	get_unities();
 }
-
+function show_modify_unity(e){
+	if($('.unity_write').hasClass('expanded')){
+		col_toggle('.unity_write');
+	}
+	hide('.in_unity_post');
+	hide('.unity_home_title');
+	hide('.unity_home');
+	hide('.in_unity_modify');
+	hide('.unity_create_container');
+	hide('.in_unity_main');
+	showing('.in_unity_modify');
+}
 function enter_unity_main(e){
 	
 	if($('.unity_write').hasClass('expanded')){
-		col_toggle('.write_container.unity_write');
+		col_toggle('.unity_write');
 	}
-	
+	hide('.in_unity_modify');
 	hide('.unity_create_container');
 	showing('.unity_main_container');
 	
@@ -1909,6 +1920,7 @@ function enter_unity_board(method,e){
 	
 	$('.unity_board_names').find('.rounding').removeClass('rounding');
 	
+	hide('.in_unity_modify');
 	hide('.unity_create_container');
 	showing('.unity_main_container');
 	
@@ -2153,4 +2165,71 @@ function next_img(e){
 	current.removeClass('active');
 	next.addClass('active');
 	main.attr('src',next.find('img').attr('src'));
+}
+function add_category(){
+	$('.new_category').after(`
+		<div class="inner_box modify_board expanded moveable" data-category="">
+			<div class="inner_title h30">
+				<input class="modify" type="text" value="새 카테고리">
+				<div class="tiny_button_section">
+					<i class="material-symbols-outlined" onclick="pull_up(this)">arrow_drop_up</i>
+					<i class="material-symbols-outlined" onclick="push_down(this)">arrow_drop_down</i>
+					<i class="material-symbols-outlined" onclick="add_board(this)">add</i>
+					<i class="material-symbols-outlined" onclick="remove_category(this)">remove</i>
+				</div>
+			</div>
+			<div class="inner_content expanded gap5">
+				<div class="unity_board moveable"  data-unity_board_code="">
+					<input class="modify" type="text" value="새 게시판">
+					<div class="tiny_button_section">
+						<i class="material-symbols-outlined" onclick="pull_up(this)">arrow_drop_up</i>
+						<i class="material-symbols-outlined" onclick="push_down(this)">arrow_drop_down</i>
+						<i class="material-symbols-outlined" onclick="remove_board(this)">remove</i>
+					</div>
+				</div>
+			</div>
+		</div>`);
+}
+function remove_category(e){
+	$(e).closest('.modify_board').addClass('deleted');
+	$(e).closest('.modify_board').prepend(`
+		<div class="overlay" onclick="cancle_remove(this)">
+			<i class="material-symbols-outlined restore">refresh</i>
+		</div>
+	`);
+}
+function cancle_remove(e){
+	$(e).closest('.deleted').find('.overlay').first().remove();
+	$(e).closest('.deleted').first().removeClass('deleted');
+}
+function add_board(e){
+	$(e).closest('.modify_board').find('.unity_board').last().after(`
+		<div class="unity_board moveable" data-unity_board_code="">
+			<input class="modify" type="text" value="새 게시판">
+			<div class="tiny_button_section">
+				<i class="material-symbols-outlined" onclick="pull_up(this)">arrow_drop_up</i>
+				<i class="material-symbols-outlined" onclick="push_down(this)">arrow_drop_down</i>
+				<i class="material-symbols-outlined" onclick="remove_board(this)">remove</i>
+			</div>
+		</div>`);
+}
+function remove_board(e){
+	$(e).closest('.unity_board').addClass('deleted');
+	$(e).closest('.unity_board').prepend(`
+		<div class="overlay" onclick="cancle_remove(this)">
+			<i class="material-symbols-outlined restore">refresh</i>
+		</div>
+	`);
+}
+function pull_up(e){
+	const target = $(e).closest('.moveable');
+	const targetClass = target.attr('class').split(' ').join('.');
+	const prev = target.prevAll(`.${targetClass}`).first();
+    prev.before(target);
+}
+function push_down(e){
+	const target = $(e).closest('.moveable');
+	const targetClass = target.attr('class').split(' ').join('.');
+	const next = target.nextAll(`.${targetClass}`).first();
+    next.after(target);
 }

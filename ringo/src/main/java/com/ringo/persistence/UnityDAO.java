@@ -20,4 +20,6 @@ public interface UnityDAO {
 	public UnityVO selectUnityMain(UnityVO vo);
 	public List<PostVO> selectUnityBasicPost(UnityVO vo);
 	public UnityBoardVO selectUnityboardInfo(UnityBoardVO vo);
+	public UnityVO selectUnityModifyInfo(String unity_code);
+	public Integer updateUnityInfo(UnityVO vo);
 }

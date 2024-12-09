@@ -1030,7 +1030,7 @@ function get_unity_profile(unity_code){
 					<i class="material-symbols-outlined">partner_reports</i>
 					<span>신고</span>
 				</div>
-    			<div class="profile_container_head_tool" data-unity_code="${unity_code}">
+    			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="show_modify_unity('${unity_code}')">
 	    			<i class="material-symbols-outlined">contract_edit</i>
 	    			<span>수정</span>
     			</div>
@@ -1059,12 +1059,12 @@ function get_unity_profile(unity_code){
         				$categoryContainer = $('<div class="inner_box mw mgb"></div>')
         				.attr('data-category', untCodeCategory)
         				.append(`
-        						<div class="inner_title h20" onclick="inner_box_toggle(this)">
-        						${boardData.unity_board_category}
-        						<i class="material-symbols-outlined col_tgb">arrow_drop_up</i>
-        						</div>
-        						<div class="inner_content expanded gap5">
-        						</div>
+    						<div class="inner_title h20" onclick="inner_box_toggle(this)">
+	    						${boardData.unity_board_category}
+	    						<i class="material-symbols-outlined col_tgb">arrow_drop_up</i>
+    						</div>
+    						<div class="inner_content expanded gap5">
+    						</div>
         				`);
         				
         				$boards.append($categoryContainer);
@@ -1078,11 +1078,11 @@ function get_unity_profile(unity_code){
         			}
         			
         			$categoryContainer.find('.inner_content').append(`
-        					<div class="unity_board" data-category="${boardData.unity_board_category}" data-unity_board_code="${boardData.unity_board_code}" onclick="enter_unity_board('board',this)">${boardData.unity_board_name}</div>
+    					<div class="unity_board" data-category="${boardData.unity_board_category}" data-unity_board_code="${boardData.unity_board_code}" onclick="enter_unity_board('board',this)"><span>${boardData.unity_board_name}</span></div>
         			`);
         			
         			$(`optgroup[data-category="${untCodeCategory}"]`).append(`
-        					<option value="${boardData.unity_board_code}">[${boardData.unity_board_category}] - ${boardData.unity_board_name}</option>
+    					<option value="${boardData.unity_board_code}">[${boardData.unity_board_category}] - ${boardData.unity_board_name}</option>
         			`);
         		}
         		$('.unity_profile_container .scroll_box').html($boards);
@@ -1187,15 +1187,6 @@ function get_unity_main(unity_code){
         	}
         	
     		$('#unity_member_grade_icon').text('counter_5');
-    		
-    		setTimeout(function() {
-        		
-        		const container = $('.in_unity_main').outerHeight();
-        		const banner = $('.in_unity_banner').outerHeight();
-        		const max_height = container - banner;
-        		$('.in_unity_home_container').css('max-height',max_height);
-        		
-            }, 10);
     		
         },
         error: function(xhr, status, error) {
@@ -1845,4 +1836,34 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
         	spin_end('#unity_posts');
         }
     });
+}
+
+function get_modify_unity(){
+	
+	$.ajax({
+		type: "GET",
+		url: "/unity/addPost",
+		data: {unity_post_code:unity_post_code,unity_add_direction:unity_add_direction},
+		dataType: "json",
+		success: function(data) {
+		},
+		error: function(xhr, status, error) {
+			spin_end('#unity_posts');
+		}
+	});
+}
+
+function post_modify_unity(){
+	
+	$.ajax({
+		type: "GET",
+		url: "/unity/addPost",
+		data: {unity_post_code:unity_post_code,unity_add_direction:unity_add_direction},
+		dataType: "json",
+		success: function(data) {
+		},
+		error: function(xhr, status, error) {
+			spin_end('#unity_posts');
+		}
+	});
 }

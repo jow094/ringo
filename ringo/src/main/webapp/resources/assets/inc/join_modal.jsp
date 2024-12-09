@@ -483,7 +483,7 @@
 			        					<div class="picture_container max_div column thumbnail">
 			        						<div class="picture_content">
 		        							    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);">
-			        							<i class="fa-solid fa-plus"></i>
+			        							<i class="material-symbols-outlined">add</i>
 			        						</div>
 			        						<div class="picture_name">
 			        							대표 프로필 사진
@@ -498,7 +498,7 @@
 									<div class="small_picture_container">
 										<div class="picture_content">
 	        							    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this)">
-		        							<i class="fa-solid fa-plus"></i>
+		        							<i class="material-symbols-outlined">add</i>
 		        						</div>
 		        					</div>
 		        				</div>
