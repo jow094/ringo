@@ -703,7 +703,7 @@ function validate_nickname(input) {
     }
 }
 
-function validate_unity_name(input) {
+function validate_unity_name(input,update) {
 	
 	const unity_name = $(input).val();
     
@@ -723,9 +723,9 @@ function validate_unity_name(input) {
         set_failed(input, 'row');
         set_hint(input, '* 유니티 이름은 4~30자리여야 합니다.', 'failed_message');
     }
-    else {
+    else{
     	check_duple(input, function(response) {
-    		if (response==1) {
+    		if (response==1 && update != 'update') {
     	        set_failed(input, 'row');
     	        set_hint(input, '* 이미 사용중인 유니티 이름입니다.', 'failed_message');
     	        return;
@@ -768,7 +768,7 @@ function set_finished(e, direction) {
 	}
 	
 	if($(e).closest('.unity_create_container').length>0){
-		clear_unity_create_container();
+		clear_unity_create_container(e);
 	}
 }
 
@@ -785,7 +785,7 @@ function set_unfinished(e, direction) {
     }
     
 	if($(e).closest('.unity_create_container').length>0){
-		clear_unity_create_container();
+		clear_unity_create_container(e);
 	}
 }
 
@@ -905,10 +905,10 @@ function select_card(e) {
 	    }
 		
 		$(e).closest('.input_box').next('.selected_card_container').append(`
-				<div class="selected_card expanded" data-value="${value}" onclick="delete_card(this)">
-					<i class="fa-solid fa-circle-xmark"></i>
-					${text}
-				</div>
+			<div class="selected_card expanded" data-value="${value}" onclick="delete_card(this)">
+				<i class="fa-solid fa-circle-xmark"></i>
+				${text}
+			</div>
 		`);
 	}
 	
@@ -927,13 +927,10 @@ function delete_card(e) {
         let currentValue = hiddenInput.val();
 
         if (!currentValue.includes(',')) {
-            // 쉼표가 없으면 deleteValue만 제거
             hiddenInput.val(currentValue.replace(deleteValue, ''));
         } else if (currentValue.includes(deleteValue + ',')) {
-            // deleteValue 뒤에 쉼표가 있으면 'deleteValue,' 제거
             hiddenInput.val(currentValue.replace(deleteValue + ',', ''));
         } else {
-            // deleteValue 뒤에 쉼표가 없으면 ',deleteValue' 제거
             hiddenInput.val(currentValue.replace(',' + deleteValue, ''));
         }
     }
@@ -1034,7 +1031,7 @@ function delete_image(e) {
 			
 			unity_thumbnail.html(`
 				<div class="picture_content unity_thumbnail_preview">
-				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);">
+				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container(this);">
 					<i class="material-symbols-outlined">add</i>
 				</div>
 				<div class="picture_name">유니티 썸네일</div>
@@ -1047,7 +1044,7 @@ function delete_image(e) {
 			$(e).remove();
 			unity_banner.prepend(`
 				<div class="picture_content unity_banner_preview">
-				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);">
+				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container(this)">
 					<i class="material-symbols-outlined">add</i>
 				</div>
 			`);
@@ -1185,13 +1182,23 @@ function clear_card(container){
 	}
 }
 
-function clear_unity_create_container(){
+function clear_unity_create_container(e){
 	
-	var count = $('.unity_create_container').find(':not(.last_submit)').filter('.unfinished_row').length + $('.unity_create_container').find(':not(.last_submit)').filter('.failed_row').length;
-	var target = $('.unity_create_container').find('.last_submit');
-	var hint = $('.unity_create_container').find('.submit_hint');
-	var thumbnail = $('.unity_create_container').find('input[name="unity_thumbnail_file"]').val();
-	var banner = $('.unity_create_container').find('input[name="unity_banner_file"]').val();
+	var container;
+	
+	if($(e).hasClass('unity_modify_container')){
+		container = $(e);
+	}else{
+		container = $(e).closest('.unity_create_container');
+	}
+	
+	var count = container.find(':not(.last_submit)').filter('.unfinished_row').length + container.find(':not(.last_submit)').filter('.failed_row').length;
+	var target = container.find('.last_submit');
+	var hint = container.find('.submit_hint');
+	var thumbnail = container.find('input[name="unity_thumbnail_file"]').val();
+	var banner = container.find('input[name="unity_banner_file"]').val();
+	
+	console.log(count);
 	
 	if(thumbnail != '' && banner != '' && count==0){
 		target.removeClass(`unfinished_row`)
@@ -1275,7 +1282,7 @@ function unity_home(){
 	
 	get_unities();
 }
-function show_modify_unity(e){
+function show_modify_unity(unity_code){
 	if($('.unity_write').hasClass('expanded')){
 		col_toggle('.unity_write');
 	}
@@ -1286,6 +1293,8 @@ function show_modify_unity(e){
 	hide('.unity_create_container');
 	hide('.in_unity_main');
 	showing('.in_unity_modify');
+	
+	get_modify_unity(unity_code);
 }
 function enter_unity_main(e){
 	
@@ -1735,9 +1744,7 @@ function add_tag(e){
 		$(e).val('');
 		
 		return;
-	}
-	
-	if($(e).closest('.unity_infos').length>0){
+	}else{
 		$(e).closest('.input_box').next('.selected_card_container').append(`
 			<div class="tag_card expanded" data-tag="${$(e).val()}" onclick='delete_tag(this)'>#${$(e).val()}</div>
 		`);
@@ -1870,16 +1877,23 @@ function delete_person_card(event) {
     }
 }
 
-function select_banner_setting() {
-    const horizon = $('#banner_horizontal_value').val();
-    const vertical = $('#banner_vertical_value').val();
-    const color = $('#banner_color_value').val();
+function select_banner_setting(e) {
+	var container;
+	if(e == 'create'){
+		container = $('.unity_create_container');
+	}else if(e == 'modify'){
+		container = $('.unity_modify_container');
+	}
+	
+    const horizon = container.find('#banner_horizontal_value').val();
+    const vertical = container.find('#banner_vertical_value').val();
+    const color = container.find('#banner_color_value').val();
 
     const banner_setting = `background-color: ${color}; object-position: ${horizon}% ${vertical}%;`;
 
-    $('input[name="unity_banner_set"]').val(banner_setting);
+    container.find('input[name="unity_banner_set"]').val(banner_setting);
 
-    const img = $('.unity_banner_preview').find('img')[0];
+    const img = container.find('.unity_banner_preview').find('img')[0];
     
     if(img!=null){
     	img.style.cssText = banner_setting;

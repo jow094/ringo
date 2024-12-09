@@ -382,9 +382,6 @@ function check_duple(input, callback){
 	const inputValue = $(input).val();
 	const target = $(input).attr('name');
 	
-	console.log('inputValue : ',inputValue);
-	console.log('target : ',target);
-	
 	$.ajax({
     	type: 'GET',
         url: '/user/checkDuple',
@@ -1838,17 +1835,101 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
     });
 }
 
-function get_modify_unity(){
+function get_modify_unity(unity_code){
 	
 	$.ajax({
 		type: "GET",
-		url: "/unity/addPost",
-		data: {unity_post_code:unity_post_code,unity_add_direction:unity_add_direction},
+		url: "/unity/profile",
+		data: {unity_code:unity_code},
 		dataType: "json",
 		success: function(data) {
+			console.log(data);
+			const container = $('.unity_modify_container');
+			
+			for (var [key, value] of Object.entries(data)) {
+				const target = container.find(`[name='${key}']`);
+				
+				if(target.siblings('select').length == 1){
+					if(typeof value === 'string' && value.includes(',')){
+						var values = value.split(',');
+							for (var val of values) {
+								target.siblings('select').find(`[value='${val}']`).prop('selected',true);
+								target.siblings('select').trigger('change');
+							}
+					}else{
+						target.siblings('select').find(`[value='${value}']`).prop('selected',true);
+						target.siblings('select').trigger('change');
+					}
+				}else if(target.is('select')){
+					if(typeof value === 'string' && value.includes(',')){
+						var values = value.split(',');
+							for (var val of values) {
+								target.find(`[value='${val}']`).prop('selected',true);
+								target.trigger('change');
+							}
+					}else{
+						target.find(`[value='${value}']`).prop('selected',true);
+						target.trigger('change');
+					}
+					target.trigger('change');
+				}else if(key == 'unity_thumbnail_file') {
+					target.after(`
+						<img src="/files/unity/thumbnail/${data.unity_thumbnail_path}"/>`);
+					target.siblings('i').remove();
+		        	target.closest('.picture_content').addClass('have_img');
+		        	target.closest('.picture_content').addClass('on_top');
+		        	target.closest('.picture_content').attr("onmouseover", "mouse_over(this)");
+		        	target.closest('.picture_content').attr("onmouseleave", "mouse_leave(this)");
+		        	target.closest('.picture_content').attr("onclick", "delete_image(this)");
+				}else if(key == 'unity_banner_file') {
+					target.after(`
+						<img src="/files/unity/banner/${data.unity_banner_path}"/>`);
+					target.siblings('i').remove();
+		        	target.closest('.picture_content').addClass('have_img');
+		        	target.closest('.picture_content').addClass('on_top');
+		        	target.closest('.picture_content').attr("onmouseover", "mouse_over(this)");
+		        	target.closest('.picture_content').attr("onmouseleave", "mouse_leave(this)");
+		        	target.closest('.picture_content').attr("onclick", "delete_image(this)");
+		        	setTimeout(function() {
+		        		select_banner_setting('modify');
+		        		target.closest('.picture_content').next('img').css('transition','object-position 0s');
+		        	},10);
+				}else if(key == 'unity_tag'){
+					if(typeof value === 'string' && value.includes(',')){
+						var tags = value.split(',');
+							for (var tag of tags) {
+								target.siblings(`input[name='unity_add_tag']`).val(tag);
+								add_tag(target.siblings(`input[name='unity_add_tag']`))
+							}
+					}else{
+						target.siblings(`input[name='unity_add_tag']`).val(tag);
+						add_tag(target.siblings(`input[name='unity_add_tag']`))
+					}
+				}else if(key == 'unity_banner_set'){
+					
+					target.val(value);
+					
+					var color = value.match(/background-color:\s*([^;]*)/)[1];
+					var objectPosition = value.match(/object-position:\s*([^;]*)/)[1];
+					var [horizon, vertical] = objectPosition.split(' ');
+					horizon = horizon.replace('%', '');
+					vertical = vertical.replace('%', '');
+					
+					container.find('#banner_color_value').val(color);
+					container.find('#banner_horizontal_value').val(horizon);
+					container.find('#banner_vertical_value').val(vertical);
+					
+					select_banner_setting('modify');
+				}else {
+					target.val(value);
+					target.trigger('input');
+				}
+				
+        	}
+			
+			clear_unity_create_container(container);
 		},
 		error: function(xhr, status, error) {
-			spin_end('#unity_posts');
 		}
 	});
 }

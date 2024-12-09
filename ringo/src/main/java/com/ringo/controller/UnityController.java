@@ -309,14 +309,6 @@ public class UnityController {
 		return pService.getMoreUnityPost(vo);
 	}
 	
-	@RequestMapping(value = "/modify", method = RequestMethod.GET)
-	@ResponseBody
-	public UnityVO unityModifyGET(HttpSession session, String unity_code) {
-		logger.debug("unityModifyGET(String unity_code) - unity_code : " + unity_code);
-
-		return unityService.getUnityModify(unity_code);
-	}
-	
 	@RequestMapping(value = "/modify", method = RequestMethod.POST)
 	@ResponseBody
 	public Integer unityModifyPOST(HttpSession session, UnityVO vo) {

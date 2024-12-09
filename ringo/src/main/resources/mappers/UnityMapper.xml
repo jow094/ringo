@@ -26,7 +26,9 @@
 	    <collection property="unity_board" ofType="UnityBoardVO">
 	        <result property="unity_board_code" column="unity_board_code"/>
 	        <result property="unity_board_category" column="unity_board_category"/>
+	        <result property="unity_board_category_order" column="unity_board_category_order"/>
 	        <result property="unity_board_name" column="unity_board_name"/>
+	        <result property="unity_board_order" column="unity_board_order"/>
 	    </collection>
 	</resultMap>
 	
@@ -130,29 +132,10 @@
 	</select>
 	
 	<select id="selectUnity" resultMap="selectUnity_Map">
-		select 
-			unt.unity_code,
-			unt.unity_name,
-			unt.unity_admin,
-			unt.unity_tag,
-			unt.unity_intro,
-			unt.unity_method,
-			unt.unity_topic,
-			unt.unity_lang,
-			unt.unity_location,
-			unt.unity_private,
-			unt.unity_thumbnail_path,
-			unt.unity_since,
-			unt.unity_grade,
-			unt.unity_member_count,
-			ub.unity_board_code,
-			ub.unity_board_category,
-			ub.unity_board_name
-			
-		from _ringo_unity unt
-		left join _ringo_unity_board ub on unt.unity_code = ub.unity_code
+		select *
+		from unity unt
 		where unt.unity_code = #{unity_code} 
-		order by unity_board_code asc
+		order by unity_board_category_order asc, unity_board_order asc;
 	</select>
 	
 	<select id="selectUnityBasicPost" resultType="PostVO">
@@ -220,9 +203,6 @@
 			concat('[', unity_board_category, '] - ', unity_board_name) as unity_board_fullname
 		from _ringo_unity_board
 		where unity_board_code = #{unity_board_code}
-	</select>
-	
-	<select id="selectUnityModifyInfo" resultType="UnityVO">
 	</select>
 	
 	<update id="updateUnityInfo" parameterType="UnityVO">

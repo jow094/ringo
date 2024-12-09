@@ -77,31 +77,31 @@
 		<div class="unity_image_info">
 			<div class="picture_container column unity_thumbnail">
 				<div class="picture_content unity_thumbnail_preview">
-				    <input type="file" name="unity_thumbnail_file" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container();">
+				    <input type="file" name="unity_thumbnail_file" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container(this);">
 					<i class="material-symbols-outlined">add</i>
 				</div>
 				<div class="picture_name">유니티 썸네일</div>
 			</div>
 			<div class="picture_container column unity_banner">
 				<div class="picture_content unity_banner_preview">
-				    <input type="file" name="unity_banner_file" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container();">
+				    <input type="file" name="unity_banner_file" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container(this);">
 					<i class="material-symbols-outlined">add</i>
 				</div>
 				<div class="picture_name">유니티 배너</div>
 				<div class="banner_style">
 					<div class="select_style select_color">
-						<input type="color" class="outform" id="banner_color_value" onchange="select_banner_setting(this)"/>
+						<input type="color" class="outform" id="banner_color_value" onchange="select_banner_setting('create')"/>
 						<span>배너 배경색</span>
 					</div>
 					<div class="justify_set">
 						<div class="select_style">
-							<input type="range" class="outform" id="banner_horizontal_value" onchange="select_banner_setting(this)" class="slider" min="0" max="100" value="50">
+							<input type="range" class="outform" id="banner_horizontal_value" onchange="select_banner_setting('create')" class="slider" min="0" max="100" value="50">
 							<span>가로정렬</span>
 						</div>
 					</div>
 					<div class="justify_set">
 						<div class="select_style">
-							<input type="range" class="outform" id="banner_vertical_value" onchange="select_banner_setting(this)" class="slider" min="0" max="100" value="50">
+							<input type="range" class="outform" id="banner_vertical_value" onchange="select_banner_setting('create')" class="slider" min="0" max="100" value="50">
 							<span>세로정렬</span>
 						</div>
 					</div>
@@ -233,7 +233,7 @@
 						<div class="input_value">
 							<input type="text" name="unity_add_tag" onkeydown="if(event.key === 'Enter'){ add_tag(this); }"/>
 							<input type="hidden" name="unity_tag"/>
-							<div class="input_cell_button" onclick="add_tag(`input[name='unity_add_tag']`)">
+							<div class="input_cell_button" onclick="add_tag($(this).siblings(`input[name='unity_add_tag']`))">
 								추가
 							</div>
 						</div>
@@ -391,32 +391,32 @@
 										<div class="unity_image_modify">
 											<div class="picture_container column unity_thumbnail">
 												<div class="picture_content unity_thumbnail_preview">
-												    <input type="file" name="unity_thumbnail_file" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container();">
+												    <input type="file" name="unity_thumbnail_file" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container(this);">
 													<i class="material-symbols-outlined">add</i>
 												</div>
 												<div class="picture_name">유니티 썸네일</div>
 											</div>
 											<div class="picture_container column unity_banner">
 												<div class="picture_content unity_banner_preview">
-												    <input type="file" name="unity_banner_file" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container();">
+												    <input type="file" name="unity_banner_file" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container(this);">
 													<i class="material-symbols-outlined">add</i>
 												</div>
 												<div class="picture_name">유니티 배너</div>
 												<div class="unity_banner_modify">
 													<div class="select_style select_color">
-														<input type="color" class="outform" id="banner_color_value" onchange="select_banner_setting(this)"/>
+														<input type="color" class="outform" id="banner_color_value" onchange="select_banner_setting('modify')"/>
 														<span>배너 배경색</span>
 													</div>
 													<div class="select_justify column gap5">
 														<div class="justify_set">
 															<div class="select_style">
-																<input type="range" class="outform" id="banner_horizontal_value" onchange="select_banner_setting(this)" class="slider" min="0" max="100" value="50">
+																<input type="range" class="outform" id="banner_horizontal_value" onchange="select_banner_setting('modify')" class="slider" min="0" max="100" value="50">
 																<span>가로정렬</span>
 															</div>
 														</div>
 														<div class="justify_set">
 															<div class="select_style">
-																<input type="range" class="outform" id="banner_vertical_value" onchange="select_banner_setting(this)" class="slider" min="0" max="100" value="50">
+																<input type="range" class="outform" id="banner_vertical_value" onchange="select_banner_setting('modify')" class="slider" min="0" max="100" value="50">
 																<span>세로정렬</span>
 															</div>
 														</div>
@@ -430,7 +430,7 @@
 						  						<div class="input_cell unfinished_row">
 												<div class="input_name">유니티 이름</div>
 												<div class="input_value">
-													<input type="text" name="unity_name" onblur="validate_unity_name(this)" oninput="validate_unity_name(this)"/>
+													<input type="text" name="unity_name" onblur="validate_unity_name(this,'update')" oninput="validate_unity_name(this,'update')"/>
 												</div>
 											</div>
 											<div class="input_hint annotation_message">* 유니티의 이름을 입력 해주세요.</div>
@@ -538,8 +538,8 @@
 												<div class="input_value">
 													<input type="text" name="unity_add_tag" onkeydown="if(event.key === 'Enter'){ add_tag(this); }"/>
 													<input type="hidden" name="unity_tag"/>
-													<div class="input_cell_button" onclick="add_tag(`input[name='unity_add_tag']`)">
-														추가
+													<div class="input_cell_button" onclick="add_tag($(this).siblings(`input[name='unity_add_tag']`))">
+														추가									
 													</div>
 												</div>
 											</div>

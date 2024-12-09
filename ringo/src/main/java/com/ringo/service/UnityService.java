@@ -17,7 +17,6 @@ public interface UnityService {
 	public UnityVO getUnityProfile(UnityVO vo);
 	public UnityVO getUnityMain(UnityVO vo);
 	public UnityBoardVO getUnityBoardInfo(UnityBoardVO vo);
-	public UnityVO getUnityModify(String unity_code);
 	public Integer modifyUnity(UnityVO vo);
 	
 	

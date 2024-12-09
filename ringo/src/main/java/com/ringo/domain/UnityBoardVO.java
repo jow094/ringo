@@ -15,7 +15,9 @@ public class UnityBoardVO {
 	private String unity_code;
 	private String unity_board_code;
 	private String unity_board_category;
+	private Integer unity_board_category_order;
 	private String unity_board_name;
+	private Integer unity_board_order;
 	private String unity_board_fullname;
 	private String unity_post_code;
 	private String unity_add_direction;

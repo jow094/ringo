@@ -590,13 +590,13 @@
 	padding:5px;
 	flex-wrap: wrap;
   	gap: 5px;
+  	min-height: 40px;
   	max-height:300px;
   	overflow-y:auto;
 }
 
 .selected_card{
 	padding:5px 10px;
-	witdh:40px;
 	height:30px;
 	border-radius:5px;
 	background-color: white;

@@ -73,11 +73,6 @@ public class UnityServiceImpl implements UnityService {
 	}
 
 	@Override
-	public UnityVO getUnityModify(String unity_code) {
-		return unitydao.selectUnityModifyInfo(unity_code);
-	}
-
-	@Override
 	public Integer modifyUnity(UnityVO vo) {
 		return unitydao.updateUnityInfo(vo);
 	}

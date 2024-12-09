@@ -84,12 +84,6 @@ public class UnityDAOImpl implements UnityDAO {
 	}
 
 	@Override
-	public UnityVO selectUnityModifyInfo(String unity_code) {
-		logger.debug("selectUnityModifyInfo(String unity_code) - unity_code : "+unity_code);
-		return sqlSession.selectOne(NAMESPACE + ".selectUnityModifyInfo",unity_code);	
-	}
-
-	@Override
 	public Integer updateUnityInfo(UnityVO vo) {
 		logger.debug("updateUnityInfo(UnityVO vo) - vo : "+vo);
 		return sqlSession.update(NAMESPACE + ".updateUnityInfo",vo);	
