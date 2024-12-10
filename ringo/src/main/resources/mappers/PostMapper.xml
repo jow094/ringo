@@ -61,16 +61,16 @@
 	</resultMap>
 	
 	<resultMap id="selectUnityBoard_Map" type="UnityBoardVO">
-		<result property="unity_board_code" column="unity_board_code"/>
-		<result property="unity_board_fullname" column="unity_board_fullname"/>
-		<result property="unity_board_post_count" column="unity_board_post_count"/>
+		<result property="ub_board_code" column="ub_board_code"/>
+		<result property="ub_board_fullname" column="ub_board_fullname"/>
+		<result property="ub_post_count" column="ub_post_count"/>
 	    
 	    <collection property="unity_post" ofType="PostVO">
 		    <result property="post_code" column="post_code"/>
 		    <result property="post_title" column="post_title"/>
+		    <result property="post_time" column="post_time"/>
 		    <result property="post_recomm_count" column="post_recomm_count"/>
 		    <result property="post_reple_count" column="post_reple_count"/>
-		    <result property="post_time" column="post_time"/>
 		    <result property="writer_nickname" column="writer_nickname"/>
 		    <result property="writer_unity_member_grade" column="writer_unity_member_grade"/>
 		    <result property="post_seq" column="post_seq"/>
@@ -199,11 +199,11 @@
 		        upost_code,
 		        row_number() over (order by upost_time desc) as post_seq
 		    from _ringo_unity_post
-		    where upost_place = substring_index(substring_index(#{unity_post_code}, '-', 2), '-', -1)
+		    where upost_place = substring_index(substring_index(#{upost_code}, '-', 2), '-', -1)
 		)
 		select ceil(post_seq / 20) as page_num
 		from CTE_Posts
-		where upost_code = #{unity_post_code};
+		where upost_code = #{upost_code};
     </select>
 	
 	<select id="selectUnityPost" resultMap="selectUnityPost_Map">
@@ -211,13 +211,13 @@
 	        cmt.*
 		    from uPost up
         	left join comments cmt on cmt.reple_target = up.post_code
-		    where up.post_place = #{unity_board_code} and up.post_page = #{unity_board_page}
+		    where up.post_place = #{ub_board_code} and up.post_page = #{ub_page}
 		    order by up.post_seq asc
 	</select>
 	
 	<select id="selectUnityBoard" resultMap="selectUnityBoard_Map">
         select * from uBoard
-	        where unity_board_code = #{unity_board_code} and post_page = #{unity_board_page}
+	        where ub_board_code = #{ub_board_code} and post_page = #{ub_page}
 	        order by post_seq asc
 	</select>
 	
@@ -226,18 +226,18 @@
 	        cmt.*
 		    from uPost up
         	left join comments cmt on cmt.reple_target = up.post_code
-			where up.post_place = substring_index(substring_index(#{unity_post_code}, '-', 2), '-', -1)
-			<if test="unity_add_direction == 'up'">
+			where up.post_place = substring_index(substring_index(#{upost_code}, '-', 2), '-', -1)
+			<if test="ub_add_direction == 'up'">
 		        and up.post_page =
 		            case 
-		                when (select post_page from uPost where post_code = #{unity_post_code}) = 1 then 1
-		                else (select post_page from uPost where post_code = #{unity_post_code}) - 1
+		                when (select post_page from uPost where post_code = #{upost_code}) = 1 then 1
+		                else (select post_page from uPost where post_code = #{upost_code}) - 1
 		            end
-		        and up.post_time <![CDATA[ > ]]> (select post_time FROM uPost where post_code = #{unity_post_code})
+		        and up.post_time <![CDATA[ > ]]> (select post_time FROM uPost where post_code = #{upost_code})
 		    </if>
-		    <if test="unity_add_direction == 'down'">
-		        and up.post_page = (select post_page from uPost where post_code = #{unity_post_code}) + 1
-		        and up.post_time <![CDATA[ < ]]> (select post_time from uPost where post_code = #{unity_post_code})
+		    <if test="ub_add_direction == 'down'">
+		        and up.post_page = (select post_page from uPost where post_code = #{upost_code}) + 1
+		        and up.post_time <![CDATA[ < ]]> (select post_time from uPost where post_code = #{upost_code})
 		    </if>
 			order by post_seq asc
 	</select>

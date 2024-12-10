@@ -24,11 +24,13 @@
 	    <result property="unity_member_count" column="unity_member_count"/>
 	    
 	    <collection property="unity_board" ofType="UnityBoardVO">
-	        <result property="unity_board_code" column="unity_board_code"/>
-	        <result property="unity_board_category" column="unity_board_category"/>
-	        <result property="unity_board_category_order" column="unity_board_category_order"/>
-	        <result property="unity_board_name" column="unity_board_name"/>
-	        <result property="unity_board_order" column="unity_board_order"/>
+	        <result property="ub_board_code" column="ub_board_code"/>
+	        <result property="ub_board_name" column="ub_board_name"/>
+	        <result property="ub_board_order" column="ub_board_order"/>
+	        <result property="ub_category_code" column="ub_category_code"/>
+	        <result property="ub_category_name" column="ub_category_name"/>
+	        <result property="ub_category_order" column="ub_category_order"/>
+	        <result property="ub_board_fullname" column="ub_board_fullname"/>
 	    </collection>
 	</resultMap>
 	
@@ -133,9 +135,9 @@
 	
 	<select id="selectUnity" resultMap="selectUnity_Map">
 		select *
-		from unity unt
-		where unt.unity_code = #{unity_code} 
-		order by unity_board_category_order asc, unity_board_order asc;
+		from unity
+		where unity_code = #{unity_code} 
+		order by ub_category_order asc, ub_board_order asc;
 	</select>
 	
 	<select id="selectUnityBasicPost" resultType="PostVO">
@@ -197,15 +199,68 @@
 	
 	<select id="selectUnityBoardInfo" resultType="UnityBoardVO">
        	select
-			unity_board_code,
-			unity_board_category,
-			unity_board_name,
-			concat('[', unity_board_category, '] - ', unity_board_name) as unity_board_fullname
-		from _ringo_unity_board
-		where unity_board_code = #{unity_board_code}
+			ub_category_code,
+			ub_category_name,
+			ub_category_order,
+			ub_board_code,
+			ub_board_name,
+			ub_board_order,
+			ub_board_fullname
+		from unity
+		where ub_board_code = #{ub_board_code}
 	</select>
 	
 	<update id="updateUnityInfo" parameterType="UnityVO">
+		update _ringo_unity
+		set unity_name = #{unity_name},
+			unity_tag = #{unity_tag},
+			unity_intro = #{unity_intro},
+			unity_method = #{unity_method},
+			unity_topic = #{unity_topic},
+			unity_lang = #{unity_lang},
+			unity_location = #{unity_location},
+			unity_private = #{unity_private},
+			unity_thumbnail_path = #{unity_thumbnail_path},
+			unity_banner_path = #{unity_banner_path},
+			unity_banner_set = #{unity_banner_set}
+		where unity_code = #{unity_code}
 	</update>
+	
+	<insert id="insertUnityBoard" parameterType="UnityBoardVO">
+		insert into _ringo_unity_board
+		values (
+			unity_code = #{},
+			ub_category_code = #{},
+			ub_category_name = #{},
+			ub_category_order = #{},
+			ub_board_code = #{},
+			ub_board_name = #{},
+			ub_board_order = #{}
+		)
+	</insert>
+	
+	<update id="updateUnityCategory" parameterType="UnityBoardVO">
+		update _ringo_unity_board
+		set ub_category_name = #{ub_category_name},
+			ub_category_order = #{ub_category_order}
+		where ub_category_code = #{ub_category_code}
+	</update>
+	
+	<update id="updateUnityBoard" parameterType="UnityBoardVO">
+		update _ringo_unity_board
+		set ub_board_name = #{ub_board_name},
+			ub_board_order = #{ub_board_order}
+		where ub_board_code = #{ub_board_code}
+	</update>
+	
+	<delete id="deleteUnityCategory" parameterType="UnityBoardVO">
+		delete from _ringo_unity 
+		where ub_category_code = #{ub_category_code}
+	</delete>
+	
+	<delete id="deleteUnityBoard" parameterType="UnityBoardVO">
+		delete from _ringo_unity 
+		where ub_board_code = #{ub_board_code}
+	</delete>
 	
 </mapper>  

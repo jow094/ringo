@@ -85,7 +85,7 @@ public class PostDAOImpl implements PostDAO {
 	public Map<String,Object> selectUnityBoardPost(UnityBoardVO vo) {
 		logger.debug("selectUnityBoardPost(UnityBoardVO vo) - vo : "+vo);
 		Integer page = sqlSession.selectOne(NAMESPACE + ".selectUnityPage",vo);
-		vo.setUnity_board_page(page);
+		vo.setUb_page(page);
 		
 		Map<String,Object> result = new HashMap<String,Object>();
 		result.put("page", page);

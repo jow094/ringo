@@ -1044,20 +1044,21 @@ function get_unity_profile(unity_code){
         		`);
         	}else{
         		for (const boardData of data.unity_board) {
-        			const category = boardData.unity_board_code.split("_")[2];
-        			const board = boardData.unity_board_code.split("_")[2];
-        			const untCodeCategory = boardData.unity_board_code.split("_").slice(0, 3).join("_");
+        			const category = boardData.ub_category_code;
+        			const category_name = boardData.ub_category_name;
+        			const board = boardData.ub_board_code;
+        			const board_name = boardData.ub_board_name;
         			const select = $('.unity_write').find('#unity_post_place');
         			
-        			var $categoryContainer = $boards.find(`[data-category="${untCodeCategory}"]`);
+        			var $categoryContainer = $boards.find(`[data-ub_category_code="${category}"]`);
         			
         			if ($categoryContainer.length === 0) {
         				
         				$categoryContainer = $('<div class="inner_box mw mgb"></div>')
-        				.attr('data-category', untCodeCategory)
+        				.attr('data-ub_category_code', category)
         				.append(`
     						<div class="inner_title h20" onclick="inner_box_toggle(this)">
-	    						${boardData.unity_board_category}
+	    						${category_name}
 	    						<i class="material-symbols-outlined col_tgb">arrow_drop_up</i>
     						</div>
     						<div class="inner_content expanded gap5">
@@ -1067,19 +1068,19 @@ function get_unity_profile(unity_code){
         				$boards.append($categoryContainer);
         				
         				const $optgroup = $('<optgroup>', { 
-        					label: boardData.unity_board_category,
-        					'data-category': untCodeCategory
+        					label: category_name,
+        					'data-ub_category_code': category
         				});
         				
         				select.append($optgroup);
         			}
         			
         			$categoryContainer.find('.inner_content').append(`
-    					<div class="unity_board" data-category="${boardData.unity_board_category}" data-unity_board_code="${boardData.unity_board_code}" onclick="enter_unity_board('board',this)"><span>${boardData.unity_board_name}</span></div>
+    					<div class="unity_board" data-ub_category_code="${category}" data-ub_board_code="${board}" onclick="enter_unity_board('board',this)"><span>${board_name}</span></div>
         			`);
         			
-        			$(`optgroup[data-category="${untCodeCategory}"]`).append(`
-    					<option value="${boardData.unity_board_code}">[${boardData.unity_board_category}] - ${boardData.unity_board_name}</option>
+        			$(`optgroup[data-ub_category_code="${category}"]`).append(`
+    					<option value="${board}">${boardData.ub_board_fullname}</option>
         			`);
         		}
         		$('.unity_profile_container .scroll_box').html($boards);
@@ -1191,31 +1192,34 @@ function get_unity_main(unity_code){
     });
 }
 
-function get_unity_board_info(unity_board_code,unity_post_code){
+function get_unity_board_info(ub_board_code,upost_code){
 	
 	$.ajax({
         type: "GET",
         url: "/unity/boardInfo",
-        data: {unity_board_code:unity_board_code,unity_post_code:unity_post_code},
+        data: {ub_board_code:ub_board_code,upost_code:upost_code},
         dataType: "json",
         success: function(data) {
         	
-        	$('#unity_board_info').attr('data-unity_board_code',`${data.unity_board_code}`);
-    		$('#unity_board_info').text(data.unity_board_fullname);
+        	$('#unity_board_info').attr('data-ub_board_code',`${data.ub_board_code}`);
+    		$('#unity_board_info').text(data.ub_board_fullname);
         },
         error: function(xhr, status, error) {
         }
     });
 }
 
-function get_unity_board(unity_board_code,unity_board_page){
+function get_unity_board(ub_board_code,ub_page){
 	
 	$.ajax({
         type: "GET",
         url: "/unity/board",
-        data: {unity_board_code:unity_board_code,unity_board_page:unity_board_page},
+        data: {ub_board_code:ub_board_code,ub_page:ub_page},
         dataType: "json",
         success: function(data) {
+        	
+        	console.log('op',origin_page);
+        	console.log('cp',current_page);
         	
         	$('.in_unity_post .post_list').empty();
         	
@@ -1233,19 +1237,30 @@ function get_unity_board(unity_board_code,unity_board_page){
         	
         	for (const postVO of data.unity_post){
         		$('.in_unity_post .post_list').append(`
-    				<div class="post_row" data-post_seq=${postVO.post_seq} data-post_place=${unity_board_code} data-post_code=${postVO.post_code} onclick="scrollToPost(this)">
+    				<div class="post_row" data-post_seq=${postVO.post_seq} data-post_place=${ub_board_code} data-post_code=${postVO.post_code} onclick="scrollToPost(this)">
 						<div>${postVO.post_title}</div>
-						<div><i class="fa-regular fa-comment-dots"></i><span>${postVO.post_reple_count}</span></div>
-						<div><i class="fa-regular fa-heart"></i><span>${postVO.post_recomm_count}</span></div>
-						<div><i class="material-symbols-outlined sf">counter_5</i><span>${postVO.writer_nickname}</span></div>
-						<div><span>${auto_format_date(postVO.post_time)}</span></div>
+						<div>
+							<i class="fa-regular fa-comment-dots"></i>
+							<span>${postVO.post_reple_count}</span>
+						</div>
+						<div>
+							<i class="fa-regular fa-heart"></i>
+							<span>${postVO.post_recomm_count}</span>
+						</div>
+						<div>
+							<i class="material-symbols-outlined sf">counter_5</i>
+							<span>${postVO.writer_nickname}</span>
+						</div>
+						<div>
+							<span>${auto_format_date(postVO.post_time)}</span>
+						</div>
 					</div>
         		`);
         	}
         	
-            let totalPosts = data.unity_board_post_count;
+            let totalPosts = data.ub_post_count;
             let totalPages = Math.ceil(totalPosts / 20);
-
+            
             $('.added_page').empty();
 
             for (let i = 2; i <= Math.min(totalPages, 10); i++) {
@@ -1253,16 +1268,14 @@ function get_unity_board(unity_board_code,unity_board_page){
             }
 
             $('.num').off('click').on('click', function() {
-                get_unity_board(unity_board_code, $(this).text());
+                get_unity_board(ub_board_code, $(this).text());
             });
-            
-            view_check();
         	
-            if(unity_board_page != null && unity_board_page != undefined){
-            	origin_page = unity_board_page;
+            if(ub_page != null){
+            	origin_page = ub_page;
             	$('.num').removeClass('pressed');
-            	if(!$('.num').filter(`:contains('${unity_board_page}')`).hasClass('pressed')){
-            		$('.num').filter(`:contains('${unity_board_page}')`).addClass('pressed');
+            	if(!$('.num').filter(`:contains('${ub_page}')`).hasClass('pressed')){
+            		$('.num').filter(`:contains('${ub_page}')`).addClass('pressed');
             	}
             }
         },
@@ -1271,13 +1284,13 @@ function get_unity_board(unity_board_code,unity_board_page){
     });
 }
 
-function get_unity_post(unity_board_code,unity_post_code,unity_board_page){
+function get_unity_post(ub_board_code,upost_code,unity_board_page){
 	
 	$.ajax({
         type: "GET",
         url: "/unity/post",
-        data: {unity_board_code:unity_board_code,
-	        	unity_post_code:unity_post_code,
+        data: {ub_board_code:ub_board_code,
+	        	upost_code:upost_code,
 	        	unity_board_page:unity_board_page},
         dataType: "json",
         success: function(data) {
@@ -1296,7 +1309,7 @@ function get_unity_post(unity_board_code,unity_post_code,unity_board_page){
         	for (const postVO of data){
         		
         		const post = `
-	        		<div class="card" data-post_seq="${postVO.post_seq}" data-post_place=${unity_board_code} data-post_code="${postVO.post_code}">
+	        		<div class="card" data-post_seq="${postVO.post_seq}" data-post_place=${ub_board_code} data-post_code="${postVO.post_code}">
 						<div class="unity_card_header">
 							<div class="uch_titles">
 			        			<div class="uch_board">${postVO.post_place_name}</div>
@@ -1446,7 +1459,7 @@ function get_unity_board_post(post_place,post_code){
 	$.ajax({
         type: "GET",
         url: "/unity/boardPost",
-        data: {unity_board_code:post_place,unity_post_code:post_code},
+        data: {ub_board_code:post_place,upost_code:post_code},
         dataType: "json",
         success: function(data) {
         	
@@ -1456,9 +1469,9 @@ function get_unity_board_post(post_place,post_code){
         	
         	if (isEmpty(data.post)) {
         		$('.in_unity_post .post_list').append(`
-        				<div class="empty">
+    				<div class="empty">
         				게시글 목록이 없습니다.
-        				</div>
+    				</div>
         		`);
         		return;
         	}
@@ -1660,13 +1673,13 @@ function get_unity_board_post(post_place,post_code){
     });
 }
 
-function add_unity_post(unity_post_code,unity_add_direction,is_finished){
+function add_unity_post(upost_code,ub_add_direction,is_finished){
 	spin_start('#unity_posts');
 	
 	$.ajax({
         type: "GET",
         url: "/unity/addPost",
-        data: {unity_post_code:unity_post_code,unity_add_direction:unity_add_direction},
+        data: {upost_code:upost_code,ub_add_direction:ub_add_direction},
         dataType: "json",
         success: function(data) {
         	spin_end('#unity_posts');
@@ -1681,7 +1694,7 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
         	
         	console.log('additional up',data);
         	
-        	if(unity_add_direction == 'up'){
+        	if(ub_add_direction == 'up'){
     			data.reverse();
     		}
         	
@@ -1742,7 +1755,7 @@ function add_unity_post(unity_post_code,unity_add_direction,is_finished){
         		
         		const $card = $(post);
         		
-        		if(unity_add_direction == 'up'){
+        		if(ub_add_direction == 'up'){
         			let currentScroll = $('.unity_cards').scrollTop();
         			$('.unity_cards').prepend($card);
         			$('.unity_cards').scrollTop(currentScroll + $card.outerHeight(true));
@@ -1924,10 +1937,64 @@ function get_modify_unity(unity_code){
 					target.val(value);
 					target.trigger('input');
 				}
-				
         	}
+			const uniqueCategories = new Set(data.unity_board.map(item => item.ub_category_code));
+			const category_num = uniqueCategories.size;
 			
-			clear_unity_create_container(container);
+			var categories = [];
+			for (let i = 0; i < category_num; i++) {
+				categories[i] = `
+					<div class="inner_box modify_board moveable" data-category="">
+						<div class="inner_title h30">
+							<input id="ub_category_name" class="modify" type="text" value="">
+							<div class="tiny_button_section">
+    							<i class="material-symbols-outlined" onclick="pull_up(this)">arrow_drop_up</i>
+    							<i class="material-symbols-outlined" onclick="push_down(this)">arrow_drop_down</i>
+    							<i class="material-symbols-outlined" onclick="add_board(this)">add</i>
+    							<i class="material-symbols-outlined" onclick="remove_category(this)">remove</i>
+    						</div>
+						</div>
+    					<div class="inner_content expanded gap5">
+    					</div>
+					</div>`;
+			}
+			
+			const bc = $('.modify_board_container');
+			var i = 0;
+			for (const boardData of data.unity_board) {
+    			const category = boardData.ub_category_code;
+    			const category_name = boardData.ub_category_name;
+    			const board = boardData.ub_board_code;
+    			const board_name = boardData.ub_board_name;
+    			
+    			var $categoryContainer = bc.find(`[data-ub_category_code="${category}"]`);
+    			
+    			if ($categoryContainer.length == 0) {
+    				console.log('new category!');
+    				
+    				$categoryContainer = $(categories[i])
+    				.attr('data-ub_category_code', category);
+    				$categoryContainer.find('input').val(category_name);
+    				bc.append($categoryContainer);
+    				i++;
+    			}
+    			
+    			$categoryContainer.find('.inner_content').append(`
+    				<div class="unity_board moveable" data-ub_board_code="${board}">
+						<input id="ub_board_name" class="modify" type="text" value="${board_name}">
+						<div class="tiny_button_section">
+							<i class="material-symbols-outlined" onclick="pull_up(this)">arrow_drop_up</i>
+							<i class="material-symbols-outlined" onclick="push_down(this)">arrow_drop_down</i>
+							<i class="material-symbols-outlined" onclick="remove_board(this)">remove</i>
+						</div>
+					</div>
+    			`);
+    			console.log('board!');
+    		}
+			
+			setTimeout(() => {
+				clear_unity_create_container(container);
+			}, 10);
 		},
 		error: function(xhr, status, error) {
 		}
@@ -1939,7 +2006,7 @@ function post_modify_unity(){
 	$.ajax({
 		type: "GET",
 		url: "/unity/addPost",
-		data: {unity_post_code:unity_post_code,unity_add_direction:unity_add_direction},
+		data: {upost_code:upost_code,ub_add_direction:ub_add_direction},
 		dataType: "json",
 		success: function(data) {
 		},
@@ -1947,4 +2014,12 @@ function post_modify_unity(){
 			spin_end('#unity_posts');
 		}
 	});
+}
+
+function submit_modify_unity(){
+	const container = $('.in_unity_modify');
+	/*container.find('.modify_board');
+	
+	modify_board의 data-ub_category_code, 내부의 #ub_category_name val
+	modify_board 내부의 unity_board 가 가진 data-unity_board_code, 내부의 id="ub_category_name".val*/
 }

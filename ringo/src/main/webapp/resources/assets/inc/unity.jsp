@@ -391,14 +391,14 @@
 										<div class="unity_image_modify">
 											<div class="picture_container column unity_thumbnail">
 												<div class="picture_content unity_thumbnail_preview">
-												    <input type="file" name="unity_thumbnail_file" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container(this);">
+												    <input type="file" name="unity_thumbnail_file" class="picture_input" accept="image/*" onchange="add_image(this);">
 													<i class="material-symbols-outlined">add</i>
 												</div>
 												<div class="picture_name">유니티 썸네일</div>
 											</div>
 											<div class="picture_container column unity_banner">
 												<div class="picture_content unity_banner_preview">
-												    <input type="file" name="unity_banner_file" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container(this);">
+												    <input type="file" name="unity_banner_file" class="picture_input" accept="image/*" onchange="add_image(this);">
 													<i class="material-symbols-outlined">add</i>
 												</div>
 												<div class="picture_name">유니티 배너</div>
@@ -621,42 +621,17 @@
 							</div>
 						</div>
 						<div class="in_unity_home_right_container">
-							<div class="inner_box max_div">
+							<div class="mbc inner_box max_div">
 								<div class="inner_title h20">게시판 설정</div>
 								<div class="inner_content modify_board_container">
-								
 									<div class="inner_box new_category" onclick="add_category()">
 										<div class="inner_title h20">
 											카테고리 추가
 											<div class="tiny_button_section">
-			        							<i class="material-symbols-outlined">add</i>
-			        						</div>
+												<i class="material-symbols-outlined">add</i>
+											</div>
 										</div>
-		        					</div>
-		        					
-									<div class="inner_box modify_board" data-category="">
-										<div class="inner_title h30">
-											<input class="modify" type="text" value="공지사항">
-											<div class="tiny_button_section">
-			        							<i class="material-symbols-outlined">arrow_drop_up</i>
-			        							<i class="material-symbols-outlined">arrow_drop_down</i>
-			        							<i class="material-symbols-outlined">add</i>
-			        							<i class="material-symbols-outlined">remove</i>
-			        						</div>
-										</div>
-			        					<div class="inner_content expanded gap5">
-			        						<div class="unity_board"  data-unity_board_code="">
-												<input class="modify" type="text" value="메인 공지">
-			        							<div class="tiny_button_section">
-				        							<i class="material-symbols-outlined">arrow_drop_up</i>
-				        							<i class="material-symbols-outlined">arrow_drop_down</i>
-				        							<i class="material-symbols-outlined">remove</i>
-				        						</div>
-			        						</div>
-			        					</div>
-		        					</div>
-		        					
-		        					
+									</div>
 								</div>
 							</div>
 						</div>

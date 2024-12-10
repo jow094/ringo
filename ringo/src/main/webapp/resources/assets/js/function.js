@@ -770,6 +770,9 @@ function set_finished(e, direction) {
 	if($(e).closest('.unity_create_container').length>0){
 		clear_unity_create_container(e);
 	}
+	if($(e).closest('.unity_modify_container').length>0){
+		clear_unity_create_container($('.unity_modify_container'));
+	}
 }
 
 function set_unfinished(e, direction) {
@@ -784,8 +787,11 @@ function set_unfinished(e, direction) {
 	    check_finished(index,'.join_modal');
     }
     
-	if($(e).closest('.unity_create_container').length>0){
+    if($(e).closest('.unity_create_container').length>0){
 		clear_unity_create_container(e);
+	}
+	if($(e).closest('.unity_modify_container').length>0){
+		clear_unity_create_container($('.unity_modify_container'));
 	}
 }
 
@@ -799,6 +805,13 @@ function set_failed(e, direction) {
 	    const index = match ? match[1] : undefined;
 	    check_finished(index,'.join_modal');
     }
+    
+    if($(e).closest('.unity_create_container').length>0){
+		clear_unity_create_container(e);
+	}
+	if($(e).closest('.unity_modify_container').length>0){
+		clear_unity_create_container($('.unity_modify_container'));
+	}
 }
 
 function set_hint(e,msg,className){
@@ -983,7 +996,14 @@ function add_image(input) {
     
     if($(input).closest('.unity_banner').length>0){
     	setTimeout(function() {
-    		select_banner_setting();
+    		
+    		if($(input).closest('.unity_modify_container').length>0){
+    			select_banner_setting('modify');
+    			clear_unity_create_container($('.unity_modify_container'));
+    		}else{
+    			select_banner_setting('create');
+    			clear_unity_create_container(e);
+    		}
     		$(input).closest('.picture_content').next('img').css('transition','object-position 0s');
     	},10);
     }
@@ -1026,6 +1046,7 @@ function delete_image(e) {
 		}
 		
 		if($(e).closest('.unity_thumbnail').length>0){
+			console.log('ut');
 			
 			const unity_thumbnail = $(e).closest('.unity_thumbnail');
 			
@@ -1036,19 +1057,29 @@ function delete_image(e) {
 				</div>
 				<div class="picture_name">유니티 썸네일</div>
 			`);
+			if($(e).closest('.unity_modify_container').length>0){
+				console.log('umc!!');
+				clear_unity_create_container($('.unity_modify_container'));
+			}
 		}
 		
 		if($(e).closest('.unity_banner').length>0){
+			const isUMC = $(e).closest('.unity_modify_container').length;
 			
 			const unity_banner = $(e).closest('.unity_banner');
 			$(e).remove();
 			unity_banner.prepend(`
 				<div class="picture_content unity_banner_preview">
-				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container(this)">
+				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container(this);">
 					<i class="material-symbols-outlined">add</i>
 				</div>
 			`);
+			if(isUMC>0){
+				clear_unity_create_container($('.unity_modify_container'));
+			}
 		}
+		
+		
     }, 1);
 }
 
@@ -1185,6 +1216,11 @@ function clear_card(container){
 function clear_unity_create_container(e){
 	
 	var container;
+	var count;
+	var target;
+	var hint;
+	var thumbnail;
+	var banner;
 	
 	if($(e).hasClass('unity_modify_container')){
 		container = $(e);
@@ -1192,36 +1228,44 @@ function clear_unity_create_container(e){
 		container = $(e).closest('.unity_create_container');
 	}
 	
-	var count = container.find(':not(.last_submit)').filter('.unfinished_row').length + container.find(':not(.last_submit)').filter('.failed_row').length;
-	var target = container.find('.last_submit');
-	var hint = container.find('.submit_hint');
-	var thumbnail = container.find('input[name="unity_thumbnail_file"]').val();
-	var banner = container.find('input[name="unity_banner_file"]').val();
+	if(container.hasClass('unity_create_container')){
+		count = container.find(':not(.last_submit)').filter('.unfinished_row').length + container.find(':not(.last_submit)').filter('.failed_row').length;
+		target = container.find('.last_submit');
+		hint = container.find('.submit_hint');
+		thumbnail = container.find('input[name="unity_thumbnail_file"]').val();
+		banner = container.find('input[name="unity_banner_file"]').val();
+	}else if(container.hasClass('unity_modify_container')){
+		count = container.find(':not(.last_submit)').filter('.unfinished_row').length + container.find(':not(.last_submit)').filter('.failed_row').length;
+		hint = $('.in_unity_modify_container').find('.submit_hint');
+		target = $('.unity_modify_container_buttons').find('.last_submit');
+		thumbnail = container.find('.unity_thumbnail_preview').find('img').length;
+		banner = container.find('.unity_banner_preview').find('img').length;
+	}
 	
-	console.log(count);
-	
-	if(thumbnail != '' && banner != '' && count==0){
-		target.removeClass(`unfinished_row`)
-		if (!target.hasClass(`finished_row`)) {
-			target.addClass(`finished_row`);
+	if(thumbnail != null && banner != null){
+		if(thumbnail==1 && banner==1 && count==0){
+			target.removeClass(`unfinished_row`)
+			if (!target.hasClass(`finished_row`)) {
+				target.addClass(`finished_row`);
+			}
+			hint.removeClass('annotation_message');
+			hint.removeClass('failed_message');
+			if(!hint.hasClass('success_message')){
+				hint.addClass('success_message');
+			}
+			hint.text('* 모든 정보를 입력하셨습니다.');
+		}else{
+			target.removeClass(`finished_row`)
+			if (!target.hasClass(`unfinished_row`)) {
+				target.addClass(`unfinished_row`);
+			}
+			hint.removeClass('success_message');
+			hint.removeClass('failed_message');
+			if(!hint.hasClass('annotation_message')){
+				hint.addClass('annotation_message');
+			}
+			hint.text('* 미 입력 된 항목이 있습니다.');
 		}
-		hint.removeClass('annotation_message');
-		hint.removeClass('failed_message');
-		if(!hint.hasClass('success_message')){
-			hint.addClass('success_message');
-		}
-		hint.text('* 모든 정보를 입력하셨습니다.');
-	}else{
-		target.removeClass(`finished_row`)
-		if (!target.hasClass(`unfinished_row`)) {
-			target.addClass(`unfinished_row`);
-		}
-		hint.removeClass('success_message');
-		hint.removeClass('failed_message');
-		if(!hint.hasClass('annotation_message')){
-			hint.addClass('annotation_message');
-		}
-		hint.text('* 미 입력 된 항목이 있습니다.');
 	}
 }
 
@@ -1775,6 +1819,14 @@ function delete_tag(e){
 			if(container.hasClass('expanded')){
 				col_toggle(container);
 			}
+		}else if(container.closest('.unity_modify_container').length>0 && container.find('.tag_card').length==0){
+			
+			set_hint(container.prev('.input_box').find('input'),'* 유니티를 표현하는 태그를 입력해주세요.','annotation_message');
+			set_unfinished(container.prev('.input_box').find('input'), 'row');
+			
+			if(container.hasClass('expanded')){
+				col_toggle(container);
+			}
 		}
 	
     }, 1);
@@ -1878,26 +1930,29 @@ function delete_person_card(event) {
 }
 
 function select_banner_setting(e) {
+	
 	var container;
+	
 	if(e == 'create'){
 		container = $('.unity_create_container');
 	}else if(e == 'modify'){
 		container = $('.unity_modify_container');
 	}
 	
-    const horizon = container.find('#banner_horizontal_value').val();
-    const vertical = container.find('#banner_vertical_value').val();
-    const color = container.find('#banner_color_value').val();
-
-    const banner_setting = `background-color: ${color}; object-position: ${horizon}% ${vertical}%;`;
-
-    container.find('input[name="unity_banner_set"]').val(banner_setting);
-
-    const img = container.find('.unity_banner_preview').find('img')[0];
-    
-    if(img!=null){
-    	img.style.cssText = banner_setting;
-    }
+	if(container){
+		const horizon = container.find('#banner_horizontal_value').val();
+		const vertical = container.find('#banner_vertical_value').val();
+		const color = container.find('#banner_color_value').val();
+		
+		const banner_setting = `background-color: ${color}; object-position: ${horizon}% ${vertical}%;`;
+		container.find('input[name="unity_banner_set"]').val(banner_setting);
+		
+		const img = container.find('.unity_banner_preview').find('img')[0];
+		
+		if(img!=null){
+			img.style.cssText = banner_setting;
+		}
+	}
 }
 
 function expand_create_unity(){
@@ -1953,7 +2008,7 @@ function enter_unity_board(method,e){
 	if(method=='return'){
 		post_place = e;
 		ub_code = e;
-		$('#unity_board_info').attr('data-unity_board_code',e);
+		$('#unity_board_info').attr('data-ub_board_code',e);
 		setTimeout(() => {
 			$('.unity_cards').animate({
 	            scrollTop: 0
@@ -1961,9 +2016,9 @@ function enter_unity_board(method,e){
 		}, 100);
 	}
 	if(method=='board'){
-		post_place = $(e).attr('data-unity_board_code');
-		ub_code = $(e).attr('data-unity_board_code');
-		$('#unity_board_info').attr('data-unity_board_code',$(e).attr('data-unity_board_code'));
+		post_place = $(e).attr('data-ub_board_code');
+		ub_code = $(e).attr('data-ub_board_code');
+		$('#unity_board_info').attr('data-ub_board_code',$(e).attr('data-ub_board_code'));
 	}
 	
 	unity_code = post_place.split('_').slice(0, 2).join('_');
@@ -1982,7 +2037,7 @@ function enter_unity_board(method,e){
 		get_unity_profile(unity_code);
 	}
 	
-	$('.unity_board_names').find(`[data-unity_board_code=${post_place}]`).addClass('rounding');
+	$('.unity_board_names').find(`[data-ub_board_code=${post_place}]`).addClass('rounding');
 	$('#unity_post_place').find(`option[value="${post_place}"]`).prop('selected', true);
 }
 
@@ -1990,7 +2045,7 @@ function enter_unity_post(e){
 	showingCard = [];
 	
 	ub_code = $(e).attr('data-post_place');
-	$('#unity_board_info').attr('data-unity_board_code',$(e).attr('data-unity_board_code'));
+	$('#unity_board_info').attr('data-ub_board_code',$(e).attr('data-ub_board_code'));
 	$('.unity_board_names').find('.rounding').removeClass('rounding');
 	
 	hide('.unity_create_container');
@@ -2018,7 +2073,7 @@ function enter_unity_post(e){
 		get_unity_profile(unity_code);
 	}
 	
-	$('.unity_board_names').find(`[data-unity_board_code=${post_place}]`).addClass('rounding');
+	$('.unity_board_names').find(`[data-ub_board_code=${post_place}]`).addClass('rounding');
 	$('#unity_post_place').find(`option[value="${post_place}"]`).prop('selected', true);
 }
 
@@ -2141,6 +2196,7 @@ function scrollToPost(e) {
             	post.removeClass('shake');
             }, 1000);
 
+            view_check();
         }, 500);
     } else {
     	enter_unity_post(e);
@@ -2182,9 +2238,9 @@ function next_img(e){
 }
 function add_category(){
 	$('.new_category').after(`
-		<div class="inner_box modify_board expanded moveable" data-category="">
+		<div class="inner_box modify_board expanded moveable" data-ub_category_code="">
 			<div class="inner_title h30">
-				<input class="modify" type="text" value="새 카테고리">
+				<input id="ub_category_name" class="modify" type="text" value="새 카테고리">
 				<div class="tiny_button_section">
 					<i class="material-symbols-outlined" onclick="pull_up(this)">arrow_drop_up</i>
 					<i class="material-symbols-outlined" onclick="push_down(this)">arrow_drop_down</i>
@@ -2193,8 +2249,8 @@ function add_category(){
 				</div>
 			</div>
 			<div class="inner_content expanded gap5">
-				<div class="unity_board moveable"  data-unity_board_code="">
-					<input class="modify" type="text" value="새 게시판">
+				<div class="unity_board moveable" data-ub_board_code="">
+					<input id="ub_board_name" class="modify" type="text" value="새 게시판">
 					<div class="tiny_button_section">
 						<i class="material-symbols-outlined" onclick="pull_up(this)">arrow_drop_up</i>
 						<i class="material-symbols-outlined" onclick="push_down(this)">arrow_drop_down</i>
@@ -2218,8 +2274,8 @@ function cancle_remove(e){
 }
 function add_board(e){
 	$(e).closest('.modify_board').find('.unity_board').last().after(`
-		<div class="unity_board moveable" data-unity_board_code="">
-			<input class="modify" type="text" value="새 게시판">
+		<div class="unity_board moveable" data-ub_board_code="">
+			<input id="ub_board_name" class="modify" type="text" value="새 게시판">
 			<div class="tiny_button_section">
 				<i class="material-symbols-outlined" onclick="pull_up(this)">arrow_drop_up</i>
 				<i class="material-symbols-outlined" onclick="push_down(this)">arrow_drop_down</i>

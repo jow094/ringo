@@ -330,6 +330,7 @@ div,i {
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.3);
+    border-radius: inherit;
     z-index: 5;
 }
 .overlay:hover .restore{
@@ -341,7 +342,6 @@ div,i {
 }
 .deleted{
 	position: relative;
-    overflow:hidden;
 }
 i.ringo {
 	display: inline-block;
@@ -3268,6 +3268,7 @@ textarea{
 	display:flex;
 	align-items:center;
 	justify-content: space-between;
+	gap:5px;
 }
 .page i:not(.material-symbols-outlined){
 	font-size:8px;
@@ -3700,7 +3701,7 @@ textarea.scroll {
 }
 .modify_board{
 	width:100%;
-	height: auto !important;
+	min-height: auto !important;
 	max-height: 200px;
 	flex-grow:0;
 	padding:0px 5px 5px 5px;
