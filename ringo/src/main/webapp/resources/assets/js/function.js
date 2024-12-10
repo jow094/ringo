@@ -1002,7 +1002,7 @@ function add_image(input) {
     			clear_unity_create_container($('.unity_modify_container'));
     		}else{
     			select_banner_setting('create');
-    			clear_unity_create_container(e);
+    			clear_unity_create_container(input);
     		}
     		$(input).closest('.picture_content').next('img').css('transition','object-position 0s');
     	},10);
@@ -1020,13 +1020,13 @@ function delete_image(e) {
 			const thumbnail = $(e).closest('.thumbnail');
 			
 			thumbnail.html(`
-					<div class="picture_content">
-						<input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);" multiple>
-						<i class="material-symbols-outlined">add</i>
-					</div>
-					<div class="picture_name">
-						대표 프로필 사진
-					</div>
+				<div class="picture_content">
+					<input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);" multiple>
+					<i class="material-symbols-outlined">add</i>
+				</div>
+				<div class="picture_name">
+					대표 프로필 사진
+				</div>
 			`);
 			
 			const match = $(thumbnail).closest('.cards').attr('class').match(/card_(\d+)/);
@@ -1052,7 +1052,7 @@ function delete_image(e) {
 			
 			unity_thumbnail.html(`
 				<div class="picture_content unity_thumbnail_preview">
-				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container(this);">
+				    <input type="file" name="unity_thumbnail_file" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container(this);">
 					<i class="material-symbols-outlined">add</i>
 				</div>
 				<div class="picture_name">유니티 썸네일</div>
@@ -1070,7 +1070,7 @@ function delete_image(e) {
 			$(e).remove();
 			unity_banner.prepend(`
 				<div class="picture_content unity_banner_preview">
-				    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container(this);">
+				    <input type="file" name="unity_banner_file" class="picture_input" accept="image/*" onchange="add_image(this); clear_unity_create_container(this);">
 					<i class="material-symbols-outlined">add</i>
 				</div>
 			`);
@@ -1228,13 +1228,14 @@ function clear_unity_create_container(e){
 		container = $(e).closest('.unity_create_container');
 	}
 	
-	if(container.hasClass('unity_create_container')){
+	if(container && container.hasClass('unity_create_container')){
 		count = container.find(':not(.last_submit)').filter('.unfinished_row').length + container.find(':not(.last_submit)').filter('.failed_row').length;
 		target = container.find('.last_submit');
 		hint = container.find('.submit_hint');
 		thumbnail = container.find('input[name="unity_thumbnail_file"]').val();
 		banner = container.find('input[name="unity_banner_file"]').val();
-	}else if(container.hasClass('unity_modify_container')){
+		
+	}else if(container && container.hasClass('unity_modify_container')){
 		count = container.find(':not(.last_submit)').filter('.unfinished_row').length + container.find(':not(.last_submit)').filter('.failed_row').length;
 		hint = $('.in_unity_modify_container').find('.submit_hint');
 		target = $('.unity_modify_container_buttons').find('.last_submit');
@@ -1243,7 +1244,7 @@ function clear_unity_create_container(e){
 	}
 	
 	if(thumbnail != null && banner != null){
-		if(thumbnail==1 && banner==1 && count==0){
+		if(thumbnail != 0 && banner != 0 && count==0){
 			target.removeClass(`unfinished_row`)
 			if (!target.hasClass(`finished_row`)) {
 				target.addClass(`finished_row`);
@@ -1341,6 +1342,9 @@ function show_modify_unity(unity_code){
 	get_modify_unity(unity_code);
 }
 function enter_unity_main(e){
+	if(e == null){
+		e = unity;
+	}
 	
 	if($('.unity_write').hasClass('expanded')){
 		col_toggle('.unity_write');
@@ -2237,8 +2241,10 @@ function next_img(e){
 	main.attr('src',next.find('img').attr('src'));
 }
 function add_category(){
+	const new_code = get_new_category_code();
+	const new_board_code = new_code + '_' + 1;
 	$('.new_category').after(`
-		<div class="inner_box modify_board expanded moveable" data-ub_category_code="">
+		<div class="inner_box modify_board expanded moveable" data-ub_category_code="${new_code}">
 			<div class="inner_title h30">
 				<input id="ub_category_name" class="modify" type="text" value="새 카테고리">
 				<div class="tiny_button_section">
@@ -2249,7 +2255,7 @@ function add_category(){
 				</div>
 			</div>
 			<div class="inner_content expanded gap5">
-				<div class="unity_board moveable" data-ub_board_code="">
+				<div class="unity_board moveable" data-ub_board_code="${new_board_code}">
 					<input id="ub_board_name" class="modify" type="text" value="새 게시판">
 					<div class="tiny_button_section">
 						<i class="material-symbols-outlined" onclick="pull_up(this)">arrow_drop_up</i>
@@ -2273,8 +2279,9 @@ function cancle_remove(e){
 	$(e).closest('.deleted').first().removeClass('deleted');
 }
 function add_board(e){
+	const new_code = get_new_board_code(e);
 	$(e).closest('.modify_board').find('.unity_board').last().after(`
-		<div class="unity_board moveable" data-ub_board_code="">
+		<div class="unity_board moveable" data-ub_board_code="${new_code}">
 			<input id="ub_board_name" class="modify" type="text" value="새 게시판">
 			<div class="tiny_button_section">
 				<i class="material-symbols-outlined" onclick="pull_up(this)">arrow_drop_up</i>
@@ -2302,4 +2309,29 @@ function push_down(e){
 	const targetClass = target.attr('class').split(' ').join('.');
 	const next = target.nextAll(`.${targetClass}`).first();
     next.after(target);
+}
+
+function get_new_category_code(){
+	const bc = $('.modify_board_container');
+	const codes = [];
+	bc.find('.modify_board').each(function() {
+	    const code = $(this).data('ub_category_code');
+	    codes.push(parseInt(code.split("_")[2], 10));
+	});
+	const new_code = (Math.max(...codes) + 1).toString();
+    return unity+'_'+new_code;
+}
+
+function get_new_board_code(e){
+	const bc = $(e).closest('.modify_board');
+	const category_code = bc.data('ub_category_code')
+	const codes = [];
+	bc.find('.unity_board').each(function() {
+	    const code = $(this).data('ub_board_code');
+	    codes.push(parseInt(code.split("_")[3], 10));
+	});
+	const new_code = (Math.max(...codes) + 1).toString();
+	
+	console.log(codes);
+    return category_code+'_'+new_code;
 }

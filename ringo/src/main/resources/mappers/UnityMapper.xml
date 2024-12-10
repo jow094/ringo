@@ -90,7 +90,11 @@
 	    )
 	</insert>
 	
-	<insert id="insertUnityMember" parameterType="UnityVO">
+	<delete id="deleteUnity">
+		delete from _ringo_unity where unity_code = #{unity_code}
+	</delete>
+	
+	<insert id="insertUnityMember">
 		insert into _ringo_unity_member (
 	        unity_code,
 	        user_code
@@ -100,11 +104,19 @@
 	    )
 	</insert>
 	
+	<delete id="deleteUnityMember">
+		delete from _ringo_unity_member where unity_code = #{unity_code} and user_code = #{user_code}
+	</delete>
+	
 	<update id="updateUnityMember" parameterType="UnityVO">
 		update _ringo_unity_member
 	     set unity_member_grade = #{unity_member_grade}
 	     where user_code = #{user_code}
 	</update>
+	
+	<select id="selectIsMember" resultType="Integer">
+		select count(*) from _ringo_unity_member where user_code = #{user_code} and unity_code = #{unity_code};
+	</select>
 	
 	<select id="selectUnities" resultType="UnityVO">
 		select
@@ -197,6 +209,19 @@
 	where u.user_code = #{user_code}
 	</select>
 	
+	<select id="selectUnityBoards" resultType="UnityBoardVO">
+       	select
+			ub_category_code,
+			ub_category_name,
+			ub_category_order,
+			ub_board_code,
+			ub_board_name,
+			ub_board_order
+		from _ringo_unity_board
+		where unity_code = #{unity_code}
+		order by ub_data_status desc limit 1
+	</select>
+	
 	<select id="selectUnityBoardInfo" resultType="UnityBoardVO">
        	select
 			ub_category_code,
@@ -220,47 +245,36 @@
 			unity_lang = #{unity_lang},
 			unity_location = #{unity_location},
 			unity_private = #{unity_private},
-			unity_thumbnail_path = #{unity_thumbnail_path},
-			unity_banner_path = #{unity_banner_path},
+			<if test="unity_thumbnail_path != null">
+            	unity_thumbnail_path = #{unity_thumbnail_path},
+	        </if>
+	        
+	        <if test="unity_banner_path != null">
+	            unity_banner_path = #{unity_banner_path},
+	        </if>
 			unity_banner_set = #{unity_banner_set}
 		where unity_code = #{unity_code}
 	</update>
 	
-	<insert id="insertUnityBoard" parameterType="UnityBoardVO">
-		insert into _ringo_unity_board
-		values (
-			unity_code = #{},
-			ub_category_code = #{},
-			ub_category_name = #{},
-			ub_category_order = #{},
-			ub_board_code = #{},
-			ub_board_name = #{},
-			ub_board_order = #{}
-		)
+	<insert id="insertUnityBoard" parameterType="List">
+		insert into _ringo_unity_board (unity_code,ub_category_code,ub_category_name,ub_category_order,ub_board_code,ub_board_name,ub_board_order)
+		values 
+	    <foreach collection="list" item="vo" separator=",">
+	        (
+		        #{vo.unity_code}, 
+		        #{vo.ub_category_code}, 
+		        #{vo.ub_category_name}, 
+		        #{vo.ub_category_order}, 
+		        #{vo.ub_board_code}, 
+		        #{vo.ub_board_name}, 
+		        #{vo.ub_board_order}
+			)
+	    </foreach>
 	</insert>
 	
-	<update id="updateUnityCategory" parameterType="UnityBoardVO">
-		update _ringo_unity_board
-		set ub_category_name = #{ub_category_name},
-			ub_category_order = #{ub_category_order}
-		where ub_category_code = #{ub_category_code}
-	</update>
-	
-	<update id="updateUnityBoard" parameterType="UnityBoardVO">
-		update _ringo_unity_board
-		set ub_board_name = #{ub_board_name},
-			ub_board_order = #{ub_board_order}
-		where ub_board_code = #{ub_board_code}
-	</update>
-	
-	<delete id="deleteUnityCategory" parameterType="UnityBoardVO">
-		delete from _ringo_unity 
-		where ub_category_code = #{ub_category_code}
-	</delete>
-	
-	<delete id="deleteUnityBoard" parameterType="UnityBoardVO">
-		delete from _ringo_unity 
-		where ub_board_code = #{ub_board_code}
+	<delete id="deleteUnityTrashBoard" parameterType="UnityBoardVO">
+		delete from _ringo_unity_board
+		where unity_code = #{unity_code}
 	</delete>
 	
 </mapper>  

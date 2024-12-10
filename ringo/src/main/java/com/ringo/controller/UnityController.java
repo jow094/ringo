@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -158,18 +159,54 @@ public class UnityController {
 		}
 	}
 
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer unityDeletePost(String unity_code) {
+		logger.debug("unityDeletePost(String unity_code) - unity_code : " + unity_code);
+		
+		return unityService.shutDownUnity(unity_code);
+	}
+	
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	@ResponseBody
-	public UnityVO unityProfileGET(HttpSession session, String unity_code) {
+	public Map<String,Object> unityProfileGET(HttpSession session, String unity_code) {
 		logger.debug("unityUnityGET(Integer unity_code) - unity_code : " + unity_code);
 
 		UnityVO vo = new UnityVO();
 		vo.setUnity_code(unity_code);
 		vo.setUser_code((String) session.getAttribute("user_code"));
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("data",unityService.getUnityProfile(vo));
+		param.put("isMember",unityService.checkUnityMember(unity_code,(String) session.getAttribute("user_code")));
 
-		return unityService.getUnityProfile(vo);
+		return param;
 	}
 
+	@RequestMapping(value = "/join", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer unityJoinPOST(HttpSession session, String unity_code) {
+		logger.debug("unityJoinPOST(String unity_code) - unity_code : " + unity_code);
+		
+		UnityMemberVO vo = new UnityMemberVO();
+		vo.setUnity_code(unity_code);
+		vo.setUser_code((String) session.getAttribute("user_code"));
+		
+		return unityService.joinUnity(vo);
+	}
+	
+	@RequestMapping(value = "/leave", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer unityLeavePOST(HttpSession session, String unity_code) {
+		logger.debug("unityLeavePOST(String unity_code) - unity_code : " + unity_code);
+		
+		UnityMemberVO vo = new UnityMemberVO();
+		vo.setUnity_code(unity_code);
+		vo.setUser_code((String) session.getAttribute("user_code"));
+		
+		return unityService.leaveUnity(vo);
+	}
+	
 	@RequestMapping(value = "/main", method = RequestMethod.GET)
 	@ResponseBody
 	public UnityVO unityMainGET(HttpSession session, String unity_code) {
@@ -309,12 +346,94 @@ public class UnityController {
 		return pService.getMoreUnityPost(vo);
 	}
 	
-	@RequestMapping(value = "/modify", method = RequestMethod.POST)
+	@RequestMapping(value = "/modifyInfo", method = RequestMethod.POST)
 	@ResponseBody
-	public Integer unityModifyPOST(HttpSession session, UnityVO vo) {
-		logger.debug("unityModifyPOST(UnityVO vo) - vo : " + vo);
+	public Integer unityModifyInfoPOST(HttpSession session, UnityVO vo) {
+		logger.debug("unityModifyInfoPOST(UnityVO vo) - vo : " + vo);
+		
+		try {
 
-		return unityService.modifyUnity(vo);
+			String unity_code = vo.getUnity_code();
+
+			MultipartFile unity_thumbnail_file = vo.getUnity_thumbnail_file();
+			String unity_thumbnail_path = "";
+			MultipartFile unity_banner_file = vo.getUnity_banner_file();
+			String unity_banner_path = "";
+
+			if (unity_thumbnail_file != null && !unity_thumbnail_file.isEmpty()) {
+				String originalFileName = unity_thumbnail_file.getOriginalFilename();
+
+				String extension = "";
+				if (originalFileName != null && originalFileName.contains(".")) {
+					extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+				}
+
+				unity_thumbnail_path = unity_code + "_thumbnail" + extension;
+
+				File dest = new File(uploadPath_unity_thumbnail + unity_thumbnail_path);
+				try {
+					unity_thumbnail_file.transferTo(dest);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				vo.setUnity_thumbnail_path(unity_thumbnail_path);
+			}
+
+			if (unity_banner_file != null && !unity_banner_file.isEmpty()) {
+				String originalFileName = unity_banner_file.getOriginalFilename();
+
+				String extension = "";
+				if (originalFileName != null && originalFileName.contains(".")) {
+					extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+				}
+
+				unity_banner_path = unity_code + "_banner" + extension;
+
+				File dest = new File(uploadPath_unity_banner + unity_banner_path);
+				try {
+					unity_banner_file.transferTo(dest);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				vo.setUnity_banner_path(unity_banner_path);
+			}
+
+			return unityService.modifyUnity(vo);
+
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+	
+	@RequestMapping(value = "/modifyBoard", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer unityModifyBoardPOST(@RequestBody List<Map<String, Object>> param) {
+		logger.debug("unityModifyBoardPOST(List<Map<String, Object>> param) - param : " + param);
+		
+		List<UnityBoardVO> voList = new ArrayList<UnityBoardVO>();
+		
+		String category_code = param.get(0).get("ub_category_code").toString();
+		String[] parts = category_code.split("_");
+		String unity_code = parts[0] + "_" + parts[1];
+		
+		for(Map<String, Object> category : param) {
+			
+			for(Map<String, Object> board : (List<Map<String, Object>>)category.get("ub_board_list")) {
+				UnityBoardVO vo = new UnityBoardVO();
+				vo.setUnity_code(unity_code);
+				vo.setUb_category_code((String)category.get("ub_category_code"));
+				vo.setUb_category_name((String)category.get("ub_category_name"));
+				vo.setUb_category_order((Integer)category.get("ub_category_order"));
+				vo.setUb_board_code((String)board.get("ub_board_code"));
+				vo.setUb_board_name((String)board.get("ub_board_name"));
+				vo.setUb_board_order((Integer)board.get("ub_board_order"));
+				voList.add(vo);
+			}
+		}
+		
+		logger.debug("voList: " + voList);
+		
+		return unityService.renewUnityBoard(voList,unity_code);
 	}
 	
 }

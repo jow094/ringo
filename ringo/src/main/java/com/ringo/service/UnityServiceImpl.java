@@ -27,6 +27,11 @@ public class UnityServiceImpl implements UnityService {
 	public Integer createUnity(UnityVO vo) {
 		return unitydao.insertUnity(vo);
 	}
+	
+	@Override
+	public Integer shutDownUnity(String unity_code) {
+		return unitydao.deleteUnity(unity_code);
+	}
 
 	@Override
 	public Integer checkDuplication(String data) {
@@ -42,10 +47,19 @@ public class UnityServiceImpl implements UnityService {
 	public Integer joinUnity(UnityMemberVO vo) {
 		return unitydao.insertUnityMember(vo);
 	}
+	@Override
+	public Integer leaveUnity(UnityMemberVO vo) {
+		return unitydao.deleteUnityMember(vo);
+	}
 
 	@Override
 	public Integer modifyUnityMember(UnityMemberVO vo) {
 		return unitydao.updateUnityMember(vo);
+	}
+	
+	@Override
+	public Integer checkUnityMember(String unity_code, String user_code) {
+		return unitydao.selectIsMember(unity_code,user_code);
 	}
 
 	@Override
@@ -73,7 +87,20 @@ public class UnityServiceImpl implements UnityService {
 	}
 
 	@Override
+	public List<UnityBoardVO> getUnityBoards(String user_code) {
+		
+		return unitydao.selectUnityboards(user_code);
+	}
+
+	@Override
 	public Integer modifyUnity(UnityVO vo) {
 		return unitydao.updateUnityInfo(vo);
 	}
+
+	@Override
+	public Integer renewUnityBoard(List<UnityBoardVO> voList, String unity_code) {
+		return unitydao.resetUnityBoard(voList,unity_code);
+	}
+	
+	
 }

@@ -365,11 +365,28 @@ function create_unity(){
         success: function (response) {
 	    	if(response==1){
 	    		alert('유니티 생성에 성공하였습니다.');
-	    		window.location.href = '/unity/main';
+	    		unity_home();
 	    	}
 	    	if(response==0){
 	    		alert('유니티 생성에 실패하였습니다.');
 	    	}
+	    	$('.unity_create_container').find('.selected_card_container').empty();
+	    	$('.unity_create_container').find('textarea').val('');
+	    	$('.unity_create_container').find('textarea').trigger('input');
+	    	$('.unity_create_container').find('input').val('');
+	    	$('.unity_create_container').find('input').trigger('input');
+	    	delete_image($('.unity_create_container').find('.unity_thumbnail_preview'));
+	    	delete_image($('.unity_create_container').find('.unity_banner_preview'));
+	    	col_toggle($('.unity_create_container').find('.selected_card_container'));
+	    	
+	    	$('.unity_create_container').find('.finished_row').each(function() {
+	    		set_unfinished($(this), 'row');
+	    	});
+	    	$('.unity_create_container').find('select').each(function() {
+	    	    set_unfinished($(this), 'row');
+	    	    set_hint($(this), '* 입력되지 않았습니다.', 'annotation_message');
+	    	    $(this).prop('selectedIndex', 0);
+	    	});
 	    },
 	    error: function(error) {
 	        alert('유니티 생성에 실패하였습니다.');
@@ -971,9 +988,14 @@ function get_unity_profile(unity_code){
 		url: "/unity/profile",
 		data: {unity_code:unity_code},
 		dataType: "json",
-		success: function(data) {
-			
+		success: function(response) {
+			const isMember = response.isMember;
+			const data = response.data;
 			profile_target = unity_code;
+			
+			console.log(response);
+			console.log(data);
+			console.log(isMember);
 			
         	$('.profile_container').addClass('hidden');
         	
@@ -1006,32 +1028,55 @@ function get_unity_profile(unity_code){
         			주 사용언어 : ${data.unity_lang}
     			</div>
         	`);
-        	$('.unity_profile_container .profile_container_head_tools').html(`
-    			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity_main('${unity_code}')">
-	    			<i class="material-symbols-outlined">other_houses</i>
-	    			<span>메인</span>
-    			</div>
-    			<div class="profile_container_head_tool" data-unity_code="${unity_code}">
-        			<i class="material-symbols-outlined">input_circle</i>
-        			<span>가입</span>
-    			</div>
-				<div class="profile_container_head_tool" data-unity_code="${unity_code}">
-					<i class="material-symbols-outlined">bookmark_star</i>
-					<span>즐겨찾기</span>
-				</div>
-				<div class="profile_container_head_tool" data-unity_code="${unity_code}">
-					<i class="material-symbols-outlined">block</i>
-					<span>차단</span>
-				</div>
-				<div class="profile_container_head_tool" data-unity_code="${unity_code}">
-					<i class="material-symbols-outlined">partner_reports</i>
-					<span>신고</span>
-				</div>
-    			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="show_modify_unity('${unity_code}')">
-	    			<i class="material-symbols-outlined">contract_edit</i>
-	    			<span>수정</span>
-    			</div>
-        	`);
+        	if(data.unity_admin == current_user){
+        		$('.unity_profile_container .profile_container_head_tools').html(`
+            			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity_main('${unity_code}')">
+        	    			<i class="material-symbols-outlined">other_houses</i>
+        	    			<span>메인</span>
+            			</div>
+        				<div class="profile_container_head_tool" data-unity_code="${unity_code}">
+        					<i class="material-symbols-outlined">bookmark_star</i>
+        					<span>즐겨찾기</span>
+        				</div>
+            			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="show_modify_unity('${unity_code}')">
+        	    			<i class="material-symbols-outlined">contract_edit</i>
+        	    			<span>관리</span>
+            			</div>
+        				<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="delete_unity('${unity_code}')">
+            				<i class="material-symbols-outlined">delete</i>
+            				<span>폐쇄</span>
+        				</div>
+                	`);
+        	}else if(isMember == 1){
+        		$('.unity_profile_container .profile_container_head_tools').html(`
+        			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity_main('${unity_code}')">
+    	    			<i class="material-symbols-outlined">other_houses</i>
+    	    			<span>메인</span>
+        			</div>
+    				<div class="profile_container_head_tool" data-unity_code="${unity_code}">
+    					<i class="material-symbols-outlined">bookmark_star</i>
+    					<span>즐겨찾기</span>
+    				</div>
+    				<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="leave_unity('${unity_code}')">
+        				<i class="material-symbols-outlined">output_circle</i>
+        				<span>탈퇴</span>
+    				</div>
+            	`);
+        	}else{
+        		$('.unity_profile_container .profile_container_head_tools').html(`
+            			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity_main('${unity_code}')">
+        	    			<i class="material-symbols-outlined">other_houses</i>
+        	    			<span>메인</span>
+            			</div>
+            			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="join_unity('${unity_code}')">
+                			<i class="material-symbols-outlined">input_circle</i>
+                			<span>가입</span>
+            			</div>
+                	`);
+        	}
+        	
+        	
+        	
         	
         	var $boards = $('<div class="scroll_box_inner"></div>');
         	$('.unity_board_names .scroll_box').empty();
@@ -1850,6 +1895,14 @@ function add_unity_post(upost_code,ub_add_direction,is_finished){
 
 function get_modify_unity(unity_code){
 	
+	if(unity_code == null){
+		unity_code = unity;
+	}
+	
+	const container = $('.unity_modify_container');
+	container.find('img').remove();
+	container.find('.tags_container').empty();
+	
 	$.ajax({
 		type: "GET",
 		url: "/unity/profile",
@@ -1857,7 +1910,6 @@ function get_modify_unity(unity_code){
 		dataType: "json",
 		success: function(data) {
 			console.log(data);
-			const container = $('.unity_modify_container');
 			
 			for (var [key, value] of Object.entries(data)) {
 				const target = container.find(`[name='${key}']`);
@@ -1869,7 +1921,7 @@ function get_modify_unity(unity_code){
 								target.siblings('select').find(`[value='${val}']`).prop('selected',true);
 								target.siblings('select').trigger('change');
 							}
-					}else{
+					}else{ 
 						target.siblings('select').find(`[value='${value}']`).prop('selected',true);
 						target.siblings('select').trigger('change');
 					}
@@ -1938,6 +1990,8 @@ function get_modify_unity(unity_code){
 					target.trigger('input');
 				}
         	}
+			
+			$('.modify_board_container').find('.modify_board').remove();
 			const uniqueCategories = new Set(data.unity_board.map(item => item.ub_category_code));
 			const category_num = uniqueCategories.size;
 			
@@ -1994,32 +2048,183 @@ function get_modify_unity(unity_code){
 			
 			setTimeout(() => {
 				clear_unity_create_container(container);
-			}, 10);
+			}, 100);
 		},
 		error: function(xhr, status, error) {
 		}
 	});
 }
 
-function post_modify_unity(){
+function submit_modify_unity_info(e){
 	
+	if($(e).hasClass('unfinished_row')){
+		return;
+	}
+	
+	var formData = new FormData();
+	var unity_private = 1;
+
+    $('.unity_modify_container').find(`input:not('.outform'), textarea:not('.outform'), select:not('.outform')`).each(function() {
+        var name = $(this).attr('name');
+        var value = $(this).val();       
+
+        if (value) {
+            if ($(this).is('select[name="unity_private"]')) {
+                unity_private *= parseInt(value);
+            } else if ($(this).is('input[type="radio"]:not(:checked)')) {
+            	return;
+            } else if ($(this).is('input[type="checkbox"]:not(:checked)')) {
+            	return;
+            } else if ($(this).is('input[type="file"]')) {
+                var files = $(this).prop('files');
+                if (files.length > 0) {
+                    formData.append(name, files[0]);
+                }
+            } else {
+            	formData.append(name, value);
+            }
+        }
+    });
+    
+    var tags = "";
+	
+    $('.unity_modify_container').find('.tag_card').each(function(index) {
+        if (index > 0) {
+            tags += ",";
+        }
+        tags += $(this).attr('data-tag');
+    });
+    
+    if (tags !== "") {
+        formData.append('unity_tag', tags);
+    }
+    
+    formData.append("unity_private", unity_private);
+    formData.append("unity_code", unity);
+    
+    console.log([...formData.entries()]);
+    
+    $.ajax({
+    	type: 'POST',
+        url: '/unity/modifyInfo',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: "json",
+        success: function (response) {
+        	submit_modify_unity_board();
+	    },
+	    error: function(error) {
+	        alert('유니티 생성에 실패하였습니다.');
+	    }
+    });
+	
+	
+}
+function submit_modify_unity_board() {
+    const result = [];
+    const container = $('.modify_board_container');
+    const categories = container.find('.modify_board:not(.deleted)').toArray();
+
+    var i = 1;
+    for (const category of categories) {
+        const param = {};
+        const boards = $(category).find('.unity_board:not(.deleted)').toArray();
+        const ub_board_list = [];
+        var j = 1;
+        for (const board of boards) {
+            const ub_board = {
+                ub_board_code: $(board).data('ub_board_code'),
+                ub_board_name: $(board).find('#ub_board_name').val(),
+                ub_board_order: j
+            };
+            ub_board_list.push(ub_board);
+            j++;
+        }
+        param.ub_board_list = ub_board_list;
+        param.ub_category_code = $(category).data('ub_category_code');
+        param.ub_category_name = $(category).find('#ub_category_name').val();
+        param.ub_category_order = i;
+        i++;
+        result.push(param);
+    }
+
+    console.log(result);
+
+    $.ajax({
+        url: '/unity/modifyBoard',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(result),
+        success: function (response) {
+        	enter_unity_main(unity);
+        	get_unity_profile(unity);
+        },
+        error: function (error) {
+            console.error('에러 발생:', error);
+        }
+    });
+}
+
+function join_unity(unity_code) {
 	$.ajax({
-		type: "GET",
-		url: "/unity/addPost",
-		data: {upost_code:upost_code,ub_add_direction:ub_add_direction},
-		dataType: "json",
-		success: function(data) {
+        url: '/unity/join',
+        type: 'POST',
+        dataType: 'json',
+        data: {unity_code:unity_code},
+        success: function (response) {
+        	console.log(response);
+        	if(response == 1){
+        		alert('유니티 가입에 성공하였습니다.')
+        		enter_unity_main(unity_code);
+        		get_unity_profile(unity_code);
+        	}else{
+        		alert('유니티 가입에 실패하였습니다.')
+        	}
+        },
+        error: function (error) {
+            console.error('에러 발생:', error);
+        }
+    });
+}
+function leave_unity(unity_code) {
+	$.ajax({
+		url: '/unity/leave',
+		type: 'POST',
+		dataType: 'json',
+		data: {unity_code:unity_code},
+		success: function (response) {
+			console.log(response);
+			if(response == 1){
+				alert('유니티 탈퇴에 성공하였습니다.')
+				enter_unity_main(unity_code);
+				get_unity_profile(unity_code);
+			}else{
+        		alert('유니티 탈퇴에 실패하였습니다.')
+        	}
 		},
-		error: function(xhr, status, error) {
-			spin_end('#unity_posts');
+		error: function (error) {
+			console.error('에러 발생:', error);
 		}
 	});
 }
-
-function submit_modify_unity(){
-	const container = $('.in_unity_modify');
-	/*container.find('.modify_board');
-	
-	modify_board의 data-ub_category_code, 내부의 #ub_category_name val
-	modify_board 내부의 unity_board 가 가진 data-unity_board_code, 내부의 id="ub_category_name".val*/
+function delete_unity(unity_code) {
+	$.ajax({
+		url: '/unity/delete',
+		type: 'POST',
+		dataType: 'json',
+		data: {unity_code:unity_code},
+		success: function (response) {
+			console.log(response);
+			if(response == 1){
+				alert('유니티 폐쇄에 성공하였습니다.')
+				unity_home();
+			}else{
+				alert('유니티 폐쇄에 실패하였습니다.')
+			}
+		},
+		error: function (error) {
+			console.error('에러 발생:', error);
+		}
+	});
 }

@@ -545,7 +545,7 @@
 											</div>
 											<div class="input_hint annotation_message">* 유니티를 표현하는 태그를 입력해주세요.</div>
 										</div>
-										<div class="selected_card_container col_shrinked">
+										<div class="selected_card_container col_shrinked tags_container">
 										</div>
 												
 										<div class="input_box">
@@ -640,13 +640,13 @@
 						<div class="submit_hint annotation_message">
 							* 미 입력 된 항목이 있습니다.
 						</div>
-						<div class="cards_footer_button last_submit unfinished_row" onclick="">
+						<div class="cards_footer_button last_submit unfinished_row" onclick="submit_modify_unity_info(this);">
 							<span>수정하기</span>
 						</div>
-						<div class="cards_footer_button" onclick="">
+						<div class="cards_footer_button" onclick="get_modify_unity()">
 							<span>초기화</span>
 						</div>
-						<div class="cards_footer_button" onclick="">
+						<div class="cards_footer_button" onclick="enter_unity_main();">
 							<span>취소</span>
 						</div>
 					</div>
