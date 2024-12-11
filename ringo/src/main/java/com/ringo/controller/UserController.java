@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -45,7 +46,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 /*
  * @RequestMapping("/api")
  * 
- * @Api(tags = "硫붿씤 而⑦듃濡ㅻ윭")
+ * @Api(tags = "筌롫뗄�뵥 �뚢뫂�뱜嚥▲끇�쑎")
  */
 public class UserController {
 	
@@ -121,8 +122,15 @@ public class UserController {
 	
 	@RequestMapping(value = "/loginCheck", method = RequestMethod.GET)
 	@ResponseBody
-	public String loginCheck(HttpSession session) {
-		return (String)session.getAttribute("user_code");
+	public Map<String,Object> loginCheck(HttpSession session) {
+		String user_code = (String)session.getAttribute("user_code");
+		Map<String,List<String>> ff = uService.getUserAditionalInfos(user_code);
+		Map<String,Object>result = new HashMap<String,Object>();
+		result.put("user_code",user_code);
+		result.put("favorites",ff.get("favorites"));
+		result.put("follows",ff.get("follows"));
+		
+		return result;
 	}
 	
 	@RequestMapping(value = "/join", method = RequestMethod.GET)
@@ -227,7 +235,7 @@ public class UserController {
         
         logger.debug("sendSms: "+user_tel);
         
-        smsService.sendSms(user_tel, "Ringo 본인인증 코드는 [" + smsCode + "] 입니다. 5분 내에 입력 해주세요.");
+        smsService.sendSms(user_tel, "Ringo 蹂몄씤�씤利� 肄붾뱶�뒗 [" + smsCode + "] �엯�땲�떎. 5遺� �궡�뿉 �엯�젰 �빐二쇱꽭�슂.");
         
         return 1;
     }
@@ -240,7 +248,7 @@ public class UserController {
         session.setAttribute("emailCode", emailCode);
         logger.debug("emailCode:"+emailCode);
         
-        authService.sendEmail(user_email, "Ringo 본인인증 코드는 [" + emailCode + "] 입니다. 5분 내에 입력 해주세요.");
+        authService.sendEmail(user_email, "Ringo 蹂몄씤�씤利� 肄붾뱶�뒗 [" + emailCode + "] �엯�땲�떎. 5遺� �궡�뿉 �엯�젰 �빐二쇱꽭�슂.");
         
         return 1;
     }
@@ -316,5 +324,12 @@ public class UserController {
 		
 		logger.debug("profileGET(String user_code) - user_code : "+user_code);
 		return uService.getUserProfile(user_code);
+	}
+	
+	@RequestMapping(value = "/connected", method = RequestMethod.GET)
+	@ResponseBody
+	public UserVO userConnectedGET(HttpSession session) {
+		String user_code = (String)session.getAttribute("user_code");
+		return uService.getConnectedProfile(user_code);
 	}
 }

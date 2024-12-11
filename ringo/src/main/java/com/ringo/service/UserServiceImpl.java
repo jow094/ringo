@@ -3,6 +3,7 @@ package com.ringo.service;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,11 +51,51 @@ public class UserServiceImpl implements UserService{
 	public UserVO getUserProfile(String user_code) {
 		return udao.selectUserProfile(user_code);
 	}
+	
+	@Override
+	public UserVO getConnectedProfile(String user_code) {
+		return udao.selectConnectedProfile(user_code);
+	}
+
+	@Override
+	public Map<String, List<String>> getUserAditionalInfos(String user_code) {
+		return udao.selectUserAditionalInfos(user_code);
+	}
 
 	@Override
 	public String getUserNickname(String user_code) {
 		return udao.selectUserNickname(user_code);
 	}
 
+	@Override
+	public Integer addFavorite(Map<String, Object> param) {
+		return udao.insertFavorite(param);
+	}
+
+	@Override
+	public Integer removeFavorite(Map<String, Object> param) {
+		return udao.deleteFavorite(param);
+	}
+	
+	@Override
+	public Integer addFollow(Map<String, Object> param) {
+		return udao.insertFollow(param);
+	}
+	
+	@Override
+	public Integer removeFollow(Map<String, Object> param) {
+		return udao.deleteFollow(param);
+	}
+	
+	@Override
+	public Integer addRecomm(Map<String, Object> param) {
+		return udao.insertRecomm(param);
+	}
+	
+	@Override
+	public Integer removeRecomm(Map<String, Object> param) {
+		return udao.deleteRecomm(param);
+	}
+	
 	
 }

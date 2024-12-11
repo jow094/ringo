@@ -20,5 +20,6 @@ public interface MsgService {
 	public MsgRoomVO getMsgRoomInfo(String user_code, String mr_code);
 	public List<MsgVO> getMsg(String user_code,String mr_code);
 	public MsgVO getOneMsg(String user_code,String mr_code,String msg_code);
-	
+	public Integer modifyMsgNotifying(Map<String,Object> param);
+	public Integer exitMsgRoom(Map<String,Object> param);
 }

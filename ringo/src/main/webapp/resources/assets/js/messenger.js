@@ -245,8 +245,16 @@ function get_msg(mr_code){
         	$('.messenger_navbar_nickname').text(data.room.mr_name);
         	$('.messenger_content').find('.msg').remove();
         	$('.messenger_option').find('.inner_content').empty();
+        	$('.main_messenger_body.in_room').attr('data-mr_code',mr_code);
         	
+        	var mr_notifying;
+        	var mr_favorite;
         	for (const member of data.room.mr_member) {
+        		if(member.user_code == current_user){
+        			mr_notifying = member.mr_notifying;
+        			mr_favorite = member.mr_favorite;
+        		}
+        		
 				if(member.user_code == data.room.mr_admin){
 					$('.messenger_option').find('.inner_content').prepend(`
 	        			<div class="person_card" onclick="visit('${member.user_code}',this)">
@@ -261,7 +269,7 @@ function get_msg(mr_code){
 						<div class="person_card">
 	        				<img src="/files/user/profiles/${member.user_thumbnail_path}" onclick="visit('${member.user_code}',this)"/>
 	        				<span onclick="visit('${member.user_code}',this)">${member.user_nickname}</span>
-	        				<div class="card_button" onclick="deport('${data.room.mr_code}','${member.user_code}')">
+	        				<div class="card_button" onclick="get_out_mr('${member.user_code}')">
 								<i class="material-symbols-outlined">person_remove</i>
 							</div>
 	        			</div>`);
@@ -271,9 +279,19 @@ function get_msg(mr_code){
 	        				<img src="/files/user/profiles/${member.user_thumbnail_path}"/>
 	        				<span>${member.user_nickname}</span>
 	        			</div>`);
-	        			
 				}
-				
+        	}
+        	
+        	if(mr_favorite){
+        		hide('.messenger_buttons .add_favorite');
+        	}else{
+        		hide('.messenger_buttons .delete_favorite');
+        	}
+        	
+        	if(mr_notifying){
+        		hide('.messenger_buttons .add_notifying');
+        	}else{
+        		hide('.messenger_buttons .delete_notifying');
         	}
         	
         	for (const msg of data.msg) {
@@ -418,6 +436,11 @@ function submit_img_msg(){
 }
 
 function get_personal_msg_room(user_code){
+	
+	if(user_code == null || user_code == ""){
+		main_messenger();
+		return;
+	}
 	
 	$.ajax({
     	type: 'GET',
@@ -684,4 +707,142 @@ function scrollToMsg(e) {
     } else {
         console.log('Message not found, load more messages if needed.');
     }
+}
+
+function invite_mr(mr_code) {
+	$.ajax({
+		url: '/msg/invite',
+		method: 'POST',
+		data: {mr_code: mr_code},
+		dataType: 'json',
+		success: function(data) {
+		},
+		error: function() {
+		}
+	});
+}
+function get_out_mr(user_code) {
+	
+	console.log('mrc',mr_code);
+	console.log('uc',user_code);
+	
+	$.ajax({
+		url: '/msg/getOut?mr_code='+mr_code+'&user_code='+user_code,
+		method: 'DELETE',
+		dataType: 'json',
+		success: function(data) {
+			if(user_code == null){
+				exit_room();
+			}else{
+				get_msg(mr_code);
+			}
+			
+		},
+		error: function() {
+		}
+	});
+}
+function add_notifying(e) {
+	if($(e).closest('.main_messenger_body.in_room').length>0){
+		$.ajax({
+			url: '/msg/notifying',
+			method: 'POST',
+			data: {mr_code: $('.main_messenger_body.in_room').data('mr_code'), update : '1'},
+			dataType: 'json',
+			success: function(data) {
+				hide($('.messenger_buttons').find('.add_notifying'));
+				showing($('.messenger_buttons').find('.delete_notifying'));
+			},
+			error: function() {
+			}
+		});
+	}
+}
+function delete_notifying(e) {
+	if($(e).closest('.main_messenger_body.in_room').length>0){
+		$.ajax({
+			url: '/msg/notifying',
+			method: 'POST',
+			data: {mr_code: $('.main_messenger_body.in_room').data('mr_code'), update : '0'},
+			dataType: 'json',
+			success: function(data) {
+				hide($('.messenger_buttons').find('.delete_notifying'));
+				showing($('.messenger_buttons').find('.add_notifying'));
+			},
+			error: function() {
+			}
+		});
+	}
+}
+
+function get_messenger_menu(e) {
+	$.ajax({
+		url: '/user/connected',
+		method: 'GET',
+		dataType: 'json',
+		success: function(data) {
+			
+			$('.messenger_menu_content').empty();
+        	
+			function pc(userVO) {
+        	    return `
+        	        <div class="card_person" data-user_code="${userVO.user_code}">
+        	            <div class="card_person_thumbnail" onclick="shrink_profile();">
+        	                <img class="small_img" src="/files/user/profiles/${userVO.user_thumbnail_path}"/>
+        	            </div>
+        	            <div class="card_person_info" onclick="shrink_profile(); visit('${userVO.user_code}', this)">
+        	                <div class="card_person_info_nickname">${userVO.user_nickname}</div>
+        	                <div class="card_person_info_comment">최근 접속일</div>
+        	                <div class="card_person_info_logon">${userVO.user_logon}</div>
+        	            </div>
+        	            <div class="card_person_tools">
+        	                <div class="card_person_tool">
+        	                    <i class="material-symbols-outlined" onclick="shrink_profile(); visit('${userVO.user_code}', this)">location_away</i>
+        	                </div>
+        	                <div class="card_person_tool">
+        	                    <i class="material-symbols-outlined" onclick="get_personal_msg_room('${userVO.user_code}')">sms</i>
+        	                </div>
+        	            </div>
+        	        </div>`;
+        	}
+        	
+        	if(isEmpty(data.user_favorite)){
+        		$('.messenger_menu_content.favorite').html(`
+        			<div class="empty">즐겨찾기에 등록한 사용자가 없습니다.</div>
+        		`);
+        	}else{
+        		for (const userVO of data.user_favorite){
+        			$('.messenger_menu_content.favorite').append(pc(userVO));
+        		}
+        	}
+        	if(isEmpty(data.user_follower)){
+        		$('.messenger_menu_content.follower').html(`
+            			<div class="empty">팔로워가 없습니다.</div>
+            		`);
+        	}else{
+        		for (const userVO of data.user_follower){
+        			$('.messenger_menu_content.follower').append(pc(userVO));
+        		}
+        	}
+        	if(isEmpty(data.user_following)){
+        		$('.messenger_menu_content.following').html(`
+            			<div class="empty">팔로우 중인 대상이 없습니다.</div>
+            		`);
+        	}else{
+        		for (const userVO of data.user_following){
+        			$('.messenger_menu_content.following').append(pc(userVO));
+        		}
+        	}
+			
+		},
+		error: function() {
+		}
+	});
+}
+
+function mm_toggle(e,target) {
+	$(e).siblings().removeClass('active');
+    $(e).addClass('active');
+    $(`.messenger_menu_content:not(.${target})`).addClass('none');
+    showing(`.messenger_menu_content.${target}`);
 }

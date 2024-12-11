@@ -94,6 +94,16 @@ public class MsgServiceImpl implements MsgService{
 		messagingTemplate.convertAndSend("/msgGet/updateMUC/" + mr_code, msgdao.selectUnreaderCount(mr_code));
 		return result;
 	}
+
+	@Override
+	public Integer modifyMsgNotifying(Map<String, Object> param) {
+		return msgdao.updateMsgNotifying(param);
+	}
+
+	@Override
+	public Integer exitMsgRoom(Map<String, Object> param) {
+		return msgdao.deleteMsgMember(param);
+	}
 	
 	
 }

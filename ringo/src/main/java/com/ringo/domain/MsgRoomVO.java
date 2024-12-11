@@ -13,6 +13,7 @@ public class MsgRoomVO {
 	private Integer mr_alarm_count;
 	private String mr_admin;
 	private Timestamp mr_created_date;
+	private Integer mr_notify;
 	
 	private MsgVO mr_last_message;
 	private List<MsgVO> mr_msgs;

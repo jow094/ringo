@@ -77,7 +77,7 @@ public class PostDAOImpl implements PostDAO {
 	
 	@Override
 	public List<PostVO> selectUnityPost(UnityBoardVO vo) {
-		logger.debug("selectUnityPost(UnityBoardVO vo) - UnityBoardVOvo : "+vo);
+		logger.debug("selectUnityPost(UnityBoardVO vo - vo : "+vo);
 		return sqlSession.selectList(NAMESPACE + ".selectUnityPost",vo);		
 	}
 	
@@ -98,6 +98,15 @@ public class PostDAOImpl implements PostDAO {
 	public List<PostVO> selectMoreUnityPost(UnityBoardVO vo) {
 		logger.debug("selectMoreUnityPost(UnityBoardVO vo) - vo : "+vo);
 		return sqlSession.selectList(NAMESPACE + ".selectMoreUnityPost",vo);		
+	}
+
+	@Override
+	public Map<String, Object> selectRecommInfo(String user_code, String target_code) {
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("user_code",user_code);
+		param.put("target_code",target_code);
+		
+		return sqlSession.selectOne(NAMESPACE + ".selectRecommInfo",param);	
 	}
 
 	

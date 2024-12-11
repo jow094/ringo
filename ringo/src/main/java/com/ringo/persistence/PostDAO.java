@@ -23,7 +23,7 @@ public interface PostDAO {
 	public List<PostVO> selectUnityPost(UnityBoardVO vo);
 	public Map<String,Object> selectUnityBoardPost(UnityBoardVO vo);
 	public List<PostVO> selectMoreUnityPost(UnityBoardVO vo);
-	
+	public Map<String,Object> selectRecommInfo(String user_code,String target_code);
 	
 	
 	

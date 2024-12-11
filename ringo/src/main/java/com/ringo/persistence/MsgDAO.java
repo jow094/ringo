@@ -22,4 +22,6 @@ public interface MsgDAO {
 	public MsgVO selectOneMsg(String user_code,String msg_code);
 	public Integer insertMsgMember(MsgRoomVO vo);
 	public List<MsgVO> selectUnreaderCount(String mr_code);
+	public Integer updateMsgNotifying(Map<String, Object> param);
+	public Integer deleteMsgMember(Map<String, Object> param);
 }

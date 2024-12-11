@@ -81,6 +81,11 @@ public class PostServiceImpl implements PostService {
 	public List<PostVO> getMoreUnityPost(UnityBoardVO vo) {
 		return pdao.selectMoreUnityPost(vo);
 	}
+
+	@Override
+	public Map<String,Object>  getRecommInfo(String user_code, String target_code) {
+		return pdao.selectRecommInfo(user_code,target_code);
+	}
 	
 	
 }

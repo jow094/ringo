@@ -53,8 +53,11 @@ public class UserVO {
 	
 	private boolean user_logon;
 	
+	private Integer mr_notifying;
+	private Integer mr_favorite;
 	private Integer user_private;
 	private SettingVO user_setting;
 	private List<UserVO> user_follower;
 	private List<UserVO> user_following;
+	private List<UserVO> user_favorite;
 }

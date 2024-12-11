@@ -15,6 +15,7 @@
 	    <result property="post_recomm_count" column="post_recomm_count"/>
 	    <result property="post_reple_count" column="post_reple_count"/>
 	    <result property="post_ismodify" column="post_ismodify"/>
+	    <result property="post_is_recommended" column="post_is_recommended"/>
 	    <result property="post_seq" column="post_seq"/>
 	    <result property="writer_thumbnail_path" column="writer_thumbnail_path"/>
 	    <result property="writer_nickname" column="writer_nickname"/>
@@ -27,6 +28,7 @@
 	        <result property="reple_content" column="reple_content"/>
 	        <result property="reple_time" column="reple_time"/>
 	        <result property="reple_recomm_count" column="reple_recomm_count"/>
+	        <result property="reple_is_recommended" column="reple_is_recommended"/>
 	    </collection>
 	</resultMap>
 	
@@ -43,6 +45,7 @@
 	    <result property="post_reple_count" column="post_reple_count"/>
 	    <result property="post_didrecomm" column="post_didrecomm"/>
 	    <result property="post_ismodify" column="post_ismodify"/>
+	    <result property="post_is_recommended" column="post_is_recommended"/>
 	    <result property="writer_unity_member_grade" column="writer_unity_member_grade"/>
 	    <result property="writer_thumbnail_path" column="writer_thumbnail_path"/>
 	    <result property="writer_nickname" column="writer_nickname"/>
@@ -57,6 +60,7 @@
 	        <result property="reple_content" column="reple_content"/>
 	        <result property="reple_time" column="reple_time"/>
 	        <result property="reple_recomm_count" column="reple_recomm_count"/>
+	        <result property="reple_is_recommended" column="reple_is_recommended"/>
 	    </collection>
 	</resultMap>
 	
@@ -94,12 +98,12 @@
 	<insert id="insertReple" parameterType="RepleVO">
         insert into _ringo_reple (
             reple_code,
-            reple_target,
+            target_code,
             reple_writer,
             reple_content
         ) values (
             #{reple_code},
-            #{reple_target},
+            #{target_code},
             #{reple_writer},
             #{reple_content}
         )
@@ -107,7 +111,7 @@
     
 	<select id="selectReple" resultType="RepleVO">
 		select * from comments
-    	 where reple_target = #{reple_target}
+    	 where target_code = #{target_code}
     	 order by reple_time desc
 	</select>
 	
@@ -143,16 +147,33 @@
 	
 	<select id="selectCirclePost" resultMap="selectCirclePost_Map">
 		select c.*,
+		 case
+            when exists (
+                select 1 
+                from _ringo_recomm
+                where target_code = c.post_code and user_code = #{user_code}
+            ) then 1
+            else 0
+         end as post_is_recommended,
+         
 		 r.reple_code, 
 		 r.reple_writer, 
 		 r.reple_content, 
 		 r.reple_time,
 		 r.reple_recomm_count,
 		 u.user_thumbnail_path as r_writer_thumbnail_path, 
-		 u.user_nickname as r_writer_nickname
+		 u.user_nickname as r_writer_nickname,
+		 case
+            when exists (
+                select 1 
+                from _ringo_recomm
+                where target_code = r.reple_code and user_code = #{user_code}
+            ) then 1
+            else 0
+         end as reple_is_recommended
 		 
    		 from cPost c
-    	 left join _ringo_reple r on r.reple_target = c.post_code
+    	 left join _ringo_reple r on r.target_code = c.post_code
     	 left join _ringo_user u on r.reple_writer = u.user_code
     	 
     	 where c.post_writer = #{user_code}
@@ -208,9 +229,25 @@
 	
 	<select id="selectUnityPost" resultMap="selectUnityPost_Map">
 		select up.*, 
-	        cmt.*
+			case
+	            when exists (
+	                select 1 
+	                from _ringo_recomm
+	                where target_code = up.post_code and user_code = #{user_code}
+	            ) then 1
+	            else 0
+	        end as post_is_recommended,
+	        cmt.*,
+	        case
+	            when exists (
+	                select 1 
+	                from _ringo_recomm
+	                where target_code = cmt.reple_code and user_code = #{user_code}
+	            ) then 1
+	            else 0
+	        end as reple_is_recommended
 		    from uPost up
-        	left join comments cmt on cmt.reple_target = up.post_code
+        	left join comments cmt on cmt.target_code = up.post_code
 		    where up.post_place = #{ub_board_code} and up.post_page = #{ub_page}
 		    order by up.post_seq asc
 	</select>
@@ -225,7 +262,7 @@
 	    select up.*, 
 	        cmt.*
 		    from uPost up
-        	left join comments cmt on cmt.reple_target = up.post_code
+        	left join comments cmt on cmt.target_code = up.post_code
 			where up.post_place = substring_index(substring_index(#{upost_code}, '-', 2), '-', -1)
 			<if test="ub_add_direction == 'up'">
 		        and up.post_page =
@@ -242,5 +279,19 @@
 			order by post_seq asc
 	</select>
 
+	<select id="selectRecommInfo" resultType="Map">
+        select count(*) as recomm_count,  
+         	case
+	            when exists (
+	                select 1 
+	                from _ringo_recomm
+	                where target_code = #{target_code} and user_code = #{user_code}
+	            ) then 1
+	            else 0
+	        end as is_recommended
+        from _ringo_recomm
+	        where target_code = #{target_code}
+	        
+	</select>
 	
 </mapper>  

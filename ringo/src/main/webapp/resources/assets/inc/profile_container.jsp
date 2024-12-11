@@ -6,13 +6,69 @@
 	<div class="user_profile_container expanded">
 		<div class="profile_container_head">
 			<div class="profile_container_head_basic">
+				<img class="black"/>
+				<div class="profile_container_head_basic_nickname">
+				</div>
+				<div class="profile_container_head_basic_info">
+				</div>
+				<div class="profile_container_head_basic_info">
+				</div>
+				<div class="profile_container_head_basic_info">
+				</div>
+				<div class="profile_container_head_basic_info">
+				</div>
 			</div>
 			<div class="profile_container_head_tools">
+				<div class="profile_container_head_tool personal_mr" onclick="get_personal_msg_room(profile_target)">
+					<i class="material-symbols-outlined">sms</i>
+					<span>메세지</span>
+				</div>
+				<div class="profile_container_head_tool add_follow" onclick="add_follow();">
+					<i class="material-symbols-outlined">person_add</i>
+					<span>팔로우</span>
+				</div>
+				<div class="profile_container_head_tool delete_follow" onclick="delete_follow();">
+					<i class="material-symbols-outlined">person_remove</i>
+					<span>언팔로우</span>
+				</div>
+				<div class="profile_container_head_tool add_favorite" onclick="add_favorite(this);">
+					<i class="material-symbols-outlined">bookmark_star</i>
+					<span>즐겨찾기</span>
+				</div>
+				<div class="profile_container_head_tool delete_favorite" onclick="delete_favorite(this);">
+					<i class="material-symbols-outlined">bookmark_remove</i>
+					<span>즐겨찾기 해제</span>
+				</div>
+    			<div class="profile_container_head_tool open_modify_profile" onclick="open_modify_profile();">
+	    			<i class="material-symbols-outlined">manage_accounts</i>
+	    			<span>수정</span>
+    			</div>
 			</div>
 		</div>
 		<div class="profile_container_body">
 			<div class="scroll_box">
 				<div class="scroll_box_inner col">
+					<div class="inner_box mw p5 mgb">
+						<div class="inner_title">모국어</div>
+						<div class="scroll_box row user_native_lang">
+							<img class="flags">
+							<span></span>
+	        			</div>
+					</div>
+					<div class="inner_box mw p5 mgb">
+						<div class="inner_title">유창한 언어</div>
+						<div class="scroll_box row user_fluent_lang">
+							<img class="flags">
+							<span></span>
+	        			</div>
+					</div>
+					<div class="inner_box mw p5 mgb">
+						<div class="inner_title">학습중인 언어</div>
+						<div class="scroll_box row user_learning_lang">
+							<img class="flags">
+							<span></span>
+	        			</div>
+					</div>
 				</div>
 			</div>
 		</div> 
@@ -32,8 +88,8 @@
 		
 </div>
 <div class="detail_profile_container shrinked">
-	<div class="detail_profile_container_menus">	
-		<div class="detail_profile_container_menu favorite" onclick="profile_favorite(this)">
+	<div class="detail_profile_container_menus">
+		<div class="detail_profile_container_menu favorite active" onclick="profile_favorite(this)">
 			<span>즐겨찾기</span>
 		</div>
 		<div class="detail_profile_container_menu follower" onclick="profile_follower(this)">
@@ -42,46 +98,25 @@
 		<div class="detail_profile_container_menu following" onclick="profile_following(this)">
 			<span>팔로잉</span>
 		</div>
-		<div class="detail_profile_container_menu history" onclick="profile_history(this)">
+		<!-- <div class="detail_profile_container_menu history" onclick="profile_history(this)">
 			<span>기록</span>
 		</div>
 		<div class="detail_profile_container_menu prohibit" onclick="profile_prohibit(this)">
 			<span>차단</span>
-		</div>
+		</div> -->
 	</div>
 	<div class="detail_profile_container_body">
 		<div class="scroll_box">
 			<div class="scroll_box_inner">
-				<div class="detail_profile_content favorite none">
-					<div class="card_person">
-						<div class="card_person_thumbnail">
-							<img
-							src="/img/user/profiles/${user_thumbnail}"
-							style="width: 40px; height: 40px; border-radius: 30%;"
-							/>
-						</div>
-						<div class="card_person_info">
-							<div class="card_person_info_nickname">즐겨찾는사람</div>
-							<div class="card_person_info_comment"></div>
-							<div class="card_person_info_logon"></div>
-						</div>
-						<div class="card_person_tools">
-							<div class="card_person_tools_pin"></div>
-							<div class="card_person_tools_message"></div>
-						</div>
-					</div>
+				<div class="detail_profile_content favorite">
 				</div>
 				<div class="detail_profile_content follower none">
-					follower
 				</div>
 				<div class="detail_profile_content following none">
-					following
 				</div>
 				<div class="detail_profile_content history none">
-					history
 				</div>
 				<div class="detail_profile_content prohibit none">
-					prohibit
 				</div>
 			</div>				
 		</div>

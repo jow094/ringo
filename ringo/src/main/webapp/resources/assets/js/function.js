@@ -211,10 +211,12 @@ function main_messenger() {
     	
     	$('.article_container_menu_messenger').addClass('active');
     }
+    
 }
 function main_messenger_menu(e){
 	var icon = $(e).find('i');
     if (icon.text() == ('arrow_left')) {
+    	get_messenger_menu();
     	$('.main_messenger').css('width','650px');
     	row_toggle('.main_messenger_menu');
     	
@@ -230,6 +232,24 @@ function main_messenger_menu(e){
         	icon.text('arrow_left');
         }, 300);
     }
+    
+    /*if(mr_code != null && mr_code != ""){
+    	console.log('gogo');
+    	console.log($('.mm_container'));
+    	console.log($('.mm_container').find('.messenger_menu_content').find('.card_person'));
+    	
+    	$('.mm_container').find('.card_person_tools').each(function() {
+    		console.log('gotit');
+    		$(this).append(`
+    			<div class="card_person_tool">
+	                <i class="material-symbols-outlined" onclick="invite_mr($(this).closest('.card_person').data('user_code'))">person_add</i>
+	            </div>`);
+        });
+    	
+    	
+    	
+    	
+    }*/
 }
 function profile_favorite(e) {
 	$(e).siblings().removeClass('active');
@@ -1885,6 +1905,10 @@ function visit(user_code,e){
 		const container = $(e).closest('.message_box_received');
 		thumbnail = container.find('img').attr('src');
 		nickname = container.find('.message_sender_nickname').text();
+	}else if($(e).closest('.card_person').length>0){
+		const container = $(e).closest('.card_person');
+		thumbnail = container.find('img').attr('src');
+		nickname = container.find('.card_person_info_nickname').text();
 	}
 	
 	$('.added_menu_inner').find('.person_card.active').removeClass('active');
@@ -1892,7 +1916,7 @@ function visit(user_code,e){
 	if($('.added_menu_inner').find(`[data-user_code="${user_code}"]`).length == 0){
 		$('.added_menu_inner').prepend(`
 			<div class="person_card shrinked active" data-user_code="${user_code}" onclick="visit('${user_code}',this);">
-				<img src="${thumbnail}"/>
+				<img class="small_img" src="${thumbnail}"/>
 				<span>${nickname}</span>
 				<i class="fa-solid fa-circle-xmark" onclick="delete_person_card(event)"></i>
 			</div>`

@@ -115,5 +115,18 @@ public class MsgDAOImpl implements MsgDAO {
 	public List<MsgVO> selectUnreaderCount(String mr_code) {
 		return sqlSession.selectList(NAMESPACE + ".selectUnreaderCount",mr_code);
 	}
+
+	@Override
+	public Integer updateMsgNotifying(Map<String, Object> param) {
+		return sqlSession.update(NAMESPACE + ".updateMsgNotifying",param);
+	}
+
+	@Override
+	public Integer deleteMsgMember(Map<String, Object> param) {
+		logger.debug("asdasd"+param);
+		
+		return sqlSession.delete(NAMESPACE + ".deleteMsgMember",param);
+	}
+	
 	
 }

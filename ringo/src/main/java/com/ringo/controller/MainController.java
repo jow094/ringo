@@ -116,4 +116,77 @@ public class MainController {
 		
 		return pService.getReple(vo);
 	}
+	
+	@RequestMapping(value = "/favorite", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer favoritePOST(HttpSession session, String target_code) {
+		logger.debug("favoritePOST(String target_code) - target_code : "+target_code);
+		
+		Map <String,Object> param = new HashMap<String,Object>();
+		param.put("target_code",target_code);
+		param.put("user_code",(String)session.getAttribute("user_code"));
+		return uService.addFavorite(param);
+	}
+	
+	@RequestMapping(value = "/favorite", method = RequestMethod.DELETE)
+	@ResponseBody
+	public Integer favoriteDELETE(HttpSession session, String target_code) {
+		logger.debug("favoriteDELETE(String target_code) - target_code : "+target_code);
+		
+		Map <String,Object> param = new HashMap<String,Object>();
+		param.put("target_code",target_code);
+		param.put("user_code",(String)session.getAttribute("user_code"));
+		return uService.removeFavorite(param);
+	}
+	
+	@RequestMapping(value = "/follow", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer followPOST(HttpSession session, String target_code) {
+		logger.debug("followPOST(String target_code) - target_code : "+target_code);
+		
+		Map <String,Object> param = new HashMap<String,Object>();
+		param.put("target_code",target_code);
+		param.put("user_code",(String)session.getAttribute("user_code"));
+		return uService.addFollow(param);
+	}
+	
+	@RequestMapping(value = "/follow", method = RequestMethod.DELETE)
+	@ResponseBody
+	public Integer followDELETE(HttpSession session, String target_code) {
+		logger.debug("followDELETE(String target_code) - target_code : "+target_code);
+		
+		Map <String,Object> param = new HashMap<String,Object>();
+		param.put("target_code",target_code);
+		param.put("user_code",(String)session.getAttribute("user_code"));
+		return uService.removeFollow(param);
+	}
+	
+	@RequestMapping(value = "/recomm", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer recommPOST(HttpSession session, String target_code) {
+		logger.debug("recommPOST(String target_code) - target_code : "+target_code);
+		
+		Map <String,Object> param = new HashMap<String,Object>();
+		param.put("target_code",target_code);
+		param.put("user_code",(String)session.getAttribute("user_code"));
+		return uService.addRecomm(param);
+	}
+	
+	@RequestMapping(value = "/recomm", method = RequestMethod.DELETE)
+	@ResponseBody
+	public Integer recommDELETE(HttpSession session, String target_code) {
+		logger.debug("recommDELETE(String target_code) - target_code : "+target_code);
+		
+		Map <String,Object> param = new HashMap<String,Object>();
+		param.put("target_code",target_code);
+		param.put("user_code",(String)session.getAttribute("user_code"));
+		return uService.removeRecomm(param);
+	}
+	
+	@RequestMapping(value = "/recomm", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String,Object> recommGET(HttpSession session, String target_code) {
+		
+		return pService.getRecommInfo((String)session.getAttribute("user_code"), target_code);
+	}
 }

@@ -273,4 +273,31 @@ public class MsgController {
 		result.put("text",audioService.stt(file_name));
 		return result;
 	}
+	
+	@RequestMapping(value = "/notifying", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer msgNotifyingPOST(HttpSession session,String mr_code,String update) {
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("user_code", session.getAttribute("user_code"));
+		param.put("mr_code", mr_code);
+		param.put("method", update);
+		return msgService.modifyMsgNotifying(param);
+	}
+	
+	@RequestMapping(value = "/getOut", method = RequestMethod.DELETE)
+	@ResponseBody
+	public Integer msgGetOutDELETE(HttpSession session, String mr_code, String user_code){
+		logger.debug("mrc:"+mr_code+",user_code:"+user_code);
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("mr_code",mr_code);
+		if(user_code == "" || user_code == null || "undefined".equals(user_code) ||  "null".equals(user_code)) {
+			param.put("user_code",session.getAttribute("user_code"));
+		}else {
+			param.put("user_code",user_code);
+		}
+		logger.debug("prams"+param.get("mr_code")+","+param.get("user_code"));
+		return msgService.exitMsgRoom(param);
+	}
 }

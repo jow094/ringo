@@ -20,4 +20,5 @@ public class RepleVO {
 	private Integer reple_recomm_count;
 	private String reple_recomm_user;
 	private boolean reple_ismodify;
+	private Integer reple_is_recommended;
 }

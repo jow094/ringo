@@ -26,6 +26,7 @@ public class PostVO {
 	private Integer post_reple_count;
 	private boolean post_didrecomm;
 	private boolean post_ismodify;
+	private Integer post_is_recommended;
 	private List<RepleVO> reples;
 	
 	private Integer post_seq;

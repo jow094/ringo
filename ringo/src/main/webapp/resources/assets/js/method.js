@@ -5,6 +5,8 @@ let circle_posting_files = [];
 let unity_posting_files = [];
 var current_user = "";
 var board_code = "";
+var favorites = [];
+var follows = [];
 
 function login_check(){
 	
@@ -19,16 +21,18 @@ function login_check(){
     	$.ajax({
             type: "GET",
             url: "/user/loginCheck",
-            dataType: "text",
+            dataType: "json",
             success: function(data) {
-            	if(data == null || data == ""){
+            	if(data == null || data.user_code == null || data.user_code == ""){
             		if (!currentURL.includes('join') && !currentURL.includes('login')) {
             			alert("로그인 정보가 없습니다. 로그인 페이지로 이동합니다.");
             		}
                     window.location.href = "/user/login";
             	}else{
-            		current_user = data;
-            		get_user_profile(data);
+            		current_user = data.user_code;
+            		get_user_profile(data.user_code);
+            		follows = data.follows;
+            		favorites = data.favorites;
             	}
             },
             error: function(xhr, status, error) {
@@ -589,7 +593,9 @@ function get_reple(e){
     	                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
     	                				<div class="card_comment_content">${reple.reple_content}</div>
     	                				<div class="card_comment_time">
-    	                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
+    	                				<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+										<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+    	                				<span class="recomm_count">${reple.reple_recomm_count}</span>
     	                				<span>${auto_format_date(reple.reple_time)}</span>
     	                				</div>
                     				</div>
@@ -613,7 +619,9 @@ function get_reple(e){
 		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
-		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
+		                				<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+										<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+		                				<span class="recomm_count">${reple.reple_recomm_count}</span>
 		                				<span>${auto_format_date(reple.reple_time)}</span>
 		                				</div>
 		            				</div>
@@ -659,8 +667,9 @@ function get_circle_post(user_code){
 							</div>
 							<div class="card_header_tools">
 								<div class="card_header_tool">
-									<i class="material-symbols-outlined">favorite</i>
-									<span>${postVO.post_recomm_count}</span>
+									<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+									<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+									<span class="recomm_count">${postVO.post_recomm_count}</span>
 								</div>
 								<div class="card_header_tool">
 									<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
@@ -694,9 +703,16 @@ function get_circle_post(user_code){
 					</div>
 	        	`;
         		
+        		
         		const $card = $(post);
                 target.append($card);
         		
+                if(postVO.post_is_recommended){
+                	hide($card.find('.add_recomm'));
+                }else{
+                	hide($card.find('.delete_recomm'));
+                }
+                
                 if (postVO.post_tag != null && postVO.post_tag != '') {
                     const tags = postVO.post_tag.split(',');
                     for (const tag_value of tags) {
@@ -758,8 +774,7 @@ function get_circle_post(user_code){
                 	var $comment = $(reple_container);
                 	for (const reple of postVO.reples) {
                     	if(reple.reple_content!=null && reple.reple_content!=''){
-                    		
-                    		$comment.find('.scroll_box_inner').append(`
+                    		var reple_card = `
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
 	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
 		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
@@ -768,12 +783,20 @@ function get_circle_post(user_code){
 		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
-		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
+		                				<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+										<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+		                				<span class="recomm_count">${reple.reple_recomm_count}</span>
 		                				<span>${auto_format_date(reple.reple_time)}</span>
 		                				</div>
 	                				</div>
-                				</div>
-                    		`);
+	            				</div>`;
+                    		var $reple = $(reple_card);
+                    		$comment.find('.scroll_box_inner').append($reple);
+                    		if(reple.reple_is_recommended){
+                    			hide($reple.find('.add_recomm'));
+                    		}else{
+                    			hide($reple.find('.delete_recomm'));
+                    		}
                     	}
                     }
                 	$card.find('.card_foot_comment_input').after($comment);
@@ -808,77 +831,108 @@ function get_user_profile(user_code){
         dataType: "json",
         success: function(data) {
         	
+        	console.log(data);
+        	
+        	var isFollow = false;
+        	var isFavorite = false;
+        	if(follows.includes(user_code)){
+        		isFollow = true;
+        	}
+        	if(favorites.includes(user_code)){
+        		isFavorite = true;
+        	}
+        	
         	unity = "";
+        	var container = $('.user_profile_container');
+        	container.find('.profile_container_head_basic').find('img').attr('src',`/files/user/profiles/${data.user_thumbnail_path}`);
+        	$('.profile_container_head_basic_nickname').text(`${data.user_nickname}`);
+        	$('.profile_container_head_basic_info').eq(0).text(`국적 : ${data.user_nation}`);
+        	$('.profile_container_head_basic_info').eq(1).text(`출생 : ${format_date(data.user_birth,'yymmdd')}`);
+        	$('.profile_container_head_basic_info').eq(2).text(`성별 : ${data.user_gender}`);
+        	$('.profile_container_head_basic_info').eq(3).text(`접속 정보 : ${data.user_logon}`);
+        	$('.user_native_lang').find('img').attr('src',`https://flagcdn.com/w80/${data.user_native_lang}.png`);
+        	$('.user_native_lang').find('span').text(data.user_native_lang);
+        	$('.user_fluent_lang').find('img').attr('src',`https://flagcdn.com/w80/${data.user_fluent_lang}.png`);
+        	$('.user_fluent_lang').find('span').text(data.user_fluent_lang);
+        	$('.user_learning_lang').find('img').attr('src',`https://flagcdn.com/w80/${data.user_learning_lang}.png`);
+        	$('.user_learning_lang').find('span').text(data.user_learning_lang);
         	
-        	$('.profile_container').addClass('hidden');
+        	if(profile_target == current_user){
+        		showing(container.find('.open_modify_profile'));
+        		hide(container.find('.add_follow'));
+        		hide(container.find('.delete_follow'))
+        		hide(container.find('.add_favorite'));
+        		hide(container.find('.delete_favorite'))
+        	}else{
+        		hide(container.find('.open_modify_profile'));
+        		if(isFollow){
+            		hide(container.find('.add_follow'));
+            		showing(container.find('.delete_follow'))
+            	}else{
+            		hide(container.find('.delete_follow'))
+            		showing(container.find('.add_follow'));
+            	}
+            	if(isFavorite){
+            		hide(container.find('.add_favorite'));
+            		showing(container.find('.delete_favorite'))
+            	}else{
+            		hide(container.find('.delete_favorite'))
+            		showing(container.find('.add_favorite'));
+            	}
+        	}
         	
-        	$('.user_profile_container .profile_container_head_basic').html(`
-        		<img class="black" src="/files/user/profiles/${data.user_thumbnail_path}"/>
-				<div class="profile_container_head_basic_nickname">
-					${data.user_nickname}
-				</div>
-				<div class="profile_container_head_basic_info">
-        			국적 : ${data.user_nation}
-				</div>
-				<div class="profile_container_head_basic_info">
-        			출생 : ${format_date(data.user_birth,'yymmdd')}
-				</div>
-				<div class="profile_container_head_basic_info">
-        			성별 : ${data.user_gender}
-				</div>
-				<div class="profile_container_head_basic_info">
-        			접속 정보 : ${data.user_logon}
-				</div>
-        	`);
-        	$('.user_profile_container .profile_container_head_tools').html(`
-        		<div class="profile_container_head_tool" onclick="get_personal_msg_room('${user_code}')">
-					<i class="material-symbols-outlined">sms</i>
-					<span>메세지</span>
-				</div>
-				<div class="profile_container_head_tool">
-					<i class="material-symbols-outlined">for_you</i>
-					<span>팔로우</span>
-				</div>
-				<div class="profile_container_head_tool">
-					<i class="material-symbols-outlined">bookmark_star</i>
-					<span>즐겨찾기</span>
-				</div>
-				<div class="profile_container_head_tool">
-					<i class="material-symbols-outlined">block</i>
-					<span>차단</span>
-				</div>
-				<div class="profile_container_head_tool">
-					<i class="material-symbols-outlined">partner_reports</i>
-					<span>신고</span>
-				</div>
-    			<div class="profile_container_head_tool">
-	    			<i class="material-symbols-outlined">contract_edit</i>
-	    			<span>수정</span>
-    			</div>
-        	`);
-        	$('.user_profile_container .profile_container_body .scroll_box_inner').html(`
-        		<div class="inner_box mw p5 mgb">
-					<div class="inner_title">모국어</div>
-					<div class="scroll_box row">
-						<img src="https://flagcdn.com/w80/kr.png" class="flags">
-						${data.user_native_lang}
-        			</div>
-				</div>
-				<div class="inner_box mw p5 mgb">
-					<div class="inner_title">유창한 언어</div>
-					<div class="scroll_box row">
-						<img src="https://flagcdn.com/w80/kr.png" class="flags">
-						${data.user_fluent_lang}
-        			</div>
-				</div>
-				<div class="inner_box mw p5 mgb">
-					<div class="inner_title">학습중인 언어</div>
-					<div class="scroll_box row">
-						<img src="https://flagcdn.com/w80/kr.png" class="flags">
-						${data.user_learning_lang}
-        			</div>
-				</div>
-        	`);
+        	$('.detail_profile_content').empty();
+        	
+        	function pc(userVO) {
+        	    return `
+        	        <div class="card_person">
+        	            <div class="card_person_thumbnail" onclick="shrink_profile();">
+        	                <img class="small_img" src="/files/user/profiles/${userVO.user_thumbnail_path}"/>
+        	            </div>
+        	            <div class="card_person_info" onclick="shrink_profile(); visit('${userVO.user_code}', this)">
+        	                <div class="card_person_info_nickname">${userVO.user_nickname}</div>
+        	                <div class="card_person_info_comment">최근 접속일</div>
+        	                <div class="card_person_info_logon">${userVO.user_logon}</div>
+        	            </div>
+        	            <div class="card_person_tools">
+        	                <div class="card_person_tool">
+        	                    <i class="material-symbols-outlined" onclick="shrink_profile(); visit('${userVO.user_code}', this)">location_away</i>
+        	                </div>
+        	                <div class="card_person_tool">
+        	                    <i class="material-symbols-outlined" onclick="get_personal_msg_room('${userVO.user_code}')">sms</i>
+        	                </div>
+        	            </div>
+        	        </div>`;
+        	}
+        	 
+        	if(isEmpty(data.user_favorite)){
+        		$('.detail_profile_content.favorite').html(`
+        			<div class="empty">즐겨찾기에 등록한 사용자가 없습니다.</div>
+        		`);
+        	}else{
+        		for (const userVO of data.user_favorite){
+        			$('.detail_profile_content.favorite').append(pc(userVO));
+        		}
+        	}
+        	if(isEmpty(data.user_follower)){
+        		$('.detail_profile_content.follower').html(`
+            			<div class="empty">팔로워가 없습니다.</div>
+            		`);
+        	}else{
+        		for (const userVO of data.user_follower){
+        			$('.detail_profile_content.follower').append(pc(userVO));
+        		}
+        	}
+        	if(isEmpty(data.user_following)){
+        		$('.detail_profile_content.following').html(`
+            			<div class="empty">팔로우 중인 대상이 없습니다.</div>
+            		`);
+        	}else{
+        		for (const userVO of data.user_following){
+        			$('.detail_profile_content.following').append(pc(userVO));
+        		}
+        	}
+        	
         	setTimeout(function() {
         		$('.profile_container').removeClass('hidden');
         		
@@ -1340,6 +1394,8 @@ function get_unity_post(ub_board_code,upost_code,unity_board_page){
         dataType: "json",
         success: function(data) {
         	
+        	console.log(data);
+        	
         	$('.unity_cards').empty();
         	
         	if (isEmpty(data)) {
@@ -1371,8 +1427,9 @@ function get_unity_post(ub_board_code,upost_code,unity_board_page){
         					</div>
 							<div class="card_header_tools">
 								<div class="card_header_tool">
-									<i class="material-symbols-outlined">favorite</i>
-									<span>${postVO.post_recomm_count}</span>
+									<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+									<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+									<span class="recomm_count">${postVO.post_recomm_count}</span>
 								</div>
 								<div class="card_header_tool">
 									<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
@@ -1407,6 +1464,13 @@ function get_unity_post(ub_board_code,upost_code,unity_board_page){
 	        	`;
         		
         		const $card = $(post);
+        		console.log('bool is',postVO.post_is_recommended);
+        		
+        		if(postVO.post_is_recommended){
+        			hide($card.find('.add_recomm'));
+        		}else{
+        			hide($card.find('.delete_recomm'));
+        		}
         		
         		$('.unity_cards').append($card);
         		
@@ -1470,9 +1534,8 @@ function get_unity_post(ub_board_code,upost_code,unity_board_page){
                 		`;
                 	var $comment = $(reple_container);
                 	for (const reple of postVO.reples) {
-                    	if(reple.reple_content!=null && reple.reple_content!=''){
-                    		
-                    		$comment.find('.scroll_box_inner').append(`
+                		if(reple.reple_content!=null && reple.reple_content!=''){
+                    		var reple_card = `
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
 	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
 		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
@@ -1481,12 +1544,20 @@ function get_unity_post(ub_board_code,upost_code,unity_board_page){
 		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
-		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
+		                				<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+										<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+		                				<span class="recomm_count">${reple.reple_recomm_count}</span>
 		                				<span>${auto_format_date(reple.reple_time)}</span>
 		                				</div>
 	                				</div>
-                				</div>
-                    		`);
+	            				</div>`;
+                    		var $reple = $(reple_card);
+                    		$comment.find('.scroll_box_inner').append($reple);
+                    		if(reple.reple_is_recommended){
+                    			hide($reple.find('.add_recomm'));
+                    		}else{
+                    			hide($reple.find('.delete_recomm'));
+                    		}
                     	}
                     }
                 	$card.find('.card_foot_comment_input').after($comment);
@@ -1578,8 +1649,9 @@ function get_unity_board_post(post_place,post_code){
         					</div>
 							<div class="card_header_tools">
 								<div class="card_header_tool">
-									<i class="material-symbols-outlined">favorite</i>
-									<span>${postVO.post_recomm_count}</span>
+									<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+									<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+									<span class="recomm_count">${postVO.post_recomm_count}</span>
 								</div>
 								<div class="card_header_tool">
 									<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
@@ -1614,6 +1686,12 @@ function get_unity_board_post(post_place,post_code){
 	        	`;
         		
         		const $card = $(post);
+        		
+        		if(postVO.post_is_recommended){
+        			hide($card.find('.add_recomm'));
+        		}else{
+        			hide($card.find('.delete_recomm'));
+        		}
         		
         		$('.unity_cards').append($card);
         		
@@ -1673,8 +1751,7 @@ function get_unity_board_post(post_place,post_code){
                 	var $comment = $(reple_container);
                 	for (const reple of postVO.reples) {
                     	if(reple.reple_content!=null && reple.reple_content!=''){
-                    		
-                    		$comment.find('.scroll_box_inner').append(`
+                    		var reple_card = `
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
 	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
 		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
@@ -1683,12 +1760,20 @@ function get_unity_board_post(post_place,post_code){
 		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
-		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
+		                				<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+										<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+		                				<span class="recomm_count">${reple.reple_recomm_count}</span>
 		                				<span>${auto_format_date(reple.reple_time)}</span>
 		                				</div>
 	                				</div>
-                				</div>
-                    		`);
+	            				</div>`;
+                    		var $reple = $(reple_card);
+                    		$comment.find('.scroll_box_inner').append($reple);
+                    		if(reple.reple_is_recommended){
+                    			hide($reple.find('.add_recomm'));
+                    		}else{
+                    			hide($reple.find('.delete_recomm'));
+                    		}
                     	}
                     }
                 	$card.find('.card_foot_comment_input').after($comment);
@@ -1763,8 +1848,9 @@ function add_unity_post(upost_code,ub_add_direction,is_finished){
         					</div>
 							<div class="card_header_tools">
 								<div class="card_header_tool">
-									<i class="material-symbols-outlined">favorite</i>
-									<span>${postVO.post_recomm_count}</span>
+									<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+									<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+									<span class="recomm_count">${postVO.post_recomm_count}</span>
 								</div>
 								<div class="card_header_tool">
 									<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
@@ -1874,7 +1960,9 @@ function add_unity_post(upost_code,ub_add_direction,is_finished){
 		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
-		                				<i class="material-symbols-outlined">favorite</i>${reple.reple_recomm_count}
+		                				<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+										<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+		                				<span class="recomm_count">${reple.reple_recomm_count}</span>
 		                				<span>${auto_format_date(reple.reple_time)}</span>
 		                				</div>
 	                				</div>
@@ -2227,4 +2315,208 @@ function delete_unity(unity_code) {
 			console.error('에러 발생:', error);
 		}
 	});
+}
+
+function add_favorite(e) {
+	var place;
+	var target_code;
+	if($(e).closest('.main_messenger_body.in_room').length>0){
+		target_code = mr_code;
+		place='messenger';
+	}
+	if($(e).closest('.user_profile_container').length>0){
+		target_code = profile_target;
+		place='user';
+	}
+	
+	$.ajax({
+		url: '/main/favorite',
+		method: 'POST',
+		data: {target_code: target_code},
+		dataType: 'json',
+		success: function(data) {
+			if(place=='messenger'){
+				hide($('.messenger_buttons').find('.add_favorite'));
+				showing($('.messenger_buttons').find('.delete_favorite'));
+			}
+			if(place=='user'){
+				additional_user_check(() => get_user_profile(profile_target));
+			}
+		},
+		error: function() {
+		}
+	});
+}
+function delete_favorite(e) {
+	var place;
+	var target_code;
+	if($(e).closest('.main_messenger_body.in_room').length>0){
+		target_code = mr_code;
+		place='messenger';
+	}
+	if($(e).closest('.user_profile_container').length>0){
+		target_code = profile_target;
+		place='user';
+	}
+	
+	$.ajax({
+		url: '/main/favorite?target_code=' + target_code,
+		method: 'DELETE',
+		dataType: 'json',
+		success: function(data) {
+			if(place=='messenger'){
+				hide($('.messenger_buttons').find('.delete_favorite'));
+				showing($('.messenger_buttons').find('.add_favorite'));
+			}
+			if(place=='user'){
+				additional_user_check(() => get_user_profile(profile_target));
+			}
+		},
+		error: function() {
+		}
+	});
+}
+
+function add_follow() {
+	
+	$.ajax({
+		url: '/main/follow',
+		method: 'POST',
+		data: {target_code: profile_target},
+		dataType: 'json',
+		success: function(data) {
+			additional_user_check(() => get_user_profile(profile_target));
+		},
+		error: function() {
+		}
+	});
+}
+function delete_follow() {
+	
+	$.ajax({
+		url: '/main/follow?target_code=' + profile_target,
+		method: 'DELETE',
+		dataType: 'json',
+		success: function(data) {
+			additional_user_check(() => get_user_profile(profile_target));
+		},
+		error: function() {
+		}
+	});
+}
+function add_recomm(e) {
+	var place;
+	var target_code;
+	
+	if($(e).closest('.card_header_tool').length>0){
+		place = 'post';
+		target_code = $(e).closest('.card').data('post_code');
+	}
+	if($(e).closest('.card_comment').length>0){
+		place = 'reple';
+		target_code = $(e).closest('.card_comment').data('reple_code');
+	}
+	
+	$.ajax({
+		url: '/main/recomm',
+		method: 'POST',
+		data: {target_code: target_code},
+		dataType: 'json',
+		success: function(data) {
+			renew_recomm(e);
+		},
+		error: function() {
+		}
+	});
+}
+function delete_recomm(e) {
+	var place;
+	var target_code;
+	
+	if($(e).closest('.card_header_tool').length>0){
+		place = 'post';
+		target_code = $(e).closest('.card').data('post_code');
+	}
+	if($(e).closest('.card_comment').length>0){
+		place = 'reple';
+		target_code = $(e).closest('.card_comment').data('reple_code');
+	}
+	
+	$.ajax({
+		url: '/main/recomm?target_code=' + target_code,
+		method: 'DELETE',
+		dataType: 'json',
+		success: function(data) {
+			renew_recomm(e);
+		},
+		error: function() {
+		}
+	});
+}
+
+function additional_user_check(objective) {
+	
+	$.ajax({
+        type: "GET",
+        url: "/user/loginCheck",
+        dataType: "json",
+        success: function(data) {
+        	if(data == null || data.user_code == null || data.user_code == ""){
+        		alert("로그인 정보가 없습니다. 로그인 페이지로 이동합니다.");
+                window.location.href = "/user/login";
+        	}else{
+        		follows = data.follows;
+        		favorites = data.favorites;
+        		objective();
+        	}
+        },
+        error: function(xhr, status, error) {
+        	console.log('check failed');
+        }
+    });
+}
+
+function renew_recomm(e){
+	var place;
+	var target_code;
+	if($(e).closest('.card_comment').length>0){
+		place = 'reple';
+		target_code = $(e).closest('.card_comment').data('reple_code');
+	}else if($(e).closest('.card').length>0){
+		place = 'post';
+		target_code = $(e).closest('.card').data('post_code');
+	}
+	$.ajax({
+        type: "GET",
+        url: "/main/recomm",
+        data: {target_code:target_code},
+        dataType: "json",
+        success: function(data) {
+        	if(place == 'post'){
+        		const container = $(e).closest('.card_header_tool');
+        		container.find('.recomm_count').text(data.recomm_count);
+        		if(data.is_recommended){
+        			hide(container.find('.add_recomm'));
+        			showing(container.find('.delete_recomm'));
+        		}else{
+        			hide(container.find('.delete_recomm'));
+        			showing(container.find('.add_recomm'));
+        		}
+        	}
+        	if(place == 'reple'){
+        		const container = $(e).closest('.card_comment');
+        		container.find('.recomm_count').text(data.recomm_count);
+        		if(data.is_recommended){
+        			hide(container.find('.add_recomm'));
+        			showing(container.find('.delete_recomm'));
+        		}else{
+        			hide(container.find('.delete_recomm'));
+        			showing(container.find('.add_recomm'));
+        		}
+        	}
+        },
+        error: function(xhr, status, error) {
+        	console.log('check failed');
+        }
+    });
 }

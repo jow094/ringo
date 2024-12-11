@@ -3,27 +3,33 @@
 	<div class="container_side_button_section messenger_button" onclick="main_messenger_menu(this)">
 		<i class="material-symbols-outlined">arrow_left</i>
 	</div>
-	<div class="main_messenger_menu scroll_box shrinked">
-		<div class="scroll_box_inner">
-			<div class="card_person">
-				<div class="card_person_thumbnail">
-					<img class="small_img"
-					src="/img/user/profiles/${user_thumbnail_path}"
-					/>
-				</div>
-				<div class="card_person_info">
-					<div class="card_person_info_nickname"></div>
-					<div class="card_person_info_comment"></div>
-					<div class="card_person_info_logon"></div>
-				</div>
-				<div class="card_person_tools">
-					<div class="card_person_tools_pin"></div>
-					<div class="card_person_tools_message"></div>
-				</div>
+	
+	
+	
+	
+	<div class="main_messenger_menu column shrinked">
+		<div class="messenger_menus">
+			<div class="messenger_menu favorite active" onclick="mm_toggle(this,'favorite')">
+				<span>즐겨찾기</span>
+			</div>
+			<div class="messenger_menu follower" onclick="mm_toggle(this,'follower')">
+				<span>팔로워</span>
+			</div>
+			<div class="messenger_menu following" onclick="mm_toggle(this,'following')">
+				<span>팔로잉</span>
 			</div>
 		</div>
+		<div class="mm_container scroll_box">
+			<div class="scroll_box_inner">
+				<div class="messenger_menu_content favorite">
+				</div>
+				<div class="messenger_menu_content follower none">
+				</div>
+				<div class="messenger_menu_content following none">
+				</div>
+			</div>				
+		</div>
 	</div>
-	
 	
 	<div class="main_messenger_body out_of_room">
 		<div class="messenger_navbar small">
@@ -77,20 +83,23 @@
 			<div class="messenger_option rr_shrinked">
 				<div class="messenger_option_toggle_button" onclick="rr_toggle('.messenger_option')"><i class="material-symbols-outlined">arrow_right</i></div>
 				<div class="messenger_option_body">
-					<div class="buttons">
-						<div class="sm_button">
+					<div class="buttons messenger_buttons">
+	        			<div class="sm_button white add_favorite" onclick="add_favorite(this)">
 							<i class="material-symbols-outlined">bookmark_add</i>
 						</div>
-						<div class="sm_button">
+						<div class="sm_button white delete_favorite" onclick="delete_favorite(this)">
 							<i class="material-symbols-outlined">bookmark_remove</i>
 						</div>
-						<div class="sm_button">
-							<i class="material-symbols-outlined">notifications_off</i>
-						</div>
-						<div class="sm_button">
+						<div class="sm_button white add_notifying" onclick="add_notifying(this)">
+	        				<i class="material-symbols-outlined">notifications</i>
+	    				</div>
+	    				<div class="sm_button white delete_notifying" onclick="delete_notifying(this)">
+	        				<i class="material-symbols-outlined">notifications_off</i>
+	    				</div>
+						<div class="sm_button white" onclick="main_messenger_menu($('.messenger_button'))">
 							<i class="material-symbols-outlined">person_add</i>
 						</div>
-						<div class="sm_button mla">
+						<div class="sm_button white mla get_out_mr" onclick="get_out_mr()">
 							<i class="material-symbols-outlined">move_item</i>
 						</div>
 					</div>

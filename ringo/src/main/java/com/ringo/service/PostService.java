@@ -22,6 +22,5 @@ public interface PostService {
 	public List<PostVO> getUnityPost(UnityBoardVO vo);
 	public Map<String,Object> getUnityBoardPost(UnityBoardVO vo);
 	public List<PostVO> getMoreUnityPost(UnityBoardVO vo);
-	
-	
+	public Map<String,Object> getRecommInfo(String user_code,String target_code);
 }
