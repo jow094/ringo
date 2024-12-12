@@ -786,19 +786,16 @@ function get_messenger_menu(e) {
         	
 			function pc(userVO) {
         	    return `
-        	        <div class="card_person" data-user_code="${userVO.user_code}">
+        	        <div class="card_person ${userVO.user_logon != '0' ? 'finished_row' : ''}">
         	            <div class="card_person_thumbnail" onclick="shrink_profile();">
         	                <img class="small_img" src="/files/user/profiles/${userVO.user_thumbnail_path}"/>
         	            </div>
         	            <div class="card_person_info" onclick="shrink_profile(); visit('${userVO.user_code}', this)">
         	                <div class="card_person_info_nickname">${userVO.user_nickname}</div>
-        	                <div class="card_person_info_comment">최근 접속일</div>
-        	                <div class="card_person_info_logon">${userVO.user_logon}</div>
+        	                <div class="card_person_info_comment">${userVO.user_logon != '0'? '온라인' : '오프라인'}</div>
+        	                <div class="card_person_info_logon">${userVO.user_logon != '0'? userVO.user_logon : time_ago(userVO.user_log_time) + ', ' + userVO.user_log_location}</div>
         	            </div>
         	            <div class="card_person_tools">
-        	                <div class="card_person_tool">
-        	                    <i class="material-symbols-outlined" onclick="shrink_profile(); visit('${userVO.user_code}', this)">location_away</i>
-        	                </div>
         	                <div class="card_person_tool">
         	                    <i class="material-symbols-outlined" onclick="get_personal_msg_room('${userVO.user_code}')">sms</i>
         	                </div>
@@ -812,7 +809,11 @@ function get_messenger_menu(e) {
         		`);
         	}else{
         		for (const userVO of data.user_favorite){
-        			$('.messenger_menu_content.favorite').append(pc(userVO));
+        			if(userVO.user_logon != '0'){
+        				$('.messenger_menu_content.favorite').prepend(pc(userVO));
+        			}else{
+        				$('.messenger_menu_content.favorite').append(pc(userVO));
+        			}
         		}
         	}
         	if(isEmpty(data.user_follower)){
@@ -821,7 +822,11 @@ function get_messenger_menu(e) {
             		`);
         	}else{
         		for (const userVO of data.user_follower){
-        			$('.messenger_menu_content.follower').append(pc(userVO));
+        			if(userVO.user_logon != '0'){
+        				$('.messenger_menu_content.follower').prepend(pc(userVO));
+        			}else{
+        				$('.messenger_menu_content.follower').append(pc(userVO));
+        			}
         		}
         	}
         	if(isEmpty(data.user_following)){
@@ -830,7 +835,11 @@ function get_messenger_menu(e) {
             		`);
         	}else{
         		for (const userVO of data.user_following){
-        			$('.messenger_menu_content.following').append(pc(userVO));
+        			if(userVO.user_logon != '0'){
+        				$('.messenger_menu_content.following').prepend(pc(userVO));
+        			}else{
+        				$('.messenger_menu_content.following').append(pc(userVO));
+        			}
         		}
         	}
 			

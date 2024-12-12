@@ -111,10 +111,11 @@ public class MainController {
 	
 	@RequestMapping(value = "/reple", method = RequestMethod.GET)
 	@ResponseBody
-	public List<RepleVO> repleGET(HttpSession session, RepleVO vo) {
-		logger.debug("repleGET(RepleVO vo) - vo : "+vo);
+	public List<RepleVO> repleGET(HttpSession session, String target_code) {
+		logger.debug("repleGET(String target_code) - target_code : "+target_code);
+		String user_code = (String)session.getAttribute("user_code");
 		
-		return pService.getReple(vo);
+		return pService.getReple(user_code, target_code);
 	}
 	
 	@RequestMapping(value = "/favorite", method = RequestMethod.POST)

@@ -49,13 +49,14 @@ public class CircleController {
 	
 	@RequestMapping(value = "/post", method = RequestMethod.GET)
 	@ResponseBody
-	public List<PostVO> circlePostGET(HttpSession session, String user_code) {
-		if(user_code==null) {
-			user_code = (String)session.getAttribute("user_code");
+	public List<PostVO> circlePostGET(HttpSession session, String visit_code) {
+		if(visit_code==null || visit_code.equals("")) {
+			visit_code = (String)session.getAttribute("user_code");
 		}
+		String user_code = (String)session.getAttribute("user_code");
 		
-		logger.debug("circlePostsGET(String user_code) - user_code : "+user_code);
-		return pService.getCirclePost(user_code);
+		logger.debug("circlePostsGET(String visit_code, String user_code) - visit_code, user_code : "+visit_code+ "," +user_code);
+		return pService.getCirclePost(visit_code,user_code);
 	}
 	
 	@RequestMapping(value = "/post", method = RequestMethod.POST)

@@ -48,25 +48,43 @@
 		<div class="profile_container_body">
 			<div class="scroll_box">
 				<div class="scroll_box_inner col">
-					<div class="inner_box mw p5 mgb">
+					<div class="inner_box mw p5 mgb h60">
 						<div class="inner_title">모국어</div>
 						<div class="scroll_box row user_native_lang">
 							<img class="flags">
 							<span></span>
 	        			</div>
 					</div>
-					<div class="inner_box mw p5 mgb">
+					<div class="inner_box mw p5 mgb h60">
 						<div class="inner_title">유창한 언어</div>
 						<div class="scroll_box row user_fluent_lang">
 							<img class="flags">
 							<span></span>
 	        			</div>
 					</div>
-					<div class="inner_box mw p5 mgb">
+					<div class="inner_box mw p5 mgb h60">
 						<div class="inner_title">학습중인 언어</div>
 						<div class="scroll_box row user_learning_lang">
 							<img class="flags">
 							<span></span>
+	        			</div>
+					</div>
+					<div class="inner_box mw p5 mgb h80">
+						<div class="inner_title">한줄 소개</div>
+						<div class="scroll_box row user_intro">
+							<span class="pd5"></span>
+	        			</div>
+					</div>
+					<div class="inner_box mw p5 mgb h80">
+						<div class="inner_title">이상형</div>
+						<div class="scroll_box row user_ideal_partner">
+							<span class="pd5"></span>
+	        			</div>
+					</div>
+					<div class="inner_box mw p5 mgb h80">
+						<div class="inner_title">학습 목표</div>
+						<div class="scroll_box row user_objective">
+							<span class="pd5"></span>
 	        			</div>
 					</div>
 				</div>

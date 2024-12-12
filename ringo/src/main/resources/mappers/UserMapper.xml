@@ -25,39 +25,10 @@
 	    <result property="user_thumbnail_path" column="user_thumbnail_path"/>
 	    <result property="user_profile_path" column="user_profile_path"/>
 	    <result property="user_logon" column="user_logon"/>
-	
-	    <collection property="user_follower" ofType="UserVO">
-	        <result property="user_code" column="follower_user_code"/>
-	        <result property="user_nickname" column="follower_user_nickname"/>
-	        <result property="user_thumbnail_path" column="follower_user_thumbnail_path"/>
-	        <result property="user_nation" column="follower_user_nation"/>
-	        <result property="user_gender" column="follower_user_gender"/>
-	        <result property="user_birth" column="follower_user_birth"/>
-	        <result property="user_logon" column="follower_user_logon"/>
-	        <result property="user_private" column="follower_user_private"/>
-	    </collection>
-	
-	    <collection property="user_following" ofType="UserVO">
-	        <result property="user_code" column="following_user_code"/>
-	        <result property="user_nickname" column="following_user_nickname"/>
-	        <result property="user_thumbnail_path" column="following_user_thumbnail_path"/>
-	        <result property="user_nation" column="following_user_nation"/>
-	        <result property="user_gender" column="following_user_gender"/>
-	        <result property="user_birth" column="following_user_birth"/>
-	        <result property="user_logon" column="following_user_logon"/>
-	        <result property="user_private" column="follower_user_private"/>
-	    </collection>
-	    
-	    <collection property="user_favorite" ofType="UserVO">
-	        <result property="user_code" column="favorite_user_code"/>
-	        <result property="user_nickname" column="favorite_user_nickname"/>
-	        <result property="user_thumbnail_path" column="favorite_user_thumbnail_path"/>
-	        <result property="user_nation" column="favorite_user_nation"/>
-	        <result property="user_gender" column="favorite_user_gender"/>
-	        <result property="user_birth" column="favorite_user_birth"/>
-	        <result property="user_logon" column="favorite_user_logon"/>
-	        <result property="user_private" column="favorite_user_private"/>
-	    </collection>
+	    <result property="user_log_time" column="user_log_time"/>
+	    <result property="user_log_location" column="user_log_location"/>
+	    <result property="user_follower_count" column="user_follower_count"/>
+	    <result property="user_following_count" column="user_following_count"/>
 	</resultMap>
 	
 	<select id="selectUser" parameterType="UserVO" resultType="UserVO">
@@ -109,66 +80,8 @@
 	</select>
 	
 	<select id="selectUserProfile" resultMap="selectUserProfile_Map">
-	    select 
-	        u1.user_code,
-	        u1.user_nickname,
-	        u1.user_birth,
-	        u1.user_nation,
-	        u1.user_gender,
-	        u1.user_native_lang,
-	        u1.user_fluent_lang,
-	        u1.user_learning_lang,
-	        u1.user_intro,
-	        u1.user_ideal_partner,
-	        u1.user_objective,
-	        u1.user_topic,
-	        u1.user_interest,
-	        u1.user_correction_degree,
-	        u1.user_usually_time,
-	        u1.user_method,
-	        u1.user_thumbnail_path,
-	        u1.user_profile_path,
-	        u1.user_logon,
-	        
-	        f1_user.user_code as follower_user_code,
-	        f1_user.user_nickname as follower_user_nickname,
-	        f1_user.user_thumbnail_path as follower_user_thumbnail_path,
-	        f1_user.user_nation as follower_user_nation,
-	        f1_user.user_gender as follower_user_gender,
-	        f1_user.user_birth as follower_user_birth,
-	        f1_user.user_logon as follower_user_logon,
-	        f1_user.user_private as follower_user_private,
-	        
-	        f2_user.user_code as following_user_code,
-	        f2_user.user_nickname as following_user_nickname,
-	        f2_user.user_thumbnail_path as following_user_thumbnail_path,
-	        f2_user.user_nation as following_user_nation,
-	        f2_user.user_gender as following_user_gender,
-	        f2_user.user_birth as following_user_birth,
-	        f2_user.user_logon as following_user_logon,
-	        f2_user.user_private as following_user_private,
-	        
-	        f3_user.user_code as favorite_user_code,
-	        f3_user.user_nickname as favorite_user_nickname,
-	        f3_user.user_thumbnail_path as favorite_user_thumbnail_path,
-	        f3_user.user_nation as favorite_user_nation,
-	        f3_user.user_gender as favorite_user_gender,
-	        f3_user.user_birth as favorite_user_birth,
-	        f3_user.user_logon as favorite_user_logon,
-	        f3_user.user_private as favorite_user_private
-	        
-	    from _ringo_user u1
-	    
-	    left join _ringo_follow f1 on f1.target_code = u1.user_code
-	    left join _ringo_user f1_user on f1.user_code = f1_user.user_code
-	    
-	    left join _ringo_follow f2 on f2.user_code = u1.user_code
-	    left join _ringo_user f2_user on f2.target_code = f2_user.user_code
-	    
-	    left join _ringo_favorite f3 on f3.user_code = u1.user_code
-	    left join _ringo_user f3_user on f3.target_code = f3_user.user_code
-	    
-	    where u1.user_code = #{user_code}
+	    select * from user
+	    	where user_code = #{user_code}
 	</select>
 	
 	<select id="selectFollowerProfile" resultType="UserVO">
@@ -180,6 +93,8 @@
 	        u.user_gender,
 	        u.user_birth,
 	        u.user_logon,
+	        u.user_log_time,
+	        u.user_log_location,
 	        u.user_private
 	    from _ringo_user u
 	    left join _ringo_follow f on f.user_code = u.user_code
@@ -196,6 +111,8 @@
 	        u.user_gender,
 	        u.user_birth,
 	        u.user_logon,
+     	    u.user_log_time,
+	        u.user_log_location,
 	        u.user_private
 	    from _ringo_user u
 	    left join _ringo_follow f on f.target_code = u.user_code
@@ -212,6 +129,8 @@
 	        u.user_gender,
 	        u.user_birth,
 	        u.user_logon,
+	        u.user_log_time,
+	        u.user_log_location,
 	        u.user_private
 	    from _ringo_user u
 	    left join _ringo_favorite f on f.target_code = u.user_code

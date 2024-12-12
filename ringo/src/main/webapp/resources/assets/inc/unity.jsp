@@ -444,12 +444,12 @@
 												<div class="input_value">
 													<select name="unity_topic" class="annotation_message">
 														<option class="annotation_message" value="" selected disabled>대분류</option>
-														<option value="1">공개</option>
+														<option value="1">스포츠</option>
 														<option value="3">비공개</option>
 													</select>
 													<select name="unity_topic" class="annotation_message">
 														<option class="annotation_message" value="" selected disabled>소분류</option>
-														<option value="1">공개</option>
+														<option value="1">야구</option>
 														<option value="3">비공개</option>
 													</select>
 													<input type="hidden" name="unity_topic"/>

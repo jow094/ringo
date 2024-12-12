@@ -541,7 +541,7 @@ function submit_reple(e){
         type: "POST",
         url: "/main/reple/",
         data: {reple_content:$(e).val(),
-        		reple_target:card.attr('data-post_code')},
+        		target_code:card.attr('data-post_code')},
         dataType: "json",
         success: function (response) {
         	$(e).val('');
@@ -558,7 +558,7 @@ function get_reple(e){
 	$.ajax({
         type: "GET",
         url: "/main/reple/",
-        data: {reple_target: $(e).closest('.card').attr('data-post_code')},
+        data: {target_code: $(e).closest('.card').attr('data-post_code')},
         dataType: "json",
         success: function(data) {
         	
@@ -566,7 +566,7 @@ function get_reple(e){
         		$(e).closest('.card').find('.reple_button_section').find('.cell').text(`댓글 ${data[0].assemble_count}개`);
         		
         		if($(e).closest('.unity_cards').length>0){
-        			$('.post_list').find(`[data-post_code=${data[0].reple_target}]`).find('.fa-comment-dots').next('span').text(data[0].assemble_count);
+        			$('.post_list').find(`[data-post_code=${data[0].target_code}]`).find('.fa-comment-dots').next('span').text(data[0].assemble_count);
         		}
         		
         		
@@ -583,39 +583,12 @@ function get_reple(e){
         			
         			for (const reple of data) {
                     	if(reple.reple_content!=null && reple.reple_content!=''){
-                    		
-                    		$comment.find('.scroll_box_inner').prepend(`
+                    		var reple_card = `
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
-                    				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
-    	                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
-                    				</div>
-                    				<div class="card_comment_body">
-    	                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
-    	                				<div class="card_comment_content">${reple.reple_content}</div>
-    	                				<div class="card_comment_time">
-    	                				<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
-										<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
-    	                				<span class="recomm_count">${reple.reple_recomm_count}</span>
-    	                				<span>${auto_format_date(reple.reple_time)}</span>
-    	                				</div>
-                    				</div>
-                				</div>
-                    		`);
-                    	}
-                    }
-        			$(e).closest('.card').find('.card_foot_comment_input').after($comment);
-        		}else{
-        			$(e).closest('.card').find('.card_foot_comment').find('.scroll_box_inner').empty();
-        			
-        			for (const reple of data) {
-                    	if(reple.reple_content!=null && reple.reple_content!=''){
-                    		
-		        			$(e).closest('.card').find('.card_foot_comment').find('.scroll_box_inner').append(`
-		            				<div class="card_comment" data-reple_code="${reple.reple_code}">
-		            				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
+	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
 		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
-		            				</div>
-		            				<div class="card_comment_body">
+	                				</div>
+	                				<div class="card_comment_body">
 		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
 		                				<div class="card_comment_content">${reple.reple_content}</div>
 		                				<div class="card_comment_time">
@@ -624,9 +597,46 @@ function get_reple(e){
 		                				<span class="recomm_count">${reple.reple_recomm_count}</span>
 		                				<span>${auto_format_date(reple.reple_time)}</span>
 		                				</div>
-		            				</div>
-		        				</div>
-		            		`);
+	                				</div>
+	            				</div>`;
+                    		var $reple = $(reple_card);
+                    		if(reple.reple_is_recommended){
+                    			hide($reple.find('.add_recomm'));
+                    		}else{
+                    			hide($reple.find('.delete_recomm'));
+                    		}
+                    		$comment.find('.scroll_box_inner').append($reple);
+                    	}
+                    }
+        			$(e).closest('.card').find('.card_foot_comment_input').after($comment);
+        		}else{
+        			$(e).closest('.card').find('.card_foot_comment').find('.scroll_box_inner').empty();
+        			
+        			for (const reple of data) {
+                    	if(reple.reple_content!=null && reple.reple_content!=''){
+                    		var reple_card = `
+                				<div class="card_comment" data-reple_code="${reple.reple_code}">
+	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
+		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
+	                				</div>
+	                				<div class="card_comment_body">
+		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
+		                				<div class="card_comment_content">${reple.reple_content}</div>
+		                				<div class="card_comment_time">
+		                				<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+										<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+		                				<span class="recomm_count">${reple.reple_recomm_count}</span>
+		                				<span>${auto_format_date(reple.reple_time)}</span>
+		                				</div>
+	                				</div>
+	            				</div>`;
+                    		var $reple = $(reple_card);
+                    		if(reple.reple_is_recommended){
+                    			hide($reple.find('.add_recomm'));
+                    		}else{
+                    			hide($reple.find('.delete_recomm'));
+                    		}
+                    		$(e).closest('.card').find('.card_foot_comment').find('.scroll_box_inner').append($reple);
                     	}
         			}
         		}
@@ -637,17 +647,17 @@ function get_reple(e){
     });
 }
 
-function get_circle_post(user_code){
+function get_circle_post(visit_code){
 	
 	$.ajax({
         type: "GET",
         url: "/circle/post/",
-        data: {user_code:user_code},
+        data: {visit_code:visit_code},
         dataType: "json",
         success: function(data) {
         	var target;
         	
-        	if(user_code==null){
+        	if(visit_code==null){
         		target = $('.circle_cards');
         	}else{
         		target = $('.visit_cards');
@@ -829,10 +839,12 @@ function get_user_profile(user_code){
         url: "/user/profile",
         data: {user_code:user_code},
         dataType: "json",
-        success: function(data) {
+        success: function(response) {
         	
-        	console.log(data);
+        	console.log(response);
         	
+        	const data = response.data;
+        	const conn = response.conn;
         	var isFollow = false;
         	var isFavorite = false;
         	if(follows.includes(user_code)){
@@ -846,16 +858,19 @@ function get_user_profile(user_code){
         	var container = $('.user_profile_container');
         	container.find('.profile_container_head_basic').find('img').attr('src',`/files/user/profiles/${data.user_thumbnail_path}`);
         	$('.profile_container_head_basic_nickname').text(`${data.user_nickname}`);
-        	$('.profile_container_head_basic_info').eq(0).text(`국적 : ${data.user_nation}`);
+        	$('.profile_container_head_basic_info').eq(0).text(`국적 : ${trs_nation(data.user_nation,'nation')}`);
         	$('.profile_container_head_basic_info').eq(1).text(`출생 : ${format_date(data.user_birth,'yymmdd')}`);
         	$('.profile_container_head_basic_info').eq(2).text(`성별 : ${data.user_gender}`);
-        	$('.profile_container_head_basic_info').eq(3).text(`접속 정보 : ${data.user_logon}`);
-        	$('.user_native_lang').find('img').attr('src',`https://flagcdn.com/w80/${data.user_native_lang}.png`);
-        	$('.user_native_lang').find('span').text(data.user_native_lang);
-        	$('.user_fluent_lang').find('img').attr('src',`https://flagcdn.com/w80/${data.user_fluent_lang}.png`);
-        	$('.user_fluent_lang').find('span').text(data.user_fluent_lang);
-        	$('.user_learning_lang').find('img').attr('src',`https://flagcdn.com/w80/${data.user_learning_lang}.png`);
-        	$('.user_learning_lang').find('span').text(data.user_learning_lang);
+        	$('.profile_container_head_basic_info').eq(3).text(`${data.user_logon != 0 ? '접속 중, ' + data.user_logon : time_ago(data.user_log_time) + ', ' + data.user_log_location}`);
+        	container.find('.user_native_lang').find('img').attr('src',`https://flagcdn.com/w80/${data.user_native_lang}.png`);
+        	container.find('.user_native_lang').find('span').text(trs_nation(data.user_native_lang,'lang'));
+        	container.find('.user_fluent_lang').find('img').attr('src',`https://flagcdn.com/w80/${data.user_fluent_lang}.png`);
+        	container.find('.user_fluent_lang').find('span').text(trs_nation(data.user_fluent_lang,'lang'));
+        	container.find('.user_learning_lang').find('img').attr('src',`https://flagcdn.com/w80/${data.user_learning_lang}.png`);
+        	container.find('.user_learning_lang').find('span').text(trs_nation(data.user_learning_lang,'lang'));
+        	container.find('.user_intro').find('span').text(data.user_intro);
+        	container.find('.user_ideal_partner').find('span').text(data.user_ideal_partner);
+        	container.find('.user_objective').find('span').text(data.user_objective);
         	
         	if(profile_target == current_user){
         		showing(container.find('.open_modify_profile'));
@@ -885,19 +900,16 @@ function get_user_profile(user_code){
         	
         	function pc(userVO) {
         	    return `
-        	        <div class="card_person">
+        	        <div class="card_person ${userVO.user_logon != '0' ? 'finished_row' : ''}">
         	            <div class="card_person_thumbnail" onclick="shrink_profile();">
         	                <img class="small_img" src="/files/user/profiles/${userVO.user_thumbnail_path}"/>
         	            </div>
         	            <div class="card_person_info" onclick="shrink_profile(); visit('${userVO.user_code}', this)">
         	                <div class="card_person_info_nickname">${userVO.user_nickname}</div>
-        	                <div class="card_person_info_comment">최근 접속일</div>
-        	                <div class="card_person_info_logon">${userVO.user_logon}</div>
+        	                <div class="card_person_info_comment">${userVO.user_logon != '0'? '온라인' : '오프라인'}</div>
+        	                <div class="card_person_info_logon">${userVO.user_logon != '0'? userVO.user_logon : time_ago(userVO.user_log_time) + ', ' + userVO.user_log_location}</div>
         	            </div>
         	            <div class="card_person_tools">
-        	                <div class="card_person_tool">
-        	                    <i class="material-symbols-outlined" onclick="shrink_profile(); visit('${userVO.user_code}', this)">location_away</i>
-        	                </div>
         	                <div class="card_person_tool">
         	                    <i class="material-symbols-outlined" onclick="get_personal_msg_room('${userVO.user_code}')">sms</i>
         	                </div>
@@ -905,31 +917,43 @@ function get_user_profile(user_code){
         	        </div>`;
         	}
         	 
-        	if(isEmpty(data.user_favorite)){
+        	if(isEmpty(conn.user_favorite)){
         		$('.detail_profile_content.favorite').html(`
         			<div class="empty">즐겨찾기에 등록한 사용자가 없습니다.</div>
         		`);
         	}else{
-        		for (const userVO of data.user_favorite){
-        			$('.detail_profile_content.favorite').append(pc(userVO));
+        		for (const userVO of conn.user_favorite){
+        			if(userVO.user_logon != '0'){
+        				$('.detail_profile_content.favorite').prepend(pc(userVO));
+        			}else{
+        				$('.detail_profile_content.favorite').append(pc(userVO));
+        			}
         		}
         	}
-        	if(isEmpty(data.user_follower)){
+        	if(isEmpty(conn.user_follower)){
         		$('.detail_profile_content.follower').html(`
             			<div class="empty">팔로워가 없습니다.</div>
             		`);
         	}else{
-        		for (const userVO of data.user_follower){
-        			$('.detail_profile_content.follower').append(pc(userVO));
+        		for (const userVO of conn.user_follower){
+        			if(userVO.user_logon != '0'){
+        				$('.detail_profile_content.follower').prepend(pc(userVO));
+        			}else{
+        				$('.detail_profile_content.follower').append(pc(userVO));
+        			}
         		}
         	}
-        	if(isEmpty(data.user_following)){
+        	if(isEmpty(conn.user_following)){
         		$('.detail_profile_content.following').html(`
             			<div class="empty">팔로우 중인 대상이 없습니다.</div>
             		`);
         	}else{
-        		for (const userVO of data.user_following){
-        			$('.detail_profile_content.following').append(pc(userVO));
+        		for (const userVO of conn.user_following){
+        			if(userVO.user_logon != '0'){
+        				$('.detail_profile_content.following').prepend(pc(userVO));
+        			}else{
+        				$('.detail_profile_content.following').append(pc(userVO));
+        			}
         		}
         	}
         	
@@ -1996,8 +2020,8 @@ function get_modify_unity(unity_code){
 		url: "/unity/profile",
 		data: {unity_code:unity_code},
 		dataType: "json",
-		success: function(data) {
-			console.log(data);
+		success: function(response) {
+			var data = response.data;
 			
 			for (var [key, value] of Object.entries(data)) {
 				const target = container.find(`[name='${key}']`);

@@ -114,6 +114,11 @@ div,i {
 .ff{
 	flex:1 !important;
 }
+.df{
+	display:flex;
+	justify-content: flex-start;
+	align-items: center;
+}
 .mw{
 	width:100% !important;
 	max-width:100% !important;
@@ -140,14 +145,27 @@ div,i {
 .h40{
 	height:40px !important;
 }
-.h50{
-	height:50px !important;
-}
 .h60{
 	height:60px !important;
+	flex-grow:0 !important;
+}
+.h80{
+	height:80px !important;
+	flex-grow:0 !important;
+}
+.h100{
+	height:100px !important;
+	flex-grow:0 !important;
+}
+.h120{
+	max-height:120px !important;
+	flex-grow:0 !important;
 }
 .p5{
 	padding:0px 5px 5px 5px !important;
+}
+.pd5{
+	padding:5px !important;
 }
 .p10{
 	padding:0px 10px 10px 10px !important;
@@ -188,6 +206,40 @@ div,i {
 .xlf{
 	font-size:14px !important;
 	line-height:14px !important;
+}
+.info_box{
+	width:100%;
+	display:flex;
+	min-height: 30px;
+	max-height: 30px;
+	gap:5px;
+	border-radius: 5px;
+	background-color: white;
+	box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.1);
+}
+.info_title{
+	display:flex;
+	justify-content:flex-start;
+	align-items:center !important;
+	height:100%;
+	width:50px;
+	font-size:10px;
+	white-space: nowrap;
+	padding:5px;
+}
+.info_value{
+	margin:5px;
+	padding-left:5px;
+	display:flex;
+	justify-content:flex-start;
+	align-items:center;
+	flex:1;
+	height: calc(100% - 10px);
+	background-color: var(--inner);
+	border-radius:5px;
+	box-shadow: inset 1px 1px 1px 1px rgba(0,0,0,0.1);
+	font-size:10px;
+	white-space: nowrap;
 }
 /* normal */
 @font-face {
@@ -700,7 +752,11 @@ img.black{
      margin:5px;
      background-color: white;
 }
-
+.info_value .flags{
+	height:12px;
+	max-height:12px;
+	min-height:12px;
+}
 div{
 	box-sizing: border-box;
 	display:flex;
@@ -847,6 +903,18 @@ input[type="submit"]{
 	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
 	background-color: var(--inner);
 	flex-shrink:1;
+	padding:5px;
+	overflow-y:auto;
+	overflow-x:hidden;
+}
+.inner_textbox{
+	display:flex;
+	flex-direction:column;
+	justify-content: flex-start;
+	align-items: center;
+	border-radius:5px;
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.1);
+	background-color: var(--inner);
 	padding:5px;
 	overflow-y:auto;
 	overflow-x:hidden;
@@ -1252,7 +1320,7 @@ button:not(.custom_button){
 	flex-shrink : 0;
 }
 .detail_profile_container_menus{
-	height:40px !important;
+	min-height:40px !important;
 	width:100%;
 	gap:5px;
 	padding:0px 0px 10px 0px;
@@ -1586,7 +1654,7 @@ button:not(.custom_button){
 }
 
 .messenger_menus{
-	height:40px !important;
+	min-height:40px !important;
 	width:100%;
 	gap:5px;
 	padding:0px 0px 10px 0px;
@@ -2687,16 +2755,17 @@ textarea{
 .card_person_info_logon {
 	flex-grow:1;
 	width:100%;
-	display:flex;
-	justify-content: flex-start;
-	align-items: center;
 	font-size:10px;
 	color:var(--sub);
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	display: block;
 }
 .card_person_tools {
 	display: flex;
 	height:100%;
-	width:60px;
+	width:30px;
 	gap: 5px;
 	padding:5px;
 	margin-right:5px;

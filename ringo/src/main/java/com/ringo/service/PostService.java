@@ -10,11 +10,11 @@ import com.ringo.domain.UnityBoardVO;
 public interface PostService {
 	public Integer getLastRepleCode();
 	public Integer uploadReple(RepleVO vo);
-	public List<RepleVO> getReple(RepleVO vo);
+	public List<RepleVO> getReple(String user_code, String target_code);
 	
 	public Integer getLastCirclePostCode();
 	public Integer uploadCirclePost(PostVO vo);
-	public List<PostVO> getCirclePost(String user_code);
+	public List<PostVO> getCirclePost(String visit_code, String user_code);
 	
 	public Integer getLastUnityPostCode();
 	public Integer uploadUnityPost(PostVO vo);

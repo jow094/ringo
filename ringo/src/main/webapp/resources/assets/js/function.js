@@ -45,6 +45,44 @@ function auto_format_date(stringDate) {
     }
 }
 
+function time_ago(data) {
+    const now = Date.now();
+    const diff = now - data;
+    
+    const oneHour = 60 * 60 * 1000;
+    const oneDay = 24 * oneHour;
+    
+    if (diff < oneDay) {
+        var hoursAgo = Math.floor(diff / oneHour);
+        if (hoursAgo<1){
+        	hoursAgo = 1;
+        }
+        return `${hoursAgo}시간 전`;
+    } else {
+        const daysAgo = Math.floor(diff / oneDay);
+        return `${daysAgo}일 전`;
+    }
+}
+
+function trs_nation(code,way){
+	if(way == 'nation'){
+		if(code == 'kr' || code == 'kor'){
+			return '한국'
+		}
+		if(code == 'us'){
+			return '미국'
+		}
+	}
+	if(way == 'lang'){
+		if(code == 'kr' || code == 'kor'){
+			return '한국어'
+		}
+		if(code == 'us'){
+			return '영어'
+		}
+	}
+}
+
 const spinner = `<div class="spinner"></div>
 				<div class="overlay"></div>`;
 
@@ -2358,4 +2396,12 @@ function get_new_board_code(e){
 	
 	console.log(codes);
     return category_code+'_'+new_code;
+}
+
+function is_private(user_private, value, category) {
+    if (user_private != 1 && (user_private / prvk[category]) % 1 === 0) { 
+        return '비공개 정보입니다.';
+    } else {
+        return value;
+    }
 }

@@ -33,8 +33,8 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public List<RepleVO> getReple(RepleVO vo) {
-		return pdao.selectReple(vo);
+	public List<RepleVO> getReple(String user_code, String target_code) {
+		return pdao.selectReple(user_code,target_code);
 	}
 	
 	@Override
@@ -48,8 +48,8 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public List<PostVO> getCirclePost(String user_code) {
-		return pdao.selectCirclePost(user_code);
+	public List<PostVO> getCirclePost(String visit_code, String user_code) {
+		return pdao.selectCirclePost(visit_code,user_code);
 	}
 
 	@Override

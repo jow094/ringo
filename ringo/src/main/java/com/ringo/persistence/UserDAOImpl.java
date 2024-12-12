@@ -85,7 +85,7 @@ public class UserDAOImpl implements UserDAO {
 	@Transactional
 	@Override
 	public UserVO selectConnectedProfile(String user_code) {
-		logger.debug("selectConnectedProfile(Integer user_code) - user_code : "+user_code);
+		logger.debug("selectConnectedProfile(String user_code) - user_code : "+user_code);
 		
 		UserVO result = new UserVO();
 		

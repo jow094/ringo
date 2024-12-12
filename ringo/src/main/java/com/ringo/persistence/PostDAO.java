@@ -11,11 +11,11 @@ public interface PostDAO {
 	
 	public Integer selectLastRepleCode();
 	public Integer insertReple(RepleVO vo);
-	public List<RepleVO> selectReple(RepleVO vo);
+	public List<RepleVO> selectReple(String user_code, String target_code);
 	
 	public Integer selectLastCirclePostCode();
 	public Integer insertCirclePost(PostVO vo);
-	public List<PostVO> selectCirclePost(String user_code);
+	public List<PostVO> selectCirclePost(String visit_code, String user_code);
 	
 	public Integer selectLastUnityPostCode();
 	public Integer insertUnityPost(PostVO vo);

@@ -110,9 +110,21 @@
     </insert>
     
 	<select id="selectReple" resultType="RepleVO">
-		select * from comments
-    	 where target_code = #{target_code}
-    	 order by reple_time desc
+		select 
+			c.* ,
+			case
+            	when exists (
+                	select 1 
+                	from _ringo_recomm
+                	where target_code = c.reple_code and user_code = #{user_code}
+           			) then 1
+         	   else 0
+         	end as reple_is_recommended
+		
+			from comments c
+		 
+    		where c.target_code = #{target_code}
+    		order by reple_time desc
 	</select>
 	
 	<select id="selectLastCirclePostCode" resultType="Integer">
@@ -176,7 +188,7 @@
     	 left join _ringo_reple r on r.target_code = c.post_code
     	 left join _ringo_user u on r.reple_writer = u.user_code
     	 
-    	 where c.post_writer = #{user_code}
+    	 where c.post_writer = #{visit_code}
     	 order by c.post_time desc, r.reple_time desc
 	</select>
 	

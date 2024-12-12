@@ -46,7 +46,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 /*
  * @RequestMapping("/api")
  * 
- * @Api(tags = "筌롫뗄�뵥 �뚢뫂�뱜嚥▲끇�쑎")
+ * @Api(tags = "嶺뚮∥�뾼占쎈데 占쎈슓維귨옙諭쒎슖�뼯�걞占쎌몠")
  */
 public class UserController {
 	
@@ -235,7 +235,7 @@ public class UserController {
         
         logger.debug("sendSms: "+user_tel);
         
-        smsService.sendSms(user_tel, "Ringo 蹂몄씤�씤利� 肄붾뱶�뒗 [" + smsCode + "] �엯�땲�떎. 5遺� �궡�뿉 �엯�젰 �빐二쇱꽭�슂.");
+        smsService.sendSms(user_tel, "Ringo 癰귣챷�뵥占쎌뵥筌앾옙 �굜遺얜굡占쎈뮉 [" + smsCode + "] 占쎌뿯占쎈빍占쎈뼄. 5�겫占� 占쎄땀占쎈퓠 占쎌뿯占쎌젾 占쎈퉸雅뚯눘苑�占쎌뒄.");
         
         return 1;
     }
@@ -248,7 +248,7 @@ public class UserController {
         session.setAttribute("emailCode", emailCode);
         logger.debug("emailCode:"+emailCode);
         
-        authService.sendEmail(user_email, "Ringo 蹂몄씤�씤利� 肄붾뱶�뒗 [" + emailCode + "] �엯�땲�떎. 5遺� �궡�뿉 �엯�젰 �빐二쇱꽭�슂.");
+        authService.sendEmail(user_email, "Ringo 癰귣챷�뵥占쎌뵥筌앾옙 �굜遺얜굡占쎈뮉 [" + emailCode + "] 占쎌뿯占쎈빍占쎈뼄. 5�겫占� 占쎄땀占쎈퓠 占쎌뿯占쎌젾 占쎈퉸雅뚯눘苑�占쎌뒄.");
         
         return 1;
     }
@@ -317,13 +317,18 @@ public class UserController {
 	
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	@ResponseBody
-    public UserVO userProfileGET(HttpSession session, String user_code) {
+    public Map<String,Object> userProfileGET(HttpSession session, String user_code) {
 		if(user_code==null) {
 			user_code = (String)session.getAttribute("user_code");
 		}
 		
 		logger.debug("profileGET(String user_code) - user_code : "+user_code);
-		return uService.getUserProfile(user_code);
+		
+		Map<String,Object> result = new HashMap<String,Object>();
+		result.put("data", uService.getUserProfile(user_code));
+		result.put("conn", uService.getConnectedProfile(user_code));
+		
+		return result;
 	}
 	
 	@RequestMapping(value = "/connected", method = RequestMethod.GET)

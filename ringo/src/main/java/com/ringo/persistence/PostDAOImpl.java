@@ -30,9 +30,13 @@ public class PostDAOImpl implements PostDAO {
 	}
 	
 	@Override
-	public List<RepleVO> selectReple(RepleVO vo) {
-		logger.debug("selectReple(RepleVO) - vo : "+vo);
-		return sqlSession.selectList(NAMESPACE + ".selectReple",vo);		
+	public List<RepleVO> selectReple(String user_code, String target_code) {
+		logger.debug("selectReple(String user_code, String target_code) - user_code, target_code : "+ user_code + ", " + target_code);
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("user_code",user_code);
+		param.put("target_code",target_code);
+		
+		return sqlSession.selectList(NAMESPACE + ".selectReple",param);		
 	}
 
 	@Override
@@ -53,9 +57,14 @@ public class PostDAOImpl implements PostDAO {
 	}
 
 	@Override
-	public List<PostVO> selectCirclePost(String user_code) {
-		logger.debug("selectCirclePost(String user_code) - user_code : "+user_code);
-		return sqlSession.selectList(NAMESPACE + ".selectCirclePost",user_code);		
+	public List<PostVO> selectCirclePost(String visit_code, String user_code) {
+		logger.debug("selectCirclePost(String user_code) - visit_code, user_code : "+visit_code+ ", " +user_code);
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("visit_code", visit_code);
+		param.put("user_code", user_code);
+		
+		return sqlSession.selectList(NAMESPACE + ".selectCirclePost",param);		
 	}
 
 	@Override

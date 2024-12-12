@@ -51,7 +51,12 @@ public class UserVO {
 	private List<MultipartFile> user_profile_file;
 	private String user_profile_path;
 	
-	private boolean user_logon;
+	private String user_logon;
+	private Timestamp user_log_time;
+	private String user_log_location;
+	
+	private Integer user_follower_count;
+	private Integer user_following_count;
 	
 	private Integer mr_notifying;
 	private Integer mr_favorite;
