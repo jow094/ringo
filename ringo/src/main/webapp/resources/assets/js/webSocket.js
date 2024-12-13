@@ -1,25 +1,44 @@
-const socket = new SockJS('/chat');
+const socket = new SockJS('/ringon');
 const stompClient = Stomp.over(socket);
 let conn_inMsgRoom = null;
 
 stompClient.connect({}, function () {
 	
 	$.ajax({
-		type: 'GET',
-		url: '/msg/connect/',
-		dataType: "json",
-		success: function (data) {
-			for (const mr_code of data) {
-				connect_msg_room(mr_code);
-			}
+		type: "GET",
+		url: "/user/userCode",
+		dataType: "text",
+		success: function(user_code) { 
+			stompClient.subscribe(`/ringGet/${user_code}`, function (message) {
+				if (message.body) {
+					const param = JSON.parse(message.body);
+					const type = param.type;
+					console.log('web socket param:',param);
+					
+					if(type == 'system' || type == 'message'){
+						if(type == 'system'){
+							get_msg(param.mr_code);
+						}
+						if(type == 'message' && mr_code == param.mr_code){
+							get_new_msg(param.mr_code,param.msg_code);
+							console.log('update msg in '+param.mr_code+' new message is '+param.msg_code);
+						}else{
+							get_msg_room_list();
+							console.log('out of room. just update msg room list');
+						}
+					}
+				}
+			});
+			console.log('ringo connect for',user_code);
 		},
-		error: function(error) {
+		error: function(xhr, status, error) {
 		}
 	});
 });
 
 function connect_msg_room(mr_code) {
-	stompClient.subscribe(`/msgGet/getMsg/${mr_code}`, function (message) {
+	console.log('connect_msg_room',mr_code);
+	stompClient.subscribe(`/ringGet/connectRoom/${mr_code}`, function (message) {
         if (message.body) {
         	console.log(message.body);
             const param = JSON.parse(message.body);
@@ -35,15 +54,15 @@ function connect_msg_room(mr_code) {
             }
         }
     });
-	console.log('connect for',mr_code);
 }
+
 function connect_in_msg_room(mr_code) {
-    
+	console.log('connect_in_msg_room for',mr_code);
     if (conn_inMsgRoom) {
         stompClient.unsubscribe(conn_inMsgRoom.id);
     }
 
-    conn_inMsgRoom = stompClient.subscribe(`/msgGet/updateMUC/${mr_code}`, function (message) {
+    conn_inMsgRoom = stompClient.subscribe(`/ringGet/connectRoom/${mr_code}`, function (message) {
     	console.log('someone read msg. update MUC');
         const param = JSON.parse(message.body);
         var i = 0;

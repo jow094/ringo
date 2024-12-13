@@ -697,3 +697,10 @@
 	background-color : rgba(0,0,0,0.9) !important;
 }
 /* 회원가입 페이지 종료*/
+
+#alert{
+	width:400px;
+	height: 300px;
+	background: linear-gradient(to bottom, var(--basic) 10px, white 10px) !important;
+	padding-top: 10px;
+}

@@ -14,6 +14,7 @@ public interface MsgDAO {
 	public Integer selectLastMsgRoomCode();
 	public List<String> selectUserMsgRoomList(String user_code);
 	public Integer insertMsg(MsgVO vo);
+	public Integer systemMsg(String mr_code,String msg);
 	public MsgRoomVO insertMsgRoom(MsgRoomVO vo);
 	public String selectPersonalMsgRoom(Map<String,Object> param);
 	public List<MsgRoomVO> selectMsgRoomList(String user_code);

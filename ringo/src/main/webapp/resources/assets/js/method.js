@@ -681,8 +681,15 @@ function get_circle_post(visit_code){
 									<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
 									<span class="recomm_count">${postVO.post_recomm_count}</span>
 								</div>
-								<div class="card_header_tool">
-									<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
+								<div class="card_header_tool tool_buttons none">
+									<div onclick="modify_post(this)">
+										<i class="material-symbols-outlined">edit_note</i>
+										<span>수정</span>
+									</div>
+									<div onclick="delete_post(this)">
+										<i class="material-symbols-outlined">delete</i>
+										<span>삭제</span>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -715,6 +722,10 @@ function get_circle_post(visit_code){
         		
         		
         		const $card = $(post);
+        		
+        		if(postVO.post_writer == current_user){
+        			showing($card.find('.tool_buttons'));
+        		}
                 target.append($card);
         		
                 if(postVO.post_is_recommended){
@@ -1455,8 +1466,15 @@ function get_unity_post(ub_board_code,upost_code,unity_board_page){
 									<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
 									<span class="recomm_count">${postVO.post_recomm_count}</span>
 								</div>
-								<div class="card_header_tool">
-									<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
+								<div class="card_header_tool tool_buttons none">
+									<div onclick="modify_post(this)">
+										<i class="material-symbols-outlined">edit_note</i>
+										<span>수정</span>
+									</div>
+									<div onclick="delete_post(this)">
+										<i class="material-symbols-outlined">delete</i>
+										<span>삭제</span>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -1488,7 +1506,10 @@ function get_unity_post(ub_board_code,upost_code,unity_board_page){
 	        	`;
         		
         		const $card = $(post);
-        		console.log('bool is',postVO.post_is_recommended);
+        		
+        		if(postVO.post_writer == current_user){
+        			showing($card.find('.tool_buttons'));
+        		}
         		
         		if(postVO.post_is_recommended){
         			hide($card.find('.add_recomm'));

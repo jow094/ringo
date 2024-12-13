@@ -71,6 +71,12 @@ public class UserController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 	
+	@RequestMapping(value = "/userCode", method = RequestMethod.GET)
+	@ResponseBody
+	public String getUserCode(HttpSession session) {
+		return (String)session.getAttribute("user_code");
+	}
+	
 	public String getCode(String user_fcode) {
 		if (user_fcode == null || user_fcode.chars().filter(ch -> ch == '_').count() != 2) {
 	        return user_fcode;

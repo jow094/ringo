@@ -317,6 +317,7 @@ public class MsgController {
 			Integer new_mr_code = last_msg_room_code+1;
 			currentList.add(mr_guest);
 			vo.setMr_code("mr_"+new_mr_code);
+			vo.setMr_member_count(currentList.size());
 			vo.setMr_member_codes(currentList);
 			vo.setMr_inviter((String)session.getAttribute("user_code"));
 			vo.setMr_admin((String)session.getAttribute("user_code"));
@@ -326,6 +327,7 @@ public class MsgController {
 			return vo.getMr_code();
 		}else {
 			logger.debug("currentList size:"+currentList.size()+" just invite");
+			vo.setMr_member_count(currentList.size());
 			vo.setMr_code(mr_code);
 			vo.setMr_inviter((String)session.getAttribute("user_code"));
 			vo.setMr_guest(mr_guest);

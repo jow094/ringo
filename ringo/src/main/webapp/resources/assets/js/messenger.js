@@ -31,6 +31,7 @@ function get_msg_room_list(){
         		
         		if(room.mr_thumbnail_path.includes(',')){
         			var imgs = room.mr_thumbnail_path.split(',');
+        			imgs = imgs.slice(0, 4);
         			for(const img of imgs){
         				$result.find('.room_thumbnail').addClass('parted');
         				$result.find('.room_thumbnail').append(`
@@ -543,6 +544,7 @@ function open_personal_msg_room(user_code,formData){
     					connect_in_msg_room(mr_code);
     					connect_msg_room(mr_code);
     					get_msg(mr_code);
+    					showing($('.main_messenger_menu').find('.card_person').find('.card_person_tools'));
     				}
     			},
     			error: function(error) {
@@ -760,10 +762,19 @@ function invite_mr(mr_guest) {
 		url: '/msg/invite',
 		method: 'POST',
 		data: {mr_code: mr_code, mr_guest:mr_guest},
-		dataType: 'json',
+		dataType: 'text',
 		success: function(data) {
+			mr_code = data;
+			console.log('invite success,',mr_code);
+			msg_posting_files = [];
+			$('#input_msg_content').val('');
+			msg_target="";
+			connect_in_msg_room(mr_code);
+			connect_msg_room(mr_code);
+			get_msg(mr_code);
 		},
 		error: function() {
+			console.log('invite fail');
 		}
 	});
 }

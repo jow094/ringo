@@ -47,16 +47,7 @@ public class MsgServiceImpl implements MsgService{
 
 	@Override
 	public Integer uploadMsg(MsgVO vo) {
-		Integer result = msgdao.insertMsg(vo);
-		
-		if (result > 0) {
-            String mr_code = vo.getMsg_place();
-            Map<String,Object> param = new HashMap<String,Object>();
-    		param.put("mr_code", mr_code);
-    		param.put("msg_code", vo.getMsg_code());
-            messagingTemplate.convertAndSend("/msgGet/getMsg/" + mr_code, param);
-        }
-		return result;
+		return msgdao.insertMsg(vo);
 	}
 	
 	@Override
@@ -83,7 +74,7 @@ public class MsgServiceImpl implements MsgService{
 	public List<MsgVO> getMsg(String user_code,String mr_code) {
 		
 		List<MsgVO> result = msgdao.selectMsg(user_code,mr_code);
-		messagingTemplate.convertAndSend("/msgGet/updateMUC/" + mr_code, msgdao.selectUnreaderCount(mr_code));
+		messagingTemplate.convertAndSend("/ringGet/connectRoom/" + mr_code, msgdao.selectUnreaderCount(mr_code));
 		return result;
 	}
 	
@@ -91,7 +82,7 @@ public class MsgServiceImpl implements MsgService{
 	public MsgVO getOneMsg(String user_code,String mr_code,String msg_code) {
 		
 		MsgVO result = msgdao.selectOneMsg(user_code,msg_code);
-		messagingTemplate.convertAndSend("/msgGet/updateMUC/" + mr_code, msgdao.selectUnreaderCount(mr_code));
+		messagingTemplate.convertAndSend("/ringGet/connectRoom/" + mr_code, msgdao.selectUnreaderCount(mr_code));
 		return result;
 	}
 

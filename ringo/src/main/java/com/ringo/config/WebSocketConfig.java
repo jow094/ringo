@@ -14,13 +14,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/msgGet"); // 클라이언트 구독 주소
-        config.setApplicationDestinationPrefixes("/msgPost"); // 클라이언트 발행 주소
+        config.enableSimpleBroker("/ringGet"); // 클라이언트 구독 주소
+        config.setApplicationDestinationPrefixes("/ringPost"); // 클라이언트 발행 주소
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/chat") // WebSocket 연결의 엔드포인트
+        registry.addEndpoint("/ringon") // WebSocket 연결의 엔드포인트
                 .setAllowedOrigins("*") 
                 .withSockJS(); // SockJS 지원
     }

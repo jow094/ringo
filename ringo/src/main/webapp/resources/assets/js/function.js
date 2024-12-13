@@ -2389,3 +2389,9 @@ function is_private(user_private, value, category) {
         return value;
     }
 }
+function modify_post(e){
+}
+function delete_post(e){
+	console.log('dt');
+	showing($('#alert'));
+}

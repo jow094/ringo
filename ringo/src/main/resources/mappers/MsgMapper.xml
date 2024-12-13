@@ -97,17 +97,7 @@
 	    insert into _ringo_msg_room
 	    values (
 	        #{mr_code},
-	        (
-	            select group_concat(user_nickname)
-	            from _ringo_user
-            	<where>
-				    <foreach item="userCode" collection="mr_member_codes"
-				        open="user_code in(" separator="," close=")">
-				          #{userCode}
-				    </foreach>
-            	</where>
-            	
-	        ),
+	        '',
 	        #{mr_admin},
 	        now()
 	    );
@@ -263,5 +253,34 @@
 	<delete id="deleteMsgMember">
 		delete from _ringo_msg_member where mr_code = #{mr_code} and user_code = #{user_code}
 	</delete>
+	
+	<update id="appendRoomName">
+	    update _ringo_msg_room
+	    set mr_name = concat(
+	        mr_name, 
+	        case 
+	            when mr_name is null or mr_name = '' then '' 
+	            else ',' 
+	        end,
+	        (select user_nickname from _ringo_user where user_code = #{mr_guest})
+	    )
+	    where mr_code = #{mr_code};
+	</update>
+	
+	<update id="deleteRoomName">
+	    update _ringo_msg_room
+	    set mr_name = trim(both ',' from 
+	        replace(
+	            replace(
+	                mr_name, 
+	                concat((select user_nickname from _ringo_user where user_code = #{user_code}), ','), 
+	                ''
+	            ),
+	            concat(',', (select user_nickname from _ringo_user where user_code = #{user_code})), 
+	            ''
+	        )
+	    )
+	    where mr_code = #{mr_code};
+	</update>
 	
 </mapper>

@@ -11,6 +11,7 @@ public class MsgRoomVO {
 	private String mr_name;
 	private String mr_thumbnail_path;
 	private Integer mr_alarm_count;
+	private Integer mr_member_count;
 	private String mr_admin;
 	private Timestamp mr_created_date;
 	private Integer mr_notify;

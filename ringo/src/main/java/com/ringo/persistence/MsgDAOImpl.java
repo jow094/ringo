@@ -11,6 +11,8 @@ import org.apache.ibatis.session.SqlSession;
 import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,9 @@ public class MsgDAOImpl implements MsgDAO {
 	
 	@Inject
 	private SqlSession sqlSession;
+	
+	@Autowired
+    private SimpMessagingTemplate messagingTemplate;
 	
 	private static final String NAMESPACE = "com.ringo.mapper.MsgMapper";
 	
@@ -47,7 +52,41 @@ public class MsgDAOImpl implements MsgDAO {
 	
 	@Override
 	public Integer insertMsg(MsgVO vo) {
-		return sqlSession.insert(NAMESPACE + ".insertMsg",vo);
+		Integer result = sqlSession.insert(NAMESPACE + ".insertMsg",vo);
+		
+		if(result==1) {
+			String mr_code = vo.getMsg_place();
+			Map<String,Object> trigger = new HashMap<String,Object>();
+			trigger.put("type", "message");
+			trigger.put("mr_code", mr_code);
+			trigger.put("msg_code", vo.getMsg_code());
+			for(String user_code : selectMsgMembers(mr_code)) {
+				logger.debug("shoot new message trigger for "+user_code);
+				messagingTemplate.convertAndSend("/ringGet/" + user_code, trigger);
+			}
+		}
+    		
+		return result;
+	}
+	
+	@Override
+	public Integer systemMsg(String mr_code,String msg) {
+		MsgVO param = new MsgVO();
+		param.setMsg_place(mr_code);
+		param.setMsg_content(msg);
+		Integer result = sqlSession.insert(NAMESPACE + ".insertSysMsg",param);
+		
+		if(result==1) {
+			Map<String,Object> trigger = new HashMap<String,Object>();
+			trigger.put("type", "system");
+			trigger.put("mr_code", mr_code);
+			for(String user_code : selectMsgMembers(mr_code)) {
+				logger.debug("shoot system message trigger for "+user_code);
+				messagingTemplate.convertAndSend("/ringGet/" + user_code, trigger);
+			}
+		}
+		
+		return result;
 	}
 	
 	@Override
@@ -58,10 +97,8 @@ public class MsgDAOImpl implements MsgDAO {
 				sqlSession.insert(NAMESPACE + ".insertPersonalMsgMember_1", vo);
 				sqlSession.insert(NAMESPACE + ".insertPersonalMsgMember_2", vo);
 				
-				MsgVO param = new MsgVO();
-				param.setMsg_place(vo.getMr_code());
-				param.setMsg_content("새로운 대화방이 생성되었습니다.");
-				sqlSession.insert(NAMESPACE + ".insertSysMsg", param);
+				systemMsg(vo.getMr_code(),"새로운 대화방이 생성되었습니다.");
+				
 				return vo;
 			} else {
 				return null;
@@ -69,10 +106,8 @@ public class MsgDAOImpl implements MsgDAO {
 		}else {
 			
 			if (sqlSession.insert(NAMESPACE + ".insertPartyMsgRoom", vo) == 1) {
-				MsgVO param = new MsgVO();
-				param.setMsg_place(vo.getMr_code());
-				param.setMsg_content("새로운 대화방이 생성되었습니다.");
-				sqlSession.insert(NAMESPACE + ".insertSysMsg", param);
+				
+				systemMsg(vo.getMr_code(),"새로운 대화방이 생성되었습니다.");
 				
 				List<String> members = vo.getMr_member_codes();
 				for(String member : members) {
@@ -134,20 +169,18 @@ public class MsgDAOImpl implements MsgDAO {
 	@Override
 	public String insertMsgMember(MsgRoomVO vo) {
 		if(sqlSession.insert(NAMESPACE + ".insertMsgMember",vo) == 1) {
-			
-			MsgVO param = new MsgVO();
-			param.setMsg_place(vo.getMr_code());
+			if(vo.getMr_member_count() != null && vo.getMr_member_count()<5) {
+				sqlSession.update(NAMESPACE + ".appendRoomName",vo);
+			}
+			String mr_code = vo.getMr_code();
 			String inviter = sqlSession.selectOne(NAMESPACE + ".selectNickname",vo.getMr_inviter());
 			String guest = sqlSession.selectOne(NAMESPACE + ".selectNickname",vo.getMr_guest());
 			
 			if(!inviter.equals(guest)) {
-				param.setMsg_content(inviter+" 님께서 "+guest+" 님을 대화방에 초대하셨습니다.");
-				sqlSession.insert(NAMESPACE + ".insertSysMsg", param);
-				param.setMsg_content(guest+" 님이 대화방에 입장하셨습니다.");
-				sqlSession.insert(NAMESPACE + ".insertSysMsg", param);
+				systemMsg(mr_code,inviter+" 님께서 "+guest+" 님을 대화방에 초대하셨습니다.");
+				systemMsg(mr_code,guest+" 님이 대화방에 입장하셨습니다.");
 			}else {
-				param.setMsg_content(guest+" 님이 대화방에 입장하셨습니다.");
-				sqlSession.insert(NAMESPACE + ".insertSysMsg", param);
+				systemMsg(mr_code,guest+" 님이 대화방에 입장하셨습니다.");
 			}
 			
 			return vo.getMr_code();
@@ -169,15 +202,16 @@ public class MsgDAOImpl implements MsgDAO {
 	@Transactional
 	@Override
 	public Integer deleteMsgMember(Map<String, Object> param) {
-		logger.debug("asdasd"+param);
+		Integer result = sqlSession.delete(NAMESPACE + ".deleteMsgMember",param);
+		if(result == 1) {
+			sqlSession.update(NAMESPACE + ".deleteRoomName",param);
+			
+			String mr_code = (String)param.get("mr_code");
+			String nickname = sqlSession.selectOne(NAMESPACE + ".selectNickname",param.get("user_code"));
+			systemMsg(mr_code,nickname+" 님께서 채팅방에서 퇴장하셨습니다.");
+		}
 		
-		MsgVO sys = new MsgVO();
-		String nickname = sqlSession.selectOne(NAMESPACE + ".selectNickname",param.get("user_code"));
-		sys.setMsg_place((String)param.get("mr_code"));
-		sys.setMsg_content(nickname+" 님께서 채팅방에서 퇴장하셨습니다.");
-		sqlSession.insert(NAMESPACE + ".insertSysMsg", sys);
-		
-		return sqlSession.delete(NAMESPACE + ".deleteMsgMember",param);
+		return result;
 	}
 
 	@Override
