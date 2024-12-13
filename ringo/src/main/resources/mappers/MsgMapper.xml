@@ -7,9 +7,11 @@
 
 	<resultMap id="selectMsgRoomList_Map" type="MsgRoomVO">
 	    <result property="mr_code" column="mr_code"/>
+	    <result property="mr_thumbnail_path" column="mr_thumbnail_path"/>
 	    <result property="mr_name" column="mr_name"/>
 	    <result property="mr_admin" column="mr_admin"/>
 	    <result property="mr_alarm_count" column="mr_alarm_count"/>
+	    <result property="mr_favorite" column="mr_favorite"/>
 		    		
 		<association property="mr_last_message" javaType="MsgVO">
 		    <result property="msg_content" column="lm_msg_content"/>
@@ -90,6 +92,36 @@
 				now()
 			);
 	</insert>
+	
+	<insert id="insertPartyMsgRoom">
+	    insert into _ringo_msg_room
+	    values (
+	        #{mr_code},
+	        (
+	            select group_concat(user_nickname)
+	            from _ringo_user
+            	<where>
+				    <foreach item="userCode" collection="mr_member_codes"
+				        open="user_code in(" separator="," close=")">
+				          #{userCode}
+				    </foreach>
+            	</where>
+            	
+	        ),
+	        #{mr_admin},
+	        now()
+	    );
+	</insert>
+	
+	<insert id="insertSysMsg">
+		insert into _ringo_msg(msg_code,msg_sender,msg_content,msg_place,msg_time) 
+			values('system','system',#{msg_content},#{msg_place},now() - interval 1 second)
+	</insert>
+	
+	<insert id="insertPartyMember">
+		insert into _ringo_msg_member values(#{mr_code},#{mr_guest},now(),1);
+	</insert>
+	
 	<insert id="insertPersonalMsgMember_1">
 		insert into _ringo_msg_member values(#{mr_code},#{mr_inviter},now(),1);
 	</insert>
@@ -97,22 +129,40 @@
 		insert into _ringo_msg_member values(#{mr_code},#{mr_guest},now(),1);
 	</insert>
 	
+	<select id="selectMsgMembers" resultType="String">
+		select user_code
+		from _ringo_msg_member 
+		where mr_code = #{mr_code}
+	</select>
+	
 	<select id="selectMsgRoomList" resultMap="selectMsgRoomList_Map">
 		select msgr.mr_code,
 			msgr.mr_admin,
 			msgr.lm_user_nickname,
 			msgr.lm_msg_content,
 			msgr.lm_msg_time,
+			msgr.mr_favorite,
+			trim(both ',' from 
+			    regexp_replace(
+			        msgr.mr_thumbnail_path,
+			        concat('(^|,)', #{user_code}, '_thumbnail[^,]*(,|$)'),
+			        ','
+			    )
+			) as mr_thumbnail_path,
 			trim(both ',' from 
 			        replace(
 			        	replace(msgr.mr_name, concat(u.user_nickname, ','), ''), 
 			            concat(',', u.user_nickname),'')
 			    ) as mr_name,
-			(select count(*) from _ringo_msg where msg_place = mm.mr_code and msg_unreader like concat('%', #{user_code}, '%')) as mr_alarm_count
+			(select count(*) 
+				from _ringo_msg 
+				where msg_place = mm.mr_code 
+				and msg_unreader regexp concat('(^|,)', #{user_code}, '(,|$)')
+			) as mr_alarm_count
 			from msgr
             left join _ringo_msg_member mm on mm.user_code = #{user_code}
             left join _ringo_user u on u.user_code = #{user_code}
-			where msgr.mr_code = mm.mr_code
+			where msgr.mr_code = mm.mr_code and msgr.user_code = #{user_code}
 			order by msgr.lm_msg_time desc
 	</select>
 	
@@ -138,6 +188,12 @@
 		select *
 			from msg
 			where msg_place = #{mr_code}
+	</select>
+	
+	<select id="selectNickname" resultType="String">
+		select user_nickname
+			from _ringo_user
+			where user_code = #{user_code}
 	</select>
 	
 	<select id="selectOneMsg" resultMap="msg_Map">
@@ -167,7 +223,7 @@
 	        #{msg_code},
 	        #{msg_sender.user_code},
 	        #{msg_content},
-	        (select group_concat(user_code order by user_code separator '')
+	        (select group_concat(user_code order by user_code separator ',')
 	         from _ringo_msg_member
 	         where mr_code = #{msg_place} and user_code != #{msg_sender.user_code}),
 	        #{msg_place},
@@ -178,18 +234,26 @@
 	
 	<update id="updateRoomUnreader">
 		update _ringo_msg 
-		set msg_unreader = replace(msg_unreader, #{user_code}, '')
+		set msg_unreader = trim(both ',' from regexp_replace(
+    		concat(',', msg_unreader, ','),
+    		concat(',', #{user_code}, ','),
+    		','
+		))
 		where msg_place = #{mr_code}
 	</update>
 	
 	<update id="updateMsgUnreader">
 		update _ringo_msg 
-		set msg_unreader = replace(msg_unreader, #{user_code}, '')
+		set msg_unreader = trim(both ',' from regexp_replace(
+    		concat(',', msg_unreader, ','),
+    		concat(',', #{user_code}, ','),
+    		','
+		))
 		where msg_code = #{msg_code}
 	</update>
 	
 	<insert id="insertMsgMember">
-		insert into _ringo_msg_member values(#{mr_code},#{mr_guest},now());
+		insert into _ringo_msg_member values(#{mr_code},#{mr_guest},now(),1);
 	</insert>
 	
 	<update id="updateMsgNotifying">

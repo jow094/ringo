@@ -300,4 +300,36 @@ public class MsgController {
 		logger.debug("prams"+param.get("mr_code")+","+param.get("user_code"));
 		return msgService.exitMsgRoom(param);
 	}
+	
+	@RequestMapping(value = "/invite", method = RequestMethod.POST)
+	@ResponseBody
+	public String msgInvitePOST(HttpSession session, String mr_code, String mr_guest){
+		
+		MsgRoomVO vo = new MsgRoomVO();
+		
+		List<String> currentList = msgService.getMsgMembers(mr_code);
+		
+		if(currentList.size() == 1) {
+			return "error";
+		}else if(currentList.size() == 2){
+			logger.debug("currentList size:"+currentList.size()+" so create new room");
+			Integer last_msg_room_code = msgService.getLastMsgRoomCode();
+			Integer new_mr_code = last_msg_room_code+1;
+			currentList.add(mr_guest);
+			vo.setMr_code("mr_"+new_mr_code);
+			vo.setMr_member_codes(currentList);
+			vo.setMr_inviter((String)session.getAttribute("user_code"));
+			vo.setMr_admin((String)session.getAttribute("user_code"));
+			logger.debug("now vo:"+vo);
+			msgService.createMsgRoom(vo);
+			
+			return vo.getMr_code();
+		}else {
+			logger.debug("currentList size:"+currentList.size()+" just invite");
+			vo.setMr_code(mr_code);
+			vo.setMr_inviter((String)session.getAttribute("user_code"));
+			vo.setMr_guest(mr_guest);
+			return msgService.addMsgMember(vo);
+		}
+	}
 }

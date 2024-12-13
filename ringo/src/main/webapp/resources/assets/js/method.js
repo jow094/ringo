@@ -2362,6 +2362,7 @@ function add_favorite(e) {
 			if(place=='messenger'){
 				hide($('.messenger_buttons').find('.add_favorite'));
 				showing($('.messenger_buttons').find('.delete_favorite'));
+				get_msg_room_list();
 			}
 			if(place=='user'){
 				additional_user_check(() => get_user_profile(profile_target));

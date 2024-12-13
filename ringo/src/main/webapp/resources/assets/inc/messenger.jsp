@@ -32,13 +32,6 @@
 	</div>
 	
 	<div class="main_messenger_body out_of_room">
-		<div class="messenger_navbar small">
-			<div class="active">전체</div>
-			<div>즐겨찾기</div>
-			<div>팔로워</div>
-			<div>유니티</div>
-			<div>일반</div>
-		</div>
 		<div class="messenger_rooms_container">
 			<div class="menu_tag" onclick="col_toggle($(this).next('.messenger_rooms'),this)">
 				<span>즐겨찾기</span>
@@ -47,19 +40,10 @@
 			<div class="messenger_rooms favorite expanded">
 			</div>
 			<div class="menu_tag" onclick="col_toggle($(this).next('.messenger_rooms'),this)">
-				<span>팔로워</span>
+				<span>일반</span>
 				<i class="fas fa-chevron-circle-up"></i>
 			</div>
-			<div class="messenger_rooms follower expanded">
-				<div class="messenger_room">
-				
-				</div>
-				<div class="messenger_room">
-				
-				</div>
-				<div class="messenger_room">
-				
-				</div>
+			<div class="messenger_rooms else expanded">
 			</div>
 		</div>
 	</div>

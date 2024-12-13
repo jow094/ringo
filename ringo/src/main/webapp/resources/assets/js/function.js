@@ -270,24 +270,6 @@ function main_messenger_menu(e){
         	icon.text('arrow_left');
         }, 300);
     }
-    
-    /*if(mr_code != null && mr_code != ""){
-    	console.log('gogo');
-    	console.log($('.mm_container'));
-    	console.log($('.mm_container').find('.messenger_menu_content').find('.card_person'));
-    	
-    	$('.mm_container').find('.card_person_tools').each(function() {
-    		console.log('gotit');
-    		$(this).append(`
-    			<div class="card_person_tool">
-	                <i class="material-symbols-outlined" onclick="invite_mr($(this).closest('.card_person').data('user_code'))">person_add</i>
-	            </div>`);
-        });
-    	
-    	
-    	
-    	
-    }*/
 }
 function profile_favorite(e) {
 	$(e).siblings().removeClass('active');
@@ -1443,6 +1425,7 @@ function enter_room(data){
 	if($('.messenger_option').hasClass('expanded')){
 		rr_toggle('.messenger_option');
 	}
+	showing($('.main_messenger_menu').find('.card_person').find('.card_person_tools'));
 }
 
 function exit_room(e){
@@ -1460,6 +1443,7 @@ function exit_room(e){
 	if($('.messenger_option').hasClass('expanded')){
 		rr_toggle('.messenger_option');
 	}
+	hide($('.main_messenger_menu').find('.card_person').find('.card_person_tools'));
 }
 
 function check_profile_button(){

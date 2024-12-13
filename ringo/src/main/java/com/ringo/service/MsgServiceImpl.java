@@ -104,6 +104,14 @@ public class MsgServiceImpl implements MsgService{
 	public Integer exitMsgRoom(Map<String, Object> param) {
 		return msgdao.deleteMsgMember(param);
 	}
-	
-	
+
+	@Override
+	public List<String> getMsgMembers(String mr_code) {
+		return msgdao.selectMsgMembers(mr_code);
+	}
+
+	@Override
+	public String addMsgMember(MsgRoomVO vo) {
+		return msgdao.insertMsgMember(vo);
+	}
 }

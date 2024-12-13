@@ -12,10 +12,10 @@ function get_msg_room_list(){
         	console.log('roomList:',data);
         	$('.messenger_rooms').empty();
         	for (const room of data) {
-        		$('.messenger_rooms.favorite').append(`
+        		var place;
+        		const result = `
     				<div class="messenger_room" data-mr_code="${room.mr_code}" onclick="enter_room('${room.mr_code}')">
 	    				<div class="room_thumbnail">
-	    					<img class="small_img" src="/files/user/profiles/${room.mr_thumbnail_path}"/>
 	    				</div>
 	    				<div class="room_body">
 		    				<div class="room_name">${room.mr_name}</div>
@@ -25,8 +25,33 @@ function get_msg_room_list(){
 		    				</div>
 		    			</div>
 	    				${room.mr_alarm_count != 0 ? '<div class="room_unreadcount"><div class="badge">' + room.mr_alarm_count + '</div></div>' : ""}
-    				</div>
-        		`);
+					</div>
+	    		`;
+        		const $result = $(result);
+        		
+        		if(room.mr_thumbnail_path.includes(',')){
+        			var imgs = room.mr_thumbnail_path.split(',');
+        			for(const img of imgs){
+        				$result.find('.room_thumbnail').addClass('parted');
+        				$result.find('.room_thumbnail').append(`
+            				<img class="small_img" src="/files/user/profiles/${img}"/>
+            			`);
+        			}
+        		}else if(isEmpty(room.mr_thumbnail_path)){
+        			$result.find('.room_thumbnail').append(`
+        					<i class="material-symbols-outlined na">person</i>
+        				`);
+        		}else{
+        			$result.find('.room_thumbnail').append(`
+        					<img class="small_img" src="/files/user/profiles/${room.mr_thumbnail_path}"/>
+        				`);
+        		}
+        		if(room.mr_favorite){
+        			place = 'favorite'
+        		}else{
+        			place = 'else'
+        		}
+        		$(`.messenger_rooms.${place}`).append($result);
         	}
         },
         error: function(xhr, status, error) {
@@ -38,6 +63,15 @@ function get_msg_room_list(){
 function input_msg(msg,type){
 	
 	const body = $('.messenger_content');
+	
+	if(type == 'system'){
+		body.append(`
+			<div class="system_msg">
+				<div>${msg.msg_content}</div>
+			</div>
+		`);
+		return;
+	}
 	
 	var box;
 	if(type == 'send'){
@@ -244,6 +278,7 @@ function get_msg(mr_code){
         	console.log('cu :',current_user);
         	$('.messenger_navbar_nickname').text(data.room.mr_name);
         	$('.messenger_content').find('.msg').remove();
+        	$('.messenger_content').find('.system_msg').remove();
         	$('.messenger_option').find('.inner_content').empty();
         	$('.main_messenger_body.in_room').attr('data-mr_code',mr_code);
         	
@@ -284,22 +319,30 @@ function get_msg(mr_code){
         	
         	if(mr_favorite){
         		hide('.messenger_buttons .add_favorite');
+        		showing('.messenger_buttons .delete_favorite');
         	}else{
         		hide('.messenger_buttons .delete_favorite');
+        		showing('.messenger_buttons .add_favorite');
         	}
         	
         	if(mr_notifying){
         		hide('.messenger_buttons .add_notifying');
+        		showing('.messenger_buttons .delete_notifying');
         	}else{
         		hide('.messenger_buttons .delete_notifying');
+        		showing('.messenger_buttons .add_notifying');
         	}
         	
         	for (const msg of data.msg) {
-				if(msg.msg_sender.user_code == current_user){
-					input_msg(msg,'send');
-				}else{
-					input_msg(msg,'received');
-				}
+        		if(msg.msg_code == 'system'){
+        				input_msg(msg,'system');
+        		}else{
+        			if(msg.msg_sender.user_code == current_user){
+        				input_msg(msg,'send');
+        			}else{
+        				input_msg(msg,'received');
+        			}
+        		}
         	}
     		$('.messenger_content').scrollTop($('.messenger_content')[0].scrollHeight);
         },
@@ -320,16 +363,19 @@ function get_new_msg(mr_code,msg_code){
         	
         	var isAtBottom = $('.messenger_content').scrollTop() + $('.messenger_content').innerHeight() >= $('.messenger_content')[0].scrollHeight - 5;
         	
-			if(msg.msg_sender.user_code == current_user){
-				input_msg(msg,'send');
-			}else{
-				input_msg(msg,'received');
-			}
-        	
-        	if(isAtBottom){
-        		$('.messenger_content').scrollTop($('.messenger_content')[0].scrollHeight);
+        	if(msg.msg_code == 'system'){
+					input_msg(msg,'system');
+        	}else{
+        		if(msg.msg_sender.user_code == current_user){
+        			input_msg(msg,'send');
+        		}else{
+        			input_msg(msg,'received');
+        		}
+        		
+        		if(isAtBottom){
+        			$('.messenger_content').scrollTop($('.messenger_content')[0].scrollHeight);
+        		}
         	}
-        	
         },
 		error: function(error) {
 		}
@@ -709,11 +755,11 @@ function scrollToMsg(e) {
     }
 }
 
-function invite_mr(mr_code) {
+function invite_mr(mr_guest) {
 	$.ajax({
 		url: '/msg/invite',
 		method: 'POST',
-		data: {mr_code: mr_code},
+		data: {mr_code: mr_code, mr_guest:mr_guest},
 		dataType: 'json',
 		success: function(data) {
 		},
@@ -785,22 +831,28 @@ function get_messenger_menu(e) {
 			$('.messenger_menu_content').empty();
         	
 			function pc(userVO) {
-        	    return `
-        	        <div class="card_person ${userVO.user_logon != '0' ? 'finished_row' : ''}">
-        	            <div class="card_person_thumbnail" onclick="shrink_profile();">
-        	                <img class="small_img" src="/files/user/profiles/${userVO.user_thumbnail_path}"/>
-        	            </div>
-        	            <div class="card_person_info" onclick="shrink_profile(); visit('${userVO.user_code}', this)">
-        	                <div class="card_person_info_nickname">${userVO.user_nickname}</div>
-        	                <div class="card_person_info_comment">${userVO.user_logon != '0'? '온라인' : '오프라인'}</div>
-        	                <div class="card_person_info_logon">${userVO.user_logon != '0'? userVO.user_logon : time_ago(userVO.user_log_time) + ', ' + userVO.user_log_location}</div>
-        	            </div>
-        	            <div class="card_person_tools">
-        	                <div class="card_person_tool">
-        	                    <i class="material-symbols-outlined" onclick="get_personal_msg_room('${userVO.user_code}')">sms</i>
-        	                </div>
-        	            </div>
-        	        </div>`;
+				const body = `
+	        	        <div class="card_person ${userVO.user_logon != '0' ? 'finished_row' : ''}">
+	    	            <div class="card_person_thumbnail" onclick="visit('${userVO.user_code}',this);">
+	    	                <img class="small_img" src="/files/user/profiles/${userVO.user_thumbnail_path}"/>
+	    	            </div>
+	    	            <div class="card_person_info" onclick="get_personal_msg_room('${userVO.user_code}')">
+	    	                <div class="card_person_info_nickname">${userVO.user_nickname}</div>
+	    	                <div class="card_person_info_comment">${userVO.user_logon != '0'? '온라인' : '오프라인'}</div>
+	    	                <div class="card_person_info_logon">${userVO.user_logon != '0'? userVO.user_logon : time_ago(userVO.user_log_time) + ', ' + userVO.user_log_location}</div>
+	    	            </div>
+	    	            <div class="card_person_tools none">
+	    	                <div class="card_person_tool">
+	    	                    <i class="material-symbols-outlined" onclick="invite_mr('${userVO.user_code}')">person_add</i>
+	    	                </div>
+	    	            </div>
+	    	        </div>`;
+				const $body = $(body);
+				
+				if(mr_code != null && mr_code != ""){
+					$body.find('.card_person_tools').removeClass('none');
+				}
+				return $body;
         	}
         	
         	if(isEmpty(data.user_favorite)){
@@ -842,7 +894,6 @@ function get_messenger_menu(e) {
         			}
         		}
         	}
-			
 		},
 		error: function() {
 		}

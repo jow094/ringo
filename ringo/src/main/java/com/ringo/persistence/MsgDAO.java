@@ -20,8 +20,9 @@ public interface MsgDAO {
 	public MsgRoomVO selectMsgRoomInfo(String user_code,String mr_code);
 	public List<MsgVO> selectMsg(String user_code,String mr_code);
 	public MsgVO selectOneMsg(String user_code,String msg_code);
-	public Integer insertMsgMember(MsgRoomVO vo);
+	public String insertMsgMember(MsgRoomVO vo);
 	public List<MsgVO> selectUnreaderCount(String mr_code);
 	public Integer updateMsgNotifying(Map<String, Object> param);
 	public Integer deleteMsgMember(Map<String, Object> param);
+	public List<String> selectMsgMembers(String mr_code);
 }
