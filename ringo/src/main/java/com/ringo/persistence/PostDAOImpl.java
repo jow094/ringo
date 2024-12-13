@@ -118,6 +118,25 @@ public class PostDAOImpl implements PostDAO {
 		return sqlSession.selectOne(NAMESPACE + ".selectRecommInfo",param);	
 	}
 
-	
-	
+	@Override
+	public Integer deletePost(String post_code) {
+			if (post_code.startsWith("cp_")) {
+				return sqlSession.delete(NAMESPACE + ".deleteCirclePost",post_code);	
+	        } else if (post_code.startsWith("up_")) {
+	        	return sqlSession.delete(NAMESPACE + ".deleteUnityPost",post_code);	
+	        } else {
+	        	return null;
+	        }
+	}
+
+	@Override
+	public PostVO selectPost(String post_code) {
+			if (post_code.startsWith("cp_")) {
+				return sqlSession.selectOne(NAMESPACE + ".selectOneCirclePost",post_code);	
+	        } else if (post_code.startsWith("up_")) {
+	        	return sqlSession.selectOne(NAMESPACE + ".selectOneUnityPost",post_code);	
+	        } else {
+	        	return null;
+	        }
+	}
 }

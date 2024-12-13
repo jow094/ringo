@@ -7,6 +7,7 @@ var current_user = "";
 var board_code = "";
 var favorites = [];
 var follows = [];
+var modifying_post_code = "";
 
 function login_check(){
 	
@@ -25,7 +26,7 @@ function login_check(){
             success: function(data) {
             	if(data == null || data.user_code == null || data.user_code == ""){
             		if (!currentURL.includes('join') && !currentURL.includes('login')) {
-            			alert("로그인 정보가 없습니다. 로그인 페이지로 이동합니다.");
+            			annotation_alert(`<span>로그인 정보가 없습니다. 로그인 페이지로 이동합니다.</span>`);
             		}
                     window.location.href = "/user/login";
             	}else{
@@ -303,15 +304,15 @@ function last_submit(e){
         dataType: "json",
         success: function (response) {
 	    	if(response==1){
-	    		alert('회원가입에 성공하였습니다.');
+	    		annotation_alert(`<span>회원가입에 성공하였습니다.</span>`);
 	    		window.location.href = '/user/login';
 	    	}
 	    	if(response==3){
-	    		alert('입력하지 않은 항목이 있습니다.');
+	    		annotation_alert(`<span>입력하지 않은 항목이 있습니다.</span>`);
 	    	}
 	    },
 	    error: function(error) {
-	        alert('회원가입에 실패하였습니다.');
+	    	annotation_alert(`<span>회원가입 중 오류가 발생하였습니다.</span>`);
 	    }
     });
 }
@@ -368,11 +369,11 @@ function create_unity(){
         dataType: "json",
         success: function (response) {
 	    	if(response==1){
-	    		alert('유니티 생성에 성공하였습니다.');
+	    		annotation_alert(`<span>유니티 생성에 성공하였습니다.</span>`);
 	    		unity_home();
 	    	}
 	    	if(response==0){
-	    		alert('유니티 생성에 실패하였습니다.');
+	    		annotation_alert(`<span>유니티 생성 중 오류가 발생하였습니다.</span>`);
 	    	}
 	    	$('.unity_create_container').find('.selected_card_container').empty();
 	    	$('.unity_create_container').find('textarea').val('');
@@ -589,13 +590,17 @@ function get_reple(e){
 		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
-		                				<div class="card_comment_content">${reple.reple_content}</div>
+	                					<div class="ff column">
+			                    			<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
+			                    			<div class="card_comment_content">${reple.reple_content}</div>
+	                					</div>
 		                				<div class="card_comment_time">
-		                				<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
-										<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
-		                				<span class="recomm_count">${reple.reple_recomm_count}</span>
-		                				<span>${auto_format_date(reple.reple_time)}</span>
+			                				<div class="ff row">
+				                    			<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+				                    			<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+				                    			<span class="recomm_count">${reple.reple_recomm_count}</span>
+			                				</div>
+			                				<span>${auto_format_date(reple.reple_time)}</span>
 		                				</div>
 	                				</div>
 	            				</div>`;
@@ -620,13 +625,17 @@ function get_reple(e){
 		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
-		                				<div class="card_comment_content">${reple.reple_content}</div>
+	                					<div class="ff column">
+			                    			<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
+			                    			<div class="card_comment_content">${reple.reple_content}</div>
+	                					</div>
 		                				<div class="card_comment_time">
-		                				<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
-										<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
-		                				<span class="recomm_count">${reple.reple_recomm_count}</span>
-		                				<span>${auto_format_date(reple.reple_time)}</span>
+			                				<div class="ff row">
+				                    			<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+				                    			<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+				                    			<span class="recomm_count">${reple.reple_recomm_count}</span>
+			                				</div>
+			                				<span>${auto_format_date(reple.reple_time)}</span>
 		                				</div>
 	                				</div>
 	            				</div>`;
@@ -682,11 +691,11 @@ function get_circle_post(visit_code){
 									<span class="recomm_count">${postVO.post_recomm_count}</span>
 								</div>
 								<div class="card_header_tool tool_buttons none">
-									<div onclick="modify_post(this)">
+									<div onclick="get_modify_circle_post(this)">
 										<i class="material-symbols-outlined">edit_note</i>
 										<span>수정</span>
 									</div>
-									<div onclick="delete_post(this)">
+									<div class="alert_tb" onclick="confirm_delete(this)">
 										<i class="material-symbols-outlined">delete</i>
 										<span>삭제</span>
 									</div>
@@ -783,7 +792,7 @@ function get_circle_post(visit_code){
             		$card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
                 }
                 
-                if (postVO.reples != null && postVO.reples.length>0) {
+                if (postVO.post_reple_count != 0) {
                 	var reple_container= `
                 		<div class="card_foot_comment">
 	                		<div class="scroll_box">
@@ -801,13 +810,17 @@ function get_circle_post(visit_code){
 		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
-		                				<div class="card_comment_content">${reple.reple_content}</div>
+	                					<div class="ff column">
+			                    			<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
+			                    			<div class="card_comment_content">${reple.reple_content}</div>
+	                					</div>
 		                				<div class="card_comment_time">
-		                				<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
-										<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
-		                				<span class="recomm_count">${reple.reple_recomm_count}</span>
-		                				<span>${auto_format_date(reple.reple_time)}</span>
+			                				<div class="ff row">
+				                    			<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+				                    			<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+				                    			<span class="recomm_count">${reple.reple_recomm_count}</span>
+			                				</div>
+			                				<span>${auto_format_date(reple.reple_time)}</span>
 		                				</div>
 	                				</div>
 	            				</div>`;
@@ -1352,9 +1365,6 @@ function get_unity_board(ub_board_code,ub_page){
         dataType: "json",
         success: function(data) {
         	
-        	console.log('op',origin_page);
-        	console.log('cp',current_page);
-        	
         	$('.in_unity_post .post_list').empty();
         	
         	if (isEmpty(data)) {
@@ -1471,7 +1481,7 @@ function get_unity_post(ub_board_code,upost_code,unity_board_page){
 										<i class="material-symbols-outlined">edit_note</i>
 										<span>수정</span>
 									</div>
-									<div onclick="delete_post(this)">
+									<div class="alert_tb" onclick="confirm_delete(this)">
 										<i class="material-symbols-outlined">delete</i>
 										<span>삭제</span>
 									</div>
@@ -1568,7 +1578,7 @@ function get_unity_post(ub_board_code,upost_code,unity_board_page){
             		$card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
                 }
                 
-                if (postVO.reples != null && postVO.reples.length>0) {
+                if (postVO.post_reple_count != 0) {
                 	var reple_container= `
                 		<div class="card_foot_comment">
 	                		<div class="scroll_box">
@@ -1580,19 +1590,23 @@ function get_unity_post(ub_board_code,upost_code,unity_board_page){
                 	var $comment = $(reple_container);
                 	for (const reple of postVO.reples) {
                 		if(reple.reple_content!=null && reple.reple_content!=''){
-                    		var reple_card = `
+                			var reple_card = `
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
 	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
 		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
-		                				<div class="card_comment_content">${reple.reple_content}</div>
+	                					<div class="ff column">
+			                    			<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
+			                    			<div class="card_comment_content">${reple.reple_content}</div>
+	                					</div>
 		                				<div class="card_comment_time">
-		                				<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
-										<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
-		                				<span class="recomm_count">${reple.reple_recomm_count}</span>
-		                				<span>${auto_format_date(reple.reple_time)}</span>
+			                				<div class="ff row">
+				                    			<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+				                    			<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+				                    			<span class="recomm_count">${reple.reple_recomm_count}</span>
+			                				</div>
+			                				<span>${auto_format_date(reple.reple_time)}</span>
 		                				</div>
 	                				</div>
 	            				</div>`;
@@ -1802,13 +1816,17 @@ function get_unity_board_post(post_place,post_code){
 		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
-		                				<div class="card_comment_content">${reple.reple_content}</div>
+	                					<div class="ff column">
+			                    			<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
+			                    			<div class="card_comment_content">${reple.reple_content}</div>
+	                					</div>
 		                				<div class="card_comment_time">
-		                				<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
-										<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
-		                				<span class="recomm_count">${reple.reple_recomm_count}</span>
-		                				<span>${auto_format_date(reple.reple_time)}</span>
+			                				<div class="ff row">
+				                    			<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+				                    			<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+				                    			<span class="recomm_count">${reple.reple_recomm_count}</span>
+			                				</div>
+			                				<span>${auto_format_date(reple.reple_time)}</span>
 		                				</div>
 	                				</div>
 	            				</div>`;
@@ -2290,6 +2308,7 @@ function submit_modify_unity_board() {
         contentType: 'application/json',
         data: JSON.stringify(result),
         success: function (response) {
+        	annotation_alert(`<span>유니티 정보 수정에 성공하였습니다.</span>`);
         	enter_unity_main(unity);
         	get_unity_profile(unity);
         },
@@ -2308,11 +2327,11 @@ function join_unity(unity_code) {
         success: function (response) {
         	console.log(response);
         	if(response == 1){
-        		alert('유니티 가입에 성공하였습니다.')
+        		annotation_alert(`<span>유니티 가입에 성공하였습니다.</span>`);
         		enter_unity_main(unity_code);
         		get_unity_profile(unity_code);
         	}else{
-        		alert('유니티 가입에 실패하였습니다.')
+        		annotation_alert(`<span>유니티 가입 중 오류가 발생하였습니다.</span>`);
         	}
         },
         error: function (error) {
@@ -2329,11 +2348,11 @@ function leave_unity(unity_code) {
 		success: function (response) {
 			console.log(response);
 			if(response == 1){
-				alert('유니티 탈퇴에 성공하였습니다.')
+				annotation_alert(`<span>유니티에서 탈퇴하였습니다.</span>`);
 				enter_unity_main(unity_code);
 				get_unity_profile(unity_code);
 			}else{
-        		alert('유니티 탈퇴에 실패하였습니다.')
+				annotation_alert(`<span>유니티에서 탈퇴하는 중 오류가 발생하였습니다.</span>`);
         	}
 		},
 		error: function (error) {
@@ -2350,10 +2369,10 @@ function delete_unity(unity_code) {
 		success: function (response) {
 			console.log(response);
 			if(response == 1){
-				alert('유니티 폐쇄에 성공하였습니다.')
+				annotation_alert(`<span>유니티가 폐쇄되었습니다.</span>`);
 				unity_home();
 			}else{
-				alert('유니티 폐쇄에 실패하였습니다.')
+				annotation_alert(`<span>유니티 폐쇄 중 오류가 발생하였습니다.</span>`);
 			}
 		},
 		error: function (error) {
@@ -2565,4 +2584,94 @@ function renew_recomm(e){
         	console.log('check failed');
         }
     });
+}
+
+function delete_post(post_code){
+	$.ajax({
+		type: "DELETE",
+		url: "/main/post?post_code="+post_code,
+		dataType: "json",
+		success: function(data) {
+			$(`[data-post_code="${post_code}"]`).remove();
+			if(post_code.startsWith('up_')){
+				const ub_board_code = post_code.split('-')[1];
+				const ub_page = $('.numbers').find('.pressed').text();
+				get_unity_board(ub_board_code,ub_page);
+			}
+			setTimeout(() => {
+				annotation_alert(`<span>게시글이 삭제되었습니다.</span>`);
+			}, 500);
+		},
+		error: function(xhr, status, error) {
+		}
+	});
+}
+
+function get_modify_circle_post(e){
+	invalidate_write_container('circle');
+	if(!$('.circle_write').hasClass('expanded')){
+		col_toggle('.circle_write');
+	}
+	
+	const post_code = $(e).closest('.card').data('post_code');
+	
+	$.ajax({
+		type: "GET",
+		url: "/circle/modifyPost",
+		data: {post_code : post_code},
+		dataType: "json",
+		success: function(data) {
+			console.log('data to modify',data);
+			const container = $('.circle_write');
+			
+			modifying_post_code = data.post_code;
+			container.find('textarea').val(data.post_content);
+			if(data.post_tag){
+				var tags = data.post_tag.split(',');
+				for(const tag of tags){
+					container.find('.tag_input').val(tag);
+					add_tag(container.find('.tag_input'));
+				}
+			}
+			if(data.post_file_path){
+				col_toggle(container.find('.upload_files'));
+				var files = data.post_file_path.split(',');
+				for(const file of files){
+					var index = file.split('img')[1].replace(/\D/g, '');
+					container.find('.upload_files').append(
+						`<div class="upload_file" data-file_index="${index}" onclick="modify_delete_file(this)" onmouseleave="mouse_leave(this)" onmouseover="mouse_over(this)">
+							<div class="preview_image">
+								<img src="/files/circle/upload/${file}"></img>
+							</div>
+							<div class="preview_file_name">
+								${file}
+							</div>
+						</div>`);
+				}
+			}
+		},
+		error: function(xhr, status, error) {
+		}
+	});
+}
+
+function get_modify_unity_post(e){
+	invalidate_write_container('unity');
+	if(!$('.unity_write').hasClass('expanded')){
+		col_toggle('.unity_write');
+	}
+	
+	const post_code = $(e).closest('.card').data('post_code');
+	
+	$.ajax({
+		type: "GET",
+		url: "/unity/modifyPost",
+		data: {post_code : post_code},
+		dataType: "json",
+		success: function(data) {
+			console.log('data to modify',data);
+		},
+		error: function(xhr, status, error) {
+		}
+	});
 }

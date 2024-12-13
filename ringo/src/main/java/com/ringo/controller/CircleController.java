@@ -59,6 +59,12 @@ public class CircleController {
 		return pService.getCirclePost(visit_code,user_code);
 	}
 	
+	@RequestMapping(value = "/modifyPost", method = RequestMethod.GET)
+	@ResponseBody
+	public PostVO circleModifyPostGET(String post_code) {
+		return pService.getPost(post_code);
+	}
+	
 	@RequestMapping(value = "/post", method = RequestMethod.POST)
 	@ResponseBody
 	public Integer circlePostPOST(HttpSession session, PostVO vo) {

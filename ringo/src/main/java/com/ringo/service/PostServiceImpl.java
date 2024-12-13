@@ -86,6 +86,18 @@ public class PostServiceImpl implements PostService {
 	public Map<String,Object>  getRecommInfo(String user_code, String target_code) {
 		return pdao.selectRecommInfo(user_code,target_code);
 	}
+
+	@Override
+	public Integer removePost(String post_code) {
+		return pdao.deletePost(post_code);
+	}
+
+	@Override
+	public PostVO getPost(String post_code) {
+		return pdao.selectPost(post_code);
+	}
+	
+	
 	
 	
 }

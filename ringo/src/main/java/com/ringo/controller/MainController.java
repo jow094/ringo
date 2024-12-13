@@ -190,4 +190,10 @@ public class MainController {
 		
 		return pService.getRecommInfo((String)session.getAttribute("user_code"), target_code);
 	}
+	
+	@RequestMapping(value = "/post", method = RequestMethod.DELETE)
+	@ResponseBody
+	public Integer postDELETE(String post_code) {
+		return pService.removePost(post_code);
+	}
 }

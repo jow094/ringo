@@ -158,6 +158,12 @@ public class UnityController {
 			return 0;
 		}
 	}
+	
+	@RequestMapping(value = "/modifyPost", method = RequestMethod.GET)
+	@ResponseBody
+	public PostVO unityModifyPostGET(String post_code) {
+		return pService.getPost(post_code);
+	}
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	@ResponseBody

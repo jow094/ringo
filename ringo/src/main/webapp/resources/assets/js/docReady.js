@@ -7,10 +7,23 @@ $(document).ready(function() {
 	window.onclick = function(e) {
 		if ($('.join_modal:not(.none)').length > 0) {
 	        if (!$(e.target).closest('.modal_content').length && !$(e.target).closest('.modal_button').length) {
-	            hiding('.join_modal');
+	            hide('.join_modal');
 	        }
 	    }
+		if ($('#alert:not(.none)').length > 0) {
+			if ( !$(e.target).closest('.alert').length && !$(e.target).closest('.alert_tb').length) {
+				hiding('#alert');
+				$('#alert').find('.alert_content').empty();
+				$('#alert').find('.alert_button').addClass('none');
+			}
+			if ($(e.target).closest('.alert_button').length){
+				hiding('#alert');
+				$('#alert').find('.alert_content').empty();
+				$('#alert').find('.alert_button').addClass('none');
+			}
+		}
 	}
+	
 	
 	$(document).on('keydown', function(e) {
 	    if(e.keyCode === 27){

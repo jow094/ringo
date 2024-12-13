@@ -81,6 +81,22 @@
 	    </collection>
 	</resultMap>
 	
+	<resultMap id="selectOneCirclePost_Map" type="PostVO">
+		<result property="post_code" column="cpost_code"/>
+		<result property="post_content" column="cpost_content"/>
+		<result property="post_tag" column="cpost_tag"/>
+		<result property="post_file_path" column="cpost_file_path"/>
+	</resultMap>
+	
+	<resultMap id="selectOneUnityPost_Map" type="PostVO">
+		<result property="post_code" column="upost_code"/>
+		<result property="post_place" column="upost_place"/>
+		<result property="post_title" column="upost_title"/>
+		<result property="post_content" column="upost_content"/>
+		<result property="post_tag" column="upost_tag"/>
+		<result property="post_file_path" column="upost_file_path"/>
+	</resultMap>
+	
 	<select id="selectLastRepleCode" resultType="Integer">
 		select max(
 	        cast(
@@ -303,7 +319,20 @@
 	        end as is_recommended
         from _ringo_recomm
 	        where target_code = #{target_code}
-	        
+	</select>
+	
+	<delete id="deleteCirclePost">
+		delete from _ringo_circle_post where cpost_code = #{post_code}
+	</delete>
+	<delete id="deleteUnityPost">
+		delete from _ringo_unity_post where upost_code = #{post_code}
+	</delete>
+	
+	<select id="selectOneCirclePost" resultMap="selectOneCirclePost_Map">
+		select * from _ringo_circle_post where cpost_code = #{post_code}
+	</select>
+	<select id="selectOneUnityPost" resultMap="selectOneUnityPost_Map">
+		select * from _ringo_unity_post where upost_code = #{post_code}
 	</select>
 	
 </mapper>  

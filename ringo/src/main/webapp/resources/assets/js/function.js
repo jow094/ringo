@@ -1679,10 +1679,11 @@ function upload_file(e) {
     	if (files.length > 0) {
             Array.from(files).forEach((file) => {
                 const reader = new FileReader();
+                const index = container.find('.upload_file').length+1;
 
                 reader.onload = function (event) {
                     container.append(`
-                    	<div class="upload_file" data-file_index="${circle_posting_files.length}" onclick="delete_file(this)" onmouseleave="mouse_leave(this)" onmouseover="mouse_over(this)">
+                    	<div class="upload_file" data-file_index="${index}" onclick="delete_file(this)" onmouseleave="mouse_leave(this)" onmouseover="mouse_over(this)">
     						<div class="preview_image">
     							<img src="${event.target.result}"/>
     						</div>
@@ -1703,10 +1704,11 @@ function upload_file(e) {
     	if (files.length > 0) {
             Array.from(files).forEach((file) => {
                 const reader = new FileReader();
+                const index = container.find('.upload_file').length+1;
 
                 reader.onload = function (event) {
                     container.append(`
-                    	<div class="upload_file" data-file_index="${unity_posting_files.length}" onclick="delete_file(this)" onmouseleave="mouse_leave(this)" onmouseover="mouse_over(this)">
+                    	<div class="upload_file" data-file_index="${index}" onclick="delete_file(this)" onmouseleave="mouse_leave(this)" onmouseover="mouse_over(this)">
     						<div class="preview_image">
     							<img src="${event.target.result}"/>
     						</div>
@@ -2389,9 +2391,29 @@ function is_private(user_private, value, category) {
         return value;
     }
 }
-function modify_post(e){
+
+function annotation_alert(msg){
+	$('#alert').find('.alert_content').append(msg);
+	showing($('#alert').find('.check'));
+	showing('#alert');
 }
-function delete_post(e){
-	console.log('dt');
-	showing($('#alert'));
+
+function confirm_delete(e){
+	alert_delete(e, function (result) {
+        if (result) {
+            var target_code = $(e).closest(`[data-post_code]`).data('post_code');
+            delete_post(target_code);
+        }
+    });
+}
+function alert_delete(e,callback){
+	if( $(e).closest(`[data-post_code]`).data('post_code')){
+		$('#alert').find('.alert_content').append(`<span>삭제하신 게시물은 복구할 수 없습니다.</span><span>정말 삭제하시겠습니까?</span>`);
+		$('#alert').find('.delete').off("click").on("click", function () {
+			callback(true);
+		});
+		showing($('#alert').find('.delete'));
+		showing($('#alert').find('.close'));
+		showing('#alert');
+	}
 }

@@ -16,6 +16,8 @@ public interface PostService {
 	public Integer uploadCirclePost(PostVO vo);
 	public List<PostVO> getCirclePost(String visit_code, String user_code);
 	
+	public PostVO getPost(String post_code);
+	
 	public Integer getLastUnityPostCode();
 	public Integer uploadUnityPost(PostVO vo);
 	public UnityBoardVO getUnityBoard(UnityBoardVO vo);
@@ -23,4 +25,5 @@ public interface PostService {
 	public Map<String,Object> getUnityBoardPost(UnityBoardVO vo);
 	public List<PostVO> getMoreUnityPost(UnityBoardVO vo);
 	public Map<String,Object> getRecommInfo(String user_code,String target_code);
+	public Integer removePost(String post_code);
 }
