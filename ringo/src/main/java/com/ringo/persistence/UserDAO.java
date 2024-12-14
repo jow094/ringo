@@ -13,6 +13,7 @@ import com.ringo.domain.SettingVO;
 public interface UserDAO {
 
 	public UserVO selectUser(UserVO vo);
+	public UserVO selectUserEverything(String user_code);
 	public String selectUserNickname(String user_code);
 	public Map<String,List<String>> selectUserAditionalInfos(String user_code);
 	public Integer insertUser(UserVO vo);
@@ -26,4 +27,6 @@ public interface UserDAO {
 	public Integer deleteFollow(Map<String,Object> param);
 	public Integer insertRecomm(Map<String,Object> param);
 	public Integer deleteRecomm(Map<String,Object> param);
+	public Integer updateUserInfo(UserVO vo);
+	public UserVO selectUserPicture(String user_code);
 }

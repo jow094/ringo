@@ -134,15 +134,54 @@
 							주제
 						</div>
 						<div class="input_value">
-							<select name="unity_topic" class="annotation_message">
+							<select name="unity_topic" class="annotation_message" onchange="sort_after(this)">
 								<option class="annotation_message" value="" selected disabled>대분류</option>
-								<option value="1">공개</option>
-								<option value="3">비공개</option>
+						        <option value="culture">문화</option>
+						        <option value="sports">스포츠</option>
+						        <option value="live">일상</option>
 							</select>
 							<select name="unity_topic" class="annotation_message">
 								<option class="annotation_message" value="" selected disabled>소분류</option>
-								<option value="1">공개</option>
-								<option value="3">비공개</option>
+								<optgroup class="culture" label="문화">
+							        <option value="music">음악</option>
+							        <option value="movie">영화</option>
+							        <option value="drama">드라마</option>
+							        <option value="painting">미술</option>
+							        <option value="photography">사진</option>
+							        <option value="literature">문학</option>
+							        <option value="dance">춤</option>
+							        <option value="theater">연극</option>
+							        <option value="musical">뮤지컬</option>
+							    </optgroup>
+							    <optgroup class="sports" label="스포츠">
+							        <option value="soccer">축구</option>
+							        <option value="baseball">야구</option>
+							        <option value="basketball">농구</option>
+							        <option value="golf">골프</option>
+							        <option value="football">풋볼</option>
+							        <option value="hockey">하키</option>
+							        <option value="cricket">크리켓</option>
+							        <option value="tennis">테니스</option>
+							        <option value="volleyball">배구</option>
+							        <option value="boxing">복싱</option>
+							        <option value="tableTennis">탁구</option>
+							        <option value="swimming">수영</option>
+							        <option value="skiing">스키</option>
+							        <option value="cycling">사이클링</option>
+							        <option value="running">러닝</option>
+							    </optgroup>
+							    <optgroup class="live" label="일상">
+							        <option value="food">음식</option>
+							        <option value="cafe">카페</option>
+							        <option value="drive">드라이브</option>
+							        <option value="study">공부</option>
+							        <option value="language">언어</option>
+							        <option value="travel">여행</option>
+							        <option value="shopping">쇼핑</option>
+							        <option value="pets">반려동물</option>
+							        <option value="fitness">피트니스</option>
+							        <option value="gaming">게임</option>
+							    </optgroup>
 							</select>
 							<input type="hidden" name="unity_topic"/>
 						</div>

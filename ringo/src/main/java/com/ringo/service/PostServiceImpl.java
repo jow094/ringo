@@ -1,5 +1,6 @@
 package com.ringo.service;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -96,8 +97,32 @@ public class PostServiceImpl implements PostService {
 	public PostVO getPost(String post_code) {
 		return pdao.selectPost(post_code);
 	}
+
+	@Override
+	public Integer modifyPost(PostVO vo) {
+		return pdao.updatePost(vo);
+	}
 	
-	
+	@Override
+	public void removeTempFromFiles(String directoryPath) {
+        File dir = new File(directoryPath);
+
+        if (dir.exists() && dir.isDirectory()) {
+            File[] files = dir.listFiles();
+
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile() && file.getName().contains("temp_")) {
+                        String newFileName = file.getName().replace("temp_", "");
+
+                        File renamedFile = new File(dir, newFileName);
+                        file.renameTo(renamedFile);
+                    }
+                }
+            }
+        } else {
+        }
+    }
 	
 	
 }

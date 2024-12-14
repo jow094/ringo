@@ -38,6 +38,11 @@ public class UserDAOImpl implements UserDAO {
 	}
 	
 	@Override
+	public UserVO selectUserEverything(String user_code) {
+		return sqlSession.selectOne(NAMESPACE + ".selectUserEverything",user_code);		
+	}
+
+	@Override
 	public String selectUserNickname(String user_code) {
 		logger.debug("selectUserNickname(String user_code) - user_code : "+user_code);
 		return sqlSession.selectOne(NAMESPACE + ".selectUserNickname",user_code);		
@@ -125,4 +130,16 @@ public class UserDAOImpl implements UserDAO {
 	public Integer deleteRecomm(Map<String, Object> param) {
 		return sqlSession.delete(NAMESPACE + ".deleteRecomm",param);	
 	}
+
+	@Override
+	public Integer updateUserInfo(UserVO vo) {
+		return sqlSession.update(NAMESPACE + ".updateUserInfo",vo);	
+	}
+
+	@Override
+	public UserVO selectUserPicture(String user_code) {
+		return sqlSession.selectOne(NAMESPACE + ".selectUserPicture",user_code);	
+	}
+	
+	
 }

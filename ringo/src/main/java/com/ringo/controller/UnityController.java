@@ -249,7 +249,7 @@ public class UnityController {
 			StringBuilder post_file_path = new StringBuilder();
 			
 			if(files != null && !files.isEmpty()) {
-				int i = 1;
+				int i = 0;
 				for (MultipartFile file : files) {
 				    if (!file.isEmpty()) {
 				        String originalFileName = file.getOriginalFilename();

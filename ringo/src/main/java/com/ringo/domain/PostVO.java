@@ -2,6 +2,7 @@ package com.ringo.domain;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,8 @@ public class PostVO {
 	private String post_content;
 	private Timestamp post_time;
 	private List<MultipartFile> posting_files;
+	private String modifying_files;
+	private List<String> deleting_files;
 	private String post_tag;
 	private String post_file_path;
 	private Integer post_recomm_count;

@@ -1,3 +1,54 @@
+const prvk = {
+	'login':3,
+	'follower':7,
+	'circle':13,
+	'history':19,
+	'link':23,
+	'unity':31
+}
+const f_prvk = {
+	'login':5,
+	'follower':11,
+	'circle':17,
+	'history':23,
+	'link':29,
+	'unity':37
+}
+
+function get_private(n) {
+    const factors = [];
+    while (n % 2 === 0) {
+        factors.push(2);
+        n /= 2;
+    }
+    for (let i = 3; i <= Math.sqrt(n); i += 2) {
+        while (n % i === 0) {
+            factors.push(i);
+            n /= i;
+        }
+    }
+    if (n > 1) {
+        factors.push(n);
+    }
+
+    return factors;
+}
+
+function is_private(user_private, value, category) {
+    if (user_private != 1 && (user_private / prvk[category]) % 1 === 0) { 
+        return '비공개 정보입니다.';
+    } else {
+        return value;
+    }
+}
+function is_private_ff(user_private, value, category) {
+	if (user_private != 1 && (user_private / f_prvk[category]) % 1 === 0) { 
+		return '비공개 정보입니다.';
+	} else {
+		return value;
+	}
+}
+
 function format_date(stringDate,degree){
     if (!stringDate) return '';
     
@@ -514,11 +565,15 @@ function select_address(e){
 	$('.cards_inner_body_right').scrollTop($('.cards_inner_body_right')[0].scrollHeight);
 }
 
-function submit_address(e){
+function submit_address(e,update){
 	console.log($('.selected_address').text() + ', ' + $(e).val());
 	$('#user_address').val($('.selected_address').text() + ', ' + $(e).val());
 	set_hint(e,'* 주소 입력이 완료되었습니다.','success_message');
 	set_finished(e, 'row');
+	
+	if(update){
+		$('#modify').find('#user_address').val($('.selected_address').text() + ', ' + $(e).val());
+	}
 }
 
 function validate_name(input) {
@@ -689,7 +744,7 @@ function check_pw(input) {
     }
 }
 
-function validate_nickname(input) {
+function validate_nickname(input,update) {
 	
 	const nickname = $(input).val();
     const engPart = nickname.match(/[a-zA-Z]+/g)||[];
@@ -730,7 +785,7 @@ function validate_nickname(input) {
     }
     else {
     	check_duple(input, function(response) {
-    		if (response==1) {
+    		if (response==1 && update != 'update') {
     	        set_failed(input, 'row');
     	        set_hint(input, '* 이미 사용중인 닉네임입니다.', 'failed_message');
     	        return;
@@ -1028,7 +1083,7 @@ function add_image(input) {
     if($(input).closest('.small_picture_container').length>0){
     	$(input).closest('.picture_content').after(`
 			<div class="picture_content">
-			    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this)" multiple>
+			    <input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this)">
 				<i class="material-symbols-outlined">add</i>
 			</div>
     	`);
@@ -1318,8 +1373,11 @@ function check_submit(e){
 		if(e=='.unity_create_container'){
 			create_unity();
 		}
-		if(e=='.join_modal'){
+		if(e=='#join'){
 			last_submit(e);
+		}
+		if(e=='#modify'){
+			submit_modify_user();
 		}
 	}else{
 		button.removeClass('finished_row').removeClass('unfinished_row');
@@ -1659,8 +1717,36 @@ function toggle_link_card(e){
 function open_itf(e){
 	const fileInput = $(e).find('input[type="file"]');
     if (fileInput.length > 0) {
-        fileInput[0].click(); // JavaScript 기본 메서드로 이벤트 트리거
+        fileInput[0].click();
     }
+}
+
+function check_file_index(target){
+	var container = '';
+	if(target == 'circle'){
+		container = $('.circle_write').find('.upload_files');
+	}
+	if(target == 'unity'){
+		container = $('.unity_write').find('.upload_files');
+	}
+	if(target == 'join'){
+		container = $('.join_modal').find('.profile_files');
+	}
+	
+	if(container != '' && target != 'join'){
+		container.find('.upload_file').each(function(index) {
+			$(this).attr('data-file_index', index);
+		});
+	}else if(container != '' && target == 'join'){
+		container.find('.picture_content').each(function(index) {
+			$(this).attr('data-file_index', index);
+		});
+	}
+	if(container != '' && target == 'join'){
+		container.find('.picture_content').each(function(index) {
+			$(this).attr('data-file_index', index);
+		});
+	}
 }
 
 function upload_file(e) {
@@ -1683,7 +1769,7 @@ function upload_file(e) {
 
                 reader.onload = function (event) {
                     container.append(`
-                    	<div class="upload_file" data-file_index="${index}" onclick="delete_file(this)" onmouseleave="mouse_leave(this)" onmouseover="mouse_over(this)">
+                    	<div class="upload_file draggable" data-file_index="${index}" onclick="delete_file(this)" onmouseleave="mouse_leave(this)" onmouseover="mouse_over(this)" draggable="true">
     						<div class="preview_image">
     							<img src="${event.target.result}"/>
     						</div>
@@ -1708,7 +1794,7 @@ function upload_file(e) {
 
                 reader.onload = function (event) {
                     container.append(`
-                    	<div class="upload_file" data-file_index="${index}" onclick="delete_file(this)" onmouseleave="mouse_leave(this)" onmouseover="mouse_over(this)">
+                    	<div class="upload_file draggable" data-file_index="${index}" onclick="delete_file(this)" onmouseleave="mouse_leave(this)" onmouseover="mouse_over(this)" draggable="true">
     						<div class="preview_image">
     							<img src="${event.target.result}"/>
     						</div>
@@ -1782,7 +1868,6 @@ function delete_file(e) {
 	        	col_toggle(container);
 	        }
 	    }, 1);
-		
 	}
 	
 	if($(e).closest('.unity_write').length>0){
@@ -1820,6 +1905,87 @@ function delete_file(e) {
 				col_toggle(container);
 			}
 		}, 1);
+	}
+}
+
+function modifying_delete_file(e) {
+	const index = $(e).attr('data-file_index');
+	
+	if($(e).closest('.circle_write').length>0){
+		var container = $(e).closest('.card').find('.upload_files');
+		const name = $(e).find('.preview_file_name').text().trim();
+	    deleting_files.push(name);
+	    
+	    for (let key in modifying_files) {
+	        if (modifying_files[key] === name) {
+	            delete modifying_files[key];
+	        }
+	    }
+		
+		setTimeout(function() {
+			$(e).remove();
+			
+			if(container.find('.upload_file').length == 0 && container.hasClass('expanded')){
+				col_toggle(container);
+			}else{
+				setTimeout(() => {
+					check_file_index('circle');
+				}, 500);
+			}
+		}, 1);
+	}
+	
+	if($(e).closest('#modify').length>0){
+		var container = $(e).closest('.card').find('.upload_files');
+		const name = $(e).find('img').attr('src').split('profiles/')[1].split('?')[0];
+	    deleting_files.push(name);
+	    
+	    for (let key in modifying_files) {
+	        if (modifying_files[key] === name) {
+	            delete modifying_files[key];
+	        }
+	    }
+	    
+	    var isThumbnail = $(e).closest('.thumbnail').length;
+		
+		setTimeout(function() {
+			$(e).remove();
+			
+			if(isThumbnail){
+				
+				const thumbnail = $('#modify').find('.thumbnail');
+				
+				thumbnail.html(`
+					<div class="picture_content">
+						<input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this);">
+						<i class="material-symbols-outlined">add</i>
+					</div>
+					<div class="picture_name">
+						대표 프로필 사진
+					</div>
+				`);
+				
+				const match = $(thumbnail).closest('.cards').attr('class').match(/card_(\d+)/);
+			    const index = match ? match[1] : undefined;
+			    
+				$(thumbnail).closest('.cards').removeClass('finished_column');
+				if(!$(thumbnail).closest('.cards').hasClass('unfinished_column')){
+					$(thumbnail).closest('.cards').addClass('unfinished_column');
+				}
+				
+				$(thumbnail).closest('.modal').find(`[data-targetindex="${index}"]`).removeClass('finished_column');
+				$(thumbnail).closest('.modal').find(`[data-targetindex="${index}"]`).removeClass('failed_column');
+		    	
+		    	if(!$(thumbnail).closest('.modal').find(`[data-targetindex="${index}"]`).hasClass('unfinished_column')){
+		    		$(thumbnail).closest('.modal').find(`[data-targetindex="${index}"]`).addClass('unfinished_column');
+				}
+			}
+			
+			setTimeout(() => {
+				check_file_index('join');
+			}, 500);
+		}, 1);
+		
 	}
 }
 
@@ -2384,17 +2550,12 @@ function get_new_board_code(e){
     return category_code+'_'+new_code;
 }
 
-function is_private(user_private, value, category) {
-    if (user_private != 1 && (user_private / prvk[category]) % 1 === 0) { 
-        return '비공개 정보입니다.';
-    } else {
-        return value;
-    }
-}
-
-function annotation_alert(msg){
+function annotation_alert(msg,callback){
 	$('#alert').find('.alert_content').append(msg);
 	showing($('#alert').find('.check'));
+	$('#alert').find('.check').off("click").on("click", function () {
+		callback(true);
+	});
 	showing('#alert');
 }
 
@@ -2416,4 +2577,11 @@ function alert_delete(e,callback){
 		showing($('#alert').find('.close'));
 		showing('#alert');
 	}
+}
+
+function sort_after(e){
+	const value = $(e).val();
+    const siblingOptions = $(e).siblings('select').find('optgroup');
+    siblingOptions.hide();
+    siblingOptions.filter(`.${value}`).show();
 }

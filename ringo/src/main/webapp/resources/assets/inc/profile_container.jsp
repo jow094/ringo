@@ -6,7 +6,7 @@
 	<div class="user_profile_container expanded">
 		<div class="profile_container_head">
 			<div class="profile_container_head_basic">
-				<img class="black"/>
+				<img class="black modal_button" onclick="get_user_picture(this);"/>
 				<div class="profile_container_head_basic_nickname">
 				</div>
 				<div class="profile_container_head_basic_info">
@@ -39,7 +39,7 @@
 					<i class="material-symbols-outlined">bookmark_remove</i>
 					<span>즐겨찾기 해제</span>
 				</div>
-    			<div class="profile_container_head_tool open_modify_profile" onclick="open_modify_profile();">
+    			<div class="profile_container_head_tool modal_button" onclick="get_modify_user()">
 	    			<i class="material-symbols-outlined">manage_accounts</i>
 	    			<span>수정</span>
     			</div>

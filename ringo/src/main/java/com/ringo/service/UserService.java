@@ -11,6 +11,7 @@ import com.ringo.domain.SettingVO;
 public interface UserService {
 	
 	public UserVO userLogin(UserVO vo);
+	public UserVO userInfo(String user_code);
 	public Integer userJoin(UserVO vo);
 	public Integer getLastUserCode();
 	public Integer checkDuplication(String target, String data);
@@ -24,7 +25,8 @@ public interface UserService {
 	public Integer removeFollow(Map<String,Object> param);
 	public Integer addRecomm(Map<String,Object> param);
 	public Integer removeRecomm(Map<String,Object> param);
-	
+	public Integer modifyUserInfo(UserVO vo);
+	public UserVO getUserPicture(String user_code);
 	
 	/*
 	 * 

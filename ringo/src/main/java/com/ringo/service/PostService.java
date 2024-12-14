@@ -26,4 +26,6 @@ public interface PostService {
 	public List<PostVO> getMoreUnityPost(UnityBoardVO vo);
 	public Map<String,Object> getRecommInfo(String user_code,String target_code);
 	public Integer removePost(String post_code);
+	public Integer modifyPost(PostVO vo);
+	public void removeTempFromFiles(String directoryPath);
 }

@@ -139,4 +139,18 @@ public class PostDAOImpl implements PostDAO {
 	        	return null;
 	        }
 	}
+
+	@Override
+	public Integer updatePost(PostVO vo) {
+		String post_code = vo.getPost_code();
+		if (post_code.startsWith("cp_")) {
+			return sqlSession.update(NAMESPACE + ".updateCirclePost",vo);	
+        } else if (post_code.startsWith("up_")) {
+        	return sqlSession.update(NAMESPACE + ".updateUnityPost",vo);	
+        } else {
+        	return null;
+        }
+	}
+	
+	
 }

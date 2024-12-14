@@ -8,6 +8,9 @@ var board_code = "";
 var favorites = [];
 var follows = [];
 var modifying_post_code = "";
+var modifying_files = {};
+var deleting_files = [];
+
 
 function login_check(){
 	
@@ -44,12 +47,13 @@ function login_check(){
 }
 
 function logout(){
-	alert("로그아웃 되었습니다.");
+	annotation_alert(`<span>로그아웃 되었습니다.</span>`);
 }
 
 function send_sms(e){
 	
 	var input;
+	var isModifying = false;
 	
 	if($(e).is('div')){
 		input = $(e).siblings('input[name="user_tel"]');
@@ -57,6 +61,11 @@ function send_sms(e){
 	
 	if($(e).is('input[name="user_tel"]')){
 		input = e;
+	}
+	
+	if($(e).closest('#modify').length>0){
+		input = $('#modify_tel');
+		isModifying = true;
 	}
 	
 	const add_input = $(input).closest('.input_value_container').find('#user_sms_authentication');
@@ -138,19 +147,27 @@ function send_email(e){
 	});
 }
 
-function check_code(e,target){
+function check_code(e,target,update){
+	
+	const input_code = $(e).siblings('input').val();
 	
 	$.ajax({
         type: "POST",
         url: "/user/authentication/check",
         dataType: 'json',
-        data: {input_code : $(e).siblings('input').val(), target : target},
+        data: {input_code : input_code, target : target},
         success: function(data) {
         	console.log(data);
         	if(data==1){
         		console.log('success');
         		set_hint(e,'* 인증에 성공하였습니다.','success_message');
         		set_finished(e,'row');
+        		if(update && target == 'sms'){
+        			$('#modify').find(`[name='user_tel']:not(.outForm)`).val(update);
+        		}
+        		if(update && target == 'email'){
+        			$('#modify').find(`[name='user_email']:not(.outForm)`).val(update);
+        		}
         	}
         	if(data==0){
         		console.log('failed');
@@ -222,7 +239,7 @@ function search_address(container,search_result_container) {
             
             if(totalCount==0){
             	$('#user_address_search_container').find('.scroll_box_inner').append(`
-            			<input class="user_address_search_result outform" type="button" name="user_address" value="검색된 결과가 없습니다."/>
+            			<input class="user_address_search_result outForm" type="button" name="user_address" value="검색된 결과가 없습니다."/>
  	            `);
             	showing(search_result_container);
             	$('.for_address').text(`* 올바른 검색어를 입력해주세요.`)
@@ -231,8 +248,8 @@ function search_address(container,search_result_container) {
             	for (let node of jusoNodes) {
             		$('#user_address_search_container').find('.scroll_box_inner').append(`
             			<div class="user_address_search_result" onclick="select_address(this)">
- 	            			<input class="user_address_search_result_first outform" type="button" name="user_address" value="${node.getElementsByTagName('roadAddr')[0].textContent}"/>
- 	            			<input class="user_address_search_result_second outform" type="button" name="user_address" value="${node.getElementsByTagName('jibunAddr')[0].textContent}"/>
+ 	            			<input class="user_address_search_result_first outForm" type="button" name="user_address" value="${node.getElementsByTagName('roadAddr')[0].textContent}"/>
+ 	            			<input class="user_address_search_result_second outForm" type="button" name="user_address" value="${node.getElementsByTagName('jibunAddr')[0].textContent}"/>
             			</div>
 		            `);
 	            }
@@ -258,7 +275,7 @@ function last_submit(e){
 	var isThumbnail = true;
 	var user_private = 1;
 
-    $(e).find(`input:not('.outform'), textarea:not('.outform'), select:not('.outform')`).each(function() {
+    $(e).find(`input:not('.outForm'), textarea:not('.outForm'), select:not('.outForm')`).each(function() {
         var name = $(this).attr('name');
         var value = $(this).val();       
 
@@ -321,7 +338,7 @@ function create_unity(){
 	var formData = new FormData();
 	var unity_private = 1;
 
-    $('.unity_create_container').find(`input:not('.outform'), textarea:not('.outform'), select:not('.outform')`).each(function() {
+    $('.unity_create_container').find(`input:not('.outForm'), textarea:not('.outForm'), select:not('.outForm')`).each(function() {
         var name = $(this).attr('name');
         var value = $(this).val();       
 
@@ -394,7 +411,7 @@ function create_unity(){
 	    	});
 	    },
 	    error: function(error) {
-	        alert('유니티 생성에 실패하였습니다.');
+	    	annotation_alert(`<span>유니티 생성 중 오류가 발생하였습니다.</span>`);
 	    }
     });
 }
@@ -424,63 +441,67 @@ function check_duple(input, callback){
 
 function submit_circle(e){
 	if($(e).closest('.write_container').find('textarea').val().trim()==''){
-		alert('게시글은 1자 이상이어야 합니다.');
+		annotation_alert(`<span>게시글은 1자 이상이어야 합니다.</span>`);
 		return;
 	}
 	
-	var formData = new FormData();
-	
-	formData.append('post_content',$(e).closest('.write_container').find('textarea').val());
-	if(circle_posting_files.length > 0 && circle_posting_files[0] !== ''){
-		circle_posting_files.forEach(function(file) {
-	        formData.append('posting_files', file);
-	    });
+	if(modifying_post_code != null && modifying_post_code != ''){
+		submit_modify_circle_post();
+	}else{
+		var formData = new FormData();
+		
+		formData.append('post_content',$(e).closest('.write_container').find('textarea').val());
+		if(circle_posting_files.length > 0 && circle_posting_files[0] !== ''){
+			circle_posting_files.forEach(function(file) {
+				formData.append('posting_files', file);
+			});
+		}
+		
+		var tags = "";
+		
+		$(e).closest('.write_container').find('.tag_card').each(function(index) {
+			if (index > 0) {
+				tags += ",";
+			}
+			tags += $(this).attr('data-tag');
+		});
+		
+		if (tags !== "") {
+			formData.append('post_tag', tags);
+		}
+		
+		$.ajax({
+			type: 'POST',
+			url: '/circle/post/',
+			data: formData,
+			processData: false,
+			contentType: false,
+			dataType: "json",
+			success: function (response) {
+				if(response==1){
+					get_circle_post();
+					invalidate_write_container('circle');
+				}
+			},
+			error: function(error) {
+				console.log("데이터 전송 실패:", error);
+				annotation_alert(`<span>게시글 작성 중 오류가 발생하였습니다.</span>`);
+			}
+		});
 	}
-
-	var tags = "";
-	
-    $(e).closest('.write_container').find('.tag_card').each(function(index) {
-        if (index > 0) {
-            tags += ",";
-        }
-        tags += $(this).attr('data-tag');
-    });
-    
-    if (tags !== "") {
-        formData.append('post_tag', tags);
-    }
-    
-    $.ajax({
-    	type: 'POST',
-        url: '/circle/post/',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: "json",
-        success: function (response) {
-	    	if(response==1){
-	    		get_circle_post();
-	    		invalidate_write_container('circle');
-	    	}
-	    },
-	    error: function(error) {
-	        console.log("데이터 전송 실패:", error);
-	        alert('게시글 작성에 실패하였습니다.');
-	    }
-    });
 }
 
 function submit_unity(e){
 	if($('.unity_write').find('textarea').val().trim()==''){
-		alert('게시글을 입력 해주세요.');
+		annotation_alert(`<span>게시글은 1자 이상이어야 합니다.</span>`);
 		return;
 	}
 	if($('#unity_post_title').val().trim()==''){
-		alert('제목을 입력 해주세요.');
+		annotation_alert(`<span>제목은 1자 이상이어야 합니다.</span>`);
 		return;
 	}
 	if($('#unity_post_place').val()==null || $('#unity_post_place').val()==""){
-		alert('작성하실 게시판을 선택 해주세요.');
+		annotation_alert(`<span>작성하실 게시판을 선택해주세요.</span>`);
 		return;
 	}
 	
@@ -525,15 +546,14 @@ function submit_unity(e){
 	    	}
 	    },
 	    error: function(error) {
-	        console.log("데이터 전송 실패:", error);
-	        alert('게시글 작성에 실패하였습니다.');
+	        annotation_alert(`<span>게시글 작성 중 오류가 발생하였습니다.</span>`);
 	    }
     });
 }
 
 function submit_reple(e){
 	if($(e).val().trim()==''){
-		alert('댓글은 1자 이상이어야 합니다.');
+		annotation_alert(`<span>댓글은 1자 이상이어야 합니다.</span>`);
 		return;
 	}
 	const card = $(e).closest('.card');
@@ -549,7 +569,7 @@ function submit_reple(e){
         	get_reple(e);
 	    },
 	    error: function(error) {
-	        alert('댓글 작성에 실패하였습니다.');
+	    	annotation_alert(`<span>댓글 작성 중 오류가 발생하였습니다.</span>`);
 	    }
     });
 }
@@ -777,17 +797,17 @@ function get_circle_post(visit_code){
             			for (const file of files) {
             				if($img.find('.image_main').find('img').length==0){
             					$img.find('.image_main').find('.image_button').first().after(`
-            					<img src="/files/circle/upload/${file}"/>`);
+            					<img src="/files/circle/upload/${file}?v=${new Date().getTime()}"/>`);
             					main_src = file;
             				}
             				$img.find('.image_queue_belt').append(`
             					<div class="image_waiting" onclick="select_img(this)">
-            						<img src="/files/circle/upload/${file}"/>
+            						<img src="/files/circle/upload/${file}?v=${new Date().getTime()}"/>
             					</div>`);
             			}
-            			$img.find(`.image_waiting`).has(`img[src="/files/circle/upload/${main_src}"]`).addClass('active');
+            			$img.find(`.image_waiting`).has(`img[src="/files/circle/upload/${main_src}?v=${new Date().getTime()}"]`).addClass('active');
             		}else{
-            			$img.find('.image_main').append(`<img src="/files/circle/upload/${postVO.post_file_path}"/>`);
+            			$img.find('.image_main').append(`<img src="/files/circle/upload/${postVO.post_file_path}?v=${new Date().getTime()}"/>`);
             		}
             		$card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
                 }
@@ -844,7 +864,10 @@ function get_circle_post(visit_code){
 }
 
 function get_user_profile(user_code){
-	if ((user_code == null || user_code === undefined) && profile_target == "") {
+	
+	console.log('uc:',user_code);
+	
+	if (user_code == null && profile_target == "") {
 		if(!$('.unity_profile_container').hasClass('none')){
     		hide('.unity_profile_container');
     		showing('.user_profile_container');
@@ -852,7 +875,7 @@ function get_user_profile(user_code){
 		return;
 	}
 	
-	if(user_code == null || user_code === undefined){
+	if(user_code == null){
 		profile_target = "";
 	}else{
 		profile_target = user_code;
@@ -880,7 +903,8 @@ function get_user_profile(user_code){
         	
         	unity = "";
         	var container = $('.user_profile_container');
-        	container.find('.profile_container_head_basic').find('img').attr('src',`/files/user/profiles/${data.user_thumbnail_path}`);
+        	container.find('.profile_container_head_basic').find('img').attr('src',`/files/user/profiles/${data.user_thumbnail_path}?v=${new Date().getTime()}`);
+        	container.find('.profile_container_head_basic').attr('data-user_code',data.user_code);
         	$('.profile_container_head_basic_nickname').text(`${data.user_nickname}`);
         	$('.profile_container_head_basic_info').eq(0).text(`국적 : ${trs_nation(data.user_nation,'nation')}`);
         	$('.profile_container_head_basic_info').eq(1).text(`출생 : ${format_date(data.user_birth,'yymmdd')}`);
@@ -1019,7 +1043,7 @@ function get_unities(){
         		if(unity.unity_type == 'favorite'){
         			$('.favorite_unities').prepend(`
         				<div class="favorite_unity" data-unity_code="${unity.unity_code}" onclick="enter_unity_main('${unity.unity_code}')">
-							<img src="/files/unity/thumbnail/${unity.unity_thumbnail_path}"></img>
+							<img src="/files/unity/thumbnail/${unity.unity_thumbnail_path}?v=${new Date().getTime()}"></img>
 							<div>${unity.unity_name}</div>
 							<i class="fa-solid fa-circle-xmark pin"></i>
 						</div>
@@ -1104,7 +1128,7 @@ function get_unity_profile(unity_code){
         	$('.unity_profile_container .profile_container_head_basic').attr('onclick',`enter_unity_main('${unity_code}')`);
         	$('.unity_profile_container .profile_container_head_basic').attr('data-unity_code',unity_code);
         	$('.unity_profile_container .profile_container_head_basic').html(`
-        		<img class="black" src="/files/unity/thumbnail/${data.unity_thumbnail_path}"/>
+        		<img class="black" src="/files/unity/thumbnail/${data.unity_thumbnail_path}?v=${new Date().getTime()}"/>
 				<div class="profile_container_head_basic_unity_name">
 					${data.unity_name}
 				</div>
@@ -1271,7 +1295,7 @@ function get_unity_main(unity_code){
 			unity = unity_code;
 			
         	$('.in_unity_banner').html(`
-        		<img src="/files/unity/banner/${data.unity_banner_path}" style="${data.unity_banner_set}"/>
+        		<img src="/files/unity/banner/${data.unity_banner_path}?v=${new Date().getTime()}" style="${data.unity_banner_set}"/>
         	`);
         	
         	$('.in_unity_main .recent_post').empty();
@@ -1563,17 +1587,17 @@ function get_unity_post(ub_board_code,upost_code,unity_board_page){
             			for (const file of files) {
             				if($img.find('.image_main').find('img').length==0){
             					$img.find('.image_main').find('.image_button').first().after(`
-            					<img src="/files/unity/upload/${file}"/>`);
+            					<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>`);
             					main_src = file;
             				}
             				$img.find('.image_queue_belt').append(`
             					<div class="image_waiting" onclick="select_img(this)">
-            						<img src="/files/unity/upload/${file}"/>
+            						<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>
             					</div>`);
             			}
-            			$img.find(`.image_waiting`).has(`img[src="/files/unity/upload/${main_src}"]`).addClass('active');
+            			$img.find(`.image_waiting`).has(`img[src="/files/unity/upload/${main_src}?v=${new Date().getTime()}"]`).addClass('active');
             		}else{
-            			$img.find('.image_main').append(`<img src="/files/unity/upload/${postVO.post_file_path}"/>`);
+            			$img.find('.image_main').append(`<img src="/files/unity/upload/${postVO.post_file_path}?v=${new Date().getTime()}"/>`);
             		}
             		$card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
                 }
@@ -1775,14 +1799,14 @@ function get_unity_board_post(post_place,post_code){
                     for (const file of files) {
                     	if($img.find('.image_main').find('img').length==0){
                     		$img.find('.image_main').append(`
-                				<img src="/files/unity/upload/${file}"/>
+                				<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>
                     		`);
                     	}else if($img.find('.image_queue').length==0){
                     		$img.append(`
                 				<div class="image_queue">
 									<div class="image_queue_belt">
 										<div class="image_waiting">
-											<img src="/files/unity/upload/${file}"/>
+											<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>
 										</div>
 									</div>
 								</div>
@@ -1790,7 +1814,7 @@ function get_unity_board_post(post_place,post_code){
                     	}else{
                     		$img.find('.image_queue_belt').append(`
                 				<div class="image_waiting">
-									<img src="/files/unity/upload/${file}"/>
+									<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>
 								</div>
                     		`);
                     	}
@@ -1978,14 +2002,14 @@ function add_unity_post(upost_code,ub_add_direction,is_finished){
                     for (const file of files) {
                     	if($img.find('.image_main').find('img').length==0){
                     		$img.find('.image_main').append(`
-                				<img src="/files/unity/upload/${file}"/>
+                				<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>
                     		`);
                     	}else if($img.find('.image_queue').length==0){
                     		$img.append(`
                 				<div class="image_queue">
 									<div class="image_queue_belt">
 										<div class="image_waiting">
-											<img src="/files/unity/upload/${file}"/>
+											<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>
 										</div>
 									</div>
 								</div>
@@ -1993,7 +2017,7 @@ function add_unity_post(upost_code,ub_add_direction,is_finished){
                     	}else{
                     		$img.find('.image_queue_belt').append(`
                 				<div class="image_waiting">
-									<img src="/files/unity/upload/${file}"/>
+									<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>
 								</div>
                     		`);
                     	}
@@ -2090,7 +2114,7 @@ function get_modify_unity(unity_code){
 					target.trigger('change');
 				}else if(key == 'unity_thumbnail_file') {
 					target.after(`
-						<img src="/files/unity/thumbnail/${data.unity_thumbnail_path}"/>`);
+						<img src="/files/unity/thumbnail/${data.unity_thumbnail_path}?v=${new Date().getTime()}"/>`);
 					target.siblings('i').remove();
 		        	target.closest('.picture_content').addClass('have_img');
 		        	target.closest('.picture_content').addClass('on_top');
@@ -2099,7 +2123,7 @@ function get_modify_unity(unity_code){
 		        	target.closest('.picture_content').attr("onclick", "delete_image(this)");
 				}else if(key == 'unity_banner_file') {
 					target.after(`
-						<img src="/files/unity/banner/${data.unity_banner_path}"/>`);
+						<img src="/files/unity/banner/${data.unity_banner_path}?v=${new Date().getTime()}"/>`);
 					target.siblings('i').remove();
 		        	target.closest('.picture_content').addClass('have_img');
 		        	target.closest('.picture_content').addClass('on_top');
@@ -2215,7 +2239,7 @@ function submit_modify_unity_info(e){
 	var formData = new FormData();
 	var unity_private = 1;
 
-    $('.unity_modify_container').find(`input:not('.outform'), textarea:not('.outform'), select:not('.outform')`).each(function() {
+    $('.unity_modify_container').find(`input:not('.outForm'), textarea:not('.outForm'), select:not('.outForm')`).each(function() {
         var name = $(this).attr('name');
         var value = $(this).val();       
 
@@ -2266,7 +2290,6 @@ function submit_modify_unity_info(e){
         	submit_modify_unity_board();
 	    },
 	    error: function(error) {
-	        alert('유니티 생성에 실패하였습니다.');
 	    }
     });
 	
@@ -2527,7 +2550,7 @@ function additional_user_check(objective) {
         dataType: "json",
         success: function(data) {
         	if(data == null || data.user_code == null || data.user_code == ""){
-        		alert("로그인 정보가 없습니다. 로그인 페이지로 이동합니다.");
+        		annotation_alert(`<span>로그인 정보가 없습니다. 로그인 페이지로 이동합니다.</span>`);
                 window.location.href = "/user/login";
         	}else{
         		follows = data.follows;
@@ -2624,7 +2647,7 @@ function get_modify_circle_post(e){
 			console.log('data to modify',data);
 			const container = $('.circle_write');
 			
-			modifying_post_code = data.post_code;
+			modifying_post_code = post_code;
 			container.find('textarea').val(data.post_content);
 			if(data.post_tag){
 				var tags = data.post_tag.split(',');
@@ -2639,9 +2662,9 @@ function get_modify_circle_post(e){
 				for(const file of files){
 					var index = file.split('img')[1].replace(/\D/g, '');
 					container.find('.upload_files').append(
-						`<div class="upload_file" data-file_index="${index}" onclick="modify_delete_file(this)" onmouseleave="mouse_leave(this)" onmouseover="mouse_over(this)">
+						`<div class="upload_file draggable existing" data-file_index="${index}" onclick="modifying_delete_file(this)" onmouseleave="mouse_leave(this)" onmouseover="mouse_over(this)">
 							<div class="preview_image">
-								<img src="/files/circle/upload/${file}"></img>
+								<img src="/files/circle/upload/${file}?v=${new Date().getTime()}"></img>
 							</div>
 							<div class="preview_file_name">
 								${file}
@@ -2655,23 +2678,291 @@ function get_modify_circle_post(e){
 	});
 }
 
-function get_modify_unity_post(e){
-	invalidate_write_container('unity');
-	if(!$('.unity_write').hasClass('expanded')){
-		col_toggle('.unity_write');
-	}
+function submit_modify_circle_post(){
 	
-	const post_code = $(e).closest('.card').data('post_code');
+	if($('.circle_write').find('textarea').val().trim()==''){
+		annotation_alert(`<span>게시글은 1자 이상이어야 합니다.</span>`);
+		return;
+	}
+	const post_code = modifying_post_code;
+	var formData = new FormData();
+	
+	formData.append('post_code',modifying_post_code);
+	formData.append('post_content',$('.circle_write').find('textarea').val());
+	
+	$('.circle_write').find('.existing').each(function(index) {
+		const name = $(this).find('.preview_file_name').text().trim();
+	    const file_index = $(this).data('file_index');
+	    modifying_files[file_index] = name;
+    });
+	
+	formData.append('modifying_files', JSON.stringify(modifying_files)); 
+	formData.append('deleting_files', deleting_files); 
+	
+	if(circle_posting_files.length > 0 && circle_posting_files[0] !== ''){
+		circle_posting_files.forEach(function(file) {
+	        formData.append('posting_files', file);
+	    });
+	}
+
+	var tags = "";
+	
+	$('.circle_write').find('.tag_card').each(function(index) {
+        if (index > 0) {
+            tags += ",";
+        }
+        tags += $(this).attr('data-tag');
+    });
+    
+    if (tags !== "") {
+        formData.append('post_tag', tags);
+    }
 	
 	$.ajax({
-		type: "GET",
-		url: "/unity/modifyPost",
-		data: {post_code : post_code},
-		dataType: "json",
+		type: 'POST',
+        url: '/circle/modifyPost/',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: "json",
 		success: function(data) {
-			console.log('data to modify',data);
+			annotation_alert(`<span>게시물 수정이 완료되었습니다.</span>`);
+			invalidate_write_container('circle');
+			if($('.circle_write').hasClass('expanded')){
+				col_toggle('.circle_write');
+			}
+			modifying_post_code='';
+			modifying_files = {};
+			deleting_files = [];
+			get_circle_post();
 		},
 		error: function(xhr, status, error) {
 		}
 	});
 }
+
+function get_modify_user(e){
+	
+	modifying_files = {};
+    deleting_files = [];
+	
+	$.ajax({
+		type: "GET",
+		url: "/user/modify",
+		dataType: "json",
+		success: function(data) {
+			console.log('user_info :',data);
+			const container = $('#modify');
+			
+			for (var [key, value] of Object.entries(data)) {
+				
+				if(value == null || value == ''){
+					continue;
+				}
+				
+				const target = container.find(`[name='${key}']:not(.outForm)`);
+				
+				if(target.siblings('select').length == 1){
+					if(typeof value === 'string' && value.includes(',')){
+						var values = value.split(',');
+							for (var val of values) {
+								target.siblings('select').find(`[value='${val}']`).prop('selected',true);
+								target.siblings('select').trigger('change');
+							}
+					}else{ 
+						target.siblings('select').find(`[value='${value}']`).prop('selected',true);
+						target.siblings('select').trigger('change');
+					}
+				}else if(target.is('select')){
+					if(typeof value === 'string' && value.includes(',')){
+						var values = value.split(',');
+							for (var val of values) {
+								target.find(`[value='${val}']`).prop('selected',true);
+								target.trigger('change');
+							}
+					}else{
+						target.find(`[value='${value}']`).prop('selected',true);
+						target.trigger('change');
+					}
+					target.trigger('change');
+				}else if(key == 'user_thumbnail_path') {
+					const input = container.find('.picture_content').first().find('input');
+					input.closest('.picture_content').addClass('existing');
+					input.siblings('i').remove();
+		        	input.closest('.picture_content').addClass('have_img');
+		        	input.closest('.picture_content').addClass('on_top');
+		        	input.closest('.picture_content').addClass('draggable');
+		        	input.closest('.picture_content').attr("onmouseover", "mouse_over(this)");
+		        	input.closest('.picture_content').attr("onmouseleave", "mouse_leave(this)");
+		        	input.closest('.picture_content').attr("onclick", "modifying_delete_file(this)");
+		        	input.closest('.picture_content').attr("draggable", "true");
+		            input.after(`
+		                <img src="/files/user/profiles/${value}?v=${new Date().getTime()}"/>
+		            `);
+				}else if(key == 'user_profile_path') {
+					const paths = value.split(',');
+					for (const path of paths){
+						const input = container.find('.picture_content').filter(function() {
+							return $(this).find('img').length === 0;
+						}).find('input');
+						input.closest('.picture_content').addClass('existing');
+						input.siblings('i').remove();
+						input.closest('.picture_content').addClass('have_img');
+						input.closest('.picture_content').addClass('on_top');
+						input.closest('.picture_content').addClass('draggable');
+						input.closest('.picture_content').attr("onmouseover", "mouse_over(this)");
+						input.closest('.picture_content').attr("onmouseleave", "mouse_leave(this)");
+						input.closest('.picture_content').attr("onclick", "modifying_delete_file(this)");
+						input.closest('.picture_content').attr("draggable", "true");
+						input.after(`
+								<img src="/files/user/profiles/${path}?v=${new Date().getTime()}"/>
+						`);
+						input.closest('.picture_content').after(`
+								<div class="picture_content">
+									<input type="file" name="user_profile" class="picture_input" accept="image/*" onchange="add_image(this)">
+									<i class="material-symbols-outlined">add</i>
+								</div>
+						`);
+					}
+				}else{
+					target.val(value);
+				}
+				
+			}
+			
+			const factors = get_private(data.user_private);
+			
+			for(const factor of factors){
+				container.find(`[name=user_private]`).find(`[value='${factor}']`).prop('selected',true);
+			}
+			
+			check_file_index('join');
+			
+			$('#modify').find('.unfinished_row').each(function() {
+				set_finished($('#modify').find('.thumbnail'),'row');
+			});
+			$('#modify').find('.unfinished_col').each(function() {
+				set_finished($('#modify').find('.thumbnail'),'column');
+			});
+			
+			showing('#modify'); 
+			toggle_card('#modify',1,0);
+		},
+		error: function(xhr, status, error) {
+		}
+	});
+}
+
+
+function submit_modify_user(){
+	var formData = new FormData();
+	var user_private = 1;
+
+    $('#modify').find(`input:not('.outForm'), textarea:not('.outForm'), select:not('.outForm')`).each(function() {
+        var name = $(this).attr('name');
+        var value = $(this).val();       
+
+        if (value) {
+            if ($(this).is('select[name="user_private"]')) {
+                user_private *= parseInt(value);
+            }else if ($(this).is('input[name="user_profile"]')) {
+                var files = $(this)[0].files;
+                if (files.length > 0) {
+                    for (var i = 0; i < files.length; i++) {
+                    	formData.append('user_profile_file', files[i]);
+                    }
+                }
+            }else {
+            	formData.append(name, value);
+            }
+        }
+    });
+    
+    $('#modify').find('.existing').each(function(index) {
+		const name = $(this).find('img').attr('src').split('profiles/')[1].split('?')[0];
+	    const file_index = $(this).data('file_index');
+	    modifying_files[file_index] = name;
+    });
+	
+	formData.append('modifying_files', JSON.stringify(modifying_files)); 
+	formData.append('deleting_files', deleting_files); 
+	
+    formData.append("user_private", user_private);
+    
+    console.log([...formData.entries()]);
+    
+    $.ajax({
+    	type: 'POST',
+        url: '/user/modify',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: "json",
+        success: function (response) {
+	    	if(response==1){
+				modifying_files = {};
+				deleting_files = [];
+				
+				annotation_alert(`<span>정보수정에 성공하였습니다.</span>`, function (result) {
+			        if (result) {
+			        	location.reload();
+			        }
+			    });
+				
+	    	}
+	    	if(response==3){
+	    		annotation_alert(`<span>입력하지 않은 항목이 있습니다.</span>`);
+	    	}
+	    },
+	    error: function(error) {
+	    	annotation_alert(`<span>정보수정 중 오류가 발생하였습니다.</span>`);
+	    }
+    });
+}
+
+function get_user_picture(e){
+	const container= $('#image_modal');
+	container.find('.temp').remove();
+	/*hiding(container.find('.image_queue'))
+	hiding(container.find('.image_modal_button'))*/
+	
+	var user_code = $(e).data('user_code');
+	if(user_code == null){
+		user_code = profile_target;
+	}
+	
+	$.ajax({
+		type: "GET",
+		url: "/user/picture",
+		data: {user_code:user_code},
+		dataType: "json",
+		success: function(data) {
+			console.log('picture:',data)
+			
+			container.find('.image_main').append(`
+				<img class="temp" src="/files/user/profiles/${data.user_thumbnail_path}?v=${new Date().getTime()}">
+			`);
+			
+			if(data.user_profile_path){
+				container.find('.image_queue').append(`
+					<img class="temp" src="/files/user/profiles/${data.user_thumbnail_path}?v=${new Date().getTime()}" onclick="select_img(this)">
+				`);
+				
+				const files = data.user_profile_path.split(',');
+				for(const file of files){
+					container.find('.image_queue').append(`
+						<img class="temp" src="/files/user/profiles/${file}?v=${new Date().getTime()}" onclick="select_img(this)">
+					`);
+				}
+				showing(container.find('.image_queue'));
+				showing(container.find('.image_modal_button'));
+			}
+			
+			
+			showing('#image_modal');
+		},
+		error: function(error) {
+	    }
+    });
+}
+

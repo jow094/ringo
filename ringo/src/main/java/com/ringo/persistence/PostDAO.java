@@ -26,4 +26,5 @@ public interface PostDAO {
 	public Map<String,Object> selectRecommInfo(String user_code,String target_code);
 	public Integer deletePost(String post_code);
 	public PostVO selectPost(String post_code);
+	public Integer updatePost(PostVO vo);
 }

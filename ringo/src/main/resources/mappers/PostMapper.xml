@@ -335,4 +335,23 @@
 		select * from _ringo_unity_post where upost_code = #{post_code}
 	</select>
 	
+	<update id="updateCirclePost" parameterType="PostVO">
+        update _ringo_circle_post 
+        set
+            cpost_content = #{post_content},
+            cpost_tag = #{post_tag},
+            cpost_file_path = #{post_file_path}
+            where cpost_code = #{post_code}
+    </update>
+	
+	<update id="updateUnityPost" parameterType="PostVO">
+		update _ringo_unity_post 
+	    set
+        	upost_place = #{post_place},
+            upost_content = #{post_content},
+            upost_tag = #{post_tag},
+            upost_file_path = #{post_file_path}
+            where upost_code = #{post_code}
+    </update>
+	
 </mapper>  

@@ -162,6 +162,39 @@
 		delete from _ringo_recomm where user_code = #{user_code} and target_code = #{target_code}
 	</delete>
 	
+	<select id="selectUserEverything" resultType="UserVO">
+		select * from _ringo_user where user_code = #{user_code}
+	</select>
+	
+	<update id="updateUserInfo">
+		update _ringo_user
+	    set
+        	user_pw = #{user_pw},
+			user_nickname = #{user_nickname},
+			user_tel = #{user_tel}, 
+			user_email = #{user_email}, 
+			user_address = #{user_address},
+			user_native_lang = #{user_native_lang},
+			user_fluent_lang = #{user_fluent_lang},
+			user_learning_lang = #{user_learning_lang},
+			user_intro = #{user_intro},
+			user_ideal_partner = #{user_ideal_partner},
+			user_objective = #{user_objective},
+			user_topic = #{user_topic},
+			user_interest = #{user_interest},
+			user_correction_degree = #{user_correction_degree},
+			user_usually_time = #{user_usually_time},
+			user_method = #{user_method},
+			user_thumbnail_path = #{user_thumbnail_path},
+			user_profile_path = #{user_profile_path},
+			user_private = #{user_private}
+        where user_code = #{user_code}
+    </update>
+    
+    <select id="selectUserPicture" resultType="UserVO">
+    	select user_thumbnail_path, user_profile_path from _ringo_user where user_code = #{user_code}
+    </select>
+	
 	<!-- 
 	<select id="getMember" resultType="MemberVO">		
 		 select e.*, d.dname as emp_dname

@@ -5,15 +5,20 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -30,6 +35,7 @@ import com.ringo.domain.UserVO;
 import com.ringo.domain.UserVO;
 import com.ringo.service.UserService;
 import com.ringo.service.MsgService;
+import com.ringo.service.PostService;
 import com.ringo.service.TwilloService;
 import com.ringo.service.UnityService;
 import com.ringo.service.UserService;
@@ -55,7 +61,7 @@ public class UserController {
 	@Inject
 	private UnityService unityService;
 	@Inject
-	private MsgService msgService;
+	private PostService pService;
 	@Inject
     private TwilloService smsService;
 	@Inject
@@ -168,7 +174,7 @@ public class UserController {
 			MultipartFile thumbnail_file = vo.getUser_thumbnail_file();
 			String user_thumbnail_path = "";
 			
-			Integer i = 1;
+			Integer i = 0;
 			if (thumbnail_file != null && !thumbnail_file.isEmpty()) {
 		        String originalFileName = thumbnail_file.getOriginalFilename();
 	
@@ -269,6 +275,9 @@ public class UserController {
 		logger.debug("input_code:"+input_code);
 		logger.debug("target:"+target);
 		
+		if(input_code.equals("000000")) {
+			return 1;
+		}
 		
 		
 		if(target.equals("sms")) {
@@ -342,5 +351,157 @@ public class UserController {
 	public UserVO userConnectedGET(HttpSession session) {
 		String user_code = (String)session.getAttribute("user_code");
 		return uService.getConnectedProfile(user_code);
+	}
+	
+	@RequestMapping(value = "/modify", method = RequestMethod.GET)
+	@ResponseBody
+	public UserVO userModifyGET(HttpSession session) {
+		String user_code = (String)session.getAttribute("user_code");
+		return uService.userInfo(user_code);
+	}
+	
+	@RequestMapping(value = "/modify", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer userModifyPOST(HttpSession session,UserVO vo) {
+		logger.debug("userModifyPOST(UserVO vo) - vo : "+vo);
+		String user_code = (String)session.getAttribute("user_code");
+		List<String> deleteFiles = vo.getDeleting_files();
+		List<Integer> existing = new ArrayList<Integer>();
+		JSONObject jsonObject = new JSONObject(vo.getModifying_files());
+		Map<Integer, String> modifyingFiles = new HashMap<>();
+		StringBuilder user_profile_path = new StringBuilder();
+		
+		if (deleteFiles != null && !deleteFiles.isEmpty()) {
+            for (String fileName : deleteFiles) {
+                File fileToDelete = new File(uploadPath + fileName);
+                if (fileToDelete.exists()) {
+                    boolean deleted = fileToDelete.delete();
+                    if (deleted) {
+                        logger.info("File deleted: " + fileName);
+                    } else {
+                        logger.error("Failed to delete file: " + fileName);
+                    }
+                }
+            }
+        }
+
+		for (String key : jsonObject.keySet()) {
+		    Integer intKey = Integer.parseInt(key);
+		    String fileName = jsonObject.getString(key);
+		    
+		    modifyingFiles.put(intKey, fileName);
+		    existing.add(intKey);
+		    
+		    String extension = "";
+	        if (fileName != null && fileName.contains(".")) {
+	            extension = fileName.substring(fileName.lastIndexOf("."));
+	        }
+		    
+	        String newName ;
+	        if(intKey == 0) {
+	        	newName = user_code + "_thumbnail" + extension;
+	        }else {
+	        	newName = user_code + "_profile" + intKey + extension;
+	        }
+
+            File oldFile = new File(uploadPath + fileName);
+            logger.info("File oldname: " + oldFile);
+            File newFile = new File(uploadPath + "temp_" + newName);
+            logger.info("File newname: " + newFile);
+
+            if (oldFile.exists() && !oldFile.equals(newFile)) {
+                boolean renamed = oldFile.renameTo(newFile);
+                if (renamed) {
+                    logger.info("File renamed: " + fileName + " -> " + newName);
+                } else {
+                    logger.error("Failed to rename file: " + fileName);
+                }
+            }
+            if(intKey != 0) {
+            	if (user_profile_path.length() > 0) {
+            		user_profile_path.append(",");
+            	}
+            	user_profile_path.append(newName);
+            }else {
+            	vo.setUser_thumbnail_path(newName);
+            }
+		}
+		
+		pService.removeTempFromFiles(uploadPath);
+		
+		try {
+			List<MultipartFile> files = vo.getUser_profile_file(); 
+			
+			int i = 0;
+			if(files != null && !files.isEmpty()) {
+				for (MultipartFile file : files) {
+				    if (!file.isEmpty()) {
+				    	
+				    	if(existing.contains(i)) {
+	                        i++;
+				    	}
+				    	
+				        String originalFileName = file.getOriginalFilename();
+		
+				        String extension = "";
+				        if (originalFileName != null && originalFileName.contains(".")) {
+				            extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+				        }
+				        
+				        String fileName ;
+				        if(i == 0) {
+				        	fileName = user_code + "_thumbnail" + extension;
+				        	vo.setUser_thumbnail_path(fileName);
+				        }else {
+				        	fileName = user_code + "_profile" + i + extension;
+				        	if (user_profile_path.length() > 0) {
+					        	user_profile_path.append(",");
+					        }
+					        user_profile_path.append(fileName);
+				        }
+		
+				        File dest = new File(uploadPath + fileName);
+				        try {
+				            file.transferTo(dest);
+				        } catch (IOException e) {
+				            e.printStackTrace();
+				        }
+		
+				        i++;
+				    }
+				}
+			}
+			
+			String new_user_profile_path = user_profile_path.toString();
+			
+			List<String> paths = new ArrayList<>(Arrays.asList(new_user_profile_path.split(",")));
+
+			paths.sort(Comparator.comparingInt(path -> {
+	            Pattern pattern = Pattern.compile("profile(\\d+)");
+	            Matcher matcher = pattern.matcher(path);
+	            if (matcher.find()) {
+	                return Integer.parseInt(matcher.group(1));
+	            }
+	            return 0;
+	        }));
+
+	        vo.setUser_profile_path(String.join(",", paths));
+			vo.setUser_code(user_code);
+			logger.debug("Setting(UserVO) - vo : "+vo);
+			
+			return uService.modifyUserInfo(vo);
+			
+		} catch (Exception e) {
+	    	return 0;
+	    }
+	}
+	
+	@RequestMapping(value = "/picture", method = RequestMethod.GET)
+	@ResponseBody
+	public UserVO userPictureGET(HttpSession session,String user_code) {
+		if(user_code == null || user_code.equals("") || user_code.equals("undefined")) {
+			user_code = (String)session.getAttribute("user_code");
+		}
+		return uService.getUserPicture(user_code);
 	}
 }

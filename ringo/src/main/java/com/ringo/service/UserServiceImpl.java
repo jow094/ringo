@@ -25,20 +25,21 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public UserVO userLogin(UserVO vo) {
-		logger.debug("UserLogin(UserVO) - vo : "+vo);
 		return udao.selectUser(vo);
 	}
 	
 	@Override
+	public UserVO userInfo(String user_code) {
+		return udao.selectUserEverything(user_code);
+	}
+
+	@Override
 	public Integer getLastUserCode() {
-		logger.debug("getLastUserCode()");
 		return udao.selectLastCode();
 	}
 
-
 	@Override
 	public Integer userJoin(UserVO vo) {
-		logger.debug("UserJoin(UserVO) - vo : "+vo);
 		return udao.insertUser(vo);
 	}
 	
@@ -95,6 +96,16 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public Integer removeRecomm(Map<String, Object> param) {
 		return udao.deleteRecomm(param);
+	}
+
+	@Override
+	public Integer modifyUserInfo(UserVO vo) {
+		return udao.updateUserInfo(vo);
+	}
+
+	@Override
+	public UserVO getUserPicture(String user_code) {
+		return udao.selectUserPicture(user_code);
 	}
 	
 	

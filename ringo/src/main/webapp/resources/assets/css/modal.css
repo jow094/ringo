@@ -651,6 +651,8 @@
 
 .picture_content img{
 	position: absolute;
+	aspect-ratio: 1 / 1;
+	object-fit: contain;
 	width: 100%; 
 	height: auto;
 	border-radius:2px;
@@ -757,3 +759,32 @@
 .alert_button:hover i,.alert_button:hover span{
 	color:var(--basic);
 }
+.image_modal_content{
+	width:1000px;
+	height: 800px;
+	display:flex;
+	flex-direction: column;
+}
+image_modal .image_main{
+	flex:1;
+	width:100%;
+}
+#image_modal .image_button{
+	width:200px;
+	height: 100%;
+}
+.image_button.left{
+	left:0;
+}
+.image_button.right{
+	right:0;
+}
+
+#image_modal .image_queue{
+	height:200px;
+}
+.image_modal_small{
+	height: 100%;
+	aspect-ratio: 1 / 1;
+}
+

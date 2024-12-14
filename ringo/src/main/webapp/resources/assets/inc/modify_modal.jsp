@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<div id="join" class="modal join_modal none">
+<div id="modify" class="modal join_modal none">
     <div class="modal_content">
     	<div class="modal_head">
     		<div class="modal_title">
@@ -8,45 +8,45 @@
 	    			<i class="fa-solid fa-user-check"></i>
     			</div>
     			<div class="modal_name">
-	    			회원 가입
+	    			정보 수정
     			</div>
     		</div>
-    		<button class="modal_close_button" type="button" onclick="hiding('.modal'); toggle_card('.join_modal',1,0);">
+    		<button class="modal_close_button" type="button" onclick="hiding('.modal'); toggle_card('#modify',1,0);">
     			<i class="fa-solid fa-xmark"></i>
     		</button>
         </div>
         <div class="modal_body">
         	<div class="cards_menu_container">	
-				<div class="menu unfinished_column" data-targetindex="1" onclick="toggle_card('.join_modal',this.dataset.targetindex,0)">
-					<span>본인 확인</span>
+				<div class="menu finished_column" data-targetindex="1" onclick="toggle_card('#modify',this.dataset.targetindex,0)">
+					<span>필수 정보</span>
 				</div>
-				<div class="menu unfinished_column" data-targetindex="2" onclick="toggle_card('.join_modal',this.dataset.targetindex,0)">
+				<div class="menu finished_column" data-targetindex="2" onclick="toggle_card('#modify',this.dataset.targetindex,0)">
 					<span>기본 정보</span>
 				</div>
-				<div class="menu unfinished_column" data-targetindex="3" onclick="toggle_card('.join_modal',this.dataset.targetindex,0)">
+				<div class="menu finished_column" data-targetindex="3" onclick="toggle_card('#modify',this.dataset.targetindex,0)">
 					<span>추가 정보</span>
 				</div>
-				<div class="menu unfinished_column" data-targetindex="4" onclick="toggle_card('.join_modal',this.dataset.targetindex,0)">
+				<div class="menu finished_column" data-targetindex="4" onclick="toggle_card('#modify',this.dataset.targetindex,0)">
 					<span>프로필 사진</span>
 				</div>
-				<div class="menu unfinished_column" data-targetindex="5" onclick="toggle_card('.join_modal',this.dataset.targetindex,0)">
+				<div class="menu finished_column" data-targetindex="5" onclick="toggle_card('#modify',this.dataset.targetindex,0)">
 					<span>기본 설정</span>
 				</div>
 			</div>
         	<div class="scroll_box" style="height:calc(100% - 20px); flex-direction: column;">
 	        	<div class="cards_container">
-	        		<div class="cards_container_button prev shrinked" onclick="toggle_card('.join_modal',0,-1)">
+	        		<div class="cards_container_button prev shrinked" onclick="toggle_card('#modify',0,-1)">
 	        			<i class="fa-solid fa-chevron-left"></i>
 	        		 </div>
 	        		<div class="cards_container_content">
-		        		<div class="cards card_1 unfinished_column">
+		        		<div class="cards card_1 finished_column">
 		        			<div class="cards_inner_header">
 		        				<i class="fa-solid fa-address-card"></i>
-		        				<span>본인 확인</span>
+		        				<span>필수 정보</span>
 		        			</div>
 		        			<div class="cards_inner_body half_row">
 		        				<div class="cards_inner_body_left">
-		        					<div class="terms_container with_checkbox unfinished_column">
+		        					<div class="terms_container with_checkbox finished_column">
 		        						<div class="terms_head">
 			        					[필수] 이용약관
 			        					</div>
@@ -54,7 +54,7 @@
 			        					내용
 			        					</div>
 			        					<div class="terms_footer">
-				        					<input type="checkbox" class="" id="terms_1_agree" name="checkbox" />
+				        					<input type="checkbox" class="outForm" id="terms_1_agree" name="checkbox" checked/>
 										    <label for="terms_1_agree">
 										        <i class="fa-regular fa-square-check"></i> 동의
 										    </label>
@@ -62,86 +62,31 @@
 		        					</div>
 		        				</div>
 		        				<div class="cards_inner_body_right">
-		        					<div class="input_box">
-		        						<div class="input_cell unfinished_row">
-											<div class="input_name">
-												이름
-											</div>
-											<div class="input_value">
-												<input type="text" name="user_name" onblur="validate_name(this)" oninput="validate_name(this)"/>
-											</div>
-										</div>
-										<div class="input_hint annotation_message">
-											* 본명을 입력 해주세요.						
-										</div>
-		        					</div>
 									<div class="input_box">
-										<div class="input_cell unfinished_row">
-											<div class="input_name">
-												생년월일
-											</div>
-											<div class="input_value">
-												<input type="text" name="user_birth" onblur="validate_birth(this)" oninput="validate_birth(this)"/>
-											</div>
-										</div>
-										<div class="input_hint annotation_message annotation_message">
-											* 8자리로 입력 해주세요. 예시) 2000.01.01						
-										</div>
-									</div>
-									<div class="input_box">
-										<div class="input_cell with_radio unfinished_row">
-											<div class="input_name">
-												성별
-											</div>
-											<div class="input_value">
-												<input type="radio" id="user_gender_male" name="user_gender" value="남성"/>
-											    <label class="radio_button" for="user_gender_male">
-											        <i class="fa-regular fa-square-check"></i> <span class="radio_value">남성</span>
-											    </label>
-											
-											    <input type="radio" id="user_gender_female" name="user_gender" value="여성"/>
-											    <label class="radio_button" for="user_gender_female">
-											        <i class="fa-regular fa-square-check"></i> <span class="radio_value">여성</span>
-											    </label>
-											</div>
-										</div>
-									</div>
-									<div class="input_box">
-										<div class="input_cell unfinished_row with_select">
-											<div class="input_name">
-												국적
-											</div>
-											<div class="input_value">
-												<select id="user_nation" name="user_nation" class="annotation_message">
-													<option class="annotation_message" value="" selected disabled>* 국적을 선택하세요.</option>
-													<option value="kr">한국</option>
-													<option value="us">영어</option>
-													<option value="jp">일본</option>
-													<option value="cn">중국</option>
-													<option value="de">독일</option>
-													<option value="fr">프랑스</option>
-													<option value="it">이탈리아</option>
-													<option value="es">스페인</option>
-													<option value="ru">러시아</option>
-												</select>
-											</div>
-										</div>
-									</div>
-									<div class="input_box">
-										<div class="input_cell unfinished_row">
+										<div class="input_cell finished_row">
 											<div class="input_name">
 												전화번호
 											</div>
+											<div class="input_value">
+												<input type="text" name="user_tel" disabled/>
+											</div>
+										</div>
+									</div>
+									<div class="input_box">
+										<div class="input_cell">
+											<div class="input_name">
+												변경 전화번호
+											</div>
 											<div class="input_value_container">
 												<div class="input_value">
-													<input id="user_tel" type="text" name="user_tel" onblur="validate_tel(this)" oninput="validate_tel(this)" onkeydown="if(event.key === 'Enter'){ send_sms(this); }"/>
+													<input class="outForm" id="modify_tel" name="user_tel" type="text" onblur="validate_tel(this)" oninput="validate_tel(this)" onkeydown="if(event.key === 'Enter'){ send_sms(this); }"/>
 													<div class="input_cell_button" onclick="send_sms(this)">
 														인증요청
 													</div>
 												</div>
 												<div id="user_sms_authentication" class="input_value none">
-													<input type="text" name="user_authentication" class="" placeholder="인증번호를 입력하세요."/>
-													<div class="input_cell_button" onclick="check_code(this,'sms')">
+													<input type="text" name="user_authentication" class="outForm" placeholder="인증번호를 입력하세요."/>
+													<div class="input_cell_button" onclick="check_code(this,'sms',$('#modify_tel').val())">
 														인증확인
 													</div>
 												</div>
@@ -152,20 +97,30 @@
 										</div>
 									</div>
 									<div class="input_box">
-										<div class="input_cell unfinished_row">
+										<div class="input_cell finished_row">
 											<div class="input_name">
 												이메일
 											</div>
+											<div class="input_value">
+												<input type="text" name="user_email" disabled/>
+											</div>
+										</div>
+									</div>
+									<div class="input_box">
+										<div class="input_cell">
+											<div class="input_name">
+												변경 이메일
+											</div>
 											<div class="input_value_container">
 												<div class="input_value">
-													<input id="user_email" type="text" name="user_email" onblur="validate_email(this)" oninput="validate_email(this)" onkeydown="if(event.key === 'Enter'){ send_email(this); }"/>
+													<input class="outForm" id="modify_email" name="user_email" type="text" onblur="validate_email(this)" oninput="validate_email(this)" onkeydown="if(event.key === 'Enter'){ send_email(this); }"/>
 													<div class="input_cell_button" onclick="send_email(this);">
 														인증요청
 													</div>
 												</div>
 												<div id="user_email_authentication" class="input_value none">
-													<input type="text" name="user_authentication" class="" placeholder="인증번호를 입력하세요."/>
-													<div class="input_cell_button" onclick="check_code(this,'email')">
+													<input type="text" name="user_authentication" class="outForm" placeholder="인증번호를 입력하세요."/>
+													<div class="input_cell_button" onclick="check_code(this,'email',$('#modify_email').val())">
 														인증확인
 													</div>
 												</div>
@@ -176,14 +131,24 @@
 										</div>
 									</div>
 									<div class="input_box">
-										<div class="input_multi_cell unfinished_row">
+										<div class="input_cell finished_row">
+											<div class="input_name">
+												주소
+											</div>
+											<div class="input_value">
+												<input id="user_address" type="text" name="user_address" disabled/>
+											</div>
+										</div>
+									</div>
+									<div class="input_box">
+										<div class="input_multi_cell">
 											<div class="input_cells">
 												<div class="input_name">
-													주소
+													변경 주소
 												</div>
 												<div class="input_value">
-													<input type="text" class="" id="search_address_input" onkeydown="if(event.key === 'Enter'){ search_address('.join_modal','#user_address_search_container'); }"/>
-													<div class="input_cell_button" onclick="search_address('.join_modal','#user_address_search_container');">
+													<input type="text" class="outForm" id="search_address_input" onkeydown="if(event.key === 'Enter'){ search_address('#modify','#user_address_search_container'); }"/>
+													<div class="input_cell_button" onclick="search_address('#modify','#user_address_search_container');">
 														검색
 													</div>
 												</div>
@@ -198,12 +163,11 @@
 												<div class="selected_address">
 												</div>
 												<div class="max_div row">
-													<input type="text" class="" id="detail_address" onkeydown="if(event.key === 'Enter'){ submit_address(this); }"/>
-													<div class="input_cell_button" onclick="submit_address('#detail_address');">
+													<input type="text" class="outForm" id="detail_address" onkeydown="if(event.key === 'Enter'){ submit_address(this,true); }"/>
+													<div class="input_cell_button" onclick="submit_address('#detail_address',true);">
 														확인
 													</div>
 												</div>
-												<input type="hidden" id="user_address" name="user_address"/>
 											</div>
 										</div>
 										<div class="for_address input_hint annotation_message">
@@ -213,10 +177,10 @@
 		        				</div>
 		        			</div>
 		        			<div class="cards_inner_footer">
-		        				<button type="button" class="custom_button" onclick="toggle_card('.join_modal',0,1)">다음</button>
+		        				<button type="button" class="custom_button" onclick="toggle_card('#modify',0,1)">다음</button>
 		        			</div>
 		        		</div>
-						<div class="cards card_2 unfinished_column" >
+						<div class="cards card_2 finished_column" >
 							<div class="cards_inner_header">
 		        				<i class="fa-solid fa-file-invoice"></i>
 		        				<span>기본 정보</span>
@@ -224,20 +188,7 @@
 		        			<div class="cards_inner_body half_row">
 		        				<div class="cards_inner_body_left">
 		        					<div class="input_box">
-		        						<div class="input_cell unfinished_row">
-											<div class="input_name">
-												아이디
-											</div>
-											<div class="input_value">
-												<input type="text" name="user_id" onblur="validate_id(this)" oninput="validate_id(this)"/>
-											</div>
-										</div>
-										<div class="input_hint annotation_message">
-											* 4~20자리의 영문, 숫자, '_' 로 이루어진 아이디를 입력해 주세요.					
-										</div>
-		        					</div>
-		        					<div class="input_box">
-		        						<div class="input_cell unfinished_row">
+		        						<div class="input_cell finished_row">
 											<div class="input_name">
 												비밀번호
 											</div>
@@ -246,7 +197,7 @@
 													<input type="password" name="user_pw" onblur="validate_pw(this)" oninput="validate_pw(this)"/>
 												</div>
 												<div id="check_pw" class="input_value none">
-													<input type="password" class="" oninput="check_pw(this)"/>
+													<input type="password" class="outForm" oninput="check_pw(this)"/>
 												</div>
 											</div>
 										</div>
@@ -255,7 +206,7 @@
 										</div>
 		        					</div>
 		        					<div class="input_box">
-		        						<div class="input_cell unfinished_row">
+		        						<div class="input_cell finished_row">
 											<div class="input_name">
 												닉네임
 											</div>
@@ -344,11 +295,11 @@
 		        				</div>
 		        			</div>
 		        			<div class="cards_inner_footer">
-		        				<button type="button" class="custom_button" onclick="toggle_card('.join_modal',0,-1)">이전</button>
-		        				<button type="button" class="custom_button" onclick="toggle_card('.join_modal',0,1)">다음</button>
+		        				<button type="button" class="custom_button" onclick="toggle_card('#modify',0,-1)">이전</button>
+		        				<button type="button" class="custom_button" onclick="toggle_card('#modify',0,1)">다음</button>
 		        			</div>
 						</div>
-						<div class="cards card_3 unfinished_column" >
+						<div class="cards card_3 finished_column" >
 							<div class="cards_inner_header">
 		        				<i class="fa-solid fa-circle-info"></i>
 		        				<span>추가 정보</span>
@@ -356,7 +307,7 @@
 		        			<div class="cards_inner_body half_row">
 		        				<div class="cards_inner_body_left">
 		        					<div class="input_box">
-		        						<div class="input_cell unfinished_row">
+		        						<div class="input_cell finished_row">
 											<div class="input_name">
 												한줄 소개
 											</div>
@@ -369,7 +320,7 @@
 										</div>
 		        					</div>
 		        					<div class="input_box">
-		        						<div class="input_cell unfinished_row">
+		        						<div class="input_cell finished_row">
 											<div class="input_name">
 												학습 목표
 											</div>
@@ -382,7 +333,7 @@
 										</div>
 		        					</div>
 		        					<div class="input_box">
-		        						<div class="input_cell unfinished_row">
+		        						<div class="input_cell finished_row">
 											<div class="input_name">
 												이상형
 											</div>
@@ -395,7 +346,7 @@
 										</div>
 		        					</div>
 		        					<div class="input_box">
-		        						<div class="input_cell unfinished_row">
+		        						<div class="input_cell finished_row">
 											<div class="input_name">
 												대화 주제
 											</div>
@@ -522,11 +473,11 @@
 		        				</div>
 		        			</div>
 		        			<div class="cards_inner_footer">
-		        				<button type="button" class="custom_button" onclick="toggle_card('.join_modal',0,-1)">이전</button>
-		        				<button type="button" class="custom_button" onclick="toggle_card('.join_modal',0,1)">다음</button>
+		        				<button type="button" class="custom_button" onclick="toggle_card('#modify',0,-1)">이전</button>
+		        				<button type="button" class="custom_button" onclick="toggle_card('#modify',0,1)">다음</button>
 		        			</div>
 						</div>
-						<div class="cards card_4 unfinished_column" >
+						<div class="cards card_4 finished_column" >
 							<div class="cards_inner_header">
 		        				<i class="fa-solid fa-image"></i>
 		        				<span>프로필 사진</span>
@@ -558,11 +509,11 @@
 		        				</div>
 		        			</div>
 		        			<div class="cards_inner_footer">
-		        				<button type="button" class="custom_button" onclick="toggle_card('.join_modal',0,-1)">이전</button>
-		        				<button type="button" class="custom_button" onclick="toggle_card('.join_modal',0,1)">다음</button>
+		        				<button type="button" class="custom_button" onclick="toggle_card('#modify',0,-1)">이전</button>
+		        				<button type="button" class="custom_button" onclick="toggle_card('#modify',0,1)">다음</button>
 		        			</div>
 						</div>
-						<div class="cards card_5 unfinished_column" >
+						<div class="cards card_5 finished_column" >
 							<div class="cards_inner_header">
 		        				<i class="fa-solid fa-gear"></i>
 		        				<span>기본 설정</span>
@@ -575,8 +526,8 @@
 										</div>
 										<div class="input_value">
 											<select name="user_private" class="annotation_message">
-												<option class="annotation_message" value="" selected disabled>로그인 상태 공개 여부</option>
-												<option value="1">공개</option>
+												<option class="annotation_message" value="" disabled>로그인 상태 공개 여부</option>
+												<option value="1" selected>공개</option>
 												<option value="3">비공개</option>
 												<option value="5">상호 팔로워에게만 공개</option>
 											</select>
@@ -593,8 +544,8 @@
 										</div>
 										<div class="input_value">
 											<select name="user_private" class="annotation_message">
-												<option class="annotation_message" value="" selected disabled>팔로워 공개 여부</option>
-												<option value="1">공개</option>
+												<option class="annotation_message" value="" disabled>팔로워 공개 여부</option>
+												<option value="1" selected>공개</option>
 												<option value="7">비공개</option>
 												<option value="11">상호 팔로워에게만 공개</option>
 											</select>
@@ -611,8 +562,8 @@
 										</div>
 										<div class="input_value">
 											<select name="user_private" class="annotation_message">
-												<option class="annotation_message" value="" selected disabled>게시글 공개 여부</option>
-												<option value="1">공개</option>
+												<option class="annotation_message" value="" disabled>게시글 공개 여부</option>
+												<option value="1" selected>공개</option>
 												<option value="13">비공개</option>
 												<option value="17">상호 팔로워에게만 공개</option>
 											</select>
@@ -629,8 +580,8 @@
 										</div>
 										<div class="input_value">
 											<select name="user_private" class="annotation_message">
-												<option class="annotation_message" value="" selected disabled>방문기록 공개 여부</option>
-												<option value="1">공개</option>
+												<option class="annotation_message" value="" disabled>방문기록 공개 여부</option>
+												<option value="1" selected>공개</option>
 												<option value="19">전체 비공개</option>
 												<option value="23">팔로워에게만 공개</option>
 											</select>
@@ -647,8 +598,8 @@
 										</div>
 										<div class="input_value">
 											<select name="user_private" class="annotation_message">
-												<option class="annotation_message" value="" selected disabled>매칭 허용 여부</option>
-												<option value="1">모두 허용</option>
+												<option class="annotation_message" value="" disabled>매칭 허용 여부</option>
+												<option value="1" selected>모두 허용</option>
 												<option value="23">소개받기 허용</option>
 												<option value="29">소개되기 허용</option>
 											</select>
@@ -665,8 +616,8 @@
 										</div>
 										<div class="input_value">
 											<select name="user_private" class="annotation_message">
-												<option class="annotation_message" value="" selected disabled>유니티 공개 허용 여부</option>
-												<option value="1">공개</option>
+												<option class="annotation_message" value="" disabled>유니티 공개 허용 여부</option>
+												<option value="1" selected>공개</option>
 												<option value="31">비공개</option>
 												<option value="37">상호 팔로워에게만 공개</option>
 											</select>
@@ -682,19 +633,19 @@
 		        			</div>
 						</div>
 					</div>
-	        		<div class="cards_container_button next expanded" onclick="toggle_card('.join_modal',0,1)">
+	        		<div class="cards_container_button next expanded" onclick="toggle_card('#modify',0,1)">
 	        			<i class="fa-solid fa-chevron-right"></i>
 	        		</div>
 	        	</div>
         	</div>
         	<div class="cards_footer">	
         		<div class="submit_hint annotation_message">
-					* 미 입력 된 항목이 있습니다.
+					* 모든 정보를 입력하셨습니다.
 				</div>
-				<div class="cards_footer_button last_submit unfinished_row" onclick="check_submit('.join_modal')">
-					<span>가입하기</span>
+				<div class="cards_footer_button last_submit finished_row" onclick="check_submit('#modify')">
+					<span>수정하기</span>
 				</div>
-				<div class="cards_footer_button" onclick="hiding('.modal'); toggle_card('.join_modal',1,0);">
+				<div class="cards_footer_button" onclick="hiding('.modal'); toggle_card('#modify',1,0);">
 					<span>닫기</span>
 				</div>
 			</div>

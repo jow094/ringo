@@ -50,6 +50,8 @@ public class UserVO {
 	private String user_thumbnail_path;
 	private List<MultipartFile> user_profile_file;
 	private String user_profile_path;
+	private String modifying_files;
+	private List<String> deleting_files;
 	
 	private String user_logon;
 	private Timestamp user_log_time;
