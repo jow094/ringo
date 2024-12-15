@@ -12,7 +12,7 @@
 	</div>
 	<div class="main_card_body">
 		<div class="scroll_box">
-			<div class="scroll_box_inner">
+			<div class="scroll_box_inner around_cards">
 			</div>
 		</div>
 	</div>

@@ -123,6 +123,21 @@ public class PostServiceImpl implements PostService {
         } else {
         }
     }
+
+	@Override
+	public List<PostVO> getTagsPost(Map<String, Object> param) {
+		return pdao.selectTagsPost(param);
+	}
+
+	@Override
+	public List<PostVO> getNearPost(Map<String, Object> param) {
+		return pdao.selectNearPost(param);
+	}
+	
+	@Override
+	public List<PostVO> getConnectedPost(Map<String, Object> param) {
+		return pdao.selectConnectedPost(param);
+	}
 	
 	
 }

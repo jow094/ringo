@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ringo.domain.UserVO;
+import com.ringo.domain.AlgorithmVO;
 import com.ringo.domain.SettingVO;
 
 public interface UserService {
@@ -26,35 +27,7 @@ public interface UserService {
 	public Integer addRecomm(Map<String,Object> param);
 	public Integer removeRecomm(Map<String,Object> param);
 	public Integer modifyUserInfo(UserVO vo);
+	public Integer modifyUserLog(UserVO vo);
 	public UserVO getUserPicture(String user_code);
-	
-	/*
-	 * 
-	 * public UserVO memberInfo(String userid);
-	 * 
-	 * public List<UserVO> memberSearch(String keyword);
-	 * 
-	 * public List<UserVO> getTeammate(String emp_id);
-	 * 
-	 * public List<SettingVO> searchTools(String keyword);
-	 * 
-	 * public void settingFavoriteTool(SettingVO vo);
-	 * 
-	 * public SettingVO showSetting(String emp_id);
-	 * 
-	 * public void userLogout(String emp_id);
-	 * 
-	 * public void userLogin(String emp_id);
-	 * 
-	 * public void followEmp(String user_emp_id,String emp_id);
-	 * 
-	 * public void unFollowEmp(String user_emp_id,String emp_id);
-	 * 
-	 * public void yammyDummy(String emp_id);
-	 * 
-	 * public void dummySetting();
-	 * 
-	 * public List<String> showPrecense(String emp_id, LocalDate startDate,
-	 * LocalDate endDate);
-	 */
+	public List<UserVO> getUserLink(Map<String,Object> param);
 }

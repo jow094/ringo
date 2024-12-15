@@ -28,4 +28,8 @@ public interface PostService {
 	public Integer removePost(String post_code);
 	public Integer modifyPost(PostVO vo);
 	public void removeTempFromFiles(String directoryPath);
+	
+	public List<PostVO> getTagsPost(Map<String,Object> param);
+	public List<PostVO> getNearPost(Map<String,Object> param);
+	public List<PostVO> getConnectedPost(Map<String,Object> param);
 }

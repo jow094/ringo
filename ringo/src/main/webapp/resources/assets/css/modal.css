@@ -769,6 +769,11 @@ image_modal .image_main{
 	flex:1;
 	width:100%;
 }
+image_modal .image_main img{
+	flex:1;
+	width:100%;
+	position:absolute;
+}
 #image_modal .image_button{
 	width:200px;
 	height: 100%;
@@ -787,4 +792,6 @@ image_modal .image_main{
 	height: 100%;
 	aspect-ratio: 1 / 1;
 }
-
+#image_modal .image_waiting{
+	height: 100%;
+}

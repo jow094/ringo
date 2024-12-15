@@ -1,5 +1,6 @@
 package com.ringo.persistence;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,10 +11,14 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ringo.domain.UserVO;
+import com.ringo.domain.AlgorithmVO;
+import com.ringo.domain.MsgVO;
 import com.ringo.domain.SettingVO;
 
 import java.sql.Date;
@@ -26,6 +31,9 @@ public class UserDAOImpl implements UserDAO {
 	
 	@Inject
 	private SqlSession sqlSession;
+	
+	@Autowired
+    private SimpMessagingTemplate messagingTemplate;
 	
 	private static final String NAMESPACE = "com.ringo.mapper.UserMapper";
 	
@@ -135,11 +143,55 @@ public class UserDAOImpl implements UserDAO {
 	public Integer updateUserInfo(UserVO vo) {
 		return sqlSession.update(NAMESPACE + ".updateUserInfo",vo);	
 	}
+	
+	@Override
+	public List<String> selectConnectedUser(String user_code) {
+		return sqlSession.selectList(NAMESPACE + ".selectConnectedUser",user_code);
+	}
+
+	@Override
+	public Integer updateUserLog(UserVO vo) {
+		String user_code = vo.getUser_code();
+		
+		Integer result = 0;
+		if(vo.getUser_log_location() == null) {
+			result = sqlSession.update(NAMESPACE + ".updateUserlogOut",vo);	
+			if(result==1) {
+				Map<String,Object> trigger = new HashMap<String,Object>();
+				trigger.put("type", "logOut");
+				trigger.put("user_code", user_code);
+				for(String target_code : selectConnectedUser(user_code)) {
+					logger.debug("shoot logOut trigger for "+target_code);
+					messagingTemplate.convertAndSend("/ringGet/" + target_code, trigger);
+				}
+			}	
+		}else {
+			result = sqlSession.update(NAMESPACE + ".updateUserlogOn",vo);	
+			if(result==1) {
+				Map<String,Object> trigger = new HashMap<String,Object>();
+				trigger.put("type", "logOn");
+				trigger.put("user_code", user_code);
+				for(String target_code : selectConnectedUser(user_code)) {
+					logger.debug("shoot logOn trigger for "+target_code);
+					messagingTemplate.convertAndSend("/ringGet/" + target_code, trigger);
+				}
+			}	
+		}
+		
+		return result;
+	}
 
 	@Override
 	public UserVO selectUserPicture(String user_code) {
 		return sqlSession.selectOne(NAMESPACE + ".selectUserPicture",user_code);	
 	}
 	
-	
+	@Transactional
+	@Override
+	public List<UserVO> selectLink(Map<String,Object> param) {
+		List<UserVO> result = new ArrayList<UserVO>();
+		result.addAll(sqlSession.selectList(NAMESPACE + ".selectNearLink",param));	
+		result.addAll(sqlSession.selectList(NAMESPACE + ".selectTagsLink",param));	
+		return result;
+	}
 }

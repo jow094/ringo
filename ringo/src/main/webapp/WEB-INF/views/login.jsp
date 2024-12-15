@@ -20,27 +20,25 @@
 			<img src="/resources/assets/img/">
 		</div>
 		<div class="login_inputs">
-			<form action="/user/login" method="POST">
-				<div class="input_cell">
-					<div class="input_name">
-						아이디
-					</div>
-					<div class="input_value">
-						<input type="text" name="user_id"/>
-					</div>
+			<div class="input_cell">
+				<div class="input_name">
+					아이디
 				</div>
-				<div class="input_cell">
-					<div class="input_name">
-						비밀번호
-					</div>
-					<div class="input_value">
-						<input type="password" name="user_pw"/>
-					</div>
+				<div class="input_value">
+					<input type="text" name="user_id" onkeydown="if(event.key === 'Enter'){logIn();}"/>
 				</div>
-				<input class="custom_button" type="submit" name="submit" value="로그인"/>
-				<button class="custom_button modal_button" type="button" onclick="showing('#join'); toggle_card('#join',1,0);">회원가입</button>
-				<button class="custom_button" type="button">정보찾기</button>
-			</form>
+			</div>
+			<div class="input_cell">
+				<div class="input_name">
+					비밀번호
+				</div>
+				<div class="input_value">
+					<input type="password" name="user_pw" onkeydown="if(event.key === 'Enter'){logIn();}"/>
+				</div>
+			</div>
+			<input class="custom_button" type="submit" name="submit" value="로그인" onclick="logIn()"/>
+			<button class="custom_button modal_button" type="button" onclick="showing('#join'); toggle_card('#join',1,0);">회원가입</button>
+			<button class="custom_button" type="button">정보찾기</button>
 			
 			<div class="sns_login">
 				<button class="custom_button" type="button">

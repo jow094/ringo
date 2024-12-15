@@ -449,8 +449,8 @@ i.link {
 .shake {
 	animation: shake 0.5s ease-in-out;  /* 1초 동안 애니메이션 실행 */
 }
-.active:not(.small_link_card):not(.person_card) {
-	box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.8) !important;
+.active:not(.small_link_card):not(.person_card):not(.image_waiting) {
+	box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.5) !important;
 	background-color: var(--inner) !important;
 }
 .expanded{
@@ -877,6 +877,9 @@ input[type="submit"]{
 	box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.1);
 	max-height:100%;
 	flex-grow:1;
+}
+.unity_board_names .inner_box{
+	flex-grow:0;
 }
 .inner_title{
     width:100%;
@@ -3693,6 +3696,7 @@ textarea.scroll {
 	opacity:0.7;
 	transition: border-width 0s;
 	overflow:hidden;
+	border-radius: 5px;
 }
 .small_link_card.active, .small_link_card:hover{
 	box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.3);
@@ -3761,6 +3765,12 @@ textarea.scroll {
 	align-items:center;
 	position: relative;
 	box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.1);
+	opacity:0.7;
+}
+.image_waiting.active{
+	opacity:1;
+	box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.3) !important;
+	background-color: white !important;
 }
 .image_waiting img{
 	aspect-ratio: 1 / 1;

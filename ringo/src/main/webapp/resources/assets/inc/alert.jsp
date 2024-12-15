@@ -17,7 +17,7 @@
 					<i class="material-symbols-outlined">delete</i>
 					<span>삭제</span>
 				</div>
-				<div class="alert_button close">
+				<div class="alert_button close none">
 					<i class="material-symbols-outlined">close</i>
 					<span>취소</span>
 				</div>

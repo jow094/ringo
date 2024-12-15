@@ -151,6 +151,21 @@ public class PostDAOImpl implements PostDAO {
         	return null;
         }
 	}
+
+	@Override
+	public List<PostVO> selectTagsPost(Map<String, Object> param) {
+		return sqlSession.selectList(NAMESPACE + ".selectTagsPost",param);	
+	}
+
+	@Override
+	public List<PostVO> selectNearPost(Map<String, Object> param) {
+		return sqlSession.selectList(NAMESPACE + ".selectNearPost",param);	
+	}
+	
+	@Override
+	public List<PostVO> selectConnectedPost(Map<String, Object> param) {
+		return sqlSession.selectList(NAMESPACE + ".selectConnectedPost",param);	
+	}
 	
 	
 }

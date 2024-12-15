@@ -15,6 +15,13 @@ stompClient.connect({}, function () {
 					const type = param.type;
 					console.log('web socket param:',param);
 					
+					if(type == 'logOn' || type == 'logOut'){
+						get_messenger_menu();
+						if(profile_target == null || profile_target == ''){
+							get_user_profile();
+						}
+					}
+					
 					if(type == 'system' || type == 'message'){
 						if(type == 'system'){
 							get_msg(param.mr_code);

@@ -56,6 +56,7 @@ public class UserVO {
 	private String user_logon;
 	private Timestamp user_log_time;
 	private String user_log_location;
+	private String user_log_geolocation;
 	
 	private Integer user_follower_count;
 	private Integer user_following_count;

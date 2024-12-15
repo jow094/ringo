@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ringo.domain.UserVO;
+import com.ringo.domain.AlgorithmVO;
 import com.ringo.domain.SettingVO;
 import com.ringo.persistence.UserDAO;
 import com.ringo.persistence.UserDAO;
@@ -102,10 +103,20 @@ public class UserServiceImpl implements UserService{
 	public Integer modifyUserInfo(UserVO vo) {
 		return udao.updateUserInfo(vo);
 	}
+	
+	@Override
+	public Integer modifyUserLog(UserVO vo) {
+		return udao.updateUserLog(vo);
+	}
 
 	@Override
 	public UserVO getUserPicture(String user_code) {
 		return udao.selectUserPicture(user_code);
+	}
+
+	@Override
+	public List<UserVO> getUserLink(Map<String,Object> param) {
+		return udao.selectLink(param);
 	}
 	
 	

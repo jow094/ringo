@@ -1,5 +1,7 @@
 package com.ringo.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -16,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
@@ -40,6 +43,7 @@ import com.ringo.service.TwilloService;
 import com.ringo.service.UnityService;
 import com.ringo.service.UserService;
 import com.ringo.service.AddressService;
+import com.ringo.service.AlgorithmService;
 import com.ringo.service.AuthenticationService;
 
 import io.swagger.annotations.Api;
@@ -68,6 +72,8 @@ public class UserController {
 	private AuthenticationService authService;
 	@Inject
 	private AddressService addrService;
+	@Inject
+	private AlgorithmService algService;
 	
 	/*
 	 * private String uploadPath = System.getProperty("catalina.base") +
@@ -101,6 +107,37 @@ public class UserController {
 	    }
 	}
 	
+	@RequestMapping(value = "/location", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer setUserLocation(HttpSession session, Double latitude, Double longitude) {
+		logger.debug("latitude:"+latitude.toString()+"longitude:"+longitude.toString());
+		
+		String location = addrService.getAddressFromCoordinates(latitude, longitude);
+		if(location != null) {
+		String[] parts = location.split(",\\s*");
+
+		// 세 번째 항목까지만 남기기
+		if (parts.length >= 3) {
+		    location = parts[0] + ", " + parts[1] + ", " + parts[2];
+		}
+		
+		String geolocation = String.valueOf(latitude)+","+String.valueOf(longitude);
+		
+		session.setAttribute("user_log_location", location);
+		session.setAttribute("user_log_geolocation", geolocation);
+		
+		UserVO vo = new UserVO();
+		vo.setUser_code((String)session.getAttribute("user_code"));
+		vo.setUser_log_location(location);
+		vo.setUser_log_geolocation(geolocation);
+		vo.setUser_logon(location);
+		
+			return uService.modifyUserLog(vo);
+		}else {
+			return 0;
+		}
+	}
+	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String loginGET(HttpSession session, Model model) {
 		
@@ -110,32 +147,38 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String loginPOST(HttpSession session, UserVO vo) {
+	@ResponseBody
+	public Integer loginPOST(HttpSession session, UserVO vo) {
 		logger.debug("loginPOST(MemberVO) - vo : "+vo);
 		
-		UserVO result = uService.userLogin(vo);
-		session.setAttribute("user_code", result.getUser_code());
-		session.setAttribute("user_fcode", result.getUser_fcode());
-		session.setAttribute("user_name", result.getUser_name());
-		session.setAttribute("user_thumbnail_path", result.getUser_thumbnail_path());
-		session.setAttribute("unity_thumbnail_path", "1.jpg");
-		
-		logger.debug("loginPOST(MemberVO) - result : "+result);
-		return "redirect:/main/home";
+	    UserVO result = uService.userLogin(vo);
+
+        if (result == null) {
+            return 0;
+        }else {
+        	session.setAttribute("user_code", result.getUser_code());
+        	session.setMaxInactiveInterval(1800);
+        	return 1;
+        }
 	}
 	
-	@RequestMapping(value = "/logout", method = RequestMethod.POST)
-	public String logoutPOST(HttpSession session, UserVO vo) {
-		logger.debug("logoutPOST(MemberVO) - vo : "+vo);
-		session.invalidate();
-		
-		return "redirect:/user/login";
+	@RequestMapping(value = "/logOut", method = RequestMethod.POST)
+	@ResponseBody
+	public void logoutPOST(HttpSession session) {
+		UserVO vo = new UserVO();
+		vo.setUser_code((String)session.getAttribute("user_code"));
+		vo.setUser_logon("0");
+		if(uService.modifyUserLog(vo) == 1) {
+			session.invalidate();
+		}
 	}
 	
 	@RequestMapping(value = "/loginCheck", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String,Object> loginCheck(HttpSession session) {
+		
 		String user_code = (String)session.getAttribute("user_code");
+		
 		Map<String,List<String>> ff = uService.getUserAditionalInfos(user_code);
 		Map<String,Object>result = new HashMap<String,Object>();
 		result.put("user_code",user_code);
@@ -228,7 +271,11 @@ public class UserController {
 			vo.setUser_thumbnail_path(user_thumbnail_path);
 			vo.setUser_profile_path((user_profile_path.toString()));
 			
-			return uService.userJoin(vo);
+			Integer result = uService.userJoin(vo);
+			if(result == 1) {
+				algService.createUserAlgorithm(vo.getUser_code());
+			}
+			return result;
 			
 		} catch (NullPointerException e) {
 	        return 3;

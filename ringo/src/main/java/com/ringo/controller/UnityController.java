@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ringo.domain.UserVO;
+import com.ringo.domain.AlgorithmVO;
 import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
 import com.ringo.domain.UnityBoardVO;
@@ -38,6 +39,7 @@ import com.ringo.service.PostService;
 import com.ringo.service.TwilloService;
 import com.ringo.service.UnityService;
 import com.ringo.service.UserService;
+import com.ringo.service.AlgorithmService;
 import com.ringo.service.AuthenticationService;
 
 import io.swagger.annotations.Api;
@@ -58,6 +60,8 @@ public class UnityController {
 	private AuthenticationService emailService;
 	@Inject
 	private PostService pService;
+	@Inject
+	private AlgorithmService aService;
 
 	private static final Logger logger = LoggerFactory.getLogger(UnityController.class);
 
@@ -71,8 +75,8 @@ public class UnityController {
 		logger.debug("unityHomeGET()");
 
 		String user_code = (String) session.getAttribute("user_code");
-
-		return unityService.getUnities(user_code);
+		AlgorithmVO vo = aService.getUserAlgorithm(user_code);
+		return unityService.getUnities(vo);
 	}
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST)

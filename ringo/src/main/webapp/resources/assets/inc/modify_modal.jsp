@@ -629,7 +629,7 @@
 								</div>
 		        			</div>
 		        			<div class="cards_inner_footer">
-		        				<button type="button" class="custom_button" onclick="toggle_card('.join_modal',0,-1)">이전</button>
+		        				<button type="button" class="custom_button" onclick="toggle_card('#modify',0,-1)">이전</button>
 		        			</div>
 						</div>
 					</div>
@@ -645,7 +645,7 @@
 				<div class="cards_footer_button last_submit finished_row" onclick="check_submit('#modify')">
 					<span>수정하기</span>
 				</div>
-				<div class="cards_footer_button" onclick="hiding('.modal'); toggle_card('#modify',1,0);">
+				<div class="cards_footer_button" onclick="hiding('#modify'); toggle_card('#modify',1,0);">
 					<span>닫기</span>
 				</div>
 			</div>

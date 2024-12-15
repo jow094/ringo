@@ -20,22 +20,22 @@
 								<div class="link_image">
 									<div class="image_container">
 										<div class="image_main">
-										<div class="image_button"><i class="fa-solid fa-chevron-left"></i></div>
+										<div class="image_button" onclick="prev_img(this)"><i class="fa-solid fa-chevron-left"></i></div>
 											<img src="/files/user/profiles/r_20_thumbnail.jpg"/>
-										<div class="image_button"><i class="fa-solid fa-chevron-right"></i></div>
+										<div class="image_button" onclick="next_img(this)"><i class="fa-solid fa-chevron-right"></i></div>
 										</div>
 										<div class="image_queue">
 											<div class="image_queue_belt">
-												<div class="image_waiting">
+												<div class="image_waiting" onclick="select_img(this)">
 													<img src="/files/user/profiles/r_20_profile_1.jpg"/>
 												</div>
-												<div class="image_waiting">
+												<div class="image_waiting" onclick="select_img(this)">
 													<img src="/files/user/profiles/r_20_profile_2.jpg"/>
 												</div>
-												<div class="image_waiting">
+												<div class="image_waiting" onclick="select_img(this)">
 													<img src="/files/user/profiles/r_20_profile_3.jpg"/>
 												</div>
-												<div class="image_waiting">
+												<div class="image_waiting" onclick="select_img(this)">
 													<img src="/files/user/profiles/r_20_profile_4.jpg"/>
 												</div>
 											</div>

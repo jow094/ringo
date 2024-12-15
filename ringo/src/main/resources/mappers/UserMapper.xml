@@ -58,7 +58,7 @@
         user_native_lang, user_fluent_lang, user_learning_lang, 
         user_intro, user_ideal_partner, user_objective, user_topic, user_interest,
         user_correction_degree, user_usually_time, user_method, user_grade, user_thumbnail_path, user_profile_path,
-        user_private, user_logon
+        user_private, user_logon, user_log_geolocation, user_log_time
 	    )
 	    values (
 	        #{user_fcode}, #{user_code}, #{user_id}, #{user_pw}, #{user_name}, #{user_nickname}, #{user_birth},
@@ -66,7 +66,7 @@
 	        #{user_native_lang}, #{user_fluent_lang}, #{user_learning_lang}, 
 	        #{user_intro}, #{user_ideal_partner}, #{user_objective}, #{user_topic}, #{user_interest},
 	        #{user_correction_degree}, #{user_usually_time}, #{user_method}, 'Bronze', #{user_thumbnail_path}, #{user_profile_path},
-	        #{user_private}, 0
+	        #{user_private}, 0, '0,0', now()
 	    )
 	</insert>
 	
@@ -155,7 +155,7 @@
 	</delete>
 	
 	<insert id="insertRecomm">
-		insert into _ringo_recomm values(#{user_code},#{target_code})
+		insert into _ringo_recomm values(#{user_code},#{target_code},now())
 	</insert>
 	
 	<delete id="deleteRecomm">
@@ -191,128 +191,110 @@
         where user_code = #{user_code}
     </update>
     
+	<update id="updateUserlogOn">
+		update _ringo_user
+	    set
+        	user_logon = #{user_logon},
+        	user_log_location = #{user_log_location},
+        	user_log_geolocation = #{user_log_geolocation},
+        	user_log_time = now()
+        where user_code = #{user_code}
+    </update>
+    
+	<update id="updateUserlogOut">
+		update _ringo_user
+	    set
+        	user_logon = #{user_logon},
+        	user_log_time = now()
+        where user_code = #{user_code}
+    </update>
+    
     <select id="selectUserPicture" resultType="UserVO">
     	select user_thumbnail_path, user_profile_path from _ringo_user where user_code = #{user_code}
     </select>
-	
-	<!-- 
-	<select id="getMember" resultType="MemberVO">		
-		 select e.*, d.dname as emp_dname
-		  from Member e
-		  join dept d on e.emp_dnum = d.dnum
-	      where e.emp_id=#{emp_id} and e.approval=0
-	</select>
-	
-	<select id="getSetting" resultType="SettingVO">
-		select s.*, 
-		t1.tool_name as tool_name_1, t1.tool_url as tool_url_1, 
-		t2.tool_name as tool_name_2, t2.tool_url as tool_url_2, 
-		t3.tool_name as tool_name_3, t3.tool_url as tool_url_3, 
-		t4.tool_name as tool_name_4, t4.tool_url as tool_url_4
-		 from user_setting s
-		 left join tools t1 on s.tool_id_1 = t1.tool_id
-		 left join tools t2 on s.tool_id_2 = t2.tool_id
-		 left join tools t3 on s.tool_id_3 = t3.tool_id
-		 left join tools t4 on s.tool_id_4 = t4.tool_id
-		 where s.emp_id=#{emp_id}
-	</select>
-	
-	<select id="getSearchedMemberList" resultType="MemberVO">
-	    select e.*,s.log_on,d.dname as emp_dname
-	    from Member e
-	    left join user_setting s on e.emp_id = s.emp_id and e.approval=0
-	    left join dept d on e.emp_dnum = d.dnum
-	    where 
-	    replace(emp_name, ' ', '') like concat('%', #{keyword}, '%')
-	    or replace(emp_tel, ' ', '') like concat('%', #{keyword}, '%')
-	    or replace(emp_email, ' ', '') like concat('%', #{keyword}, '%')
-	    or replace(emp_dnum, ' ', '') like concat('%', #{keyword}, '%')
-	    or replace(emp_position, ' ', '') like concat('%', #{keyword}, '%')
-	    or replace(emp_job, ' ', '') like concat('%', #{keyword}, '%')
-	    or replace(emp_bnum, ' ', '') like concat('%', #{keyword}, '%')
-	    or replace(emp_work_type, ' ', '') like concat('%', #{keyword}, '%')
-	    and e.approval=0
-	</select>
-	
-	<select id="getTeamList" resultType="MemberVO">
-		select e.*,s.log_on,d.dname as emp_dname
-	     from Member e
-	     left join user_setting s on e.emp_id = s.emp_id and e.approval=0
-	     left join dept d on e.emp_dnum = d.dnum
-	     where emp_dnum = (
-	         select emp_dnum
-	         from Member
-	         where emp_id = #{emp_id} and approval=0
-	     ) and emp_bnum = (
-	         select emp_bnum
-	         from Member
-	         where emp_id = #{emp_id} and approval=0
-	     ) and e.emp_id != #{emp_id} and e.emp_id not in (select favorite_emp_id from user_favorites where emp_id = #{emp_id} and favorite_emp_id is not null)
-	     order by s.log_on desc;
-	</select>
-	
-	<select id="searchTools" resultType="SettingVO">
-		select *
-	     from tools
-	     where tool_name like concat('%', #{keyword}, '%')
-	</select>
-	
-	<update id="updateFavoriteTool" parameterType="SettingVO">
-	    UPDATE user_setting
-	     SET tool_id_1=#{tool_id_1},tool_id_2=#{tool_id_2},tool_id_3=#{tool_id_3},tool_id_4=#{tool_id_4}
-	   		 WHERE emp_id=#{emp_id}
-	</update>
-	
-	<update id="logout" parameterType="String">
-	    UPDATE user_setting
-	     SET log_on = false
-	   	 WHERE emp_id=#{emp_id}
-	</update>
-	
-	<update id="login" parameterType="String">
-	    UPDATE user_setting
-	     SET log_on = true
-	   	 WHERE emp_id=#{emp_id}
-	</update>
-
-	<insert id ="followEmp">
-		insert into user_favorites
-		value (#{user_emp_id},#{emp_id},null)
-	</insert>
-
-	<delete id ="unfollowEmp">
-		delete from user_favorites 
-		where emp_id=#{user_emp_id} and favorite_emp_id=#{emp_id};
-	</delete>
-
-
-	<insert id="dummy">
-	    INSERT INTO work_record 
-	    (emp_id, date, presence, check_in, working_time, overtime, night_work_time, special_working_time) 
-	    VALUES 
-	    (#{emp_id}, #{date}, #{presence}, #{check_in}, #{working_time}, #{overtime}, #{night_work_time}, #{special_working_time})
-	</insert>
-	
-	<select id = "emp_dummy" resultType="String">
-		select emp_id from Member
-	</select>
-	
-	<insert id="dummySetting">
-	    INSERT INTO user_setting
-	    (emp_id, tool_id_1, tool_id_2, tool_id_3, tool_id_4, log_on) 
-	    VALUES 
-	    (#{emp_id}, null, null, null, null, false)
-	</insert>
-	
-	<insert id="dummyFavorite">
-	    INSERT INTO user_favorites
-	    (emp_id, favorite_emp_id, favorite_room_id) 
-	    VALUES 
-	    (#{emp_id}, null, null)
-	</insert>
-	
-	<select id = "getPresence" resultType="java.util.Map" >
-		select date,presence,check_in from work_record where emp_id = #{emp_id} and date between #{startDate} and #{endDate}
-	</select> -->
+    
+    <select id="selectConnectedUser" resultType="String">
+    	select user_code
+    	from _ringo_favorite
+    	where target_code = #{user_code}
+    	
+    	union all
+    	
+    	select user_code
+    	from _ringo_follow
+    	where target_code = #{user_code}
+    </select>
+    
+    <select id="selectTagsLink" resultType="UserVO">
+    	select 
+    		u.user_nickname,
+    		u.user_nation,
+    		u.user_birth,
+    		u.user_native_lang,
+    		u.user_fluent_lang,
+    		u.user_learning_lang,
+    		u.user_intro,
+    		u.user_topic,
+    		u.user_objective,
+    		u.user_ideal_partner,
+    		u.user_thumbnail_path,
+    		u.user_profile_path,
+    		a.user_tags
+    	from _ringo_user u
+    	left join _ringo_algorithm a on a.user_code = u.user_code
+    	where 
+	    	not exists (
+	        select 1
+	        from _ringo_follow fw
+	        where fw.target_code = u.user_code and fw.user_code = #{user_code}
+	    ) and 
+	    	not exists (
+	        select 1
+	        from _ringo_favorite fv
+	        where fv.target_code = u.user_code and fv.user_code = #{user_code}
+	    ) and 
+	    <foreach collection="tags" item="tag" open="(" close=")" separator="or">
+	        a.user_tags like CONCAT('%', #{tag}, '%')
+	    </foreach>
+	     and u.user_code = #{user_code}
+    </select>
+    
+    <select id="selectNearLink" resultType="UserVO">
+    	select 
+    		u.user_nickname,
+    		u.user_nation,
+    		u.user_birth,
+    		u.user_native_lang,
+    		u.user_fluent_lang,
+    		u.user_learning_lang,
+    		u.user_intro,
+    		u.user_topic,
+    		u.user_objective,
+    		u.user_ideal_partner,
+    		u.user_thumbnail_path,
+    		u.user_profile_path,
+    		a.user_tags,
+    		6371 * acos(
+		        cos(radians(#{user_latitude})) 
+		        * cos(radians(cast(substring_index(u.user_log_geolocation, ',', 1) as decimal))) 
+		        * cos(radians(cast(substring_index(u.user_log_geolocation, ',', -1) as decimal)) - radians(#{user_longitude})) 
+		        + sin(radians(#{user_latitude})) 
+		        * sin(radians(cast(substring_index(u.user_log_geolocation, ',', 1) as decimal)))
+		    ) as distance
+    	from _ringo_user u
+    	left join _ringo_algorithm a on a.user_code = u.user_code
+    	where 
+	    	not exists (
+	        select 1
+	        from _ringo_follow fw
+	        where fw.target_code = u.user_code and fw.user_code = #{user_code}
+	    ) and 
+	    	not exists (
+	        select 1
+	        from _ringo_favorite fv
+	        where fv.target_code = u.user_code and fv.user_code = #{user_code}
+	    ) and u.user_code = #{user_code}
+	    order by distance asc limit 10;
+    </select>
 	
 </mapper>  

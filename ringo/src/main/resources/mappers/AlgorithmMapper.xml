@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.ringo.mapper.AlgorithmMapper">
+	
+	<select id="selectUserAlgorithm" resultType="AlgorithmVO">
+		select * from _ringo_algorithm
+			where user_code=#{user_code}
+			order by since desc limit 1
+	</select>
+	
+	<insert id="insertUserAlgorithm">
+		insert into _ringo_algorithm (user_code, user_tags, user_langs, user_log_location, user_log_geolocation, since)
+		select
+		    user_code,
+		    user_interest as user_tags,
+		    user_learning_lang as user_langs,
+		    null,
+		    null,
+		    current_timestamp as since
+		from 
+		    _ringo_user
+		where 
+		    user_code = #{user_code}
+	</insert>
+	
+	<update id="updateUserAlgorithm">
+		with user_tags_langs AS (
+		    select 
+		        r.user_code,
+		        group_concat(distinct coalesce(up.upost_tag, cp.cpost_tag, unt.unity_tag, fwu.user_interest, fvu.user_interest) separator ',') as user_tags,
+		        group_concat(distinct coalesce(fwu.user_fluent_lang, fwu.user_native_lang, fvu.user_fluent_lang, fvu.user_native_lang) separator ',') as user_langs
+		    from 
+		        _ringo_recomm r
+		    left join 
+		        _ringo_unity_post up on r.target_code = up.upost_code
+		    left join 
+		        _ringo_circle_post cp on r.target_code = cp.cpost_code
+		    left join
+		        _ringo_unity_member um on um.user_code = #{user_code}
+		    left join
+		        _ringo_unity unt on um.unity_code = unt.unity_code
+		    left join
+		        _ringo_follow fw on fw.user_code = #{user_code}
+		    left join
+		        _ringo_user fwu on fwu.user_code = fw.target_code 
+		    left join
+		        _ringo_favorite fv on fv.user_code = #{user_code}
+		    left join
+		        _ringo_user fvu on fvu.user_code = fv.target_code
+		    where 
+		        r.user_code = #{user_code}
+		    group by 
+		        r.user_code
+		)
+		update _ringo_algorithm
+		set
+		    user_tags = (select user_tags from user_tags_langs),
+		    user_langs = (select user_langs from user_tags_langs),
+		    user_log_location = #{user_log_location},
+		    user_log_geolocation = #{user_log_geolocation},
+		    since = now()
+		where user_code = #{user_code}
+	</update>
+	
+</mapper>  

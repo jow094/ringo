@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Select;
 
 import com.ringo.domain.UserVO;
+import com.ringo.domain.AlgorithmVO;
 import com.ringo.domain.SettingVO;
 
 public interface UserDAO {
@@ -28,5 +29,8 @@ public interface UserDAO {
 	public Integer insertRecomm(Map<String,Object> param);
 	public Integer deleteRecomm(Map<String,Object> param);
 	public Integer updateUserInfo(UserVO vo);
+	public Integer updateUserLog(UserVO vo);
 	public UserVO selectUserPicture(String user_code);
+	public List<String> selectConnectedUser(String user_code);
+	public List<UserVO> selectLink(Map<String,Object> param);
 }

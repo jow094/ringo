@@ -27,4 +27,8 @@ public interface PostDAO {
 	public Integer deletePost(String post_code);
 	public PostVO selectPost(String post_code);
 	public Integer updatePost(PostVO vo);
+	
+	public List<PostVO> selectTagsPost(Map<String,Object> param);
+	public List<PostVO> selectNearPost(Map<String,Object> param);
+	public List<PostVO> selectConnectedPost(Map<String,Object> param);
 }

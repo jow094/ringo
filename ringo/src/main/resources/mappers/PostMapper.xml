@@ -208,6 +208,89 @@
     	 order by c.post_time desc, r.reple_time desc
 	</select>
 	
+	<select id="selectTagsPost" resultMap="selectCirclePost_Map">
+		select c.*,
+		 case
+            when exists (
+                select 1 
+                from _ringo_recomm
+                where target_code = c.post_code and user_code = #{user_code}
+            ) then 1
+            else 0
+         end as post_is_recommended,
+         
+		 r.reple_code, 
+		 r.reple_writer, 
+		 r.reple_content, 
+		 r.reple_time,
+		 r.reple_recomm_count,
+		 u.user_thumbnail_path as r_writer_thumbnail_path, 
+		 u.user_nickname as r_writer_nickname,
+		 case
+            when exists (
+                select 1 
+                from _ringo_recomm
+                where target_code = r.reple_code and user_code = #{user_code}
+            ) then 1
+            else 0
+         end as reple_is_recommended
+		 
+   		 from cPost c
+    	 left join _ringo_reple r on r.target_code = c.post_code
+    	 left join _ringo_user u on r.reple_writer = u.user_code
+    	 
+    	 where 
+	    <foreach collection="tags" item="tag" open="(" close=")" separator="or">
+	        c.post_tag like CONCAT('%', #{tag}, '%')
+	    </foreach>
+	     and c.post_writer != #{user_code}
+    	 order by c.post_time desc, r.reple_time desc
+	</select>
+	
+	<select id="selectNearPost" resultMap="selectCirclePost_Map">
+		select
+		    c.*, 
+		    case
+		        when exists (
+		            select 1 
+		            from _ringo_recomm 
+		            where target_code = c.post_code and user_code = #{user_code}
+		        ) then 1
+		        else 0
+		    end as post_is_recommended,
+		    
+		    r.reple_code, 
+		    r.reple_writer, 
+		    r.reple_content, 
+		    r.reple_time,
+		    r.reple_recomm_count,
+		    u.user_thumbnail_path as r_writer_thumbnail_path, 
+		    u.user_nickname as r_writer_nickname,
+		    
+		    case
+		        when exists (
+		            select 1 
+		            from _ringo_recomm 
+		            where target_code = r.reple_code and user_code = #{user_code}
+		        ) then 1
+		        else 0
+		    end as reple_is_recommended,
+		    
+		    6371 * acos(
+		        cos(radians(#{user_latitude})) 
+		        * cos(radians(cast(substring_index(c.user_log_geolocation, ',', 1) as decimal))) 
+		        * cos(radians(cast(substring_index(c.user_log_geolocation, ',', -1) as decimal)) - radians(#{user_longitude})) 
+		        + sin(radians(#{user_latitude})) 
+		        * sin(radians(cast(substring_index(c.user_log_geolocation, ',', 1) as decimal)))
+		    ) as distance
+		    
+		from cPost c
+		left join _ringo_reple r on r.target_code = c.post_code
+		left join _ringo_user u on r.reple_writer = u.user_code
+		where c.post_writer != #{user_code}
+		order by distance asc, c.post_time desc, r.reple_time desc;
+	</select>
+	
 	<select id="selectLastUnityPostCode" resultType="Integer">
 		select max(
 	        cast(
@@ -353,5 +436,44 @@
             upost_file_path = #{post_file_path}
             where upost_code = #{post_code}
     </update>
+    
+    <select id="selectConnectedPost" resultMap="selectCirclePost_Map">
+		select c.*,
+		 case
+            when exists (
+                select 1 
+                from _ringo_recomm
+                where target_code = c.post_code and user_code = #{user_code}
+            ) then 1
+            else 0
+         end as post_is_recommended,
+         
+		 r.reple_code, 
+		 r.reple_writer, 
+		 r.reple_content, 
+		 r.reple_time,
+		 r.reple_recomm_count,
+		 u.user_thumbnail_path as r_writer_thumbnail_path, 
+		 u.user_nickname as r_writer_nickname,
+		 case
+            when exists (
+                select 1 
+                from _ringo_recomm
+                where target_code = r.reple_code and user_code = #{user_code}
+            ) then 1
+            else 0
+         end as reple_is_recommended
+		 
+   		 from cPost c
+    	 left join _ringo_reple r on r.target_code = c.post_code
+    	 left join _ringo_user u on r.reple_writer = u.user_code
+    	 
+    	 where c.post_writer in
+	    <foreach collection="writer_codes" item="writer" open="(" close=")" separator=",">
+	        #{writer}
+	    </foreach>
+	     and c.post_writer != #{user_code}
+    	 order by c.post_time desc, r.reple_time desc
+	</select>
 	
 </mapper>  

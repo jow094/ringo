@@ -1,5 +1,7 @@
 package com.ringo.persistence;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ringo.domain.UnityVO;
+import com.ringo.domain.AlgorithmVO;
 import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
 import com.ringo.domain.UnityBoardVO;
@@ -39,9 +42,13 @@ public class UnityDAOImpl implements UnityDAO {
 		return sqlSession.insert(NAMESPACE + ".insertUnity",vo);		
 	}
 	
+	@Transactional
 	@Override
 	public Integer deleteUnity(String unity_code) {
 		logger.debug("deleteUnity(String unity_code) - unity_code : "+unity_code);
+		sqlSession.delete(NAMESPACE + ".deleteUnityTrashPost",unity_code);
+		sqlSession.delete(NAMESPACE + ".deleteUnityTrashBoard",unity_code);
+		sqlSession.delete(NAMESPACE + ".deleteUnityTrashMember",unity_code);
 		return sqlSession.delete(NAMESPACE + ".deleteUnity",unity_code);		
 	}
 	
@@ -78,10 +85,26 @@ public class UnityDAOImpl implements UnityDAO {
 		return sqlSession.selectOne(NAMESPACE + ".selectLastUnityCode");	
 	}
 	
+	@Transactional
 	@Override
-	public List<UnityVO> selectUnities(String user_code) {
-		logger.debug("selectUnities(String user_code) - user_code : "+user_code);
-		return sqlSession.selectList(NAMESPACE + ".selectUnities",user_code);	
+	public List<UnityVO> selectUnities(AlgorithmVO vo) {
+		
+		List<String> tags = Arrays.asList(vo.getUser_tags().split(","));
+		String user_code = vo.getUser_code();
+		String user_log_geolocation = vo.getUser_log_geolocation();
+		String user_latitude = user_log_geolocation.split(",")[0];
+		String user_longitude = user_log_geolocation.split(",")[1];
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("user_code",user_code);
+		param.put("user_latitude",user_latitude);
+		param.put("tags",tags);
+		param.put("user_longitude",user_longitude);
+		
+		List<UnityVO> result = new ArrayList<UnityVO>();
+		result.addAll(sqlSession.selectList(NAMESPACE + ".selectUnities",user_code));
+		result.addAll(sqlSession.selectList(NAMESPACE + ".selectAlgorithmUnities",param));
+		
+		return result;
 	}
 	
 	@Override

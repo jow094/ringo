@@ -9,6 +9,11 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import org.springframework.http.HttpEntity;
@@ -34,11 +39,8 @@ public class AddressServiceImpl implements AddressService{
     
     private final RestTemplate restTemplate;
 
-    @Value("${naver.client.id}")
-    private String clientId;
-
-    @Value("${naver.client.secret}")
-    private String clientSecret;
+    @Value("${opencage.api.key}")
+    private String locationApiKey;
 
     public AddressServiceImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -46,7 +48,7 @@ public class AddressServiceImpl implements AddressService{
 
     public String searchRoadAddress(String keyword) throws UnsupportedEncodingException{
     	logger.debug("Original keyword: " + keyword);
-    	String encodedKeyword = keyword.trim().replaceAll("[^a-zA-Z0-9가-힣 ]", "");
+    	String encodedKeyword = keyword.trim().replaceAll("[^a-zA-Z0-9媛�-�옡 ]", "");
 
         try {
             logger.debug("Encoded keyword: " + encodedKeyword);
@@ -85,22 +87,27 @@ public class AddressServiceImpl implements AddressService{
     
     @Override
     public String getAddressFromCoordinates(double latitude, double longitude) {
-        String apiUrl = "https://openapi.naver.com/v1/map/reversegeocode";
+    	
+    	String apiUrl = String.format("https://api.opencagedata.com/geocode/v1/json?q=%f+%f&key=%s&language=ko", latitude, longitude, locationApiKey);
 
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(apiUrl)
-                .queryParam("X", longitude)
-                .queryParam("Y", latitude)
-                .queryParam("encoding", "utf-8");
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("X-Naver-Client-Id", clientId);
-        headers.set("X-Naver-Client-Secret", clientSecret);
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<String> response = restTemplate.exchange(
-                uriBuilder.toUriString(), HttpMethod.GET, entity, String.class);
-
-        return response.getBody();
+        // 외부 API 호출
+        ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
+        
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            String responseBody = response.getBody();
+            return parseAddressFromResponse(responseBody);
+        } else {
+            return "주소를 찾을 수 없습니다.";
+        }
+    }
+    
+    @Override
+    public String parseAddressFromResponse(String responseBody) {
+        JsonObject jsonResponse = JsonParser.parseString(responseBody).getAsJsonObject();
+        String formattedAddress = jsonResponse.getAsJsonArray("results")
+                                              .get(0).getAsJsonObject()
+                                              .get("formatted")
+                                              .getAsString();
+        return formattedAddress;
     }
 }

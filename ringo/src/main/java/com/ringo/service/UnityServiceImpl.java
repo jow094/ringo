@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.ringo.domain.UnityVO;
+import com.ringo.domain.AlgorithmVO;
 import com.ringo.domain.RepleVO;
 import com.ringo.domain.UnityBoardVO;
 import com.ringo.domain.UnityMemberVO;
@@ -63,8 +64,8 @@ public class UnityServiceImpl implements UnityService {
 	}
 
 	@Override
-	public List<UnityVO> getUnities(String user_code) {
-		return unitydao.selectUnities(user_code);
+	public List<UnityVO> getUnities(AlgorithmVO vo) {
+		return unitydao.selectUnities(vo);
 	}
 	
 	@Override

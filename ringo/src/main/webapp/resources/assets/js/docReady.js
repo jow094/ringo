@@ -1,8 +1,10 @@
 $(document).ready(function() {
-	login_check();
 	main_show('around');
-	get_coordinates();
 	get_msg_room_list();
+	
+	setTimeout(() => {
+		login_check();
+	}, 100);
 	
 	window.onclick = function(e) {
 		if ($('#join:not(.none)').length > 0) {
@@ -29,6 +31,17 @@ $(document).ready(function() {
 		}
 	}
 	
+	window.addEventListener('beforeunload', function(event) {
+	    if (window.location.hostname !== event.target.location.hostname) {
+	        navigator.sendBeacon('/user/logOut', { method: 'POST' });
+	    }
+	    
+	    window.addEventListener('unload', function(event) {
+	        if (window.location.hostname !== document.location.hostname) {
+	            navigator.sendBeacon('/user/logOut', { method: 'POST' });
+	        }
+	    });
+	});
 	
 	$(document).on('keydown', function(e) {
 	    if(e.keyCode === 27){

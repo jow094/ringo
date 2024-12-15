@@ -12,7 +12,7 @@ var modifying_files = {};
 var deleting_files = [];
 
 
-function login_check(){
+function login_check(current_user){
 	
 	var currentURL = window.location.href;
 	
@@ -29,10 +29,16 @@ function login_check(){
             success: function(data) {
             	if(data == null || data.user_code == null || data.user_code == ""){
             		if (!currentURL.includes('join') && !currentURL.includes('login')) {
-            			annotation_alert(`<span>로그인 정보가 없습니다. 로그인 페이지로 이동합니다.</span>`);
+            			annotation_alert(`<span>로그인 정보가 없습니다. 로그인 페이지로 이동합니다.</span>`, function (result) {
+        			        if (result) {
+        			        	window.location.href = "/user/login";
+        			        }else{
+        			        	window.location.href = "/user/login";
+        			        }
+        			    });
             		}
-                    window.location.href = "/user/login";
             	}else{
+            		get_coordinates();
             		current_user = data.user_code;
             		get_user_profile(data.user_code);
             		follows = data.follows;
@@ -46,8 +52,45 @@ function login_check(){
     }
 }
 
-function logout(){
-	annotation_alert(`<span>로그아웃 되었습니다.</span>`);
+function logIn(){
+	const user_id = $('.login_container').find(`[name=user_id]`).val();
+	const user_pw = $('.login_container').find(`[name=user_pw]`).val();
+	
+	$.ajax({
+		type: "POST",
+		url: "/user/login",
+		data: {user_id : user_id , user_pw : user_pw},
+		dataType: "json",
+		success: function(data) {
+			if(data == 1){
+				window.location.href = "/main/home";
+			}else{
+				annotation_alert(`<span>입력하신 정보를 다시 확인하세요.</span>`);
+			}
+		},
+		error: function(xhr, status, error) {
+			annotation_alert(`<span>입력하신 정보를 다시 확인하세요.</span>`);
+		}
+	});
+}
+
+function logOut(){
+	annotation_alert(`<span>로그아웃 되었습니다.</span>`, function (result) {
+		if (result) {
+			$.ajax({
+		        type: "POST",
+		        url: "/user/logOut",
+		        dataType: "json",
+		        success: function(data) {
+		        	window.location.href = "/user/login";
+		        },
+		        error: function(xhr, status, error) {
+		        	window.location.href = "/user/login";
+		        }
+		    });
+		}
+	});
+	
 }
 
 function send_sms(e){
@@ -180,41 +223,46 @@ function check_code(e,target,update){
     });
 }
 
-function get_realtime_address(latitude, longitude) {
-    var apiKey = "fc78d7228a6d471a9c00539da3ab07d6";
-    var apiUrl = `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${apiKey}`;
-
-    $.ajax({
-        url: apiUrl,
-        type: "GET",
-        success: function (data) {
-            if (data && data.results && data.results.length > 0) {
-                var address = data.results[0].formatted;
-                console.log("주소: " + address);
-            } else {
-                console.log("주소를 찾을 수 없습니다.");
-            }
-        },
-        error: function (error) {
-            console.error("주소 검색 실패", error);
-        }
-    });
-}
-
 function get_coordinates() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
-            var latitude = position.coords.latitude;
-            var longitude = position.coords.longitude;
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
             console.log("Latitude: " + latitude + ", Longitude: " + longitude);
+            
+            $.ajax({
+        		type: "POST",
+        		url: "/user/location",
+        		data: {latitude:latitude, longitude:longitude},
+        		dataType: "json",
+        		success: function(data) {
+        			get_algorithm();
+        		},
+        		error: function(error) {
+        	    }
+            });
 
-            get_realtime_address(latitude, longitude);
         }, function(error) {
             console.error("위치 정보를 가져오지 못했습니다.", error);
         });
     } else {
         console.log("이 브라우저는 Geolocation을 지원하지 않습니다.");
     }
+}
+
+function get_algorithm() {
+	console.log('get Algorithm!!');
+	
+	$.ajax({
+		type: "GET",
+		url: "/algorithm/prev",
+		dataType: "json",
+		success: function(data) {
+			console.log(data);
+		},
+		error: function(error) {
+		}
+	});
 }
 
 function search_address(container,search_result_container) {
@@ -321,8 +369,13 @@ function last_submit(e){
         dataType: "json",
         success: function (response) {
 	    	if(response==1){
-	    		annotation_alert(`<span>회원가입에 성공하였습니다.</span>`);
-	    		window.location.href = '/user/login';
+	    		annotation_alert(`<span>회원가입에 성공하였습니다.</span>`, function (result) {
+			        if (result) {
+			        	window.location.href = "/user/login";
+			        }else{
+			        	window.location.href = "/user/login";
+			        }
+			    });
 	    	}
 	    	if(response==3){
 	    		annotation_alert(`<span>입력하지 않은 항목이 있습니다.</span>`);
@@ -386,8 +439,11 @@ function create_unity(){
         dataType: "json",
         success: function (response) {
 	    	if(response==1){
-	    		annotation_alert(`<span>유니티 생성에 성공하였습니다.</span>`);
-	    		unity_home();
+	    		annotation_alert(`<span>유니티 생성에 성공하였습니다.</span>`, function (result) {
+			        if (result) {
+			        	unity_home();
+			        }
+			    });
 	    	}
 	    	if(response==0){
 	    		annotation_alert(`<span>유니티 생성 중 오류가 발생하였습니다.</span>`);
@@ -782,7 +838,6 @@ function get_circle_post(visit_code){
             		
             		if(postVO.post_file_path.includes(',')){
             			const files = postVO.post_file_path.split(',');
-            			var main_src ;
             			
             			$img.find('.image_main').append(`
             				<div class="image_button" onclick="prev_img(this)"><i class="material-symbols-outlined">arrow_left</i></div>
@@ -798,14 +853,17 @@ function get_circle_post(visit_code){
             				if($img.find('.image_main').find('img').length==0){
             					$img.find('.image_main').find('.image_button').first().after(`
             					<img src="/files/circle/upload/${file}?v=${new Date().getTime()}"/>`);
-            					main_src = file;
+            					$img.find('.image_queue_belt').append(`
+                					<div class="image_waiting active" onclick="select_img(this)">
+                						<img src="/files/circle/upload/${file}?v=${new Date().getTime()}"/>
+                					</div>`);
+            				}else{
+            					$img.find('.image_queue_belt').append(`
+                					<div class="image_waiting" onclick="select_img(this)">
+                						<img src="/files/circle/upload/${file}?v=${new Date().getTime()}"/>
+                					</div>`);
             				}
-            				$img.find('.image_queue_belt').append(`
-            					<div class="image_waiting" onclick="select_img(this)">
-            						<img src="/files/circle/upload/${file}?v=${new Date().getTime()}"/>
-            					</div>`);
             			}
-            			$img.find(`.image_waiting`).has(`img[src="/files/circle/upload/${main_src}?v=${new Date().getTime()}"]`).addClass('active');
             		}else{
             			$img.find('.image_main').append(`<img src="/files/circle/upload/${postVO.post_file_path}?v=${new Date().getTime()}"/>`);
             		}
@@ -1588,14 +1646,18 @@ function get_unity_post(ub_board_code,upost_code,unity_board_page){
             				if($img.find('.image_main').find('img').length==0){
             					$img.find('.image_main').find('.image_button').first().after(`
             					<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>`);
-            					main_src = file;
+            					$img.find('.image_queue_belt').append(`
+                					<div class="image_waiting active" onclick="select_img(this)">
+                						<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>
+                					</div>`);
+            				}else{
+            					$img.find('.image_queue_belt').append(`
+                					<div class="image_waiting" onclick="select_img(this)">
+                						<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>
+                					</div>`);
             				}
-            				$img.find('.image_queue_belt').append(`
-            					<div class="image_waiting" onclick="select_img(this)">
-            						<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>
-            					</div>`);
+            				
             			}
-            			$img.find(`.image_waiting`).has(`img[src="/files/unity/upload/${main_src}?v=${new Date().getTime()}"]`).addClass('active');
             		}else{
             			$img.find('.image_main').append(`<img src="/files/unity/upload/${postVO.post_file_path}?v=${new Date().getTime()}"/>`);
             		}
@@ -1788,38 +1850,47 @@ function get_unity_board_post(post_place,post_code){
                 }
                 
                 if (postVO.post_file_path != null && postVO.post_file_path != '') {
-                	
-                    const files = postVO.post_file_path.split(',');
-                    var img_container = `
+                	var img_container = `
             			<div class="image_container">
-							<div class="image_main">
-							</div>
-						</div>`;
-                    var $img = $(img_container);
-                    for (const file of files) {
-                    	if($img.find('.image_main').find('img').length==0){
-                    		$img.find('.image_main').append(`
-                				<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>
-                    		`);
-                    	}else if($img.find('.image_queue').length==0){
-                    		$img.append(`
-                				<div class="image_queue">
-									<div class="image_queue_belt">
-										<div class="image_waiting">
-											<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>
-										</div>
-									</div>
-								</div>
-                        	`);
-                    	}else{
-                    		$img.find('.image_queue_belt').append(`
-                				<div class="image_waiting">
-									<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>
-								</div>
-                    		`);
-                    	}
-                    }
-                    $card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
+            				<div class="image_main">
+            				</div>
+            			</div>`;
+            		var $img = $(img_container);
+            		
+            		if(postVO.post_file_path.includes(',')){
+            			const files = postVO.post_file_path.split(',');
+            			var main_src ;
+            			
+            			$img.find('.image_main').append(`
+            				<div class="image_button" onclick="prev_img(this)"><i class="material-symbols-outlined">arrow_left</i></div>
+            				<div class="image_button" onclick="next_img(this)"><i class="material-symbols-outlined">arrow_right</i></div>`);
+            			
+            			$img.append(`
+            					<div class="image_queue">
+            						<div class="image_queue_belt">
+            						</div>
+            					</div>`);
+            			
+            			for (const file of files) {
+            				if($img.find('.image_main').find('img').length==0){
+            					$img.find('.image_main').find('.image_button').first().after(`
+            					<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>`);
+            					$img.find('.image_queue_belt').append(`
+                					<div class="image_waiting active" onclick="select_img(this)">
+                						<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>
+                					</div>`);
+            				}else{
+            					$img.find('.image_queue_belt').append(`
+                					<div class="image_waiting" onclick="select_img(this)">
+                						<img src="/files/unity/upload/${file}?v=${new Date().getTime()}"/>
+                					</div>`);
+            				}
+            				
+            			}
+            		}else{
+            			$img.find('.image_main').append(`<img src="/files/unity/upload/${postVO.post_file_path}?v=${new Date().getTime()}"/>`);
+            		}
+            		$card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
                 }
                 
                 if (postVO.reples != null && postVO.reples.length>0) {
@@ -2331,9 +2402,15 @@ function submit_modify_unity_board() {
         contentType: 'application/json',
         data: JSON.stringify(result),
         success: function (response) {
-        	annotation_alert(`<span>유니티 정보 수정에 성공하였습니다.</span>`);
-        	enter_unity_main(unity);
-        	get_unity_profile(unity);
+        	annotation_alert(`<span>유니티 정보 수정에 성공하였습니다.</span>`, function (result) {
+		        if (result) {
+		        	enter_unity_main(unity);
+		        	get_unity_profile(unity);
+		        }else{
+		        	enter_unity_main(unity);
+		        	get_unity_profile(unity);
+		        }
+		    });        	
         },
         error: function (error) {
             console.error('에러 발생:', error);
@@ -2350,9 +2427,15 @@ function join_unity(unity_code) {
         success: function (response) {
         	console.log(response);
         	if(response == 1){
-        		annotation_alert(`<span>유니티 가입에 성공하였습니다.</span>`);
-        		enter_unity_main(unity_code);
-        		get_unity_profile(unity_code);
+        		annotation_alert(`<span>유니티 가입에 성공하였습니다.</span>`, function (result) {
+    		        if (result) {
+    		        	enter_unity_main(unity_code);
+    	        		get_unity_profile(unity_code);
+    		        }else{
+    		        	enter_unity_main(unity_code);
+    	        		get_unity_profile(unity_code);
+    		        }
+    		    });     
         	}else{
         		annotation_alert(`<span>유니티 가입 중 오류가 발생하였습니다.</span>`);
         	}
@@ -2371,9 +2454,15 @@ function leave_unity(unity_code) {
 		success: function (response) {
 			console.log(response);
 			if(response == 1){
-				annotation_alert(`<span>유니티에서 탈퇴하였습니다.</span>`);
-				enter_unity_main(unity_code);
-				get_unity_profile(unity_code);
+				annotation_alert(`<span>유니티에서 탈퇴하였습니다.</span>`, function (result) {
+			        if (result) {
+			        	enter_unity_main(unity_code);
+						get_unity_profile(unity_code);
+			        }else{
+			        	enter_unity_main(unity_code);
+						get_unity_profile(unity_code);
+			        }
+			    });     
 			}else{
 				annotation_alert(`<span>유니티에서 탈퇴하는 중 오류가 발생하였습니다.</span>`);
         	}
@@ -2384,24 +2473,37 @@ function leave_unity(unity_code) {
 	});
 }
 function delete_unity(unity_code) {
-	$.ajax({
-		url: '/unity/delete',
-		type: 'POST',
-		dataType: 'json',
-		data: {unity_code:unity_code},
-		success: function (response) {
-			console.log(response);
-			if(response == 1){
-				annotation_alert(`<span>유니티가 폐쇄되었습니다.</span>`);
-				unity_home();
-			}else{
-				annotation_alert(`<span>유니티 폐쇄 중 오류가 발생하였습니다.</span>`);
+	setTimeout(() => {
+		warning_alert(`<span>폐쇄한 유니티는 복구할 수 없습니다.</span><span>유니티를 폐쇄하시겠습니까?</span>`, function(result){
+			if(result){
+				
+				$.ajax({
+					url: '/unity/delete',
+					type: 'POST',
+					dataType: 'json',
+					data: {unity_code:unity_code},
+					success: function (response) {
+						console.log(response);
+						if(response == 1){
+							annotation_alert(`<span>유니티가 폐쇄되었습니다.</span>`, function (result) {
+								if (result) {
+									unity_home();
+								}else{
+									unity_home();
+								}
+							});     
+							
+						}else{
+							annotation_alert(`<span>유니티 폐쇄 중 오류가 발생하였습니다.</span>`);
+						}
+					},
+					error: function (error) {
+						console.error('에러 발생:', error);
+					}
+				});
 			}
-		},
-		error: function (error) {
-			console.error('에러 발생:', error);
-		}
-	});
+		});
+	}, 100);
 }
 
 function add_favorite(e) {
@@ -2550,8 +2652,13 @@ function additional_user_check(objective) {
         dataType: "json",
         success: function(data) {
         	if(data == null || data.user_code == null || data.user_code == ""){
-        		annotation_alert(`<span>로그인 정보가 없습니다. 로그인 페이지로 이동합니다.</span>`);
-                window.location.href = "/user/login";
+        		annotation_alert(`<span>로그인 정보가 없습니다. 로그인 페이지로 이동합니다.</span>`, function (result) {
+			        if (result) {
+			        	window.location.href = "/user/login";
+			        }else{
+			        	window.location.href = "/user/login";
+			        }
+			    });   
         	}else{
         		follows = data.follows;
         		favorites = data.favorites;
@@ -2726,15 +2833,16 @@ function submit_modify_circle_post(){
         contentType: false,
         dataType: "json",
 		success: function(data) {
-			annotation_alert(`<span>게시물 수정이 완료되었습니다.</span>`);
-			invalidate_write_container('circle');
-			if($('.circle_write').hasClass('expanded')){
-				col_toggle('.circle_write');
-			}
-			modifying_post_code='';
-			modifying_files = {};
-			deleting_files = [];
-			get_circle_post();
+			annotation_alert(`<span>게시물 수정이 완료되였습니다.</span>`, function (result) {
+				invalidate_write_container('circle');
+				if($('.circle_write').hasClass('expanded')){
+					col_toggle('.circle_write');
+				}
+				modifying_post_code='';
+				modifying_files = {};
+				deleting_files = [];
+				get_circle_post();
+		    });   
 		},
 		error: function(xhr, status, error) {
 		}
@@ -2922,9 +3030,7 @@ function submit_modify_user(){
 
 function get_user_picture(e){
 	const container= $('#image_modal');
-	container.find('.temp').remove();
-	/*hiding(container.find('.image_queue'))
-	hiding(container.find('.image_modal_button'))*/
+	container.find('.image_modal_content').empty();
 	
 	var user_code = $(e).data('user_code');
 	if(user_code == null){
@@ -2939,29 +3045,450 @@ function get_user_picture(e){
 		success: function(data) {
 			console.log('picture:',data)
 			
-			container.find('.image_main').append(`
-				<img class="temp" src="/files/user/profiles/${data.user_thumbnail_path}?v=${new Date().getTime()}">
-			`);
-			
-			if(data.user_profile_path){
-				container.find('.image_queue').append(`
-					<img class="temp" src="/files/user/profiles/${data.user_thumbnail_path}?v=${new Date().getTime()}" onclick="select_img(this)">
-				`);
-				
-				const files = data.user_profile_path.split(',');
-				for(const file of files){
-					container.find('.image_queue').append(`
-						<img class="temp" src="/files/user/profiles/${file}?v=${new Date().getTime()}" onclick="select_img(this)">
-					`);
-				}
-				showing(container.find('.image_queue'));
-				showing(container.find('.image_modal_button'));
-			}
+                	var img_container = `
+            			<div class="image_container">
+            				<div class="image_main">
+            				</div>
+            			</div>`;
+            		var $img = $(img_container);
+            		
+					$img.find('.image_main').append(`
+					<img src="/files/user/profiles/${data.user_thumbnail_path}?v=${new Date().getTime()}"/>`);
+            		
+            		if(data.user_profile_path){
+            			const files = data.user_profile_path.split(',');
+            			
+            			$img.find('.image_main').append(`
+            				<div class="image_button left" onclick="prev_img(this)"><i class="material-symbols-outlined">arrow_left</i></div>
+            				<div class="image_button right" onclick="next_img(this)"><i class="material-symbols-outlined">arrow_right</i></div>`);
+            			
+            			$img.append(`
+            					<div class="image_queue">
+            						<div class="image_queue_belt">
+            						</div>
+            					</div>`);
+            			
+            			$img.find('.image_queue_belt').append(`
+            					<div class="image_waiting active" onclick="select_img(this)">
+            						<img src="/files/user/profiles/${data.user_thumbnail_path}?v=${new Date().getTime()}"/>
+            					</div>`);
+            			
+            			for (const file of files) {
+            				$img.find('.image_queue_belt').append(`
+            					<div class="image_waiting" onclick="select_img(this)">
+            						<img src="/files/user/profiles/${file}?v=${new Date().getTime()}"/>
+            					</div>`);
+            			}
+            		}
+            		
+            		container.find('.image_modal_content').append($img);
+                
 			
 			
 			showing('#image_modal');
 		},
 		error: function(error) {
+	    }
+    });
+}
+
+function get_around() {
+	console.log('get around!');
+	
+	$.ajax({
+        url: '/algorithm/around',
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+        	
+        	var target = $('.around_cards');
+        	
+        	let data = [...response.nearPost, ...response.tagsPost];
+
+        	target.empty();
+        	
+        	var code_list=[];
+        	
+        	for (const postVO of data){
+        		const code = postVO.post_code;
+        		if(code_list.includes(code)){
+        			continue;
+        		}else{
+        			code_list.push(code);
+        		}
+        		
+        		const post = `
+	        		<div class="card" data-post_code="${postVO.post_code}">
+						<div class="card_header">
+							<div class="card_header_image" onclick="visit('${postVO.post_writer}',this)">
+								<img class="small_img" src="/files/user/profiles/${postVO.writer_thumbnail_path}"/>
+							</div>
+							<div class="card_header_nickname" onclick="visit('${postVO.post_writer}',this)">
+								${postVO.writer_nickname}
+							</div>
+							<div class="card_header_tools">
+								<div class="card_header_tool">
+									<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+									<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+									<span class="recomm_count">${postVO.post_recomm_count}</span>
+								</div>
+								<div class="card_header_tool tool_buttons none">
+									<div onclick="get_modify_circle_post(this)">
+										<i class="material-symbols-outlined">edit_note</i>
+										<span>수정</span>
+									</div>
+									<div class="alert_tb" onclick="confirm_delete(this)">
+										<i class="material-symbols-outlined">delete</i>
+										<span>삭제</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="card_body">
+							<div class="card_body_content">
+								<div class="scroll_box">
+									<div class="scroll_box_inner">${postVO.post_content}</div>
+								</div>
+							</div>
+							<div class="card_body_tags">
+								#태그
+							</div>
+						</div>
+						<div class="card_foot">
+							<div class="reple_button_section" onclick="col_toggle($(this).next('.reple_container'),$(this).find('.material-symbols-outlined'))">
+								<span class="cell">댓글 ${postVO.post_reple_count}개</span>
+								<i class="material-symbols-outlined">arrow_drop_down</i>
+							</div>
+							<div class="reple_container col_shrinked">
+								<div class="card_foot_comment_input">
+									<textarea onkeydown="if(event.key === 'Enter'){event.preventDefault(); submit_reple(this)}"></textarea>
+									<button type="button" onclick="submit_reple($(this).prev())">
+										<i class="material-symbols-outlined">send</i>
+									</button>
+								</div>
+        					</div>
+						</div>
+					</div>
+	        	`;
+        		
+        		
+        		const $card = $(post);
+        		
+        		if(postVO.post_writer == current_user){
+        			showing($card.find('.tool_buttons'));
+        		}
+                target.append($card);
+        		
+                if(postVO.post_is_recommended){
+                	hide($card.find('.add_recomm'));
+                }else{
+                	hide($card.find('.delete_recomm'));
+                }
+                
+                if (postVO.post_tag != null && postVO.post_tag != '') {
+                    const tags = postVO.post_tag.split(',');
+                    for (const tag_value of tags) {
+                        $card.find('.card_body_tags').append(`
+                            <div class="tag_card" data-tag="${tag_value}" onclick="search_tag(this)">#${tag_value}</div>
+                        `);
+                    }
+                }
+                
+                if (postVO.post_file_path != null && postVO.post_file_path != '') {
+                	var img_container = `
+            			<div class="image_container">
+            				<div class="image_main">
+            				</div>
+            			</div>`;
+            		var $img = $(img_container);
+            		
+            		if(postVO.post_file_path.includes(',')){
+            			const files = postVO.post_file_path.split(',');
+            			
+            			$img.find('.image_main').append(`
+            				<div class="image_button" onclick="prev_img(this)"><i class="material-symbols-outlined">arrow_left</i></div>
+            				<div class="image_button" onclick="next_img(this)"><i class="material-symbols-outlined">arrow_right</i></div>`);
+            			
+            			$img.append(`
+            					<div class="image_queue">
+            						<div class="image_queue_belt">
+            						</div>
+            					</div>`);
+            			
+            			for (const file of files) {
+            				if($img.find('.image_main').find('img').length==0){
+            					$img.find('.image_main').find('.image_button').first().after(`
+            					<img src="/files/circle/upload/${file}?v=${new Date().getTime()}"/>`);
+            					$img.find('.image_queue_belt').append(`
+                					<div class="image_waiting active" onclick="select_img(this)">
+                						<img src="/files/circle/upload/${file}?v=${new Date().getTime()}"/>
+                					</div>`);
+            				}else{
+            					$img.find('.image_queue_belt').append(`
+                					<div class="image_waiting" onclick="select_img(this)">
+                						<img src="/files/circle/upload/${file}?v=${new Date().getTime()}"/>
+                					</div>`);
+            				}
+            			}
+            		}else{
+            			$img.find('.image_main').append(`<img src="/files/circle/upload/${postVO.post_file_path}?v=${new Date().getTime()}"/>`);
+            		}
+            		$card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
+                }
+                
+                if (postVO.post_reple_count != 0) {
+                	var reple_container= `
+                		<div class="card_foot_comment">
+	                		<div class="scroll_box">
+		                		<div class="scroll_box_inner">
+		                		</div>
+	                		</div>
+                		</div>
+                		`;
+                	var $comment = $(reple_container);
+                	for (const reple of postVO.reples) {
+                    	if(reple.reple_content!=null && reple.reple_content!=''){
+                    		var reple_card = `
+                				<div class="card_comment" data-reple_code="${reple.reple_code}">
+	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
+		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
+	                				</div>
+	                				<div class="card_comment_body">
+	                					<div class="ff column">
+			                    			<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
+			                    			<div class="card_comment_content">${reple.reple_content}</div>
+	                					</div>
+		                				<div class="card_comment_time">
+			                				<div class="ff row">
+				                    			<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+				                    			<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+				                    			<span class="recomm_count">${reple.reple_recomm_count}</span>
+			                				</div>
+			                				<span>${auto_format_date(reple.reple_time)}</span>
+		                				</div>
+	                				</div>
+	            				</div>`;
+                    		var $reple = $(reple_card);
+                    		$comment.find('.scroll_box_inner').append($reple);
+                    		if(reple.reple_is_recommended){
+                    			hide($reple.find('.add_recomm'));
+                    		}else{
+                    			hide($reple.find('.delete_recomm'));
+                    		}
+                    	}
+                    }
+                	$card.find('.card_foot_comment_input').after($comment);
+                }
+        	}
+        	target.scrollTop(0);
+        },
+        error: function (error) {
+            console.error('에러 발생:', error);
+        }
+    });
+}
+
+function get_timeline() {
+	console.log('get timeline!');
+	
+	$.ajax({
+		url: '/algorithm/timeline',
+		type: 'GET',
+		dataType: 'json',
+		success: function (data) {
+			
+			var target = $('.timeline_cards');
+			
+			var code_list=[];
+			
+			for (const postVO of data){
+				const code = postVO.post_code;
+				if(code_list.includes(code)){
+					continue;
+				}else{
+					code_list.push(code);
+				}
+				
+				const post = `
+					<div class="card" data-post_code="${postVO.post_code}">
+						<div class="card_header">
+							<div class="card_header_image" onclick="visit('${postVO.post_writer}',this)">
+								<img class="small_img" src="/files/user/profiles/${postVO.writer_thumbnail_path}"/>
+							</div>
+							<div class="card_header_nickname" onclick="visit('${postVO.post_writer}',this)">
+								${postVO.writer_nickname}
+							</div>
+							<div class="card_header_tools">
+								<div class="card_header_tool">
+									<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+									<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+									<span class="recomm_count">${postVO.post_recomm_count}</span>
+								</div>
+								<div class="card_header_tool tool_buttons none">
+									<div onclick="get_modify_circle_post(this)">
+										<i class="material-symbols-outlined">edit_note</i>
+										<span>수정</span>
+									</div>
+									<div class="alert_tb" onclick="confirm_delete(this)">
+										<i class="material-symbols-outlined">delete</i>
+										<span>삭제</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="card_body">
+							<div class="card_body_content">
+								<div class="scroll_box">
+									<div class="scroll_box_inner">${postVO.post_content}</div>
+								</div>
+							</div>
+							<div class="card_body_tags">
+								#태그
+							</div>
+						</div>
+						<div class="card_foot">
+							<div class="reple_button_section" onclick="col_toggle($(this).next('.reple_container'),$(this).find('.material-symbols-outlined'))">
+								<span class="cell">댓글 ${postVO.post_reple_count}개</span>
+								<i class="material-symbols-outlined">arrow_drop_down</i>
+							</div>
+							<div class="reple_container col_shrinked">
+								<div class="card_foot_comment_input">
+									<textarea onkeydown="if(event.key === 'Enter'){event.preventDefault(); submit_reple(this)}"></textarea>
+									<button type="button" onclick="submit_reple($(this).prev())">
+										<i class="material-symbols-outlined">send</i>
+									</button>
+								</div>
+        					</div>
+						</div>
+					</div>
+					`;
+				
+				
+				const $card = $(post);
+				
+				if(postVO.post_writer == current_user){
+					showing($card.find('.tool_buttons'));
+				}
+				target.append($card);
+				
+				if(postVO.post_is_recommended){
+					hide($card.find('.add_recomm'));
+				}else{
+					hide($card.find('.delete_recomm'));
+				}
+				
+				if (postVO.post_tag != null && postVO.post_tag != '') {
+					const tags = postVO.post_tag.split(',');
+					for (const tag_value of tags) {
+						$card.find('.card_body_tags').append(`
+								<div class="tag_card" data-tag="${tag_value}" onclick="search_tag(this)">#${tag_value}</div>
+						`);
+					}
+				}
+				
+				if (postVO.post_file_path != null && postVO.post_file_path != '') {
+					var img_container = `
+						<div class="image_container">
+							<div class="image_main">
+							</div>
+						</div>`;
+					var $img = $(img_container);
+					
+					if(postVO.post_file_path.includes(',')){
+						const files = postVO.post_file_path.split(',');
+						
+						$img.find('.image_main').append(`
+							<div class="image_button" onclick="prev_img(this)"><i class="material-symbols-outlined">arrow_left</i></div>
+							<div class="image_button" onclick="next_img(this)"><i class="material-symbols-outlined">arrow_right</i></div>`);
+						
+						$img.append(`
+							<div class="image_queue">
+								<div class="image_queue_belt">
+								</div>
+							</div>`);
+						
+						for (const file of files) {
+							if($img.find('.image_main').find('img').length==0){
+								$img.find('.image_main').find('.image_button').first().after(`
+									<img src="/files/circle/upload/${file}?v=${new Date().getTime()}"/>`);
+								$img.find('.image_queue_belt').append(`
+									<div class="image_waiting active" onclick="select_img(this)">
+										<img src="/files/circle/upload/${file}?v=${new Date().getTime()}"/>
+									</div>`);
+							}else{
+								$img.find('.image_queue_belt').append(`
+									<div class="image_waiting" onclick="select_img(this)">
+										<img src="/files/circle/upload/${file}?v=${new Date().getTime()}"/>
+									</div>`);
+							}
+						}
+					}else{
+						$img.find('.image_main').append(`<img src="/files/circle/upload/${postVO.post_file_path}?v=${new Date().getTime()}"/>`);
+					}
+					$card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
+				}
+				
+				if (postVO.post_reple_count != 0) {
+					var reple_container= `
+						<div class="card_foot_comment">
+							<div class="scroll_box">
+								<div class="scroll_box_inner">
+								</div>
+							</div>
+						</div>
+						`;
+					var $comment = $(reple_container);
+					for (const reple of postVO.reples) {
+						if(reple.reple_content!=null && reple.reple_content!=''){
+							var reple_card = `
+								<div class="card_comment" data-reple_code="${reple.reple_code}">
+									<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
+										<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
+									</div>
+									<div class="card_comment_body">
+										<div class="ff column">
+											<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
+												<div class="card_comment_content">${reple.reple_content}</div>
+											</div>
+										<div class="card_comment_time">
+											<div class="ff row">
+												<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+												<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+												<span class="recomm_count">${reple.reple_recomm_count}</span>
+											</div>
+											<span>${auto_format_date(reple.reple_time)}</span>
+										</div>
+									</div>
+								</div>`;
+							var $reple = $(reple_card);
+							$comment.find('.scroll_box_inner').append($reple);
+							if(reple.reple_is_recommended){
+								hide($reple.find('.add_recomm'));
+							}else{
+								hide($reple.find('.delete_recomm'));
+							}
+						}
+					}
+					$card.find('.card_foot_comment_input').after($comment);
+				}
+			}
+			target.scrollTop(0);
+		},
+		error: function (error) {
+			console.error('에러 발생:', error);
+		}
+	});
+}
+
+function get_link(){
+	$.ajax({
+    	type: 'GET',
+        url: '/algorithm/link/',
+        dataType: "json",
+        success: function (data) {
+        	console.log('link data :',data);
+	    },
+	    error: function(error) {
 	    }
     });
 }

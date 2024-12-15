@@ -90,10 +90,6 @@
 	    )
 	</insert>
 	
-	<delete id="deleteUnity">
-		delete from _ringo_unity where unity_code = #{unity_code}
-	</delete>
-	
 	<insert id="insertUnityMember">
 		insert into _ringo_unity_member (
 	        unity_code,
@@ -143,6 +139,28 @@
 		join _ringo_favorite f on unt.unity_code = f.target_code
 		where f.user_code = #{user_code}
 
+	</select>
+	
+	<select id="selectAlgorithmUnities" resultType="UnityVO">
+		select
+		    unt.unity_code,
+		    unt.unity_name,
+		    unt.unity_tag,
+		    unt.unity_thumbnail_path,
+		    unt.unity_intro,
+		    'recomm' as unity_type
+		from _ringo_unity unt
+		join _ringo_unity_member untm on unt.unity_code = untm.unity_code
+		where
+		<foreach collection="tags" item="tag" open="(" close=")" separator="or">
+	        unt.unity_tag like CONCAT('%', #{tag}, '%')
+	    </foreach>
+	    and not exists (
+	        select 1
+	        from _ringo_unity_member untm2
+	        where untm2.unity_code = unt.unity_code
+	        and untm2.user_code = #{user_code}
+    	)
 	</select>
 	
 	<select id="selectUnity" resultMap="selectUnity_Map">
@@ -272,8 +290,23 @@
 	    </foreach>
 	</insert>
 	
-	<delete id="deleteUnityTrashBoard" parameterType="UnityBoardVO">
+	<delete id="deleteUnity">
+		delete from _ringo_unity 
+		where unity_code = #{unity_code}
+	</delete>
+	
+	<delete id="deleteUnityTrashBoard">
 		delete from _ringo_unity_board
+		where unity_code = #{unity_code}
+	</delete>
+	
+	<delete id="deleteUnityTrashMember">
+		delete from _ringo_unity_member
+		where unity_code = #{unity_code}
+	</delete>
+	
+	<delete id="deleteUnityTrashPost">
+		delete from _ringo_unity_post
 		where unity_code = #{unity_code}
 	</delete>
 	

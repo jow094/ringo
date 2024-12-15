@@ -2,6 +2,7 @@ package com.ringo.persistence;
 
 import java.util.List;
 
+import com.ringo.domain.AlgorithmVO;
 import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
 import com.ringo.domain.UnityBoardVO;
@@ -18,7 +19,7 @@ public interface UnityDAO {
 	public Integer updateUnityMember(UnityMemberVO vo);
 	public Integer selectIsMember(String unity_code,String user_code);
 	public Integer selectLastUnityCode();
-	public List<UnityVO> selectUnities(String user_code);
+	public List<UnityVO> selectUnities(AlgorithmVO vo);
 	public UnityVO selectUnity(UnityVO vo);
 	public UnityVO selectUnityMain(UnityVO vo);
 	public List<PostVO> selectUnityBasicPost(UnityVO vo);

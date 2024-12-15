@@ -279,6 +279,15 @@ function main_show(target) {
     if(target=='unity' && unity!=""){
     	get_unity_profile(unity);
     }
+    if(target=='around'){
+    	get_around();
+    }
+    if(target=='timeline'){
+    	get_timeline();
+    }
+    if(target=='link'){
+    	get_link();
+    }
     if(target=='circle'){
     	if ($(".main_circle .main_card_body .scroll_box_inner").scrollTop() == 0 || $(".main_circle .main_card_body .scroll_box_inner").children().length ==0) {
     	    get_circle_post();
@@ -2532,7 +2541,11 @@ function get_new_category_code(){
 	    const code = $(this).data('ub_category_code');
 	    codes.push(parseInt(code.split("_")[2], 10));
 	});
-	const new_code = (Math.max(...codes) + 1).toString();
+	var new_code = (Math.max(...codes) + 1).toString();
+	new_code = Number(new_code);
+	if (!Number.isInteger(new_code)) {
+	    new_code = 1;
+	}
     return unity+'_'+new_code;
 }
 
@@ -2544,17 +2557,47 @@ function get_new_board_code(e){
 	    const code = $(this).data('ub_board_code');
 	    codes.push(parseInt(code.split("_")[3], 10));
 	});
-	const new_code = (Math.max(...codes) + 1).toString();
-	
-	console.log(codes);
+	var new_code = (Math.max(...codes) + 1).toString();
+	new_code = Number(new_code);
+	if (!Number.isInteger(new_code)) {
+	    new_code = 1;
+	}
     return category_code+'_'+new_code;
 }
 
 function annotation_alert(msg,callback){
 	$('#alert').find('.alert_content').append(msg);
 	showing($('#alert').find('.check'));
+	if(callback){
+		$('#alert').find('.check').off("click").on("click", function () {
+			callback(true);
+			hiding('#alert');
+			$('#alert').find('.alert_content').empty();
+			$('#alert').find('.alert_button').addClass('none');
+		});
+	}else{
+		$('#alert').find('.check').off("click").on("click", function () {
+			hiding('#alert');
+			$('#alert').find('.alert_content').empty();
+			$('#alert').find('.alert_button').addClass('none');
+		});
+	}
+	showing('#alert');
+}
+function warning_alert(msg,callback){
+	$('#alert').find('.alert_content').append(msg);
+	showing($('#alert').find('.check'));
+	showing($('#alert').find('.close'));
 	$('#alert').find('.check').off("click").on("click", function () {
+		hide('#alert');
+		$('#alert').find('.alert_content').empty();
+		$('#alert').find('.alert_button').addClass('none');
 		callback(true);
+	});
+	$('#alert').find('.close').off("click").on("click", function () {
+		hiding('#alert');
+		$('#alert').find('.alert_content').empty();
+		$('#alert').find('.alert_button').addClass('none');
 	});
 	showing('#alert');
 }
