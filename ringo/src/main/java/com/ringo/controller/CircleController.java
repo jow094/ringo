@@ -89,6 +89,15 @@ public class CircleController {
 		
 		vo.setPost_code(post_code);
 		vo.setPost_writer(writer);
+		
+		File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists()) {
+            boolean isCreated = uploadDir.mkdirs();
+            if (!isCreated) {
+                logger.error("Failed to create directory: " + uploadPath);
+                return 0;
+            }
+        }
         
 		try {
 			List<MultipartFile> files = vo.getPosting_files(); 

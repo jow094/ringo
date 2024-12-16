@@ -240,11 +240,15 @@
     	 left join _ringo_user u on r.reple_writer = u.user_code
     	 
     	 where 
-	    <foreach collection="tags" item="tag" open="(" close=")" separator="or">
-	        c.post_tag like CONCAT('%', #{tag}, '%')
-	    </foreach>
-	     and c.post_writer != #{user_code}
-    	 order by c.post_time desc, r.reple_time desc
+        c.post_writer != #{user_code}
+        <if test="tags != null and tags.size() > 0">
+            and (
+            <foreach collection="tags" item="tag" open="" close="" separator="or">
+                c.post_tag like concat('%', #{tag}, '%')
+            </foreach>
+            )
+        </if>
+    	order by c.post_time desc, r.reple_time desc
 	</select>
 	
 	<select id="selectNearPost" resultMap="selectCirclePost_Map">
@@ -407,8 +411,13 @@
 	<delete id="deleteCirclePost">
 		delete from _ringo_circle_post where cpost_code = #{post_code}
 	</delete>
+	
 	<delete id="deleteUnityPost">
 		delete from _ringo_unity_post where upost_code = #{post_code}
+	</delete>
+	
+	<delete id="deleteReple">
+		delete from _ringo_reple where target_code = #{post_code}
 	</delete>
 	
 	<select id="selectOneCirclePost" resultMap="selectOneCirclePost_Map">

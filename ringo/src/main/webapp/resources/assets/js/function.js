@@ -218,6 +218,81 @@ function trs_nation(code, way) {
     return '알 수 없음';
 }
 
+function getFlagUrl(code) {
+    // 국가 코드에 따른 플래그 이미지 URL 반환
+    const flagUrlBase = "https://flagcdn.com/w80/";
+
+    const flagMap = {
+        'kr': 'kr',
+        'kor': 'kr',
+        'us': 'us',
+        'usa': 'us',
+        'jp': 'jp',
+        'jpn': 'jp',
+        'cn': 'cn',
+        'chn': 'cn',
+        'ph': 'ph',
+        'phi': 'ph',
+        'th': 'th',
+        'tha': 'th',
+        'my': 'my',
+        'mys': 'my',
+        'vn': 'vn',
+        'vnm': 'vn',
+        'sg': 'sg',
+        'sgp': 'sg',
+        'id': 'id',
+        'idn': 'id',
+        'lk': 'lk',
+        'lka': 'lk',
+        'bn': 'bn',
+        'brn': 'bn',
+        'mm': 'mm',
+        'mmr': 'mm',
+        'fr': 'fr',
+        'fra': 'fr',
+        'de': 'de',
+        'ger': 'de',
+        'gb': 'gb',
+        'uk': 'gb',
+        'es': 'es',
+        'spa': 'es',
+        'it': 'it',
+        'ita': 'it',
+        'ru': 'ru',
+        'rus': 'ru',
+        'be': 'be',
+        'bel': 'be',
+        'ch': 'ch',
+        'che': 'ch',
+        'nl': 'nl',
+        'nld': 'nl',
+        'se': 'se',
+        'swe': 'se',
+        'no': 'no',
+        'nor': 'no',
+        'dk': 'dk',
+        'dnk': 'dk',
+        'fi': 'fi',
+        'fin': 'fi',
+        'at': 'at',
+        'aut': 'at',
+        'pl': 'pl',
+        'pol': 'pl',
+        'cz': 'cz',
+        'cze': 'cz',
+        'hu': 'hu',
+        'hun': 'hu'
+    };
+
+    const flagCode = flagMap[code.toLowerCase()];
+    if (flagCode) {
+        return `${flagUrlBase}${flagCode}.png`;
+    }
+    
+    return '미설정 국가';
+}
+
 
 
 const spinner = `<div class="spinner"></div>
@@ -951,10 +1026,15 @@ function set_finished(e, direction) {
 	if (!target.hasClass(`finished_${direction}`)) {
 		target.removeClass(`unfinished_${direction}`).addClass(`finished_${direction}`);
 	}
-	if($(e).closest('.join_modal').length>0){
+	if($(e).closest('#join').length>0){
 		const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
 		const index = match ? match[1] : undefined;
-		check_finished(index,'.join_modal');
+		check_finished(index,$('#join'));
+	}
+	if($(e).closest('#modify').length>0){
+		const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
+		const index = match ? match[1] : undefined;
+		check_finished(index,$('#modify'));
 	}
 	
 	if($(e).closest('.unity_create_container').length>0){
@@ -971,10 +1051,15 @@ function set_unfinished(e, direction) {
     if (!target.hasClass(`unfinished_${direction}`)) {
         target.removeClass(`finished_${direction}`).addClass(`unfinished_${direction}`);
     }
-    if($(e).closest('.join_modal').length>0){
+    if($(e).closest('#join').length>0){
 	    const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
 	    const index = match ? match[1] : undefined;
-	    check_finished(index,'.join_modal');
+	    check_finished(index,$('#join'));
+    }
+    if($(e).closest('#modify').length>0){
+    	const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
+    	const index = match ? match[1] : undefined;
+    	check_finished(index,$('#modify'));
     }
     
     if($(e).closest('.unity_create_container').length>0){
@@ -990,10 +1075,15 @@ function set_failed(e, direction) {
     if (!target.hasClass(`failed_${direction}`)) {
     	target.removeClass(`finished_${direction}`).removeClass(`unfinished_${direction}`).addClass(`failed_${direction}`);
     }
-    if($(e).closest('.join_modal').length>0){
+    if($(e).closest('#join').length>0){
 	    const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
 	    const index = match ? match[1] : undefined;
-	    check_finished(index,'.join_modal');
+	    check_finished(index,$('#join'));
+    }
+    if($(e).closest('#modify').length>0){
+    	const match = $(e).closest('.cards').attr('class').match(/card_(\d+)/);
+    	const index = match ? match[1] : undefined;
+    	check_finished(index,$('#modify'));
     }
     
     if($(e).closest('.unity_create_container').length>0){
@@ -1031,57 +1121,62 @@ function set_hint(e,msg,className){
 
 function check_finished(index,container) {
 	
-	var count = $(`.card_${index}`).find('.unfinished_row').length + $(`.card_${index}`).find('.unfinished_column').length
-				+$(`.card_${index}`).find('.failed_row').length + $(`.card_${index}`).find('.failed_column').length;
+	console.log('cf index:',index);
+	console.log('cf container:',container);
+	
+	const target = container.find(`.card_${index}`);
+	var count = target.find('.unfinished_row').length + target.find('.unfinished_column').length
+				+target.find('.failed_row').length + target.find('.failed_column').length;
     
+	console.log('cf count:',count);
     if(count === 0){
     	
-    	if($(`.card_${index}`).attr('class').includes('row')){
-    		$(`.card_${index}`).removeClass('unfinished_row');
-    		$(`.card_${index}`).removeClass('failed_row');
-    		if(!$(`.card_${index}`).hasClass('finished_row')){
-    			$(`.card_${index}`).addClass('finished_row');
+    	if(target.attr('class').includes('row')){
+    		target.removeClass('unfinished_row');
+    		target.removeClass('failed_row');
+    		if(!target.hasClass('finished_row')){
+    			target.addClass('finished_row');
     		}
     	}
     	
-    	if($(`.card_${index}`).attr('class').includes('column')){
-    		$(`.card_${index}`).removeClass('unfinished_column');
-    		$(`.card_${index}`).removeClass('failed_column');
-    		if(!$(`.card_${index}`).hasClass('finished_column')){
-    			$(`.card_${index}`).addClass('finished_column');
+    	if(target.attr('class').includes('column')){
+    		target.removeClass('unfinished_column');
+    		target.removeClass('failed_column');
+    		if(!target.hasClass('finished_column')){
+    			target.addClass('finished_column');
     		}
     	}
     	
-    	$(container).find(`[data-targetindex="${index}"]`).removeClass('unfinished_column');
-    	$(container).find(`[data-targetindex="${index}"]`).removeClass('failed_column');
+    	container.find(`[data-targetindex="${index}"]`).removeClass('unfinished_column');
+    	container.find(`[data-targetindex="${index}"]`).removeClass('failed_column');
     	
-    	if(!$(container).find(`[data-targetindex="${index}"]`).hasClass('finished_column')){
-    		$(container).find(`[data-targetindex="${index}"]`).addClass('finished_column');
+    	if(!container.find(`[data-targetindex="${index}"]`).hasClass('finished_column')){
+    		container.find(`[data-targetindex="${index}"]`).addClass('finished_column');
 		}
     }else{
     	
-    	if($(`.card_${index}`).attr('class').includes('row')){
-    		$(`.card_${index}`).removeClass('finished_row');
-    		$(`.card_${index}`).removeClass('failed_row');
-    		if(!$(`.card_${index}`).hasClass('unfinished_row')){
-    			$(`.card_${index}`).addClass('unfinished_row');
+    	if(target.attr('class').includes('row')){
+    		target.removeClass('finished_row');
+    		target.removeClass('failed_row');
+    		if(!target.hasClass('unfinished_row')){
+    			target.addClass('unfinished_row');
     		}
     	}
     	
-    	if($(`.card_${index}`).attr('class').includes('column')){
-    		$(`.card_${index}`).removeClass('finished_column');
-    		$(`.card_${index}`).removeClass('failed_column');
+    	if(target.attr('class').includes('column')){
+    		target.removeClass('finished_column');
+    		target.removeClass('failed_column');
     		
-    		if(!$(`.card_${index}`).hasClass('unfinished_column')){
-    			$(`.card_${index}`).addClass('unfinished_column');
+    		if(!target.hasClass('unfinished_column')){
+    			target.addClass('unfinished_column');
     		}
     	}
     	
-    	$(container).find(`[data-targetindex="${index}"]`).removeClass('finished_column');
-    	$(container).find(`[data-targetindex="${index}"]`).removeClass('failed_column');
+    	container.find(`[data-targetindex="${index}"]`).removeClass('finished_column');
+    	container.find(`[data-targetindex="${index}"]`).removeClass('failed_column');
     	
-    	if(!$(container).find(`[data-targetindex="${index}"]`).hasClass('unfinished_column')){
-    		$(container).find(`[data-targetindex="${index}"]`).addClass('unfinished_column');
+    	if(!container.find(`[data-targetindex="${index}"]`).hasClass('unfinished_column')){
+    		container.find(`[data-targetindex="${index}"]`).addClass('unfinished_column');
 		}
     }
     
@@ -1461,17 +1556,30 @@ function clear_unity_create_container(e){
 }
 
 function check_submit(e){
-	var button = $(e).find('.last_submit');
-	var hint = $(e).find('.submit_hint');
+	var button;
+	var hint;
+	
+	if($(e).closest('.unity_create_container').length>0){
+		button = $('.unity_create_container').find('.last_submit');
+		hint = $('.unity_create_container').find('.submit_hint');
+	}
+	if($(e).closest('#join').length>0){
+		button = $('#join').find('.last_submit');
+		hint = $('#join').find('.submit_hint');
+	}
+	if($(e).closest('#modify').length>0){
+		button = $('#modify').find('.last_submit');
+		hint = $('#modify').find('.submit_hint');
+	}
 	
 	if(button.hasClass('finished_row')&&!button.hasClass('unfinished_row')){
-		if(e=='.unity_create_container'){
+		if($(e).closest('.unity_create_container').length>0){
 			create_unity();
 		}
-		if(e=='#join'){
-			last_submit(e);
+		if($(e).closest('#join').length>0){
+			last_submit();
 		}
-		if(e=='#modify'){
+		if($(e).closest('#modify').length>0){
 			submit_modify_user();
 		}
 	}else{
@@ -2171,8 +2279,8 @@ function visit(user_code,e){
 				<i class="fa-solid fa-circle-xmark" onclick="delete_person_card(event)"></i>
 			</div>`
 		);
-	}else if(!$(`.added_menu_inner > [data-user_code="${user_code}"]`).is(':first-child')){
-		$('.added_menu_inner > [data-user_code="${user_code}"]').remove();
+	}else if(!$('.added_menu_inner').find(`[data-user_code="${user_code}"]`).is(':first-child')){
+		$('.added_menu_inner').find(`[data-user_code="${user_code}"]`).remove();
 		$('.added_menu_inner').prepend(`
 			<div class="person_card shrinked active" data-user_code="${user_code}" onclick="visit('${user_code}',this);">
 				<img src="${thumbnail}"/>
@@ -2181,7 +2289,7 @@ function visit(user_code,e){
 			</div>`
 		);
 	}else{
-		$(`.added_menu_inner > [data-user_code="${user_code}"]`).addClass('active');
+		$('.added_menu_inner').find(`[data-user_code="${user_code}"]`).addClass('active');
 	}
 	
 	setTimeout(function() {

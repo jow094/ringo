@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ringo.domain.PostVO;
 import com.ringo.domain.RepleVO;
@@ -117,12 +118,15 @@ public class PostDAOImpl implements PostDAO {
 		
 		return sqlSession.selectOne(NAMESPACE + ".selectRecommInfo",param);	
 	}
-
+	
+	@Transactional
 	@Override
 	public Integer deletePost(String post_code) {
 			if (post_code.startsWith("cp_")) {
+				sqlSession.delete(NAMESPACE + ".deleteReple",post_code);
 				return sqlSession.delete(NAMESPACE + ".deleteCirclePost",post_code);	
 	        } else if (post_code.startsWith("up_")) {
+	        	sqlSession.delete(NAMESPACE + ".deleteReple",post_code);
 	        	return sqlSession.delete(NAMESPACE + ".deleteUnityPost",post_code);	
 	        } else {
 	        	return null;

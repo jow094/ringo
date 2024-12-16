@@ -319,12 +319,12 @@ function search_address(container,search_result_container) {
     });
 }
 
-function last_submit(e){
+function last_submit(){
 	var formData = new FormData();
 	var isThumbnail = true;
 	var user_private = 1;
 
-    $(e).find(`input:not('.outForm'), textarea:not('.outForm'), select:not('.outForm')`).each(function() {
+    $('#join').find(`input:not('.outForm'), textarea:not('.outForm'), select:not('.outForm')`).each(function() {
         var name = $(this).attr('name');
         var value = $(this).val();       
 
@@ -965,11 +965,12 @@ function get_user_profile(user_code){
         	var container = $('.user_profile_container');
         	
         	container.find('.tags').empty();
+        	container.find('.langs').empty();
         	
         	container.find('.profile_container_head_basic').find('img').attr('src',`/files/user/profiles/${data.user_thumbnail_path}?v=${new Date().getTime()}`);
         	container.find('.profile_container_head_basic').attr('data-user_code',data.user_code);
         	$('.profile_container_head_basic_nickname').text(`${data.user_nickname}`);
-        	$('.profile_container_head_basic_info').eq(0).html(`<img class="flags" src="https://flagcdn.com/w80/${data.user_nation}.png"/>${trs_nation(data.user_nation,'nation')}`);
+        	$('.profile_container_head_basic_info').eq(0).html(`<img class="flags" src="${getFlagUrl(data.user_nation)}"/>${trs_nation(data.user_nation,'nation')}`);
         	$('.profile_container_head_basic_info').eq(1).text(`${format_date(data.user_birth,'yymmdd')} , ${data.user_gender}`);
         	$('.profile_container_head_basic_info').eq(2).text(`나와의 거리 : ${data.user_distance}km`);
         	if(user_code == null || user_code == current_user || data.user_code == current_user || data.user_distance == null){
@@ -988,7 +989,7 @@ function get_user_profile(user_code){
         		for(const lang of langs){
         			container.find('.user_native_lang').append(`
         				<div class="nation">
-	    					<img class="flags" src="https://flagcdn.com/w80/${lang}.png">
+	    					<img class="flags" src="${getFlagUrl(lang)}">
 	    					<span>${trs_nation(lang,'lang')}</span>
     					</div>
         			`);
@@ -996,7 +997,7 @@ function get_user_profile(user_code){
         	}else{
         		container.find('.user_native_lang').append(`
         				<div class="nation">
-		        			<img class="flags" src="https://flagcdn.com/w80/${data.user_native_lang}.png">
+		        			<img class="flags" src="${getFlagUrl(data.user_native_lang)}">
 							<span>${trs_nation(data.user_native_lang,'lang')}</span>
 						</div>
         		`);
@@ -1006,7 +1007,7 @@ function get_user_profile(user_code){
         		for(const lang of langs){
         			container.find('.user_fluent_lang').append(`
     					<div class="nation">
-	    					<img class="flags" src="https://flagcdn.com/w80/${lang}.png">
+	    					<img class="flags" src="${getFlagUrl(lang)}">
 	    					<span>${trs_nation(lang,'lang')}</span>
     					</div>
         			`);
@@ -1014,7 +1015,7 @@ function get_user_profile(user_code){
         	}else{
         		container.find('.user_fluent_lang').append(`
         			<div class="nation">
-	    				<img class="flags" src="https://flagcdn.com/w80/${data.user_fluent_lang}.png">
+	    				<img class="flags" src="${getFlagUrl(data.user_fluent_lang)}">
 	    				<span>${trs_nation(data.user_fluent_lang,'lang')}</span>
 	    			</div>
         		`);
@@ -1024,7 +1025,7 @@ function get_user_profile(user_code){
         		for(const lang of langs){
         			container.find('.user_learning_lang').append(`
     					<div class="nation">
-	    					<img class="flags" src="https://flagcdn.com/w80/${lang}.png">
+	    					<img class="flags" src="${getFlagUrl(lang)}">
 	    					<span>${trs_nation(lang,'lang')}</span>
     					</div>
         			`);
@@ -1032,7 +1033,7 @@ function get_user_profile(user_code){
         	}else{
         		container.find('.user_learning_lang').append(`
         			<div class="nation">
-        				<img class="flags" src="https://flagcdn.com/w80/${data.user_learning_lang}.png">
+        				<img class="flags" src="${getFlagUrl(data.user_learning_lang)}">
         				<span>${trs_nation(data.user_learning_lang,'lang')}</span>
         			</div>
         		`);
@@ -1271,7 +1272,7 @@ function get_unity_profile(unity_code){
         	for(const lang of langs){
         		container.find('#unity_lang').append(`
         			<div class="nation">
-    					<img class="flags" src="https://flagcdn.com/w80/${lang}.png">
+    					<img class="flags" src="${getFlagUrl(lang)}">
     					<span>${trs_nation(lang,'lang')}</span>
 					</div>
         		`);
@@ -2318,7 +2319,7 @@ function get_modify_unity(unity_code){
 								add_tag(target.siblings(`input[name='unity_add_tag']`))
 							}
 					}else{
-						target.siblings(`input[name='unity_add_tag']`).val(tag);
+						target.siblings(`input[name='unity_add_tag']`).val(value);
 						add_tag(target.siblings(`input[name='unity_add_tag']`))
 					}
 				}else if(key == 'unity_banner_set'){
@@ -3638,7 +3639,7 @@ function get_link(){
         		}else if(key == 'user_birth'){
         			target.find('#user_birth').append(get_age(value));
         		}else if(key == 'user_nation'){
-        			target.find('#user_nation').append(`<img class="flags" src="https://flagcdn.com/w80/${value}.png"/>${trs_nation(value,'nation')}`);
+        			target.find('#user_nation').append(`<img class="flags" src="${getFlagUrl(value)}"/>${trs_nation(value,'nation')}`);
         		}else if(key == 'user_interest'){
         			if(value != null && value.includes(',')){
         				values = value.split(',');
@@ -3665,10 +3666,10 @@ function get_link(){
         				if(value.includes(',')){
         					const langs = value.split(',')
         					for(const lang of langs){
-        						target.find('.link_card').find(`#${key}`).append(`<img class="flags" src="https://flagcdn.com/w80/${lang}.png"><span>${trs_nation(lang,'lang')}</span>`);
+        						target.find('.link_card').find(`#${key}`).append(`<img class="flags" src="${getFlagUrl(lang)}"><span>${trs_nation(lang,'lang')}</span>`);
         					}
         				}else{
-        					target.find('.link_card').find(`#${key}`).append(`<img class="flags" src="https://flagcdn.com/w80/${value}.png"><span>${trs_nation(value,'lang')}</span>`);
+        					target.find('.link_card').find(`#${key}`).append(`<img class="flags" src="${getFlagUrl(value)}"><span>${trs_nation(value,'lang')}</span>`);
         				}
         			}else{
         				target.find('.link_card').find(`#${key}`).append(value);
@@ -3724,7 +3725,7 @@ function get_link_user(user_code){
         		}else if(key == 'user_birth'){
         			target.find('#user_birth').append(get_age(value));
         		}else if(key == 'user_nation'){
-        			target.find('#user_nation').append(`<img class="flags" src="https://flagcdn.com/w80/${value}.png"/>${trs_nation(value,'nation')}`);
+        			target.find('#user_nation').append(`<img class="flags" src="${getFlagUrl(value)}"/>${trs_nation(value,'nation')}`);
         		}else if(key == 'user_interest'){
         			if(value != null && value.includes(',')){
         				values = value.split(',');
@@ -3752,10 +3753,10 @@ function get_link_user(user_code){
         				if(value.includes(',')){
         					const langs = value.split(',')
         					for(const lang of langs){
-        						target.find('.link_card').find(`#${key}`).append(`<img class="flags" src="https://flagcdn.com/w80/${lang}.png"><span>${trs_nation(lang,'lang')}</span>`);
+        						target.find('.link_card').find(`#${key}`).append(`<img class="flags" src="${getFlagUrl(lang)}"><span>${trs_nation(lang,'lang')}</span>`);
         					}
         				}else{
-        					target.find('.link_card').find(`#${key}`).append(`<img class="flags" src="https://flagcdn.com/w80/${value}.png"><span>${trs_nation(value,'lang')}</span>`);
+        					target.find('.link_card').find(`#${key}`).append(`<img class="flags" src="${getFlagUrl(value)}"><span>${trs_nation(value,'lang')}</span>`);
         				}
         			}else{
         				target.find('.link_card').find(`#${key}`).append(value);

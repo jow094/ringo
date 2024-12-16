@@ -97,6 +97,24 @@ public class UnityController {
 			String unity_thumbnail_path = "";
 			MultipartFile unity_banner_file = vo.getUnity_banner_file();
 			String unity_banner_path = "";
+			
+			File uploadDir = new File(uploadPath_unity_thumbnail);
+	        if (!uploadDir.exists()) {
+	            boolean isCreated = uploadDir.mkdirs();
+	            if (!isCreated) {
+	                logger.error("Failed to create directory: " + uploadPath_unity_thumbnail);
+	                return 0;
+	            }
+	        }
+	        
+	        File uploadDir2 = new File(uploadPath_unity_banner);
+	        if (!uploadDir2.exists()) {
+	        	boolean isCreated = uploadDir2.mkdirs();
+	        	if (!isCreated) {
+	        		logger.error("Failed to create directory: " + uploadPath_unity_banner);
+	        		return 0;
+	        	}
+	        }
 
 			if (unity_thumbnail_file != null && !unity_thumbnail_file.isEmpty()) {
 				String originalFileName = unity_thumbnail_file.getOriginalFilename();
@@ -247,6 +265,15 @@ public class UnityController {
 		
 		vo.setPost_code(post_code);
 		vo.setPost_writer(writer);
+		
+		File uploadDir = new File(uploadPath_unity_upload);
+        if (!uploadDir.exists()) {
+            boolean isCreated = uploadDir.mkdirs();
+            if (!isCreated) {
+                logger.error("Failed to create directory: " + uploadPath_unity_upload);
+                return 0;
+            }
+        }
         
 		try {
 			List<MultipartFile> files = vo.getPosting_files(); 

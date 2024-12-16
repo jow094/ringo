@@ -218,6 +218,16 @@ public class UserController {
 			String user_thumbnail_path = "";
 			
 			Integer i = 0;
+			
+			File uploadDir = new File(uploadPath);
+	        if (!uploadDir.exists()) {
+	            boolean isCreated = uploadDir.mkdirs();
+	            if (!isCreated) {
+	                logger.error("Failed to create directory: " + uploadPath);
+	                return 0;
+	            }
+	        }
+			
 			if (thumbnail_file != null && !thumbnail_file.isEmpty()) {
 		        String originalFileName = thumbnail_file.getOriginalFilename();
 	
@@ -294,7 +304,7 @@ public class UserController {
         
         logger.debug("sendSms: "+user_tel);
         
-        smsService.sendSms(user_tel, "Ringo 癰귣챷�뵥占쎌뵥筌앾옙 �굜遺얜굡占쎈뮉 [" + smsCode + "] 占쎌뿯占쎈빍占쎈뼄. 5�겫占� 占쎄땀占쎈퓠 占쎌뿯占쎌젾 占쎈퉸雅뚯눘苑�占쎌뒄.");
+        smsService.sendSms(user_tel, "Ringo 본인 인증코드는 [" + smsCode + "] 입니다. 5분 이내에 입력해주세요.");
         
         return 1;
     }
@@ -307,7 +317,7 @@ public class UserController {
         session.setAttribute("emailCode", emailCode);
         logger.debug("emailCode:"+emailCode);
         
-        authService.sendEmail(user_email, "Ringo 癰귣챷�뵥占쎌뵥筌앾옙 �굜遺얜굡占쎈뮉 [" + emailCode + "] 占쎌뿯占쎈빍占쎈뼄. 5�겫占� 占쎄땀占쎈퓠 占쎌뿯占쎌젾 占쎈퉸雅뚯눘苑�占쎌뒄.");
+        authService.sendEmail(user_email, "Ringo 본인 인증코드는 [" + emailCode + "] 입니다. 5분 이내에 입력해주세요.");
         
         return 1;
     }

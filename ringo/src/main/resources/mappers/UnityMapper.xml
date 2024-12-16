@@ -307,7 +307,7 @@
 	
 	<delete id="deleteUnityTrashPost">
 		delete from _ringo_unity_post
-		where unity_code = #{unity_code}
+		where upost_place = #{unity_code}
 	</delete>
 	
 </mapper>  

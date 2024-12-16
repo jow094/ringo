@@ -62,6 +62,11 @@ $(document).ready(function() {
         const delta = event.originalEvent.deltaY;
         $(this).scrollLeft($(this).scrollLeft() + delta);
     });
+	$('.link_card_container_footer').on('wheel', function (event) {
+		event.preventDefault();
+		const delta = event.originalEvent.deltaY;
+		$(this).scrollLeft($(this).scrollLeft() + delta);
+	});
 	
 	$('input[type="checkbox"]').change(function() {
 		var target = $(this).closest('.with_checkbox');

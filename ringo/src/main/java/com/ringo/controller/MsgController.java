@@ -180,6 +180,15 @@ public class MsgController {
 		
 			StringBuilder msg_file_path = new StringBuilder();
 			
+			File uploadDir = new File(uploadPath_img);
+	        if (!uploadDir.exists()) {
+	            boolean isCreated = uploadDir.mkdirs();
+	            if (!isCreated) {
+	                logger.error("Failed to create directory: " + uploadPath_img);
+	                return 0;
+	            }
+	        }
+			
 			if(files != null && !files.isEmpty()) {
 				int i = 1;
 				for (MultipartFile file : files) {
@@ -234,6 +243,15 @@ public class MsgController {
 		String msg_code = "msg_"+(last_msg_code+1);
 		
 		Integer duration = (int)(recordingTime*10);
+		
+		File uploadDir = new File(uploadPath_audio);
+        if (!uploadDir.exists()) {
+            boolean isCreated = uploadDir.mkdirs();
+            if (!isCreated) {
+                logger.error("Failed to create directory: " + uploadPath_audio);
+                return 0;
+            }
+        }
 		
 		String fileName = msg_code + "_" + duration + "_audio.mp3";
 		String filePath = uploadPath_audio + fileName;

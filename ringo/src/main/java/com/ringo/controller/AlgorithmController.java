@@ -84,19 +84,25 @@ public class AlgorithmController {
 	@RequestMapping(value = "/around", method = RequestMethod.GET)
 	@ResponseBody
 	public Map<String,Object> algorithmAroundGET(HttpSession session) {
+		if(session.getAttribute("user_code") == null) {
+			return null;
+		}
 		String user_code = (String)session.getAttribute("user_code");
 		
 		AlgorithmVO vo = aService.getUserAlgorithm(user_code);
 		
-		List<String> tags = Arrays.asList(vo.getUser_tags().split(","));
 		String user_log_geolocation = vo.getUser_log_geolocation();
 		String user_latitude = user_log_geolocation.split(",")[0];
 		String user_longitude = user_log_geolocation.split(",")[1];
 		Map<String,Object> param = new HashMap<String,Object>();
 		param.put("user_code",user_code);
 		param.put("user_latitude",user_latitude);
-		param.put("tags",tags);
 		param.put("user_longitude",user_longitude);
+		
+		if(vo.getUser_tags() != null) {
+			List<String> tags = Arrays.asList(vo.getUser_tags().split(","));
+			param.put("tags",tags);
+		}
 		
 		Map<String,Object> result = new HashMap<String,Object>();
 		result.put("tagsPost",pService.getTagsPost(param));

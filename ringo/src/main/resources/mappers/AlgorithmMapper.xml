@@ -89,10 +89,10 @@
 		                ',', ifnull(utl.user_tags_6, ''),
 		                ',', ifnull(utl.user_tags_7, '')
 		            ),
-		            ',,', ','), -- 연속된 쉼표 제거
-		        ',,', ',' -- 혹시 남아있을 쉼표 다시 처리
+		            ',,', ','),
+		        ',,', ','
 		    )),
-		    a.user_langs = trim(',' FROM replace(
+		    a.user_langs = trim(',' from replace(
 		        replace(
 		            concat(
 		                ifnull(utl.user_langs_1, ''),
@@ -105,8 +105,8 @@
 		                ',', ifnull(utl.user_langs_8, ''),
 		                ',', ifnull(utl.user_langs_9, '')
 		            ),
-		            ',,', ','), -- 연속된 쉼표 제거
-		        ',,', ',' -- 혹시 남아있을 쉼표 다시 처리
+		            ',,', ','),
+		        ',,', ','
 		    )),
 		    a.user_log_location = #{user_log_location},
 		    a.user_log_geolocation = #{user_log_geolocation},

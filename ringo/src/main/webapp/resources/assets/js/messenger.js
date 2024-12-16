@@ -131,7 +131,7 @@ function input_msg(msg,type){
 	const comment_section = `
 		<div class="message_comment_section" onclick="scrollToMsg('${msg.msg_comment_target}')">
 			<div><i class="material-symbols-outlined deg180 na">reply</i>${msg.msg_origin_sender_nickname} :</div>
-			<div>${msg.msg_origin_content}</div>
+			<div>${msg.msg_origin_content ? msg.msg_origin_content : '[첨부파일]'}</div>
 			<div class="to_origin">원문 보기</div>
 		</div>`;
 	const $comment_section = $(comment_section);
