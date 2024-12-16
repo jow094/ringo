@@ -61,6 +61,10 @@ public class UserVO {
 	private Integer user_follower_count;
 	private Integer user_following_count;
 	
+	private String user_connected_tags;
+	private String user_my_tags;
+	private Integer user_distance;
+	
 	private Integer mr_notifying;
 	private Integer mr_favorite;
 	private Integer user_private;

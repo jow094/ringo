@@ -1,6 +1,7 @@
 package com.ringo.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ringo.domain.AlgorithmVO;
 import com.ringo.domain.PostVO;

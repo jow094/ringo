@@ -20,7 +20,7 @@ public interface UserDAO {
 	public Integer insertUser(UserVO vo);
 	public Integer selectLastCode();
 	public Integer selectDuplication(String target, String data);
-	public UserVO selectUserProfile(String user_code);
+	public UserVO selectUserProfile(Map<String,Object> param);
 	public UserVO selectConnectedProfile(String user_code);
 	public Integer insertFavorite(Map<String,Object> param);
 	public Integer deleteFavorite(Map<String,Object> param);
@@ -33,4 +33,5 @@ public interface UserDAO {
 	public UserVO selectUserPicture(String user_code);
 	public List<String> selectConnectedUser(String user_code);
 	public List<UserVO> selectLink(Map<String,Object> param);
+	public List<UserVO> selectCodeLink(Map<String,Object> param);
 }

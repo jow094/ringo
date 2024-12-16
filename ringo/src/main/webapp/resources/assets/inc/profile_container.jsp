@@ -7,15 +7,26 @@
 		<div class="profile_container_head">
 			<div class="profile_container_head_basic">
 				<img class="black modal_button" onclick="get_user_picture(this);"/>
-				<div class="profile_container_head_basic_nickname">
+				<div class="inner_box">
+					<div class="inner_title profile_container_head_basic_nickname">
+					</div>
+					<div class="inner_content">
+						<div class="profile_container_head_basic_info">
+						</div>
+						<div class="profile_container_head_basic_info">
+						</div>
+						<div class="profile_container_head_basic_info">
+						</div>
+						<div class="profile_container_head_basic_info">
+						</div>
+					</div>
 				</div>
-				<div class="profile_container_head_basic_info">
-				</div>
-				<div class="profile_container_head_basic_info">
-				</div>
-				<div class="profile_container_head_basic_info">
-				</div>
-				<div class="profile_container_head_basic_info">
+				<div class="inner_box">
+					<div class="inner_title">
+						관심 태그
+					</div>
+					<div class="inner_content my_tags tags">
+					</div>
 				</div>
 			</div>
 			<div class="profile_container_head_tools">
@@ -50,41 +61,41 @@
 				<div class="scroll_box_inner col">
 					<div class="inner_box mw p5 mgb h60">
 						<div class="inner_title">모국어</div>
-						<div class="scroll_box row user_native_lang">
-							<img class="flags">
-							<span></span>
+						<div class="scroll_box row user_native_lang langs">
 	        			</div>
 					</div>
 					<div class="inner_box mw p5 mgb h60">
 						<div class="inner_title">유창한 언어</div>
-						<div class="scroll_box row user_fluent_lang">
-							<img class="flags">
-							<span></span>
+						<div class="scroll_box row user_fluent_lang langs">
 	        			</div>
 					</div>
 					<div class="inner_box mw p5 mgb h60">
 						<div class="inner_title">학습중인 언어</div>
-						<div class="scroll_box row user_learning_lang">
-							<img class="flags">
-							<span></span>
+						<div class="scroll_box row user_learning_lang langs">
 	        			</div>
 					</div>
 					<div class="inner_box mw p5 mgb h80">
 						<div class="inner_title">한줄 소개</div>
 						<div class="scroll_box row user_intro">
-							<span class="pd5"></span>
+							<span></span>
 	        			</div>
 					</div>
 					<div class="inner_box mw p5 mgb h80">
 						<div class="inner_title">이상형</div>
 						<div class="scroll_box row user_ideal_partner">
-							<span class="pd5"></span>
+							<span></span>
 	        			</div>
 					</div>
 					<div class="inner_box mw p5 mgb h80">
 						<div class="inner_title">학습 목표</div>
 						<div class="scroll_box row user_objective">
-							<span class="pd5"></span>
+							<span></span>
+	        			</div>
+					</div>
+					<div class="inner_box mw p5 mgb h80">
+						<div class="inner_title">관심 주제</div>
+						<div class="scroll_box row user_topic">
+							<span></span>
 	        			</div>
 					</div>
 				</div>
@@ -94,6 +105,34 @@
 	<div class="unity_profile_container none expanded">
 		<div class="profile_container_head">
 			<div class="profile_container_head_basic">
+				<img id="unity_thumbnail_path" class="black" src=""/>
+				<div id="unity_name" class="profile_container_head_basic_unity_name data">
+				</div>
+    			<div id="unity_intro" class="profile_container_head_intro data">
+    			</div>
+    			<div class="inner_box">
+					<div class="inner_content">
+						<div id="unity_grade" class="profile_container_head_basic_info data">
+						</div>
+						<div id="unity_member_count" class="profile_container_head_basic_info data">
+						</div>
+						<div id="unity_since" class="profile_container_head_basic_info data">
+						</div>
+						<div id="unity_location" class="profile_container_head_basic_info data">
+						</div>
+						<div class="unity_langs">
+		        			<div id="unity_lang" class="profile_container_head_basic_info data">
+		        			</div>
+						</div>
+					</div>
+				</div>
+				<div class="inner_box">
+					<div class="inner_title">
+						주요 태그
+					</div>
+					<div class="inner_content unity_tags tags">
+					</div>
+				</div>
 			</div>
 			<div class="profile_container_head_tools">
 			</div>

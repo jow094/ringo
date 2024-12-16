@@ -112,6 +112,15 @@ public class AlgorithmController {
 		
 		Map<String,List<String>> connected = uService.getUserAditionalInfos(user_code);
 		
+		logger.debug("connected:"+connected);
+		logger.debug("connected size1:"+connected.get("favorites").size());
+		logger.debug("connected size2:"+connected.get("follows").size());
+		if(connected.get("favorites").size() == 0 && connected.get("follows").size()==0) {
+			
+			logger.debug("connected is null:"+connected);
+			return null;
+		}
+		
 		List<String> writer_codes = new ArrayList<String>();
 		writer_codes.addAll(connected.get("favorites"));
 		writer_codes.addAll(connected.get("follows"));
@@ -131,16 +140,33 @@ public class AlgorithmController {
 		AlgorithmVO vo = aService.getUserAlgorithm(user_code);
 		
 		List<String> tags = Arrays.asList(vo.getUser_tags().split(","));
+		List<String> langs = Arrays.asList(vo.getUser_langs().split(","));
 		String user_log_geolocation = vo.getUser_log_geolocation();
 		String user_latitude = user_log_geolocation.split(",")[0];
 		String user_longitude = user_log_geolocation.split(",")[1];
 		Map<String,Object> param = new HashMap<String,Object>();
 		param.put("user_code",user_code);
 		param.put("user_latitude",user_latitude);
-		param.put("tags",tags);
+		param.put("user_tags",tags);
+		param.put("user_langs",langs);
 		param.put("user_longitude",user_longitude);
 		
 		return uService.getUserLink(param);
+	}
+	
+	@RequestMapping(value = "/codeLink", method = RequestMethod.GET)
+	@ResponseBody
+	public UserVO algorithmCodeLinkGET(HttpSession session,String user_code) {
+		
+		String user_log_geolocation = (String)session.getAttribute("user_log_geolocation");
+		String user_latitude = user_log_geolocation.split(",")[0];
+		String user_longitude = user_log_geolocation.split(",")[1];
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("user_code",user_code);
+		param.put("user_latitude",user_latitude);
+		param.put("user_longitude",user_longitude);
+		
+		return uService.getUserProfile(param);
 	}
 	
 }

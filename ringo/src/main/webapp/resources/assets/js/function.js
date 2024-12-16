@@ -15,6 +15,27 @@ const f_prvk = {
 	'unity':37
 }
 
+function get_age(value) {
+    if (isNaN(value) || value <= 0) {
+        throw new Error("유효하지 않은 출생일 값입니다.");
+    }
+    
+    const birthDate = new Date(value);
+    const today = new Date();
+    
+    let age = today.getFullYear() - birthDate.getFullYear();
+    
+    const hasBirthdayPassed =
+        today.getMonth() > birthDate.getMonth() || 
+        (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+    
+    if (!hasBirthdayPassed) {
+        age -= 1;
+    }
+    
+    return `만 ${age}세`;
+}
+
 function get_private(n) {
     const factors = [];
     while (n % 2 === 0) {
@@ -36,7 +57,17 @@ function get_private(n) {
 
 function is_private(user_private, value, category) {
     if (user_private != 1 && (user_private / prvk[category]) % 1 === 0) { 
-        return '비공개 정보입니다.';
+    	
+    	console.log('private:',user_private);
+    	console.log('categort:',category);
+    	console.log('result:',(user_private / prvk[category]) % 1);
+    	console.log('비공개');
+    	console.log('비공개');
+    	var msg;
+    	if(category=='login'){
+    		msg = '접속정보 : ';
+    	}
+        return `${msg}비공개`;
     } else {
         return value;
     }
@@ -115,24 +146,79 @@ function time_ago(data) {
     }
 }
 
-function trs_nation(code,way){
-	if(way == 'nation'){
-		if(code == 'kr' || code == 'kor'){
-			return '한국'
-		}
-		if(code == 'us'){
-			return '미국'
-		}
-	}
-	if(way == 'lang'){
-		if(code == 'kr' || code == 'kor'){
-			return '한국어'
-		}
-		if(code == 'us'){
-			return '영어'
-		}
-	}
+function trs_nation(code, way) {
+    if (way == 'nation') {
+        if (code == 'kr' || code == 'kor') return '한국';
+        if (code == 'us' || code == 'usa') return '미국';
+        if (code == 'jp' || code == 'jpn') return '일본';
+        if (code == 'cn' || code == 'chn') return '중국';
+        if (code == 'ph' || code == 'phi') return '필리핀';
+        if (code == 'th' || code == 'tha') return '태국';
+        if (code == 'my' || code == 'mys') return '말레이시아';
+        if (code == 'vn' || code == 'vnm') return '베트남';
+        if (code == 'sg' || code == 'sgp') return '싱가포르';
+        if (code == 'id' || code == 'idn') return '인도네시아';
+        if (code == 'lk' || code == 'lka') return '스리랑카';
+        if (code == 'bn' || code == 'brn') return '브루나이';
+        if (code == 'mm' || code == 'mmr') return '미얀마';
+
+        if (code == 'fr' || code == 'fra') return '프랑스';
+        if (code == 'de' || code == 'ger') return '독일';
+        if (code == 'gb' || code == 'uk') return '영국';
+        if (code == 'es' || code == 'spa') return '스페인';
+        if (code == 'it' || code == 'ita') return '이탈리아';
+        if (code == 'ru' || code == 'rus') return '러시아';
+        if (code == 'be' || code == 'bel') return '벨기에';
+        if (code == 'ch' || code == 'che') return '스위스';
+        if (code == 'nl' || code == 'nld') return '네덜란드';
+        if (code == 'se' || code == 'swe') return '스웨덴';
+        if (code == 'no' || code == 'nor') return '노르웨이';
+        if (code == 'dk' || code == 'dnk') return '덴마크';
+        if (code == 'fi' || code == 'fin') return '핀란드';
+        if (code == 'at' || code == 'aut') return '오스트리아';
+        if (code == 'pl' || code == 'pol') return '폴란드';
+        if (code == 'cz' || code == 'cze') return '체코';
+        if (code == 'hu' || code == 'hun') return '헝가리';
+    }
+
+    if (way == 'lang') {
+        if (code == 'kr' || code == 'kor') return '한국어';
+        if (code == 'us' || code == 'usa') return '영어';
+        if (code == 'jp' || code == 'jpn') return '일본어';
+        if (code == 'cn' || code == 'chn') return '중국어';
+        if (code == 'ph' || code == 'phi') return '필리핀어(타갈로그어)';
+        if (code == 'th' || code == 'tha') return '태국어';
+        if (code == 'my' || code == 'mys') return '말레이어';
+        if (code == 'vn' || code == 'vnm') return '베트남어';
+        if (code == 'sg' || code == 'sgp') return '영어, 중국어, 말레이어';
+        if (code == 'id' || code == 'idn') return '인도네시아어';
+        if (code == 'lk' || code == 'lka') return '싱할라어, 타밀어';
+        if (code == 'bn' || code == 'brn') return '말레이어';
+        if (code == 'mm' || code == 'mmr') return '버마어';
+
+        if (code == 'fr' || code == 'fra') return '프랑스어';
+        if (code == 'de' || code == 'ger') return '독일어';
+        if (code == 'gb' || code == 'uk') return '영어';
+        if (code == 'es' || code == 'spa') return '스페인어';
+        if (code == 'it' || code == 'ita') return '이탈리아어';
+        if (code == 'ru' || code == 'rus') return '러시아어';
+        if (code == 'be' || code == 'bel') return '네덜란드어, 프랑스어, 독일어';
+        if (code == 'ch' || code == 'che') return '독일어, 프랑스어, 이탈리아어';
+        if (code == 'nl' || code == 'nld') return '네덜란드어';
+        if (code == 'se' || code == 'swe') return '스웨덴어';
+        if (code == 'no' || code == 'nor') return '노르웨이어';
+        if (code == 'dk' || code == 'dnk') return '덴마크어';
+        if (code == 'fi' || code == 'fin') return '핀란드어, 스웨덴어';
+        if (code == 'at' || code == 'aut') return '독일어';
+        if (code == 'pl' || code == 'pol') return '폴란드어';
+        if (code == 'cz' || code == 'cze') return '체코어';
+        if (code == 'hu' || code == 'hun') return '헝가리어';
+    }
+
+    return '알 수 없음';
 }
+
+
 
 const spinner = `<div class="spinner"></div>
 				<div class="overlay"></div>`;
@@ -1639,9 +1725,10 @@ function next_link_card(e){
 }
 
 function toggle_link_card(e){
-	const user_code =$(e).attr('data-user_code');
+	const user_code = $(e).attr('data-user_code');
 	const prev = $('.link_card_container').find('.prev');
 	const next = $('.link_card_container').find('.next');
+	get_link_user(user_code);
 	
 	$(e).siblings().removeClass('active');
 	$(e).addClass('active');
@@ -1676,48 +1763,6 @@ function toggle_link_card(e){
 	}, 1);
 	
 	hide('.link_card');
-	
-	$(`.link_card`).html(`
-		<div class="card_body">
-			<div class="card_body_content">
-				<div class="image_container">
-					<div class="image_main">
-						<img src="/files/profiles/"/>
-					</div>
-					<div class="image_queue">
-						<div class="image_queue_belt">
-							<div class="image_waiting">
-								<img src="/files/profiles/"/>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="link_info">
-					<div class="scroll_x">
-						${user_code}
-					</div>
-				</div>
-			</div>
-			<div class="card_body_tags">
-				#자주 사용하는 태그
-				<div class="tag_card">#asd</div>
-			</div>
-			<div class="card_body_buttons">
-				<div class="button">
-					<i class="fa-solid fa-pen-to-square" onclick="write_circle()"></i>
-				</div>
-				<div class="button">
-					<i class="fa-solid fa-pen-to-square" onclick="write_circle()"></i>
-				</div>
-				<div class="button">
-					<i class="fa-solid fa-pen-to-square" onclick="write_circle()"></i>
-				</div>
-				<div class="button">
-					<i class="fa-solid fa-pen-to-square" onclick="write_circle()"></i>
-				</div>
-			</div>
-		</div>
-	`);
 	setTimeout(function() {
         showing('.link_card');
     }, 100);
@@ -2110,6 +2155,12 @@ function visit(user_code,e){
 		nickname = container.find('.card_person_info_nickname').text();
 	}
 	
+	if($(e).hasClass('link_visit')){
+		const container = $(e).closest('.link_card');
+		thumbnail = container.find('#user_thumbnail_path').attr('src');
+		nickname = container.find('#user_nickname').text();
+	}
+	
 	$('.added_menu_inner').find('.person_card.active').removeClass('active');
 	
 	if($('.added_menu_inner').find(`[data-user_code="${user_code}"]`).length == 0){
@@ -2142,7 +2193,7 @@ function visit(user_code,e){
 		}
     }, 1);
 	
-	$('.visit_target').text(nickname);
+	$('.visit_target').html(`<img class="small_img" src=${thumbnail}/>${nickname}`);
 	get_user_profile(user_code);
 	get_circle_post(user_code);
 	main_show('visit');

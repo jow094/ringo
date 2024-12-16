@@ -12,7 +12,7 @@ var modifying_files = {};
 var deleting_files = [];
 
 
-function login_check(current_user){
+function login_check(){
 	
 	var currentURL = window.location.href;
 	
@@ -40,9 +40,10 @@ function login_check(current_user){
             	}else{
             		get_coordinates();
             		current_user = data.user_code;
-            		get_user_profile(data.user_code);
+            		console.log('current_user is',current_user);
             		follows = data.follows;
             		favorites = data.favorites;
+            		get_user_profile(data.user_code);
             	}
             },
             error: function(xhr, status, error) {
@@ -924,6 +925,7 @@ function get_circle_post(visit_code){
 function get_user_profile(user_code){
 	
 	console.log('uc:',user_code);
+	console.log('cu:',current_user);
 	
 	if (user_code == null && profile_target == "") {
 		if(!$('.unity_profile_container').hasClass('none')){
@@ -961,24 +963,86 @@ function get_user_profile(user_code){
         	
         	unity = "";
         	var container = $('.user_profile_container');
+        	
+        	container.find('.tags').empty();
+        	
         	container.find('.profile_container_head_basic').find('img').attr('src',`/files/user/profiles/${data.user_thumbnail_path}?v=${new Date().getTime()}`);
         	container.find('.profile_container_head_basic').attr('data-user_code',data.user_code);
         	$('.profile_container_head_basic_nickname').text(`${data.user_nickname}`);
-        	$('.profile_container_head_basic_info').eq(0).text(`국적 : ${trs_nation(data.user_nation,'nation')}`);
-        	$('.profile_container_head_basic_info').eq(1).text(`출생 : ${format_date(data.user_birth,'yymmdd')}`);
-        	$('.profile_container_head_basic_info').eq(2).text(`성별 : ${data.user_gender}`);
-        	$('.profile_container_head_basic_info').eq(3).text(`${data.user_logon != 0 ? '접속 중, ' + data.user_logon : time_ago(data.user_log_time) + ', ' + data.user_log_location}`);
-        	container.find('.user_native_lang').find('img').attr('src',`https://flagcdn.com/w80/${data.user_native_lang}.png`);
-        	container.find('.user_native_lang').find('span').text(trs_nation(data.user_native_lang,'lang'));
-        	container.find('.user_fluent_lang').find('img').attr('src',`https://flagcdn.com/w80/${data.user_fluent_lang}.png`);
-        	container.find('.user_fluent_lang').find('span').text(trs_nation(data.user_fluent_lang,'lang'));
-        	container.find('.user_learning_lang').find('img').attr('src',`https://flagcdn.com/w80/${data.user_learning_lang}.png`);
-        	container.find('.user_learning_lang').find('span').text(trs_nation(data.user_learning_lang,'lang'));
+        	$('.profile_container_head_basic_info').eq(0).html(`<img class="flags" src="https://flagcdn.com/w80/${data.user_nation}.png"/>${trs_nation(data.user_nation,'nation')}`);
+        	$('.profile_container_head_basic_info').eq(1).text(`${format_date(data.user_birth,'yymmdd')} , ${data.user_gender}`);
+        	$('.profile_container_head_basic_info').eq(2).text(`나와의 거리 : ${data.user_distance}km`);
+        	if(user_code == null || user_code == current_user || data.user_code == current_user || data.user_distance == null){
+        		hide($('.profile_container_head_basic_info').eq(2));
+        	}else{
+        		showing($('.profile_container_head_basic_info').eq(2));
+        	}
+        	$('.profile_container_head_basic_info').eq(3).text(`${is_private(data.user_private, data.user_logon != 0 ? '접속 중 : ' + data.user_logon : time_ago(data.user_log_time) + ', ' + data.user_log_location, 'login')}`);
+        	
+        	const tags = data.user_interest.split(',');
+        	for(const tag of tags){
+        		container.find('.my_tags').append(`<div class="tag_card">#${tag}</div>`);
+        	}
+        	if(data.user_native_lang.includes(',')){
+        		const langs = data.user_native_lang.split(',');
+        		for(const lang of langs){
+        			container.find('.user_native_lang').append(`
+        				<div class="nation">
+	    					<img class="flags" src="https://flagcdn.com/w80/${lang}.png">
+	    					<span>${trs_nation(lang,'lang')}</span>
+    					</div>
+        			`);
+        		}
+        	}else{
+        		container.find('.user_native_lang').append(`
+        				<div class="nation">
+		        			<img class="flags" src="https://flagcdn.com/w80/${data.user_native_lang}.png">
+							<span>${trs_nation(data.user_native_lang,'lang')}</span>
+						</div>
+        		`);
+        	}
+        	if(data.user_fluent_lang.includes(',')){
+        		const langs = data.user_fluent_lang.split(',');
+        		for(const lang of langs){
+        			container.find('.user_fluent_lang').append(`
+    					<div class="nation">
+	    					<img class="flags" src="https://flagcdn.com/w80/${lang}.png">
+	    					<span>${trs_nation(lang,'lang')}</span>
+    					</div>
+        			`);
+        		}
+        	}else{
+        		container.find('.user_fluent_lang').append(`
+        			<div class="nation">
+	    				<img class="flags" src="https://flagcdn.com/w80/${data.user_fluent_lang}.png">
+	    				<span>${trs_nation(data.user_fluent_lang,'lang')}</span>
+	    			</div>
+        		`);
+        	}
+        	if(data.user_learning_lang.includes(',')){
+        		const langs = data.user_learning_lang.split(',');
+        		for(const lang of langs){
+        			container.find('.user_learning_lang').append(`
+    					<div class="nation">
+	    					<img class="flags" src="https://flagcdn.com/w80/${lang}.png">
+	    					<span>${trs_nation(lang,'lang')}</span>
+    					</div>
+        			`);
+        		}
+        	}else{
+        		container.find('.user_learning_lang').append(`
+        			<div class="nation">
+        				<img class="flags" src="https://flagcdn.com/w80/${data.user_learning_lang}.png">
+        				<span>${trs_nation(data.user_learning_lang,'lang')}</span>
+        			</div>
+        		`);
+        	}
         	container.find('.user_intro').find('span').text(data.user_intro);
         	container.find('.user_ideal_partner').find('span').text(data.user_ideal_partner);
         	container.find('.user_objective').find('span').text(data.user_objective);
+        	container.find('.user_topic').find('span').text(data.user_topic);
         	
-        	if(profile_target == current_user){
+        	if(profile_target == current_user || profile_target==''){
         		showing(container.find('.open_modify_profile'));
         		hide(container.find('.add_follow'));
         		hide(container.find('.delete_follow'))
@@ -1103,7 +1167,6 @@ function get_unities(){
         				<div class="favorite_unity" data-unity_code="${unity.unity_code}" onclick="enter_unity_main('${unity.unity_code}')">
 							<img src="/files/unity/thumbnail/${unity.unity_thumbnail_path}?v=${new Date().getTime()}"></img>
 							<div>${unity.unity_name}</div>
-							<i class="fa-solid fa-circle-xmark pin"></i>
 						</div>
         			`);
         		}else{
@@ -1173,79 +1236,121 @@ function get_unity_profile(unity_code){
 		data: {unity_code:unity_code},
 		dataType: "json",
 		success: function(response) {
+			var isFavorite = false;
+
+			if(favorites.includes(unity_code)){
+        		isFavorite = true;
+        	}
+			
+			unity = unity_code;
+			const container = $('.unity_profile_container');
 			const isMember = response.isMember;
 			const data = response.data;
 			profile_target = unity_code;
-			
-			console.log(response);
-			console.log(data);
-			console.log(isMember);
+			container.find('.tags').empty();
+			container.find('.data').empty();
+			container.find('img').attr('src','');
 			
         	$('.profile_container').addClass('hidden');
         	
+        	const tags = data.unity_tag.split(',');
+        	for(const tag of tags){
+        		container.find('.unity_tags').append(`<div class="tag_card">#${tag}</div>`);
+        	}
+        	
         	$('.unity_profile_container .profile_container_head_basic').attr('onclick',`enter_unity_main('${unity_code}')`);
         	$('.unity_profile_container .profile_container_head_basic').attr('data-unity_code',unity_code);
-        	$('.unity_profile_container .profile_container_head_basic').html(`
-        		<img class="black" src="/files/unity/thumbnail/${data.unity_thumbnail_path}?v=${new Date().getTime()}"/>
-				<div class="profile_container_head_basic_unity_name">
-					${data.unity_name}
-				</div>
-    			<div class="profile_container_head_intro">
-        			${data.unity_intro}
-    			</div>
-				<div class="profile_container_head_basic_info">
-        			등급 : ${data.unity_grade}
-				</div>
-				<div class="profile_container_head_basic_info">
-        			회원 수 : ${data.unity_member_count}명
-				</div>
-				<div class="profile_container_head_basic_info">
-        			생성일 : ${format_date(data.unity_since,'yymmdd')}
-				</div>
-    			<div class="profile_container_head_basic_info">
-        			태그 : ${data.unity_tag}
-    			</div>
-    			<div class="profile_container_head_basic_info">
-        			활동지역 : ${data.unity_location}
-    			</div>
-    			<div class="profile_container_head_basic_info">
-        			주 사용언어 : ${data.unity_lang}
-    			</div>
-        	`);
+        	container.find('#unity_thumbnail_path').attr('src',`/files/unity/thumbnail/${data.unity_thumbnail_path}`);
+        	container.find('#unity_name').text(data.unity_name);
+        	container.find('#unity_intro').text(data.unity_intro);
+        	container.find('#unity_grade').text(`등급 : ${data.unity_grade}`);
+        	container.find('#unity_member_count').text(`회원 : ${data.unity_member_count}명`);
+        	container.find('#unity_since').text(`창설일 : ${format_date(data.unity_since,'yymmdd')}`);
+        	container.find('#unity_location').text(`주요 활동지역 : ${trs_nation(data.unity_location,'nation')}`);
+        	const langs = data.unity_lang.split(',');
+        	for(const lang of langs){
+        		container.find('#unity_lang').append(`
+        			<div class="nation">
+    					<img class="flags" src="https://flagcdn.com/w80/${lang}.png">
+    					<span>${trs_nation(lang,'lang')}</span>
+					</div>
+        		`);
+        	}
+        	
         	if(data.unity_admin == current_user){
-        		$('.unity_profile_container .profile_container_head_tools').html(`
-            			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity_main('${unity_code}')">
-        	    			<i class="material-symbols-outlined">other_houses</i>
-        	    			<span>메인</span>
-            			</div>
-        				<div class="profile_container_head_tool" data-unity_code="${unity_code}">
+        		if(isFavorite){
+        			$('.unity_profile_container .profile_container_head_tools').html(`
+    					<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity_main('${unity_code}')">
+        					<i class="material-symbols-outlined">other_houses</i>
+        					<span>메인</span>
+    					</div>
+    					<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="delete_favorite(this)">
+        					<i class="material-symbols-outlined">bookmark_remove</i>
+        					<span>즐겨찾기 취소</span>
+    					</div>
+    					<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="show_modify_unity('${unity_code}')">
+        					<i class="material-symbols-outlined">contract_edit</i>
+        					<span>관리</span>
+    					</div>
+    					<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="delete_unity('${unity_code}')">
+        					<i class="material-symbols-outlined">delete</i>
+        					<span>폐쇄</span>
+    					</div>
+        			`);
+        		}else{
+        			$('.unity_profile_container .profile_container_head_tools').html(`
+        				<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity_main('${unity_code}')">
+        					<i class="material-symbols-outlined">other_houses</i>
+        					<span>메인</span>
+    					</div>
+    					<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="add_favorite(this)">
         					<i class="material-symbols-outlined">bookmark_star</i>
         					<span>즐겨찾기</span>
-        				</div>
-            			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="show_modify_unity('${unity_code}')">
-        	    			<i class="material-symbols-outlined">contract_edit</i>
-        	    			<span>관리</span>
-            			</div>
-        				<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="delete_unity('${unity_code}')">
-            				<i class="material-symbols-outlined">delete</i>
-            				<span>폐쇄</span>
-        				</div>
-                	`);
+    					</div>
+    					<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="show_modify_unity('${unity_code}')">
+        					<i class="material-symbols-outlined">contract_edit</i>
+        					<span>관리</span>
+    					</div>
+    					<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="delete_unity('${unity_code}')">
+        					<i class="material-symbols-outlined">delete</i>
+        					<span>폐쇄</span>
+    					</div>
+        			`);
+        		}
         	}else if(isMember == 1){
-        		$('.unity_profile_container .profile_container_head_tools').html(`
-        			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity_main('${unity_code}')">
-    	    			<i class="material-symbols-outlined">other_houses</i>
-    	    			<span>메인</span>
-        			</div>
-    				<div class="profile_container_head_tool" data-unity_code="${unity_code}">
-    					<i class="material-symbols-outlined">bookmark_star</i>
-    					<span>즐겨찾기</span>
-    				</div>
-    				<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="leave_unity('${unity_code}')">
-        				<i class="material-symbols-outlined">output_circle</i>
-        				<span>탈퇴</span>
-    				</div>
-            	`);
+        		console.log('this is member');
+        		if(isFavorite){
+        			$('.unity_profile_container .profile_container_head_tools').html(`
+    					<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity_main('${unity_code}')">
+	    					<i class="material-symbols-outlined">other_houses</i>
+	    					<span>메인</span>
+    					</div>
+    					<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="delete_favorite(this)">
+	    					<i class="material-symbols-outlined">bookmark_remove</i>
+	    					<span>즐겨찾기 취소</span>
+    					</div>
+    					<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="leave_unity('${unity_code}')">
+	    					<i class="material-symbols-outlined">output_circle</i>
+	    					<span>탈퇴</span>
+    					</div>
+        			`);
+        		}else{
+        			console.log('this is not favorite');
+        			$('.unity_profile_container .profile_container_head_tools').html(`
+    					<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity_main('${unity_code}')">
+	    					<i class="material-symbols-outlined">other_houses</i>
+	    					<span>메인</span>
+    					</div>
+    					<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="add_favorite(this)">
+	    					<i class="material-symbols-outlined">bookmark_star</i>
+	    					<span>즐겨찾기</span>
+    					</div>
+    					<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="leave_unity('${unity_code}')">
+	    					<i class="material-symbols-outlined">output_circle</i>
+	    					<span>탈퇴</span>
+    					</div>
+        			`);
+        		}
         	}else{
         		$('.unity_profile_container .profile_container_head_tools').html(`
             			<div class="profile_container_head_tool" data-unity_code="${unity_code}" onclick="enter_unity_main('${unity_code}')">
@@ -2517,6 +2622,10 @@ function add_favorite(e) {
 		target_code = profile_target;
 		place='user';
 	}
+	if($(e).closest('.unity_profile_container').length>0){
+		target_code = unity;
+		place='unity';
+	}
 	
 	$.ajax({
 		url: '/main/favorite',
@@ -2531,6 +2640,9 @@ function add_favorite(e) {
 			}
 			if(place=='user'){
 				additional_user_check(() => get_user_profile(profile_target));
+			}
+			if(place=='unity'){
+				additional_user_check(() => get_unity_profile(unity));
 			}
 		},
 		error: function() {
@@ -2548,6 +2660,10 @@ function delete_favorite(e) {
 		target_code = profile_target;
 		place='user';
 	}
+	if($(e).closest('.unity_profile_container').length>0){
+		target_code = unity;
+		place='unity';
+	}
 	
 	$.ajax({
 		url: '/main/favorite?target_code=' + target_code,
@@ -2560,6 +2676,9 @@ function delete_favorite(e) {
 			}
 			if(place=='user'){
 				additional_user_check(() => get_user_profile(profile_target));
+			}
+			if(place=='unity'){
+				additional_user_check(() => get_unity_profile(unity));
 			}
 		},
 		error: function() {
@@ -3034,7 +3153,7 @@ function get_user_picture(e){
 	
 	var user_code = $(e).data('user_code');
 	if(user_code == null){
-		user_code = profile_target;
+		user_code = $(e).attr("src").split('profiles/')[1].split('_thumbnail')[0];
 	}
 	
 	$.ajax({
@@ -3102,10 +3221,9 @@ function get_around() {
         success: function (response) {
         	
         	var target = $('.around_cards');
+        	target.empty();
         	
         	let data = [...response.nearPost, ...response.tagsPost];
-
-        	target.empty();
         	
         	var code_list=[];
         	
@@ -3298,6 +3416,11 @@ function get_timeline() {
 		success: function (data) {
 			
 			var target = $('.timeline_cards');
+			target.empty();
+			
+			if(data == null){
+				target.append(`<div class="empty()">연결된 사용자가 없습니다. 조금 더 활동해보세요!</div>`);
+			}
 			
 			var code_list=[];
 			
@@ -3475,7 +3598,9 @@ function get_timeline() {
 			target.scrollTop(0);
 		},
 		error: function (error) {
-			console.error('에러 발생:', error);
+			var target = $('.timeline_cards');
+			target.empty();
+			target.append(`<div class="empty">연결된 사용자가 없습니다. 조금 더 활동해보세요!</div>`);
 		}
 	});
 }
@@ -3486,10 +3611,160 @@ function get_link(){
         url: '/algorithm/link/',
         dataType: "json",
         success: function (data) {
-        	console.log('link data :',data);
+        	console.log('link:',data);
+        	
+        	if(data.length==0){
+        		$('.link_cards').empty();
+        		$('.link_cards').append(`<div class="empty">적합한 사용자가 없습니다. 조금 더 활동해보세요!</div>`);
+        		return;
+        	}
+        	$('.link_card_container_footer').empty();
+        	const target = $('.link_cards');
+        	target.find('.link_card_container_footer').empty();
+        	target.find('.data').empty();
+        	target.find('img').attr('src','');
+        	const main = data[0];
+        	const files = main.user_profile_path.split(',');
+        	target.find('.link_visit').attr('data-user_code',main.user_code);
+        	target.find('#user_tags').prepend(`<span>#관심 태그</span>`);
+        	for (var [key, value] of Object.entries(main)) {
+        		if(key == 'user_thumbnail_path'){
+        			target.find('#user_thumbnail_path').attr('src',`/files/user/profiles/${value}`);
+        			target.find('.image_queue_belt').append(`
+						<div class="image_waiting active" onclick="select_img(this)">
+							<img src="/files/user/profiles/${value}?v=${new Date().getTime()}"/>
+						</div>
+    				`);
+        		}else if(key == 'user_birth'){
+        			target.find('#user_birth').append(get_age(value));
+        		}else if(key == 'user_nation'){
+        			target.find('#user_nation').append(`<img class="flags" src="https://flagcdn.com/w80/${value}.png"/>${trs_nation(value,'nation')}`);
+        		}else if(key == 'user_interest'){
+        			if(value != null && value.includes(',')){
+        				values = value.split(',');
+        				for(const tag of values){
+        					target.find('#user_tags').append(`<div class="tag_card">#${tag}</div>`)
+        				}
+        			}else if(value != null){
+    					target.find('#user_tags').append(`<div class="tag_card">#${value}</div>`)
+        			}
+        		}else if(key == 'user_distance'){
+        			target.find('#user_distance').append(`${value}km`)
+        		}else if(key == 'user_profile_path'){
+        			values = value.split(',');
+        			showing(target.find('.none'));
+        			for(const path of values){
+        				target.find('.image_queue_belt').append(`
+    						<div class="image_waiting" onclick="select_img(this)">
+    							<img src="/files/user/profiles/${path}?v=${new Date().getTime()}"/>
+    						</div>
+        				`);
+        			}
+        		}else{
+        			if(target.find('.link_card').find(`#${key}`).hasClass('lang')){
+        				if(value.includes(',')){
+        					const langs = value.split(',')
+        					for(const lang of langs){
+        						target.find('.link_card').find(`#${key}`).append(`<img class="flags" src="https://flagcdn.com/w80/${lang}.png"><span>${trs_nation(lang,'lang')}</span>`);
+        					}
+        				}else{
+        					target.find('.link_card').find(`#${key}`).append(`<img class="flags" src="https://flagcdn.com/w80/${value}.png"><span>${trs_nation(value,'lang')}</span>`);
+        				}
+        			}else{
+        				target.find('.link_card').find(`#${key}`).append(value);
+        			}
+        		}
+        	}
+        	var first = 'active';
+        	for(const userVO of data){
+        		target.next('.link_card_container_footer').append(`
+    				<div class="small_link_card ${first}" data-user_code="${userVO.user_code}" onclick="toggle_link_card(this);">
+	    				<div class="small_link_card_thumbnail">
+	        				<img src="/files/user/profiles/${userVO.user_thumbnail_path}"/>
+	    				</div>
+	    				<div class="small_link_card_info">
+	    					${userVO.user_nickname}
+	    				</div>
+	    				<div class="small_link_card_info">
+	    					${trs_nation(userVO.user_nation,'nation')}, ${userVO.user_gender}, ${get_age(userVO.user_birth)}, ${userVO.user_distance}km
+	    				</div>
+    				</div>
+        		`);
+        		first = '';
+        	}
 	    },
 	    error: function(error) {
 	    }
     });
+}
+
+function get_link_user(user_code){
+	$.ajax({
+		type: 'GET',
+		url: '/algorithm/codeLink/',
+		data: {user_code : user_code},
+		dataType: "json",
+		success: function (data) {
+			console.log(data);
+			
+			const target = $('.link_cards');
+        	target.find('.data').empty();
+        	target.find('img').attr('src','');
+        	target.find('#user_tags').prepend(`<span>#관심 태그</span>`);
+        	target.find('.link_visit').attr('data-user_code',data.user_code);
+        	
+        	for (var [key, value] of Object.entries(data)) {
+        		if(key == 'user_thumbnail_path'){
+        			target.find('#user_thumbnail_path').attr('src',`/files/user/profiles/${value}`);
+        			target.find('.image_queue_belt').append(`
+						<div class="image_waiting active" onclick="select_img(this)">
+							<img src="/files/user/profiles/${value}?v=${new Date().getTime()}"/>
+						</div>
+    				`);
+        		}else if(key == 'user_birth'){
+        			target.find('#user_birth').append(get_age(value));
+        		}else if(key == 'user_nation'){
+        			target.find('#user_nation').append(`<img class="flags" src="https://flagcdn.com/w80/${value}.png"/>${trs_nation(value,'nation')}`);
+        		}else if(key == 'user_interest'){
+        			if(value != null && value.includes(',')){
+        				values = value.split(',');
+        				for(const tag of values){
+        					target.find('#user_tags').append(`<div class="tag_card">#${tag}</div>`)
+        				}
+        			}else if(value != null){
+    					target.find('#user_tags').append(`<div class="tag_card">#${value}</div>`)
+        			}
+        		}else if(key == 'user_distance'){
+        			target.find('#user_distance').append(`${value}km`)
+        		}else if(key == 'user_profile_path'){
+        			console.log('profile');
+        			values = value.split(',');
+        			showing(target.find('.none'));
+        			for(const path of values){
+        				target.find('.image_queue_belt').append(`
+    						<div class="image_waiting" onclick="select_img(this)">
+    							<img src="/files/user/profiles/${path}?v=${new Date().getTime()}"/>
+    						</div>
+        				`);
+        			}
+        		}else{
+        			if(target.find('.link_card').find(`#${key}`).hasClass('lang')){
+        				if(value.includes(',')){
+        					const langs = value.split(',')
+        					for(const lang of langs){
+        						target.find('.link_card').find(`#${key}`).append(`<img class="flags" src="https://flagcdn.com/w80/${lang}.png"><span>${trs_nation(lang,'lang')}</span>`);
+        					}
+        				}else{
+        					target.find('.link_card').find(`#${key}`).append(`<img class="flags" src="https://flagcdn.com/w80/${value}.png"><span>${trs_nation(value,'lang')}</span>`);
+        				}
+        			}else{
+        				target.find('.link_card').find(`#${key}`).append(value);
+        			}
+        		}
+        	}
+		},
+		error: function(error) {
+		}
+	});
 }
 

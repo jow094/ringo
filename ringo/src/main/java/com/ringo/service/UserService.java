@@ -16,7 +16,7 @@ public interface UserService {
 	public Integer userJoin(UserVO vo);
 	public Integer getLastUserCode();
 	public Integer checkDuplication(String target, String data);
-	public UserVO getUserProfile(String user_code);
+	public UserVO getUserProfile(Map<String,Object> param);
 	public UserVO getConnectedProfile(String user_code);
 	public String getUserNickname(String user_code);
 	public Map<String,List<String>> getUserAditionalInfos(String user_code);
@@ -30,4 +30,5 @@ public interface UserService {
 	public Integer modifyUserLog(UserVO vo);
 	public UserVO getUserPicture(String user_code);
 	public List<UserVO> getUserLink(Map<String,Object> param);
+	public List<UserVO> getCodeLink(Map<String,Object> param);
 }

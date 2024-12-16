@@ -77,7 +77,8 @@ public class UnityDAOImpl implements UnityDAO {
 		Map<String, Object> param = new HashMap<String,Object>();
 		param.put("unity_code",unity_code);
 		param.put("user_code",user_code);
-		return sqlSession.selectOne(NAMESPACE + ".selectIsMember",param);	
+		
+		return sqlSession.selectOne(NAMESPACE + ".selectIsMember",param);
 	}
 
 	@Override

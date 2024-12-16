@@ -90,9 +90,8 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public UserVO selectUserProfile(String user_code) {
-		logger.debug("selectUserProfile(Integer user_code) - user_code : "+user_code);
-		return sqlSession.selectOne(NAMESPACE + ".selectUserProfile",user_code);	
+	public UserVO selectUserProfile(Map<String,Object> param) {
+		return sqlSession.selectOne(NAMESPACE + ".selectUserProfile",param);	
 	}
 	
 	@Transactional
@@ -189,9 +188,15 @@ public class UserDAOImpl implements UserDAO {
 	@Transactional
 	@Override
 	public List<UserVO> selectLink(Map<String,Object> param) {
-		List<UserVO> result = new ArrayList<UserVO>();
-		result.addAll(sqlSession.selectList(NAMESPACE + ".selectNearLink",param));	
-		result.addAll(sqlSession.selectList(NAMESPACE + ".selectTagsLink",param));	
-		return result;
+		logger.debug("link param:"+param);
+		
+		return sqlSession.selectList(NAMESPACE + ".selectLink",param);
 	}
+
+	@Override
+	public List<UserVO> selectCodeLink(Map<String, Object> param) {
+		return sqlSession.selectList(NAMESPACE + ".selectCodeLink",param);
+	}
+	
+	
 }

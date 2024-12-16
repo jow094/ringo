@@ -384,11 +384,19 @@ public class UserController {
 			user_code = (String)session.getAttribute("user_code");
 		}
 		
-		logger.debug("profileGET(String user_code) - user_code : "+user_code);
-		
 		Map<String,Object> result = new HashMap<String,Object>();
-		result.put("data", uService.getUserProfile(user_code));
 		result.put("conn", uService.getConnectedProfile(user_code));
+
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("user_code",user_code);
+		String user_log_geolocation = (String)session.getAttribute("user_log_geolocation");
+		if(user_log_geolocation!=null) {
+			String user_latitude = user_log_geolocation.split(",")[0];
+			String user_longitude = user_log_geolocation.split(",")[1];
+			param.put("user_latitude",user_latitude);
+			param.put("user_longitude",user_longitude);
+		}
+		result.put("data", uService.getUserProfile(param));
 		
 		return result;
 	}

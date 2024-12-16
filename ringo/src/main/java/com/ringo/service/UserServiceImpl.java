@@ -50,8 +50,8 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public UserVO getUserProfile(String user_code) {
-		return udao.selectUserProfile(user_code);
+	public UserVO getUserProfile(Map<String,Object> param) {
+		return udao.selectUserProfile(param);
 	}
 	
 	@Override
@@ -117,6 +117,11 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<UserVO> getUserLink(Map<String,Object> param) {
 		return udao.selectLink(param);
+	}
+
+	@Override
+	public List<UserVO> getCodeLink(Map<String, Object> param) {
+		return udao.selectCodeLink(param);
 	}
 	
 	

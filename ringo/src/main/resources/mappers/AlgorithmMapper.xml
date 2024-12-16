@@ -27,42 +27,93 @@
 	</insert>
 	
 	<update id="updateUserAlgorithm">
-		with user_tags_langs AS (
-		    select 
-		        r.user_code,
-		        group_concat(distinct coalesce(up.upost_tag, cp.cpost_tag, unt.unity_tag, fwu.user_interest, fvu.user_interest) separator ',') as user_tags,
-		        group_concat(distinct coalesce(fwu.user_fluent_lang, fwu.user_native_lang, fvu.user_fluent_lang, fvu.user_native_lang) separator ',') as user_langs
+		with user_tags_langs as (
+		    select distinct
+		        u.user_code,
+		    
+		        group_concat(distinct up1.upost_tag order by up1.upost_tag asc) as user_tags_1,
+		        group_concat(distinct cp1.cpost_tag order by cp1.cpost_tag asc) as user_tags_2,
+		        group_concat(distinct up.upost_tag order by up.upost_tag asc) as user_tags_3,
+		        group_concat(distinct cp.cpost_tag order by cp.cpost_tag asc) as user_tags_4,
+		        group_concat(distinct unt.unity_tag order by unt.unity_tag asc) as user_tags_5,
+		        group_concat(distinct fwu.user_interest order by fwu.user_interest asc) as user_tags_6,
+		        group_concat(distinct fvu.user_interest order by fvu.user_interest asc) as user_tags_7,
+		    
+		        group_concat(distinct u.user_fluent_lang order by u.user_fluent_lang asc) as user_langs_1,
+		        group_concat(distinct u.user_learning_lang order by u.user_learning_lang asc) as user_langs_2,
+		        group_concat(distinct u.user_native_lang order by u.user_native_lang asc) as user_langs_3,
+		        group_concat(distinct fwu.user_learning_lang order by fwu.user_learning_lang asc) as user_langs_4,
+		        group_concat(distinct fwu.user_fluent_lang order by fwu.user_fluent_lang asc) as user_langs_5,
+		        group_concat(distinct fwu.user_native_lang order by fwu.user_native_lang asc) as user_langs_6,
+		        group_concat(distinct fvu.user_learning_lang order by fvu.user_learning_lang asc) as user_langs_7,
+		        group_concat(distinct fvu.user_fluent_lang order by fvu.user_fluent_lang asc) as user_langs_8,
+		        group_concat(distinct fvu.user_native_lang order by fvu.user_native_lang asc) as user_langs_9
 		    from 
-		        _ringo_recomm r
+		        _ringo_user u
+		    left join
+		        _ringo_recomm r on r.user_code = u.user_code
 		    left join 
-		        _ringo_unity_post up on r.target_code = up.upost_code
+		        _ringo_unity_post up on up.upost_code = r.target_code
 		    left join 
-		        _ringo_circle_post cp on r.target_code = cp.cpost_code
+		        _ringo_circle_post cp on cp.cpost_code = r.target_code
+		    left join 
+		        _ringo_unity_post up1 on up1.upost_writer = u.user_code
+		    left join 
+		        _ringo_circle_post cp1 on cp1.cpost_writer = u.user_code
 		    left join
-		        _ringo_unity_member um on um.user_code = #{user_code}
+		        _ringo_unity_member um on um.user_code = u.user_code
 		    left join
-		        _ringo_unity unt on um.unity_code = unt.unity_code
+		        _ringo_unity unt on unt.unity_code = um.unity_code
 		    left join
-		        _ringo_follow fw on fw.user_code = #{user_code}
+		        _ringo_follow fw on fw.user_code = u.user_code
 		    left join
 		        _ringo_user fwu on fwu.user_code = fw.target_code 
 		    left join
-		        _ringo_favorite fv on fv.user_code = #{user_code}
+		        _ringo_favorite fv on fv.user_code = u.user_code
 		    left join
 		        _ringo_user fvu on fvu.user_code = fv.target_code
 		    where 
-		        r.user_code = #{user_code}
-		    group by 
-		        r.user_code
+		        u.user_code = #{user_code}
 		)
-		update _ringo_algorithm
+		update _ringo_algorithm a
+		join user_tags_langs utl on a.user_code = utl.user_code
 		set
-		    user_tags = (select user_tags from user_tags_langs),
-		    user_langs = (select user_langs from user_tags_langs),
-		    user_log_location = #{user_log_location},
-		    user_log_geolocation = #{user_log_geolocation},
-		    since = now()
-		where user_code = #{user_code}
+		    a.user_tags = trim(',' FROM replace(
+		        replace(
+		            concat(
+		                ifnull(utl.user_tags_1, ''),
+		                ',', ifnull(utl.user_tags_2, ''),
+		                ',', ifnull(utl.user_tags_3, ''),
+		                ',', ifnull(utl.user_tags_4, ''),
+		                ',', ifnull(utl.user_tags_5, ''),
+		                ',', ifnull(utl.user_tags_6, ''),
+		                ',', ifnull(utl.user_tags_7, '')
+		            ),
+		            ',,', ','), -- 연속된 쉼표 제거
+		        ',,', ',' -- 혹시 남아있을 쉼표 다시 처리
+		    )),
+		    a.user_langs = trim(',' FROM replace(
+		        replace(
+		            concat(
+		                ifnull(utl.user_langs_1, ''),
+		                ',', ifnull(utl.user_langs_2, ''),
+		                ',', ifnull(utl.user_langs_3, ''),
+		                ',', ifnull(utl.user_langs_4, ''),
+		                ',', ifnull(utl.user_langs_5, ''),
+		                ',', ifnull(utl.user_langs_6, ''),
+		                ',', ifnull(utl.user_langs_7, ''),
+		                ',', ifnull(utl.user_langs_8, ''),
+		                ',', ifnull(utl.user_langs_9, '')
+		            ),
+		            ',,', ','), -- 연속된 쉼표 제거
+		        ',,', ',' -- 혹시 남아있을 쉼표 다시 처리
+		    )),
+		    a.user_log_location = #{user_log_location},
+		    a.user_log_geolocation = #{user_log_geolocation},
+		    a.since = now()
+		where a.user_code = #{user_code};
+
+
 	</update>
 	
 </mapper>  

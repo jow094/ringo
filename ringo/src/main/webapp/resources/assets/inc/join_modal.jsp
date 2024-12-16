@@ -115,14 +115,35 @@
 												<select id="user_nation" name="user_nation" class="annotation_message">
 													<option class="annotation_message" value="" selected disabled>* 국적을 선택하세요.</option>
 													<option value="kr">한국</option>
-													<option value="us">영어</option>
+													<option value="us">미국</option>
 													<option value="jp">일본</option>
 													<option value="cn">중국</option>
-													<option value="de">독일</option>
+													<option value="ph">필리핀</option>
+													<option value="th">태국</option>
+													<option value="my">말레이시아</option>
+													<option value="vn">베트남</option>
+													<option value="sg">싱가포르</option>
+													<option value="id">인도네시아</option>
+													<option value="lk">스리랑카</option>
+													<option value="bn">브루나이</option>
+													<option value="mm">미얀마</option>
 													<option value="fr">프랑스</option>
-													<option value="it">이탈리아</option>
+													<option value="de">독일</option>
+													<option value="gb">영국</option>
 													<option value="es">스페인</option>
+													<option value="it">이탈리아</option>
 													<option value="ru">러시아</option>
+													<option value="be">벨기에</option>
+													<option value="ch">스위스</option>
+													<option value="nl">네덜란드</option>
+													<option value="se">스웨덴</option>
+													<option value="no">노르웨이</option>
+													<option value="dk">덴마크</option>
+													<option value="fi">핀란드</option>
+													<option value="at">오스트리아</option>
+													<option value="pl">폴란드</option>
+													<option value="cz">체코</option>
+													<option value="hu">헝가리</option>
 												</select>
 											</div>
 										</div>
@@ -281,11 +302,32 @@
 													<option value="us">영어</option>
 													<option value="jp">일본어</option>
 													<option value="cn">중국어</option>
-													<option value="de">독일어</option>
+													<option value="ph">필리핀어(타갈로그어)</option>
+													<option value="th">태국어</option>
+													<option value="my">말레이어</option>
+													<option value="vn">베트남어</option>
+													<option value="sg">영어, 중국어, 말레이어</option>
+													<option value="id">인도네시아어</option>
+													<option value="lk">싱할라어, 타밀어</option>
+													<option value="bn">말레이어</option>
+													<option value="mm">버마어</option>
 													<option value="fr">프랑스어</option>
-													<option value="it">이탈리아어</option>
+													<option value="de">독일어</option>
+													<option value="gb">영어</option>
 													<option value="es">스페인어</option>
+													<option value="it">이탈리아어</option>
 													<option value="ru">러시아어</option>
+													<option value="be">네덜란드어, 프랑스어, 독일어</option>
+													<option value="ch">독일어, 프랑스어, 이탈리아어</option>
+													<option value="nl">네덜란드어</option>
+													<option value="se">스웨덴어</option>
+													<option value="no">노르웨이어</option>
+													<option value="dk">덴마크어</option>
+													<option value="fi">핀란드어, 스웨덴어</option>
+													<option value="at">독일어</option>
+													<option value="pl">폴란드어</option>
+													<option value="cz">체코어</option>
+													<option value="hu">헝가리어</option>
 												</select>
 												<input type="hidden" name="user_native_lang"/>
 											</div>
@@ -305,11 +347,32 @@
 													<option value="us">영어</option>
 													<option value="jp">일본어</option>
 													<option value="cn">중국어</option>
-													<option value="de">독일어</option>
+													<option value="ph">필리핀어(타갈로그어)</option>
+													<option value="th">태국어</option>
+													<option value="my">말레이어</option>
+													<option value="vn">베트남어</option>
+													<option value="sg">영어, 중국어, 말레이어</option>
+													<option value="id">인도네시아어</option>
+													<option value="lk">싱할라어, 타밀어</option>
+													<option value="bn">말레이어</option>
+													<option value="mm">버마어</option>
 													<option value="fr">프랑스어</option>
-													<option value="it">이탈리아어</option>
+													<option value="de">독일어</option>
+													<option value="gb">영어</option>
 													<option value="es">스페인어</option>
+													<option value="it">이탈리아어</option>
 													<option value="ru">러시아어</option>
+													<option value="be">네덜란드어, 프랑스어, 독일어</option>
+													<option value="ch">독일어, 프랑스어, 이탈리아어</option>
+													<option value="nl">네덜란드어</option>
+													<option value="se">스웨덴어</option>
+													<option value="no">노르웨이어</option>
+													<option value="dk">덴마크어</option>
+													<option value="fi">핀란드어, 스웨덴어</option>
+													<option value="at">독일어</option>
+													<option value="pl">폴란드어</option>
+													<option value="cz">체코어</option>
+													<option value="hu">헝가리어</option>
 												</select>
 												<input type="hidden" name="user_fluent_lang"/>
 											</div>
@@ -329,11 +392,32 @@
 													<option value="us">영어</option>
 													<option value="jp">일본어</option>
 													<option value="cn">중국어</option>
-													<option value="de">독일어</option>
+													<option value="ph">필리핀어(타갈로그어)</option>
+													<option value="th">태국어</option>
+													<option value="my">말레이어</option>
+													<option value="vn">베트남어</option>
+													<option value="sg">영어, 중국어, 말레이어</option>
+													<option value="id">인도네시아어</option>
+													<option value="lk">싱할라어, 타밀어</option>
+													<option value="bn">말레이어</option>
+													<option value="mm">버마어</option>
 													<option value="fr">프랑스어</option>
-													<option value="it">이탈리아어</option>
+													<option value="de">독일어</option>
+													<option value="gb">영어</option>
 													<option value="es">스페인어</option>
+													<option value="it">이탈리아어</option>
 													<option value="ru">러시아어</option>
+													<option value="be">네덜란드어, 프랑스어, 독일어</option>
+													<option value="ch">독일어, 프랑스어, 이탈리아어</option>
+													<option value="nl">네덜란드어</option>
+													<option value="se">스웨덴어</option>
+													<option value="no">노르웨이어</option>
+													<option value="dk">덴마크어</option>
+													<option value="fi">핀란드어, 스웨덴어</option>
+													<option value="at">독일어</option>
+													<option value="pl">폴란드어</option>
+													<option value="cz">체코어</option>
+													<option value="hu">헝가리어</option>
 												</select>
 												<input type="hidden" name="user_learning_lang"/>
 											</div>

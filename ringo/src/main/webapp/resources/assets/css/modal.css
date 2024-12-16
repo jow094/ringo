@@ -581,7 +581,8 @@
 .selected_card_container{
 	display:flex;
 	justify-content:flex-start;
-	align-content:center;
+	align-content:flex-start;
+	align-items:flex-start;
 	margin-bottom:10px;
 	width:100%;
 	border-radius:5px;
@@ -760,10 +761,22 @@
 	color:var(--basic);
 }
 .image_modal_content{
-	width:1000px;
+	width:800px;
 	height: 800px;
 	display:flex;
 	flex-direction: column;
+}
+.image_modal_content .image_container{
+	width:100%;
+}
+.image_modal_content .image_queue{
+	background-color: var(--basic);
+}
+.image_modal_content .image_queue_belt{
+	background-color: var(--basic);
+}
+.image_modal_content .image_waiting{
+	background-color: var(--back);
 }
 image_modal .image_main{
 	flex:1;
