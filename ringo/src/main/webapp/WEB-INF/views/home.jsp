@@ -4,7 +4,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<%@ include file="/resources/assets/inc/navbar.jsp" %>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ringo - Your Lingo Partner</title>
+	<link rel="icon" href="/resources/assets/img/favicon.png" type="image/png">
+	<%@ include file="/resources/assets/inc/navbar.jsp" %>
 </head>
 <body>
 <div class="main_container">

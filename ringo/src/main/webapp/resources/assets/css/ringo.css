@@ -901,11 +901,17 @@ input[type="submit"]{
 	justify-content: center;
 	align-items: center;
 	border-radius:5px;
-	box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
-	margin: 5px 0px;
+	box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
+	margin: 5px 0px 0px 0px;
 	background-color: white;
 	height:40px;
 	border:none;
+	background: linear-gradient(to right, var(--waiting) 10px, white 10px);
+	padding-right: 10px;
+}
+.custom_button:hover{
+	box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.3);
+	background: linear-gradient(to right, var(--basic) 10px, white 10px);
 }
 .tag_card{
 	width:auto;
@@ -1176,6 +1182,10 @@ button:not(.custom_button){
 }
 
 .login_section{
+	background-image: url(../img/login_banner.png);
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
 	padding:20px;
 	height:95vh;
 	width:400px;
@@ -1184,6 +1194,7 @@ button:not(.custom_button){
 	box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.2);
 	justify-content: flex-start;
 	align-content: center;
+	padding-top:340px;
 }
 
 .login_banner{
@@ -1215,8 +1226,11 @@ button:not(.custom_button){
 	justify-content: flex-start;
 	align-content: center;
 	border-radius:5px;
-	box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
-	margin: 5px 0px;
+	box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
+	margin: 5px 0px 0px 0px;
+	background: linear-gradient(to right, var(--basic) 10px, white 10px) !important;
+	padding-right:10px;
+	max-height: 40px;
 }
 
 .login_container .input_name{

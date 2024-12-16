@@ -15,7 +15,6 @@
 		<property name="jdbcUrl" value="jdbc:log4jdbc:mysql://itwillbs.com:3306/c6d2406t2" />
 		<property name="username" value="c6d2406t2"/>
 		<property name="password" value="1234"/>
-
 	</bean>
 	<!-- HikariCP 설정정보 객체 -->
 	

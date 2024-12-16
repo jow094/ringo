@@ -4,7 +4,11 @@
 <%@ include file="/resources/assets/inc/join_modal.jsp" %>
 <html>
 <head>
-<%@ include file="/resources/assets/inc/navbar.jsp" %>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ringo - Your Lingo Partner</title>
+	<link rel="icon" href="/resources/assets/img/favicon.png" type="image/png">
+	<%@ include file="/resources/assets/inc/navbar.jsp" %>
 </head>
 <body>
 
@@ -16,9 +20,6 @@
 		</div>
 	</div>
 	<div class="login_section">
-		<div class="login_banner">
-			<img src="/resources/assets/img/">
-		</div>
 		<div class="login_inputs">
 			<div class="input_cell">
 				<div class="input_name">
