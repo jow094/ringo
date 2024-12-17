@@ -1520,23 +1520,32 @@ function get_unity_main(unity_code){
         				</div>
         		`);
         	}
-        	
-        	for (var [key, value] of Object.entries(data.unity_member)) {
-        		
-        		if(key=="unity_member_since"){
-        			value = format_date(value,'yymmdd');
+        	if(data.unity_member.unity_member_since == null){
+        		$('.unity_member').find('.empty').remove();
+        		hiding($('.unity_member').children());
+        		setTimeout(() => {
+        			$('.unity_member').append(`<div class="empty">가입하지 않은 유니티입니다.</div>`);
+        			$('.unity_member_profile').find('#user_nickname').text('미가입');
+				}, 10);
+        	}else{
+        		$('.unity_member').find('.empty').remove();
+        		showing($('.unity_member').children());
+        		for (var [key, value] of Object.entries(data.unity_member)) {
+        			
+        			if(key=="unity_member_since"){
+        				value = format_date(value,'yymmdd');
+        			}
+        			if (key.endsWith("_count")) {
+        				value = `${value}개`;
+        			}
+        			if (key.endsWith("_times")) {
+        				value = `${value}회`;
+        			}
+        			$(`.in_unity_main #${key} .cell`).text(`${value}`);
+        			
         		}
-        		if (key.endsWith("_count")) {
-        		    value = `${value}개`;
-        		}
-        		if (key.endsWith("_times")) {
-        		    value = `${value}회`;
-        		}
-        	    $(`.in_unity_main #${key} .cell`).text(`${value}`);
-        	    
+        		$('#unity_member_grade_icon').text('counter_5');
         	}
-        	
-    		$('#unity_member_grade_icon').text('counter_5');
     		
         },
         error: function(xhr, status, error) {
@@ -3776,16 +3785,29 @@ function get_link_user(user_code){
         		}else if(key == 'user_distance'){
         			target.find('#user_distance').append(`${value}km`)
         		}else if(key == 'user_profile_path'){
-        			console.log('profile');
-        			values = value.split(',');
-        			showing(target.find('.none'));
-        			for(const path of values){
-        				target.find('.image_queue_belt').append(`
-    						<div class="image_waiting" onclick="select_img(this)">
-    							<img src="/files/user/profiles/${path}?v=${new Date().getTime()}"/>
-    						</div>
-        				`);
+        			if(value == null){
+        				continue;
+        			}else{
+        				if(value.includes(',')){
+        					values = value.split(',');
+        					showing(target.find('.none'));
+        					for(const path of values){
+        						target.find('.image_queue_belt').append(`
+        								<div class="image_waiting" onclick="select_img(this)">
+        								<img src="/files/user/profiles/${path}?v=${new Date().getTime()}"/>
+        								</div>
+        						`);
+        					}
+        				}else{
+        					showing(target.find('.none'));
+        					target.find('.image_queue_belt').append(`
+    								<div class="image_waiting" onclick="select_img(this)">
+    								<img src="/files/user/profiles/${value}?v=${new Date().getTime()}"/>
+    								</div>
+    						`);
+        				}
         			}
+        			
         		}else{
         			if(target.find('.link_card').find(`#${key}`).hasClass('lang')){
         				if(value.includes(',')){

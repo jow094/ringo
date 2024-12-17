@@ -297,7 +297,7 @@
 		            u.user_fluent_lang like CONCAT('%', #{lang}, '%')
 		        </foreach>
 		    )
-	    order by user_distance asc limit 10;
+	    order by user_distance asc limit 100;
     </select>
     
 </mapper>  

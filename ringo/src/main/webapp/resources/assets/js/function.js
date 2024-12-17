@@ -16,7 +16,8 @@ const f_prvk = {
 }
 
 function get_age(value) {
-    if (isNaN(value) || value <= 0) {
+    if (isNaN(value)) {
+    	console.log('get age error value is',value);
         throw new Error("유효하지 않은 출생일 값입니다.");
     }
     
@@ -147,73 +148,118 @@ function time_ago(data) {
 }
 
 function trs_nation(code, way) {
-    if (way == 'nation') {
-        switch (code.toLowerCase()) {
-            case 'kr': case 'kor': return '대한민국';
-            case 'us': case 'usa': return '미국';
-            case 'jp': case 'jpn': return '일본';
-            case 'cn': case 'chn': return '중국';
-            case 'ar': case 'arg': return '아르헨티나';
-            case 'br': case 'bra': return '브라질';
-            case 'pt': case 'por': return '포르투갈';
-            case 'uy': case 'uru': return '우루과이';
-            case 'mx': case 'mex': return '멕시코';
-            case 'co': case 'col': return '콜롬비아';
-            case 'cl': case 'chi': return '칠레';
-            case 'pe': case 'per': return '페루';
-            case 'ec': case 'ecu': return '에콰도르';
-            case 'cr': case 'crc': return '코스타리카';
-            case 'fr': case 'fra': return '프랑스';
-            case 'es': case 'esp': return '스페인';
-            case 'it': case 'ita': return '이탈리아';
-            case 'de': case 'ger': return '독일';
-            case 'nl': case 'nld': return '네덜란드';
-            case 'hr': case 'cro': return '크로아티아';
-            case 'rs': case 'srb': return '세르비아';
-            case 'gb': case 'uk': return '영국';
-            case 'ma': case 'mar': return '모로코';
-            case 'sn': case 'sen': return '세네갈';
-            case 'au': case 'aus': return '호주';
-            case 'gh': case 'gha': return '가나';
-            case 'ng': case 'nga': return '나이지리아';
-            default: return '알 수 없음';
-        }
-    }
-
-    if (way == 'lang') {
-        switch (code.toLowerCase()) {
-            case 'kr': case 'kor': return '한국어';
-            case 'us': case 'usa': return '영어';
-            case 'jp': case 'jpn': return '일본어';
-            case 'cn': case 'chn': return '중국어';
-            case 'ar': case 'arg': return '스페인어';
-            case 'br': case 'bra': return '포르투갈어';
-            case 'pt': case 'por': return '포르투갈어';
-            case 'uy': case 'uru': return '스페인어';
-            case 'mx': case 'mex': return '스페인어';
-            case 'co': case 'col': return '스페인어';
-            case 'cl': case 'chi': return '스페인어';
-            case 'pe': case 'per': return '스페인어';
-            case 'ec': case 'ecu': return '스페인어';
-            case 'cr': case 'crc': return '스페인어';
-            case 'fr': case 'fra': return '프랑스어';
-            case 'es': case 'esp': return '스페인어';
-            case 'it': case 'ita': return '이탈리아어';
-            case 'de': case 'ger': return '독일어';
-            case 'nl': case 'nld': return '네덜란드어';
-            case 'hr': case 'cro': return '크로아티아어';
-            case 'rs': case 'srb': return '세르비아어';
-            case 'gb': case 'uk': return '영어';
-            case 'ma': case 'mar': return '아랍어';
-            case 'sn': case 'sen': return '프랑스어';
-            case 'au': case 'aus': return '영어';
-            case 'gh': case 'gha': return '영어';
-            case 'ng': case 'nga': return '영어';
-            default: return '알 수 없음';
-        }
-    }
-
-    return '알 수 없음';
+	switch (way) {
+	    case 'nation':
+	        switch (code) {
+	            case 'kr': case 'kor': return '대한민국';
+	            case 'us': case 'usa': return '미국';
+	            case 'jp': case 'jpn': return '일본';
+	            case 'cn': case 'chn': return '중국';
+	            case 'ph': case 'phi': return '필리핀';
+	            case 'th': case 'tha': return '태국';
+	            case 'my': case 'mys': return '말레이시아';
+	            case 'vn': case 'vnm': return '베트남';
+	            case 'sg': case 'sgp': return '싱가포르';
+	            case 'id': case 'idn': return '인도네시아';
+	            case 'lk': case 'lka': return '스리랑카';
+	            case 'bn': case 'brn': return '브루나이';
+	            case 'mm': case 'mmr': return '미얀마';
+	            case 'fr': case 'fra': return '프랑스';
+	            case 'de': case 'ger': return '독일';
+	            case 'gb': case 'uk': return '영국';
+	            case 'es': case 'spa': return '스페인';
+	            case 'it': case 'ita': return '이탈리아';
+	            case 'ru': case 'rus': return '러시아';
+	            case 'be': case 'bel': return '벨기에';
+	            case 'ch': case 'che': return '스위스';
+	            case 'nl': case 'nld': return '네덜란드';
+	            case 'se': case 'swe': return '스웨덴';
+	            case 'no': case 'nor': return '노르웨이';
+	            case 'dk': case 'dnk': return '덴마크';
+	            case 'fi': case 'fin': return '핀란드';
+	            case 'at': case 'aut': return '오스트리아';
+	            case 'pl': case 'pol': return '폴란드';
+	            case 'cz': case 'cze': return '체코';
+	            case 'hu': case 'hun': return '헝가리';
+	            case 'ar': case 'arg': return '아르헨티나';
+	            case 'br': case 'bra': return '브라질';
+	            case 'pt': case 'por': return '포르투갈';
+	            case 'uy': case 'uru': return '우루과이';
+	            case 'mx': case 'mex': return '멕시코';
+	            case 'co': case 'col': return '콜롬비아';
+	            case 'cl': case 'chi': return '칠레';
+	            case 'pe': case 'per': return '페루';
+	            case 'ec': case 'ecu': return '에콰도르';
+	            case 'cr': case 'crc': return '코스타리카';
+	            case 'hr': case 'cro': return '크로아티아';
+	            case 'rs': case 'srb': return '세르비아';
+	            case 'ma': case 'mar': return '모로코';
+	            case 'sn': case 'sen': return '세네갈';
+	            case 'au': case 'aus': return '호주';
+	            case 'gh': case 'gha': return '가나';
+	            case 'ng': case 'nga': return '나이지리아';
+	            case 'eg': case 'egy': return '이집트';
+	            case 'il': case 'isr': return '이스라엘';
+	            case 'za': case 'zaf': return '남아프리카공화국';
+	            default: return '알 수 없음';
+	        }
+	    case 'lang':
+	        switch (code) {
+	        case 'kr': case 'kor': return '한국어';
+	        case 'us': case 'usa': case 'au': case 'aus': case 'gh': case 'gha': case 'ng': case 'nga': case 'en':return '영어';
+	        case 'jp': case 'jpn': return '일본어';
+	        case 'cn': case 'chn': return '중국어';
+	        case 'ph': case 'phi': return '영어';
+	        case 'th': case 'tha': return '태국어';
+	        case 'my': case 'mys': return '말레이어';
+	        case 'vn': case 'vnm': return '베트남어';
+	        case 'sg': case 'sgp': return '영어, 중국어';
+	        case 'id': case 'idn': return '인도네시아어';
+	        case 'lk': case 'lka': return '싱할라어';
+	        case 'bn': case 'brn': return '말레이어';
+	        case 'mm': case 'mmr': return '버마어';
+	        case 'fr': case 'fra': return '프랑스어';
+	        case 'de': case 'ger': return '독일어';
+	        case 'gb': case 'uk': return '영어';
+	        case 'es': case 'spa': return '스페인어';
+	        case 'it': case 'ita': return '이탈리아어';
+	        case 'ru': case 'rus': return '러시아어';
+	        case 'be': case 'bel': return '네덜란드어, 프랑스어';
+	        case 'ch': case 'che': return '독일어, 프랑스어, 이탈리아어';
+	        case 'nl': case 'nld': return '네덜란드어';
+	        case 'se': case 'swe': return '스웨덴어';
+	        case 'no': case 'nor': return '노르웨이어';
+	        case 'dk': case 'dnk': return '덴마크어';
+	        case 'fi': case 'fin': return '핀란드어';
+	        case 'at': case 'aut': return '독일어';
+	        case 'pl': case 'pol': return '폴란드어';
+	        case 'cz': case 'cze': return '체코어';
+	        case 'hu': case 'hun': return '헝가리어';
+	        
+	        case 'ar': case 'arg': return '스페인어';
+	        case 'br': case 'bra': return '포르투갈어';
+	        case 'pt': case 'por': return '포르투갈어';
+	        case 'uy': case 'uru': return '스페인어';
+	        case 'mx': case 'mex': return '스페인어';
+	        case 'co': case 'col': return '스페인어';
+	        case 'cl': case 'chi': return '스페인어';
+	        case 'pe': case 'per': return '스페인어';
+	        case 'ec': case 'ecu': return '스페인어';
+	        case 'cr': case 'crc': return '스페인어';
+	        case 'hr': case 'cro': return '크로아티아어';
+	        case 'rs': case 'srb': return '세르비아어';
+	        case 'ma': case 'mar': return '아랍어, 프랑스어';
+	        case 'sn': case 'sen': return '프랑스어';
+	        case 'au': case 'aus': return '영어';
+	        case 'gh': case 'gha': return '영어';
+	        case 'ng': case 'nga': return '영어';
+	        case 'he': case 'isr': return '히브리어';
+	        case 'da': case 'dnk': return '덴마크어';
+	            default: return '알 수 없음';
+	        }
+	    default:
+	        return '알 수 없음';
+	}
 }
 
 
@@ -222,7 +268,7 @@ function getFlagUrl(code) {
 
     const flagMap = {
         'kr': 'kr', 'kor': 'kr',
-        'us': 'us', 'usa': 'us',
+        'us': 'us', 'usa': 'us', 'en':'us',
         'jp': 'jp', 'jpn': 'jp',
         'cn': 'cn', 'chn': 'cn',
         'ph': 'ph', 'phi': 'ph',
@@ -267,7 +313,11 @@ function getFlagUrl(code) {
         'sn': 'sn', 'sen': 'sn',
         'au': 'au', 'aus': 'au',
         'gh': 'gh', 'gha': 'gh',
-        'ng': 'ng', 'nga': 'ng'
+        'ng': 'ng', 'nga': 'ng',
+        'he': 'il',
+        'da': 'dk',
+        'za': 'za',
+        'eg': 'eg'
     };
 
     const flagCode = flagMap[code.toLowerCase()];

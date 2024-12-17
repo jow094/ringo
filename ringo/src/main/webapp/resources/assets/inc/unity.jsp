@@ -142,7 +142,7 @@
 							</select>
 							<select name="unity_topic" class="annotation_message">
 								<option class="annotation_message" value="" selected disabled>소분류</option>
-								<optgroup label="문화">
+								<optgroup class="culture" label="문화">
 							        <option value="music">음악</option>
 							        <option value="hiphop">힙합</option>
 							        <option value="movie">영화</option>
@@ -154,7 +154,7 @@
 							        <option value="theater">연극</option>
 							        <option value="musical">뮤지컬</option>
 							    </optgroup>
-							    <optgroup label="스포츠">
+							    <optgroup class="sports" label="스포츠">
 							        <option value="soccer">축구</option>
 							        <option value="baseball">야구</option>
 							        <option value="basketball">농구</option>
@@ -171,7 +171,7 @@
 							        <option value="cycling">사이클링</option>
 							        <option value="running">러닝</option>
 							    </optgroup>
-							    <optgroup label="일상">
+							    <optgroup class="live" label="일상">
 							        <option value="cooking">요리</option>
 							        <option value="food">음식</option>
 							        <option value="reading">독서</option>
@@ -434,9 +434,9 @@
 				<div class="in_unity_home_container">
 					<div class="in_unity_home_left_container">
 						<div class="unity_member_profile">
-							<div class="inner_box mw col">
+							<div class="inner_box mw mh col">
 								<div id="user_nickname" class="inner_title h30"><i class="material-symbols-outlined mgr" id="unity_member_grade_icon"></i><span class="cell mf"></span></div>
-								<div class="scroll_box row">
+								<div class="scroll_box row unity_member">
 									<div class="unity_member_basic_info">
 										<div id="unity_member_grade" class="unity_member_infos">유니티 회원등급 : <span class="cell"></span></div>
 										<div id="unity_member_visit_times" class="unity_member_infos">방문횟수 : <span class="cell"></span></div>
