@@ -121,7 +121,7 @@
 							<div id="user_tags" class="card_body_tags data">
 								<span>#자주 사용하는 태그</span>
 							</div>
-							<div class="button link_visit" onclick="visit($(this).data('user_code'),this)">
+							<div class="button link_visit">
 								 <i class="material-symbols-outlined">location_away</i>
 							</div>
 						</div>

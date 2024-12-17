@@ -28,4 +28,5 @@ public interface UnityDAO {
 	public List<UnityBoardVO> selectUnityboards(String unity_code);
 	public Integer updateUnityInfo(UnityVO vo);
 	public Integer resetUnityBoard(List<UnityBoardVO> voList,String unity_code);
+	public Integer deleteUnityBoards(String unity_code);
 }

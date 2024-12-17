@@ -295,6 +295,11 @@
 		where unity_code = #{unity_code}
 	</delete>
 	
+	<delete id="deleteFavoriteUnity">
+		delete from _ringo_favorite
+		where target_code = #{unity_code}
+	</delete>
+	
 	<delete id="deleteUnityTrashBoard">
 		delete from _ringo_unity_board
 		where unity_code = #{unity_code}
@@ -308,6 +313,16 @@
 	<delete id="deleteUnityTrashPost">
 		delete from _ringo_unity_post
 		where upost_place = #{unity_code}
+	</delete>
+	
+	<delete id="deleteUnityTrashReple">
+		delete from _ringo_reple
+		where target_code in (select upost_code from _ringo_unity_post where upost_place = #{unity_code})
+	</delete>
+	
+	<delete id="deleteUnityTrashRecomm">
+		delete from _ringo_recomm
+		where target_code in (select upost_code from _ringo_unity_post where upost_place = #{unity_code})
 	</delete>
 	
 </mapper>  

@@ -469,8 +469,12 @@ public class UnityController {
 		}
 		
 		logger.debug("voList: " + voList);
-		
 		return unityService.renewUnityBoard(voList,unity_code);
 	}
 	
+	@RequestMapping(value = "/initBoard", method = RequestMethod.POST)
+	@ResponseBody
+	public Integer unityinitBoardPOST(String unity_code) {
+		return unityService.initUnityBoard(unity_code);
+	}
 }

@@ -416,6 +416,10 @@
 		delete from _ringo_unity_post where upost_code = #{post_code}
 	</delete>
 	
+	<delete id="deleteRecomm">
+		delete from _ringo_recomm where target_code = #{post_code}
+	</delete>
+	
 	<delete id="deleteReple">
 		delete from _ringo_reple where target_code = #{post_code}
 	</delete>

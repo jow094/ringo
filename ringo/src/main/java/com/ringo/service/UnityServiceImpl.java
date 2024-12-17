@@ -103,6 +103,11 @@ public class UnityServiceImpl implements UnityService {
 	public Integer renewUnityBoard(List<UnityBoardVO> voList, String unity_code) {
 		return unitydao.resetUnityBoard(voList,unity_code);
 	}
+
+	@Override
+	public Integer initUnityBoard(String unity_code) {
+		return unitydao.deleteUnityBoards(unity_code);
+	}
 	
 	
 }

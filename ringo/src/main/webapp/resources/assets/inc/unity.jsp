@@ -142,8 +142,9 @@
 							</select>
 							<select name="unity_topic" class="annotation_message">
 								<option class="annotation_message" value="" selected disabled>소분류</option>
-								<optgroup class="culture" label="문화">
+								<optgroup label="문화">
 							        <option value="music">음악</option>
+							        <option value="hiphop">힙합</option>
 							        <option value="movie">영화</option>
 							        <option value="drama">드라마</option>
 							        <option value="painting">미술</option>
@@ -153,7 +154,7 @@
 							        <option value="theater">연극</option>
 							        <option value="musical">뮤지컬</option>
 							    </optgroup>
-							    <optgroup class="sports" label="스포츠">
+							    <optgroup label="스포츠">
 							        <option value="soccer">축구</option>
 							        <option value="baseball">야구</option>
 							        <option value="basketball">농구</option>
@@ -170,8 +171,10 @@
 							        <option value="cycling">사이클링</option>
 							        <option value="running">러닝</option>
 							    </optgroup>
-							    <optgroup class="live" label="일상">
+							    <optgroup label="일상">
+							        <option value="cooking">요리</option>
 							        <option value="food">음식</option>
+							        <option value="reading">독서</option>
 							        <option value="cafe">카페</option>
 							        <option value="drive">드라이브</option>
 							        <option value="study">공부</option>
@@ -362,7 +365,7 @@
 							<select name="unity_private" class="annotation_message">
 								<option class="annotation_message" value="" selected disabled>검색 공개 여부</option>
 								<option value="1">공개</option>
-								<option value="3">비공개</option>
+								<option value="5">비공개</option>
 							</select>
 						</div>
 					</div>
@@ -379,7 +382,7 @@
 							<select name="unity_private" class="annotation_message">
 								<option class="annotation_message" value="" selected disabled>추천 유니티 노출 여부</option>
 								<option value="1">공개</option>
-								<option value="3">비공개</option>
+								<option value="7">비공개</option>
 							</select>
 						</div>
 					</div>
@@ -396,7 +399,7 @@
 							<select name="unity_private" class="annotation_message">
 								<option class="annotation_message" value="" selected disabled>게시글 공개 여부</option>
 								<option value="1">공개</option>
-								<option value="3">비공개</option>
+								<option value="11">비공개</option>
 							</select>
 						</div>
 					</div>
@@ -411,9 +414,9 @@
 				* 미 입력 된 항목이 있습니다.
 			</div>
 			<div class="cards_footer_button last_submit unfinished_row" onclick="check_submit('.unity_create_container')">
-				<span>가입하기</span>
+				<span>생성</span>
 			</div>
-			<div class="cards_footer_button" onclick="hiding('.modal'); toggle_card('.join_modal',1,0);">
+			<div class="cards_footer_button" onclick="expand_create_unity();">
 				<span>닫기</span>
 			</div>
 		</div>
@@ -756,7 +759,7 @@
 													<select name="unity_private" class="annotation_message">
 														<option class="annotation_message" value="" selected disabled>검색 공개 여부</option>
 														<option value="1">공개</option>
-														<option value="3">비공개</option>
+														<option value="5">비공개</option>
 													</select>
 												</div>
 											</div>
@@ -773,7 +776,7 @@
 													<select name="unity_private" class="annotation_message">
 														<option class="annotation_message" value="" selected disabled>추천 유니티 노출 여부</option>
 														<option value="1">공개</option>
-														<option value="3">비공개</option>
+														<option value="7">비공개</option>
 													</select>
 												</div>
 											</div>
@@ -790,7 +793,7 @@
 													<select name="unity_private" class="annotation_message">
 														<option class="annotation_message" value="" selected disabled>게시글 공개 여부</option>
 														<option value="1">공개</option>
-														<option value="3">비공개</option>
+														<option value="11">비공개</option>
 													</select>
 												</div>
 											</div>
@@ -822,8 +825,8 @@
 						<div class="submit_hint annotation_message">
 							* 미 입력 된 항목이 있습니다.
 						</div>
-						<div class="cards_footer_button last_submit unfinished_row" onclick="submit_modify_unity_info(this);">
-							<span>수정하기</span>
+						<div class="cards_footer_button last_submit unfinished_row alert_tb" onclick="submit_modify_unity_info(this);">
+							<span>수정</span>
 						</div>
 						<div class="cards_footer_button" onclick="get_modify_unity()">
 							<span>초기화</span>

@@ -1159,10 +1159,17 @@ function get_unities(){
         url: "/unity/home",
         dataType: "json",
         success: function(data) {
+        	console.log(data);
+        	
         	$('.favorite_unities').empty();
         	$('.unities').empty();
-        	
+        	var list = [];
         	for (const unity of data){
+        		if(list.includes(unity.unity_code) && unity.unity_type != 'favorite'){
+        			continue;
+        		}else{
+        			list.push(unity.unity_code);
+        		}
         		if(unity.unity_type == 'favorite'){
         			$('.favorite_unities').prepend(`
         				<div class="favorite_unity" data-unity_code="${unity.unity_code}" onclick="enter_unity_main('${unity.unity_code}')">
@@ -1267,7 +1274,17 @@ function get_unity_profile(unity_code){
         	container.find('#unity_grade').text(`등급 : ${data.unity_grade}`);
         	container.find('#unity_member_count').text(`회원 : ${data.unity_member_count}명`);
         	container.find('#unity_since').text(`창설일 : ${format_date(data.unity_since,'yymmdd')}`);
-        	container.find('#unity_location').text(`주요 활동지역 : ${trs_nation(data.unity_location,'nation')}`);
+        	if(data.unity_location.includes(',')){
+        	    const nations = data.unity_location.split(',');
+        	    var sentence = '';
+        	    for(const nation of nations){
+        	        sentence += `${trs_nation(nation, 'nation')}, `;
+        	    }
+        	    sentence = sentence.slice(0, -2);
+        	    container.find('#unity_location').text(`주요 활동지역 : ${sentence}`);
+        	}else{
+        		container.find('#unity_location').text(`주요 활동지역 : ${trs_nation(data.unity_location,'nation')}`);
+        	}
         	const langs = data.unity_lang.split(',');
         	for(const lang of langs){
         		container.find('#unity_lang').append(`
@@ -2254,13 +2271,15 @@ function get_modify_unity(unity_code){
 	const container = $('.unity_modify_container');
 	container.find('img').remove();
 	container.find('.tags_container').empty();
-	
+	container.find(`[name=unity_private]`).find(`[value='${1}']`).prop('selected',true);
 	$.ajax({
 		type: "GET",
 		url: "/unity/profile",
 		data: {unity_code:unity_code},
 		dataType: "json",
 		success: function(response) {
+			console.log('unity:',response);
+			
 			var data = response.data;
 			
 			for (var [key, value] of Object.entries(data)) {
@@ -2343,6 +2362,13 @@ function get_modify_unity(unity_code){
 				}
         	}
 			
+			const factors = get_private(data.unity_private);
+			console.log('factors:',factors);
+			for(const factor of factors){
+				console.log('factor:',factor);
+				container.find(`[name=unity_private]`).find(`[value='${factor}']`).prop('selected',true);
+			}
+			
 			$('.modify_board_container').find('.modify_board').remove();
 			const uniqueCategories = new Set(data.unity_board.map(item => item.ub_category_code));
 			const category_num = uniqueCategories.size;
@@ -2408,6 +2434,10 @@ function get_modify_unity(unity_code){
 }
 
 function submit_modify_unity_info(e){
+	if($('.mbc').find('.modify_board:not(.deleted)').find('.unity_board:not(.deleted)').length == 0){
+		annotation_alert(`<span>모든 게시판을 삭제 할 수 없습니다.</span>`);
+		return;
+	}
 	
 	if($(e).hasClass('unfinished_row')){
 		return;
@@ -2476,10 +2506,11 @@ function submit_modify_unity_board() {
     const result = [];
     const container = $('.modify_board_container');
     const categories = container.find('.modify_board:not(.deleted)').toArray();
-
+    
     var i = 1;
     for (const category of categories) {
-        const param = {};
+    	var param = {};
+    	console.log('category code:',$(this).data('ub_category_code'));
         const boards = $(category).find('.unity_board:not(.deleted)').toArray();
         const ub_board_list = [];
         var j = 1;
@@ -2499,29 +2530,29 @@ function submit_modify_unity_board() {
         i++;
         result.push(param);
     }
+    
+    console.log(param);
 
-    console.log(result);
-
-    $.ajax({
-        url: '/unity/modifyBoard',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(result),
-        success: function (response) {
-        	annotation_alert(`<span>유니티 정보 수정에 성공하였습니다.</span>`, function (result) {
-		        if (result) {
-		        	enter_unity_main(unity);
-		        	get_unity_profile(unity);
-		        }else{
-		        	enter_unity_main(unity);
-		        	get_unity_profile(unity);
-		        }
-		    });        	
-        },
-        error: function (error) {
-            console.error('에러 발생:', error);
-        }
-    });
+	$.ajax({
+		url: '/unity/modifyBoard',
+		type: 'POST',
+		contentType: 'application/json',
+		data: JSON.stringify(result),
+		dataType: "json",
+		success: function (response) {
+			annotation_alert(`<span>유니티 정보 수정에 성공하였습니다.</span>`, function (result) {
+				if (result) {
+					enter_unity_main(unity);
+					get_unity_profile(unity);
+				}else{
+					enter_unity_main(unity);
+					get_unity_profile(unity);
+				}
+			});        	
+		},
+		error: function (error) {
+		}
+	});
 }
 
 function join_unity(unity_code) {
@@ -3693,6 +3724,10 @@ function get_link(){
         		`);
         		first = '';
         	}
+        	
+        	$('.link_visit').off('click').on('click', function (e) {
+				visit(main.user_code,this);
+			});
 	    },
 	    error: function(error) {
 	    }
@@ -3700,18 +3735,21 @@ function get_link(){
 }
 
 function get_link_user(user_code){
+	console.log('get link user user_code is',user_code)
+	
 	$.ajax({
 		type: 'GET',
 		url: '/algorithm/codeLink/',
 		data: {user_code : user_code},
 		dataType: "json",
 		success: function (data) {
-			console.log(data);
+			console.log('get link user result:',data);
 			
 			const target = $('.link_cards');
         	target.find('.data').empty();
         	target.find('img').attr('src','');
         	target.find('#user_tags').prepend(`<span>#관심 태그</span>`);
+        	target.find('.link_visit').removeAttr('data-user_code');
         	target.find('.link_visit').attr('data-user_code',data.user_code);
         	
         	for (var [key, value] of Object.entries(data)) {
@@ -3763,6 +3801,10 @@ function get_link_user(user_code){
         			}
         		}
         	}
+        	
+        	$('.link_visit').off('click').on('click', function (e) {
+				visit(user_code,this);
+			});
 		},
 		error: function(error) {
 		}

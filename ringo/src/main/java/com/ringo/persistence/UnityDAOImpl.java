@@ -45,7 +45,9 @@ public class UnityDAOImpl implements UnityDAO {
 	@Transactional
 	@Override
 	public Integer deleteUnity(String unity_code) {
-		logger.debug("deleteUnity(String unity_code) - unity_code : "+unity_code);
+		sqlSession.delete(NAMESPACE + ".deleteUnityTrashReple",unity_code);
+		sqlSession.delete(NAMESPACE + ".deleteUnityTrashRecomm",unity_code);
+		sqlSession.delete(NAMESPACE + ".deleteFavoriteUnity",unity_code);
 		sqlSession.delete(NAMESPACE + ".deleteUnityTrashPost",unity_code);
 		sqlSession.delete(NAMESPACE + ".deleteUnityTrashBoard",unity_code);
 		sqlSession.delete(NAMESPACE + ".deleteUnityTrashMember",unity_code);
@@ -150,6 +152,11 @@ public class UnityDAOImpl implements UnityDAO {
 		logger.debug("resetUnityBoard(List<UnityBoardVO> vo, String unity_code) - vo,unity_code : "+voList+" , "+unity_code);
 		sqlSession.delete(NAMESPACE + ".deleteUnityTrashBoard",unity_code);
 		return sqlSession.insert(NAMESPACE + ".insertUnityBoard",voList);
+	}
+
+	@Override
+	public Integer deleteUnityBoards(String unity_code) {
+		return sqlSession.delete(NAMESPACE + ".deleteUnityTrashBoard",unity_code);
 	}
 	
 	

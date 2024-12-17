@@ -554,6 +554,7 @@
 													<option class="annotation_message" value="" selected disabled>관심 있는 분야를 하나 이상 선택하세요.</option>
 													<optgroup label="문화">
 												        <option value="music">음악</option>
+												        <option value="hiphop">힙합</option>
 												        <option value="movie">영화</option>
 												        <option value="drama">드라마</option>
 												        <option value="painting">미술</option>
@@ -581,7 +582,9 @@
 												        <option value="running">러닝</option>
 												    </optgroup>
 												    <optgroup label="일상">
+												        <option value="cooking">요리</option>
 												        <option value="food">음식</option>
+												        <option value="reading">독서</option>
 												        <option value="cafe">카페</option>
 												        <option value="drive">드라이브</option>
 												        <option value="study">공부</option>

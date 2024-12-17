@@ -25,6 +25,6 @@ public interface UnityService {
 	public List<UnityBoardVO> getUnityBoards(String user_code);
 	public Integer modifyUnity(UnityVO vo);
 	public Integer renewUnityBoard(List<UnityBoardVO> voList,String unity_code);
-	
+	public Integer initUnityBoard(String unity_code);
 	
 }
