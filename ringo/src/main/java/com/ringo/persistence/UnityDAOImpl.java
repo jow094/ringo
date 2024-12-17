@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
@@ -93,6 +94,7 @@ public class UnityDAOImpl implements UnityDAO {
 	public List<UnityVO> selectUnities(AlgorithmVO vo) {
 		
 		List<String> tags = Arrays.asList(vo.getUser_tags().split(","));
+
 		String user_code = vo.getUser_code();
 		String user_log_geolocation = vo.getUser_log_geolocation();
 		String user_latitude = user_log_geolocation.split(",")[0];

@@ -152,9 +152,9 @@
 		from _ringo_unity unt
 		join _ringo_unity_member untm on unt.unity_code = untm.unity_code
 		where
-		<foreach collection="tags" item="tag" open="(" close=")" separator="or">
-	        unt.unity_tag like CONCAT('%', #{tag}, '%')
-	    </foreach>
+            <foreach collection="tags" item="tag" open="(" close=")" separator="or">
+                unt.unity_tag like concat('%', #{tag}, '%')
+            </foreach>
 	    and not exists (
 	        select 1
 	        from _ringo_unity_member untm2

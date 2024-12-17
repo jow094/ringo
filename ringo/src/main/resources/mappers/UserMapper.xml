@@ -284,20 +284,8 @@
 		        <foreach collection="user_tags" item="tag" open="(" close=")" separator="or">
 		            u.user_interest like CONCAT('%', #{tag}, '%')
 		        </foreach>
-		        or
-		        <foreach collection="user_langs" item="lang" open="(" close=")" separator="or">
-		            u.user_native_lang like CONCAT('%', #{lang}, '%')
-		        </foreach>
-		        or
-		        <foreach collection="user_langs" item="lang" open="(" close=")" separator="or">
-		            u.user_learning_lang like CONCAT('%', #{lang}, '%')
-		        </foreach>
-		        or
-		        <foreach collection="user_langs" item="lang" open="(" close=")" separator="or">
-		            u.user_fluent_lang like CONCAT('%', #{lang}, '%')
-		        </foreach>
 		    )
-	    order by user_distance asc limit 100;
+	    order by user_distance asc limit 10;
     </select>
     
 </mapper>  

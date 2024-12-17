@@ -2270,6 +2270,7 @@ function invalidate_write_container(target){
 function visit(user_code,e){
 	
 	console.log('visit:',user_code);
+	console.log('visit e:',e);
 	
 	if(user_code == current_user){
 		main_show('circle');
@@ -2299,6 +2300,12 @@ function visit(user_code,e){
 		const container = $(e).closest('.card_person');
 		thumbnail = container.find('img').attr('src');
 		nickname = container.find('.card_person_info_nickname').text();
+	}
+	
+	if($(e).closest('.unity_card_header').length>0){
+		const container = $(e).closest('.card');
+		thumbnail = container.find('img').attr('src');
+		nickname = container.find('.uch_writer_nickname').text();
 	}
 	
 	if($(e).hasClass('link_visit')){

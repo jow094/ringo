@@ -742,7 +742,7 @@ function get_circle_post(visit_code){
         dataType: "json",
         success: function(data) {
         	var target;
-        	
+        	console.log('datatadada',data);
         	if(visit_code==null){
         		target = $('.circle_cards');
         	}else{
@@ -750,6 +750,9 @@ function get_circle_post(visit_code){
         	}
         	
         	target.empty();
+        	if(data.length == 0){
+        		target.append(`<div class="empty"> 작성 된 게시물이 없습니다.</div>`);
+        	}
         	
         	for (const postVO of data){
         		const post = `
@@ -1268,7 +1271,7 @@ function get_unity_profile(unity_code){
         	
         	$('.unity_profile_container .profile_container_head_basic').attr('onclick',`enter_unity_main('${unity_code}')`);
         	$('.unity_profile_container .profile_container_head_basic').attr('data-unity_code',unity_code);
-        	container.find('#unity_thumbnail_path').attr('src',`/files/unity/thumbnail/${data.unity_thumbnail_path}`);
+        	container.find('#unity_thumbnail_path').attr('src',`/files/unity/thumbnail/${data.unity_thumbnail_path}?v=${new Date().getTime()}`);
         	container.find('#unity_name').text(data.unity_name);
         	container.find('#unity_intro').text(data.unity_intro);
         	container.find('#unity_grade').text(`등급 : ${data.unity_grade}`);
@@ -1675,7 +1678,7 @@ function get_unity_post(ub_board_code,upost_code,unity_board_page){
 			        			<div class="uch_board">${postVO.post_place_name}</div>
 			        			<div class="uch_title">${postVO.post_title}</div>
         					</div>
-        					<div class="uch_writer onclick="visit('${postVO.post_writer}',this)"">
+        					<div class="uch_writer" onclick="visit('${postVO.post_writer}',this)">
         						<div class="uch_writer_image">
         							<img class="small_img" src="/files/user/profiles/${postVO.writer_thumbnail_path}"/>
         						</div>
@@ -1915,7 +1918,7 @@ function get_unity_board_post(post_place,post_code){
 			        			<div class="uch_board">${postVO.post_place_name}</div>
 			        			<div class="uch_title">${postVO.post_title}</div>
         					</div>
-        					<div class="uch_writer onclick="visit('${postVO.post_writer}',this)"">
+        					<div class="uch_writer" onclick="visit('${postVO.post_writer}',this)">
         						<div class="uch_writer_image">
         							<img class="small_img" src="/files/user/profiles/${postVO.writer_thumbnail_path}"/>
         						</div>
@@ -2094,7 +2097,6 @@ function get_unity_board_post(post_place,post_code){
 }
 
 function add_unity_post(upost_code,ub_add_direction,is_finished){
-	spin_start('#unity_posts');
 	
 	$.ajax({
         type: "GET",
@@ -2102,8 +2104,6 @@ function add_unity_post(upost_code,ub_add_direction,is_finished){
         data: {upost_code:upost_code,ub_add_direction:ub_add_direction},
         dataType: "json",
         success: function(data) {
-        	spin_end('#unity_posts');
-        	
         	if(data.length == 0 && is_finished){
         		$('#unity_posts').addClass('shake');
         		setTimeout(function() {
@@ -2127,7 +2127,7 @@ function add_unity_post(upost_code,ub_add_direction,is_finished){
 			        			<div class="uch_board">${postVO.post_place_name}</div>
 			        			<div class="uch_title">${postVO.post_title}</div>
         					</div>
-        					<div class="uch_writer onclick="visit('${postVO.post_writer}',this)"">
+        					<div class="uch_writer" onclick="visit('${postVO.post_writer}',this)">
         						<div class="uch_writer_image">
         							<img class="small_img" src="/files/user/profiles/${postVO.writer_thumbnail_path}"/>
         						</div>
@@ -2182,6 +2182,12 @@ function add_unity_post(upost_code,ub_add_direction,is_finished){
         			$('.unity_cards').scrollTop(currentScroll + $card.outerHeight(true));
         		}else{
         			$('.unity_cards').append($card);
+        		}
+        		
+        		if(postVO.post_is_recommended){
+        			hide($card.find('.add_recomm'));
+        		}else{
+        			hide($card.find('.delete_recomm'));
         		}
         		
                 if (postVO.post_tag != null && postVO.post_tag != '') {
@@ -2266,7 +2272,6 @@ function add_unity_post(upost_code,ub_add_direction,is_finished){
         	view_check();
         },
         error: function(xhr, status, error) {
-        	spin_end('#unity_posts');
         }
     });
 }

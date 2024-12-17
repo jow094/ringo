@@ -38,6 +38,7 @@
 		        group_concat(distinct unt.unity_tag order by unt.unity_tag asc) as user_tags_5,
 		        group_concat(distinct fwu.user_interest order by fwu.user_interest asc) as user_tags_6,
 		        group_concat(distinct fvu.user_interest order by fvu.user_interest asc) as user_tags_7,
+		        group_concat(distinct u.user_interest order by u.user_interest asc) as user_tags_8,
 		    
 		        group_concat(distinct u.user_fluent_lang order by u.user_fluent_lang asc) as user_langs_1,
 		        group_concat(distinct u.user_learning_lang order by u.user_learning_lang asc) as user_langs_2,
@@ -87,7 +88,8 @@
 		                ',', ifnull(utl.user_tags_4, ''),
 		                ',', ifnull(utl.user_tags_5, ''),
 		                ',', ifnull(utl.user_tags_6, ''),
-		                ',', ifnull(utl.user_tags_7, '')
+		                ',', ifnull(utl.user_tags_7, ''),
+		                ',', ifnull(utl.user_tags_8, '')
 		            ),
 		            ',,', ','),
 		        ',,', ','
