@@ -141,14 +141,35 @@ function input_msg(msg,type){
 			<i class="material-symbols-outlined" onclick="msg_translation(this)">translate</i>
 			<span onclick="msg_translation(this)">번역</span>
 			<select id="trs_target_lang" class="annotation_message">
-				<optgroup label="학습중인 언어">
-					<option value="en" selected>영어</option>
-				</optgroup>
 				<optgroup label="사용자 언어">
 					<option value="ko">한국어</option>
+					<option value="en" selected>영어</option>
 				</optgroup>
 				<optgroup label="기타 언어">
+					<option value="zh">중국어</option>
+					<option value="es">스페인어</option>
 					<option value="fr">프랑스어</option>
+					<option value="de">독일어</option>
+					<option value="ja">일본어</option>
+					<option value="hi">힌디어</option>
+					<option value="pt">포르투갈어</option>
+					<option value="ru">러시아어</option>
+					<option value="it">이탈리아어</option>
+					<option value="ar">아랍어</option>
+					<option value="tr">터키어</option>
+					<option value="nl">네덜란드어</option>
+					<option value="sv">스웨덴어</option>
+					<option value="pl">폴란드어</option>
+					<option value="da">덴마크어</option>
+					<option value="fi">핀란드어</option>
+					<option value="no">노르웨이어</option>
+					<option value="cs">체코어</option>
+					<option value="el">그리스어</option>
+					<option value="th">태국어</option>
+					<option value="vi">베트남어</option>
+					<option value="he">히브리어</option>
+					<option value="hu">헝가리어</option>
+					<option value="ro">루마니아어</option>
 				</optgroup>
 			</select>
 		</div>`;

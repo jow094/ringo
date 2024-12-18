@@ -16,7 +16,7 @@
 
 	<div class="login_img_container">
 		<div class="login_img_section">
-			<img src="/resources/assets/img/">
+			<img src="/resources/assets/img/back.webp">
 		</div>
 	</div>
 	<div class="login_section">

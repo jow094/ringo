@@ -1798,7 +1798,6 @@ function get_unity_post(ub_board_code,upost_code,unity_board_page){
             		}
             		$card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
                 }
-                
                 if (postVO.post_reple_count != 0) {
                 	var reple_container= `
                 		<div class="card_foot_comment">
@@ -2028,7 +2027,7 @@ function get_unity_board_post(post_place,post_code){
             		$card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
                 }
                 
-                if (postVO.reples != null && postVO.reples.length>0) {
+                if (postVO.post_reple_count != 0) {
                 	var reple_container= `
                 		<div class="card_foot_comment">
 	                		<div class="scroll_box">
@@ -2039,8 +2038,8 @@ function get_unity_board_post(post_place,post_code){
                 		`;
                 	var $comment = $(reple_container);
                 	for (const reple of postVO.reples) {
-                    	if(reple.reple_content!=null && reple.reple_content!=''){
-                    		var reple_card = `
+                		if(reple.reple_content!=null && reple.reple_content!=''){
+                			var reple_card = `
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
 	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
 		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
@@ -2234,7 +2233,7 @@ function add_unity_post(upost_code,ub_add_direction,is_finished){
                     $card.find('.card_body_content').find('.scroll_box_inner').prepend($img);
                 }
                 
-                if (postVO.reples != null && postVO.reples.length>0) {
+                if (postVO.post_reple_count != 0) {
                 	var reple_container= `
                 		<div class="card_foot_comment">
 	                		<div class="scroll_box">
@@ -2245,25 +2244,34 @@ function add_unity_post(upost_code,ub_add_direction,is_finished){
                 		`;
                 	var $comment = $(reple_container);
                 	for (const reple of postVO.reples) {
-                    	if(reple.reple_content!=null && reple.reple_content!=''){
-                    		
-                    		$comment.find('.scroll_box_inner').append(`
+                		if(reple.reple_content!=null && reple.reple_content!=''){
+                			var reple_card = `
                 				<div class="card_comment" data-reple_code="${reple.reple_code}">
 	                				<div class="card_comment_thumbnail" onclick="visit('${reple.reple_writer}',this)">
 		                				<img class="small_img" src="/files/user/profiles/${reple.r_writer_thumbnail_path}"/>
 	                				</div>
 	                				<div class="card_comment_body">
-		                				<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
-		                				<div class="card_comment_content">${reple.reple_content}</div>
+	                					<div class="ff column">
+			                    			<div class="card_comment_nickname" onclick="visit('${reple.reple_writer}',this)">${reple.r_writer_nickname}</div>
+			                    			<div class="card_comment_content">${reple.reple_content}</div>
+	                					</div>
 		                				<div class="card_comment_time">
-		                				<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
-										<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
-		                				<span class="recomm_count">${reple.reple_recomm_count}</span>
-		                				<span>${auto_format_date(reple.reple_time)}</span>
+			                				<div class="ff row">
+				                    			<i class="fa-regular fa-heart add_recomm unrecommended" onclick="add_recomm(this)"></i>
+				                    			<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
+				                    			<span class="recomm_count">${reple.reple_recomm_count}</span>
+			                				</div>
+			                				<span>${auto_format_date(reple.reple_time)}</span>
 		                				</div>
 	                				</div>
-                				</div>
-                    		`);
+	            				</div>`;
+                    		var $reple = $(reple_card);
+                    		$comment.find('.scroll_box_inner').append($reple);
+                    		if(reple.reple_is_recommended){
+                    			hide($reple.find('.add_recomm'));
+                    		}else{
+                    			hide($reple.find('.delete_recomm'));
+                    		}
                     	}
                     }
                 	$card.find('.card_foot_comment_input').after($comment);

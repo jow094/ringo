@@ -2590,8 +2590,12 @@ textarea{
 	min-width:200px;
 	max-width:100%;
 }
+.message_comment_section div{
+	max-height: 100%;
+}
 .message_comment_section div:first-child{
-	width:60px;
+	width:auto;
+	max-width:100px;
 	height: 100%;
 	gap:5px;
 	display:flex;

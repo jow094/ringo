@@ -79,37 +79,33 @@
 		update _ringo_algorithm a
 		join user_tags_langs utl on a.user_code = utl.user_code
 		set
-		    a.user_tags = trim(',' FROM replace(
-		        replace(
-		            concat(
-		                ifnull(utl.user_tags_1, ''),
-		                ',', ifnull(utl.user_tags_2, ''),
-		                ',', ifnull(utl.user_tags_3, ''),
-		                ',', ifnull(utl.user_tags_4, ''),
-		                ',', ifnull(utl.user_tags_5, ''),
-		                ',', ifnull(utl.user_tags_6, ''),
-		                ',', ifnull(utl.user_tags_7, ''),
-		                ',', ifnull(utl.user_tags_8, '')
-		            ),
-		            ',,', ','),
-		        ',,', ','
-		    )),
-		    a.user_langs = trim(',' from replace(
-		        replace(
-		            concat(
-		                ifnull(utl.user_langs_1, ''),
-		                ',', ifnull(utl.user_langs_2, ''),
-		                ',', ifnull(utl.user_langs_3, ''),
-		                ',', ifnull(utl.user_langs_4, ''),
-		                ',', ifnull(utl.user_langs_5, ''),
-		                ',', ifnull(utl.user_langs_6, ''),
-		                ',', ifnull(utl.user_langs_7, ''),
-		                ',', ifnull(utl.user_langs_8, ''),
-		                ',', ifnull(utl.user_langs_9, '')
-		            ),
-		            ',,', ','),
-		        ',,', ','
-		    )),
+		    a.user_tags = trim(',' FROM REGEXP_REPLACE(
+			    concat_ws(',', 
+			        utl.user_tags_1, 
+			        utl.user_tags_2, 
+			        utl.user_tags_3, 
+			        utl.user_tags_4, 
+			        utl.user_tags_5, 
+			        utl.user_tags_6, 
+			        utl.user_tags_7, 
+			        utl.user_tags_8
+			    ), 
+			    ',+', ','
+			)),
+		    a.user_langs = trim(',' FROM REGEXP_REPLACE(
+			    concat_ws(',', 
+			        utl.user_langs_1, 
+			        utl.user_langs_2, 
+			        utl.user_langs_3, 
+			        utl.user_langs_4, 
+			        utl.user_langs_5, 
+			        utl.user_langs_6, 
+			        utl.user_langs_7, 
+			        utl.user_langs_8, 
+			        utl.user_langs_9
+			    ), 
+			    ',+', ','
+			)),
 		    a.user_log_location = #{user_log_location},
 		    a.user_log_geolocation = #{user_log_geolocation},
 		    a.since = now()
