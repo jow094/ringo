@@ -889,7 +889,7 @@ input[type="submit"]{
 	width:100%;
 	border-radius:5px;
 	background-color: white;
-	box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
+	box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
 	height:40px;
 	margin-top:10px;
 	border:none;
@@ -3859,6 +3859,7 @@ textarea.scroll {
     background-color: black;
     box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.3);
 	margin:0px 3px;
+	border-radius: 5px;
 }
 .small_link_card_thumbnail img{
 	aspect-ratio: 1 / 1;
@@ -3987,6 +3988,7 @@ textarea.scroll {
 	box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.3);
 	min-height:300px;
 	margin-bottom: 10px;
+	border-radius: 5px;
 }
 .msg .image_container{
 	width:260px;

@@ -3291,7 +3291,7 @@ function get_around() {
         	var target = $('.around_cards');
         	target.empty();
         	
-        	let data = [...response.nearPost, ...response.tagsPost];
+        	let data = [...response.tagsPost, ...response.nearPost];
         	
         	var code_list=[];
         	
