@@ -2804,11 +2804,15 @@ function warning_alert(msg,callback){
 		callback(true);
 	});
 	$('#alert').find('.close').off("click").on("click", function () {
-		hiding('#alert');
+		hide('#alert');
 		$('#alert').find('.alert_content').empty();
 		$('#alert').find('.alert_button').addClass('none');
 	});
 	showing('#alert');
+}
+function close_alert(){
+	$('#alert').find('.alert_content').empty();
+	$('#alert').find('.alert_button').addClass('none');
 }
 
 function confirm_delete(e){
@@ -2825,6 +2829,13 @@ function alert_delete(e,callback){
 		$('#alert').find('.delete').off("click").on("click", function () {
 			callback(true);
 		});
+		
+		$('#alert').find('.close').off("click").on("click", function () {
+			hide('#alert');
+			$('#alert').find('.alert_content').empty();
+			$('#alert').find('.alert_button').addClass('none');
+		});
+		
 		showing($('#alert').find('.delete'));
 		showing($('#alert').find('.close'));
 		showing('#alert');

@@ -1932,8 +1932,15 @@ function get_unity_board_post(post_place,post_code){
 									<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
 									<span class="recomm_count">${postVO.post_recomm_count}</span>
 								</div>
-								<div class="card_header_tool">
-									<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
+								<div class="card_header_tool tool_buttons none">
+									<div onclick="modify_post(this)">
+										<i class="material-symbols-outlined">edit_note</i>
+										<span>수정</span>
+									</div>
+									<div class="alert_tb" onclick="confirm_delete(this)">
+										<i class="material-symbols-outlined">delete</i>
+										<span>삭제</span>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -2141,8 +2148,15 @@ function add_unity_post(upost_code,ub_add_direction,is_finished){
 									<i class="fa-solid fa-heart delete_recomm recommended" onclick="delete_recomm(this)"></i>
 									<span class="recomm_count">${postVO.post_recomm_count}</span>
 								</div>
-								<div class="card_header_tool">
-									<i class="fa-solid fa-bars" style="font-size: 20px;"></i>
+								<div class="card_header_tool tool_buttons none">
+									<div onclick="modify_post(this)">
+										<i class="material-symbols-outlined">edit_note</i>
+										<span>수정</span>
+									</div>
+									<div class="alert_tb" onclick="confirm_delete(this)">
+										<i class="material-symbols-outlined">delete</i>
+										<span>삭제</span>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -2903,7 +2917,7 @@ function delete_post(post_code){
 			}
 			setTimeout(() => {
 				annotation_alert(`<span>게시글이 삭제되었습니다.</span>`);
-			}, 500);
+			}, 350);
 		},
 		error: function(xhr, status, error) {
 		}
