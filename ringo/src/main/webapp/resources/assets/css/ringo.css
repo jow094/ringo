@@ -1362,6 +1362,7 @@ button:not(.custom_button){
 .profile_container_head_basic img{
 	width: 150px; 
 	height: 150px; 
+	border-radius: 5px;
 }
 .profile_container_head_basic_nickname{
 	width:100%;

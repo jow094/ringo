@@ -145,6 +145,7 @@ public class AlgorithmController {
 		
 		AlgorithmVO vo = aService.getUserAlgorithm(user_code);
 		
+		
 		List<String> tags = Arrays.asList(vo.getUser_tags().split(","));
 		List<String> langs = Arrays.asList(vo.getUser_langs().split(","));
 		String user_log_geolocation = vo.getUser_log_geolocation();
